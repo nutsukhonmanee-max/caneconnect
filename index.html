@@ -3,20 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CaneConnect - แจ้งเก็บใบอ้อย</title>
+    <title>CaneConnect - แอปพลิเคชันชาวไร่อ้อย</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- แผนที่ Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <!-- เครื่องมือวาดกรอบแผนที่ (Geoman) -->
     <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
     <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
-
-    <!-- เครื่องมือคำนวณพื้นที่ (Turf.js) -->
     <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
 
     <style>
@@ -39,8 +34,8 @@
         .profile-text { color: var(--text-dark); font-size: 16px; font-weight: 500; }
         
         label { font-weight: 500; display: block; margin-top: 15px; font-size: 15px; color: #555; }
-        input { width: 100%; padding: 14px; margin-top: 8px; border: 2px solid #e0e0e0; border-radius: 12px; box-sizing: border-box; font-size: 16px; font-family: 'Kanit', sans-serif; transition: all 0.3s; }
-        input:focus { border-color: var(--primary-green); outline: none; box-shadow: 0 0 0 3px var(--light-green); }
+        input, textarea { width: 100%; padding: 14px; margin-top: 8px; border: 2px solid #e0e0e0; border-radius: 12px; box-sizing: border-box; font-size: 16px; font-family: 'Kanit', sans-serif; transition: all 0.3s; }
+        input:focus, textarea:focus { border-color: var(--primary-green); outline: none; box-shadow: 0 0 0 3px var(--light-green); }
         
         #map { height: 280px; width: 100%; border-radius: 12px; margin-top: 10px; border: 2px solid #e0e0e0; z-index: 1; }
         
@@ -51,36 +46,73 @@
         button:disabled { background-color: #cccccc; box-shadow: none; cursor: not-allowed; }
         .the1-banner { text-align: center; font-size: 13px; color: #777; margin-top: 20px; }
         .the1-banner span { color: #e3000f; font-weight: 600; }
+
+        /* ตัวควบคุมการแสดงหน้า */
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        .row { display: flex; gap: 10px; }
+        .row > div { flex: 1; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>CaneConnect</h1>
-        <div class="speech-bubble">🌱 ผมน้องอ้อยใจ พร้อมช่วยลดการเผาครับ!</div>
+        <div class="speech-bubble" id="header-text">🌱 กำลังตรวจสอบประวัติชาวไร่...</div>
     </div>
 
     <div class="container">
         <div class="profile-section">
             <img id="profile-img" class="profile-img" src="" alt="Profile Image">
-            <div class="profile-text" id="profile-info">กำลังเชื่อมต่อระบบ...</div>
+            <div class="profile-text" id="profile-info">กำลังเชื่อมต่อ LINE...</div>
         </div>
 
-        <!-- ย้ายแผนที่ขึ้นมาไว้ด้านบน เพื่อให้วาดก่อน -->
-        <label>📍 1. วาดกรอบแปลงอ้อยของคุณ:</label>
-        <div class="status-box" id="gps-status" style="background-color: #e3f2fd; color: #1565c0;">
-            <i>👆</i> กดที่ปุ่มรูปห้าเหลี่ยม (ด้านซ้ายแผนที่) แล้วจิ้มวาดตามขอบแปลงอ้อยให้ครบรอบ
+        <div id="register-page" class="page">
+            <div class="status-box" style="background-color: #fff3cd; color: #856404; margin-bottom: 20px;">
+                <i>📝</i> ยินดีต้อนรับชาวไร่ใหม่! กรุณาลงทะเบียนในครั้งแรกเพื่อรับสิทธิประโยชน์
+            </div>
+
+            <div class="row">
+                <div>
+                    <label for="reg-firstname">ชื่อ:</label>
+                    <input type="text" id="reg-firstname" placeholder="ชื่อจริง" required>
+                </div>
+                <div>
+                    <label for="reg-lastname">นามสกุล:</label>
+                    <input type="text" id="reg-lastname" placeholder="นามสกุล" required>
+                </div>
+            </div>
+
+            <label for="reg-phone">เบอร์โทรศัพท์ (สำหรับติดต่อคิวรถ):</label>
+            <input type="tel" id="reg-phone" placeholder="08X-XXX-XXXX" required>
+
+            <label for="reg-address">ที่อยู่ปัจจุบัน:</label>
+            <textarea id="reg-address" rows="2" placeholder="บ้านเลขที่ หมู่บ้าน ตำบล อำเภอ จังหวัด" required></textarea>
+
+            <label for="reg-farminfo">ข้อมูลการปลูกอ้อย (เช่น ส่งโรงงานไหน, พันธุ์ที่ปลูก):</label>
+            <textarea id="reg-farminfo" rows="2" placeholder="เช่น ส่งโรงงานมิตรผล, ปลูกพันธุ์ขอนแก่น 3"></textarea>
+
+            <button id="btn-register" onclick="submitRegistration()">ยืนยันการลงทะเบียน</button>
         </div>
-        <div id="map"></div>
 
-        <label for="quantity">🌱 2. ปริมาณใบอ้อย (ไร่):</label>
-        <input type="number" id="quantity" placeholder="ระบบจะคำนวณให้อัตโนมัติเมื่อวาดแผนที่เสร็จ" required>
+        <div id="main-page" class="page">
+            <label>📍 1. วาดกรอบแปลงอ้อยของคุณ:</label>
+            <div class="status-box" id="gps-status" style="background-color: #e3f2fd; color: #1565c0;">
+                <i>👆</i> กดที่ปุ่มรูปห้าเหลี่ยม (ด้านซ้ายแผนที่) แล้วจิ้มวาดตามขอบแปลงให้ครบรอบ
+            </div>
+            <div id="map"></div>
 
-        <label for="harvest-date">🗓️ 3. วันที่ตัดอ้อยเสร็จ (พร้อมให้รถเข้าม้วน):</label>
-        <input type="date" id="harvest-date" required>
+            <label for="quantity">🌱 2. ปริมาณใบอ้อย (ไร่):</label>
+            <input type="number" id="quantity" placeholder="ระบบจะคำนวณให้อัตโนมัติ" readonly>
 
-        <button id="submit-btn" onclick="submitCaneData()" disabled>ส่งข้อมูลแจ้งคิวรถ</button>
-        <div class="the1-banner">ตัดอ้อยสด ลดการเผา สะสมแต้ม <span>The 1</span></div>
+            <label for="harvest-date">🗓️ 3. วันที่ตัดอ้อยเสร็จ (พร้อมให้รถเข้าม้วน):</label>
+            <input type="date" id="harvest-date" required>
+
+            <button id="submit-btn" onclick="submitCaneData()" disabled>ส่งข้อมูลแจ้งคิวรถ</button>
+            <div class="the1-banner">ตัดอ้อยสด ลดการเผา สะสมแต้ม <span>The 1</span></div>
+        </div>
+
     </div>
 
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -89,23 +121,25 @@
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwKNL6jqjvtpuBxDzgqBIQiKLjA7_2QupvMAK9tcod5SlBbcs7iIbswlglT76xI5xOwng/exec";
         
         let userProfile = null;
-        let currentLat = 17.295; // ค่าเริ่มต้น
+        let currentLat = 17.295; 
         let currentLng = 101.782; 
         let map;
         let drawnPolygon = null;
         let polygonGeoJSON = "";
 
+        // ================= ฟังก์ชันเริ่มต้นและตรวจสอบผู้ใช้ =================
         async function main() {
             try {
                 await liff.init({ liffId: LIFF_ID });
                 if (liff.isLoggedIn()) {
                     userProfile = await liff.getProfile();
-                    document.getElementById("profile-info").innerText = "สวัสดีครับ คุณ " + userProfile.displayName;
+                    document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName;
                     const imgElement = document.getElementById("profile-img");
                     imgElement.src = userProfile.pictureUrl;
                     imgElement.style.display = "inline-block";
 
-                    getLocation(); 
+                    // ตรวจสอบว่าเคยลงทะเบียนหรือยัง
+                    checkUserStatus();
                 } else {
                     liff.login();
                 }
@@ -114,159 +148,157 @@
             }
         }
 
+        async function checkUserStatus() {
+            try {
+                const response = await fetch(GAS_WEB_APP_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "checkUser", userId: userProfile.userId })
+                });
+                const result = await response.json();
+                
+                if (result.status === "found") {
+                    // เคยลงทะเบียนแล้ว -> เปิดหน้าแผนที่
+                    document.getElementById("header-text").innerText = "🌱 ผมน้องอ้อยใจ พร้อมช่วยลดการเผาครับ!";
+                    document.getElementById("main-page").classList.add("active");
+                    getLocation(); // เริ่มหาพิกัด
+                } else {
+                    // ยังไม่เคยลงทะเบียน -> เปิดหน้าลงทะเบียน
+                    document.getElementById("header-text").innerText = "🌱 มาเป็นครอบครัวรักษ์โลกกันครับ!";
+                    document.getElementById("register-page").classList.add("active");
+                }
+            } catch (error) {
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้', 'error');
+            }
+        }
+
+        // ================= ฟังก์ชันลงทะเบียน =================
+        async function submitRegistration() {
+            const fName = document.getElementById("reg-firstname").value;
+            const lName = document.getElementById("reg-lastname").value;
+            const phone = document.getElementById("reg-phone").value;
+            const address = document.getElementById("reg-address").value;
+            const farmInfo = document.getElementById("reg-farminfo").value;
+
+            if(!fName || !lName || !phone || !address) {
+                Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกข้อมูลส่วนตัวให้ครบถ้วนครับ', 'warning');
+                return;
+            }
+
+            const btn = document.getElementById("btn-register");
+            btn.innerText = "กำลังบันทึกข้อมูล...";
+            btn.disabled = true;
+
+            const payload = {
+                action: "register",
+                userId: userProfile.userId,
+                lineName: userProfile.displayName,
+                firstName: fName,
+                lastName: lName,
+                phone: phone,
+                address: address,
+                farmInfo: farmInfo
+            };
+
+            try {
+                const response = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
+                const result = await response.json();
+                
+                if (result.status === "success") {
+                    Swal.fire({
+                        icon: 'success', title: 'ลงทะเบียนสำเร็จ!', text: 'ยินดีต้อนรับเข้าสู่ครอบครัว CaneConnect ครับ', confirmButtonColor: '#7cb342'
+                    }).then(() => {
+                        // สลับไปหน้าหลัก และโหลดแผนที่
+                        document.getElementById("register-page").classList.remove("active");
+                        document.getElementById("header-text").innerText = "🌱 ผมน้องอ้อยใจ พร้อมช่วยลดการเผาครับ!";
+                        document.getElementById("main-page").classList.add("active");
+                        getLocation();
+                    });
+                }
+            } catch (error) {
+                Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error');
+                btn.innerText = "ยืนยันการลงทะเบียน";
+                btn.disabled = false;
+            }
+        }
+
+        // ================= ฟังก์ชันแผนที่และการแจ้งพิกัด (ดึงของเดิมมา) =================
         function renderMap(lat, lng) {
             if(!map) {
                 map = L.map('map').setView([lat, lng], 16);
+                L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(map);
                 
-                // ใช้แผนที่ดาวเทียมของ Google (เห็นไร่อ้อยชัดเจน)
-                L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-                    attribution: '© Google Maps',
-                    maxZoom: 20
-                }).addTo(map);
+                map.pm.addControls({ position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, dragMode: false, cutPolygon: false, removalMode: true });
 
-                // เพิ่มเครื่องมือวาดกรอบ
-                map.pm.addControls({
-                    position: 'topleft',
-                    drawMarker: false,
-                    drawCircleMarker: false,
-                    drawPolyline: false,
-                    drawRectangle: false,
-                    drawCircle: false,
-                    drawPolygon: true, // เปิดเฉพาะวาดรูปหลายเหลี่ยม
-                    editMode: true,
-                    dragMode: false,
-                    cutPolygon: false,
-                    removalMode: true,
-                });
-
-                // เมื่อวาดเสร็จ
                 map.on('pm:create', function(e) {
-                    // ถ้าเคยวาดไว้แล้ว ให้ลบอันเก่าทิ้ง (อนุญาตให้มีแค่ 1 แปลงต่อการส่ง 1 ครั้ง)
-                    if (drawnPolygon) {
-                        drawnPolygon.remove();
-                    }
+                    if (drawnPolygon) drawnPolygon.remove();
                     drawnPolygon = e.layer;
-
                     calculateArea(drawnPolygon);
-
-                    // เมื่อมีการแก้ไขหรือขยับมุมแปลง
-                    drawnPolygon.on('pm:edit', function() {
-                        calculateArea(drawnPolygon);
-                    });
+                    drawnPolygon.on('pm:edit', function() { calculateArea(drawnPolygon); });
                 });
 
-                // เมื่อลบแปลงทิ้ง
                 map.on('pm:remove', function(e) {
-                    drawnPolygon = null;
-                    polygonGeoJSON = "";
-                    document.getElementById("quantity").value = "";
+                    drawnPolygon = null; polygonGeoJSON = ""; document.getElementById("quantity").value = "";
                     document.getElementById("gps-status").innerHTML = "<i>👆</i> กดที่ปุ่มรูปห้าเหลี่ยมเพื่อวาดแปลงอ้อยใหม่";
-                    document.getElementById("gps-status").style.backgroundColor = "#e3f2fd";
-                    document.getElementById("gps-status").style.color = "#1565c0";
+                    document.getElementById("gps-status").style.backgroundColor = "#e3f2fd"; document.getElementById("gps-status").style.color = "#1565c0";
                 });
-
             } else {
                 map.setView([lat, lng], 16);
             }
             document.getElementById("submit-btn").disabled = false;
         }
 
-        // ฟังก์ชันคำนวณพื้นที่ (ตร.ม. เป็น ไร่)
         function calculateArea(layer) {
             let geojson = layer.toGeoJSON();
-            polygonGeoJSON = JSON.stringify(geojson.geometry.coordinates); // เก็บพิกัดทุกมุมไว้ส่งเข้าฐานข้อมูล
-
-            // คำนวณตารางเมตร
-            let areaSqm = turf.area(geojson);
-            
-            // แปลงเป็นไร่ (1 ไร่ = 1600 ตรม.)
-            let areaRai = (areaSqm / 1600).toFixed(2);
-
-            // ดึงจุดกึ่งกลางของแปลงอ้อยมาเป็นพิกัดหลัก
+            polygonGeoJSON = JSON.stringify(geojson.geometry.coordinates);
+            let areaRai = (turf.area(geojson) / 1600).toFixed(2);
             let center = turf.centerOfMass(geojson);
-            currentLat = center.geometry.coordinates[1];
-            currentLng = center.geometry.coordinates[0];
-
-            // แสดงผล
+            currentLat = center.geometry.coordinates[1]; currentLng = center.geometry.coordinates[0];
+            
             document.getElementById("quantity").value = areaRai;
             document.getElementById("gps-status").innerHTML = "<i>✅</i> วาดสำเร็จ! พื้นที่ประเมิน: <b>" + areaRai + " ไร่</b>";
-            document.getElementById("gps-status").style.backgroundColor = "#f0fdf4";
-            document.getElementById("gps-status").style.color = "#27ae60";
+            document.getElementById("gps-status").style.backgroundColor = "#f0fdf4"; document.getElementById("gps-status").style.color = "#27ae60";
         }
 
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        currentLat = position.coords.latitude;
-                        currentLng = position.coords.longitude;
-                        renderMap(currentLat, currentLng);
-                    },
-                    (error) => {
-                        renderMap(currentLat, currentLng);
-                        Swal.fire('ข้อแนะนำ', 'แอปไม่สามารถหาพิกัดปัจจุบันได้ กรุณาเลื่อนแผนที่ไปหาแปลงอ้อยของคุณด้วยตนเองครับ', 'info');
-                    },
+                    (position) => { currentLat = position.coords.latitude; currentLng = position.coords.longitude; renderMap(currentLat, currentLng); },
+                    (error) => { renderMap(currentLat, currentLng); Swal.fire('ข้อแนะนำ', 'กรุณาเลื่อนแผนที่ไปหาแปลงอ้อยของคุณด้วยตนเองครับ', 'info'); },
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );
-            } else {
-                renderMap(currentLat, currentLng);
-            }
+            } else { renderMap(currentLat, currentLng); }
         }
 
         async function submitCaneData() {
             const qty = document.getElementById("quantity").value;
             const hDate = document.getElementById("harvest-date").value;
             
-            if(!drawnPolygon) {
-                Swal.fire('ลืมวาดแปลงอ้อย', 'กรุณาวาดขอบเขตแปลงอ้อยในแผนที่ เพื่อให้ระบบคำนวณจำนวนไร่ก่อนครับ', 'warning');
-                return;
-            }
-
-            if(!hDate) {
-                Swal.fire('ลืมระบุวันที่', 'กรุณาระบุวันที่คาดว่าจะตัดอ้อยเสร็จด้วยนะครับ', 'warning');
-                return;
-            }
+            if(!drawnPolygon) { Swal.fire('ลืมวาดแปลงอ้อย', 'กรุณาวาดขอบเขตแปลงอ้อยในแผนที่ก่อนครับ', 'warning'); return; }
+            if(!hDate) { Swal.fire('ลืมระบุวันที่', 'กรุณาระบุวันที่คาดว่าจะตัดอ้อยเสร็จด้วยนะครับ', 'warning'); return; }
 
             const btn = document.getElementById("submit-btn");
-            btn.innerText = "กำลังจัดส่งข้อมูล...";
-            btn.disabled = true;
+            btn.innerText = "กำลังจัดส่งข้อมูล..."; btn.disabled = true;
 
             const payload = {
+                action: "report_harvest", // เปลี่ยน action ให้ตรงกับระบบหลังบ้าน
                 userId: userProfile.userId,
                 userName: userProfile.displayName,
-                latitude: currentLat,         // พิกัดจุดกึ่งกลางแปลงอ้อย
+                latitude: currentLat,
                 longitude: currentLng,
-                quantity: Number(qty),        // จำนวนไร่ที่คำนวณได้อัตโนมัติ
+                quantity: Number(qty),
                 harvestDate: hDate,
-                polygon: polygonGeoJSON       // พิกัดมุมต่างๆ ของขอบเขตไร่
+                polygon: polygonGeoJSON
             };
 
             try {
-                const response = await fetch(GAS_WEB_APP_URL, {
-                    method: "POST",
-                    body: JSON.stringify(payload)
-                });
-                
+                const response = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
                 const result = await response.json();
-                
                 if (result.status === "success") {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'บันทึกสำเร็จ!',
-                        text: 'ระบบได้รับพิกัดแปลงอ้อยและวันที่ของคุณเรียบร้อยแล้ว',
-                        confirmButtonColor: '#7cb342'
-                    }).then(() => {
-                        liff.closeWindow(); 
-                    });
-                } else {
-                    Swal.fire('เกิดข้อผิดพลาด', result.message, 'error');
+                    Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ระบบได้รับพิกัดแปลงอ้อยและวันที่ของคุณเรียบร้อยแล้ว', confirmButtonColor: '#7cb342' })
+                    .then(() => { liff.closeWindow(); });
                 }
-            } catch (error) {
-                Swal.fire('การเชื่อมต่อล้มเหลว', 'ไม่สามารถส่งข้อมูลได้', 'error');
-            } finally {
-                btn.innerText = "ส่งข้อมูลแจ้งคิวรถ";
-                btn.disabled = false;
-            }
+            } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถส่งข้อมูลได้', 'error'); }
+            finally { btn.innerText = "ส่งข้อมูลแจ้งคิวรถ"; btn.disabled = false; }
         }
 
         window.onload = main;
