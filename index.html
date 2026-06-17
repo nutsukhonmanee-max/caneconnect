@@ -31,12 +31,24 @@
         .status-box i { margin-right: 8px; font-size: 20px;}
         button { width: 100%; padding: 16px; margin-top: 25px; background-color: var(--primary-green); color: white; border: none; border-radius: 15px; font-size: 18px; font-family: 'Kanit', sans-serif; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(124, 179, 66, 0.4); transition: 0.2s; }
         button:disabled { background-color: #cccccc; box-shadow: none; cursor: not-allowed; }
-        .the1-banner { text-align: center; font-size: 13px; color: #777; margin-top: 20px; }
-        .the1-banner span { color: #e3000f; font-weight: 600; }
         .page { display: none; }
         .page.active { display: block; }
         .row { display: flex; gap: 10px; }
         .row > div { flex: 1; }
+        
+        /* สไตล์สำหรับหน้าการขายของฉัน */
+        .section-title { font-size: 18px; font-weight: 600; color: var(--dark-green); border-bottom: 2px solid var(--primary-green); padding-bottom: 5px; margin-top: 20px; margin-bottom: 15px; }
+        .sale-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .sale-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed #eee; }
+        .sale-date { font-size: 13px; color: #777; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge.pending { background: #fff3cd; color: #856404; }       /* รอคิวรถ */
+        .badge.processing { background: #cce5ff; color: #004085; }    /* กำลังดำเนินการ */
+        .badge.completed { background: #d4edda; color: #155724; }     /* เสร็จสิ้น */
+        .badge.canceled { background: #f8d7da; color: #721c24; }      /* ยกเลิก */
+        .sale-detail { font-size: 14px; color: #444; line-height: 1.8; }
+        .sale-detail span { font-weight: 600; color: #222; }
+        .empty-state { text-align: center; color: #999; font-size: 14px; padding: 20px 0; }
     </style>
 </head>
 <body>
@@ -52,45 +64,40 @@
             <div class="profile-text" id="profile-info">กำลังเชื่อมต่อ LINE...</div>
         </div>
 
-        <!-- หน้าจอลงทะเบียน / แก้ไขข้อมูล -->
+        <!-- ================= หน้าลงทะเบียน ================= -->
         <div id="register-page" class="page">
             <div class="status-box" id="reg-status-box" style="background-color: #fff3cd; color: #856404; margin-bottom: 20px;">
                 <i>📝</i> กรุณากรอกข้อมูลเพื่อลงทะเบียนเข้าสู่ระบบครับ
             </div>
             <div class="row">
-                <div>
-                    <label for="reg-firstname">ชื่อ:</label>
-                    <input type="text" id="reg-firstname" placeholder="ชื่อจริง" required>
-                </div>
-                <div>
-                    <label for="reg-lastname">นามสกุล:</label>
-                    <input type="text" id="reg-lastname" placeholder="นามสกุล" required>
-                </div>
+                <div><label>ชื่อ:</label><input type="text" id="reg-firstname" required></div>
+                <div><label>นามสกุล:</label><input type="text" id="reg-lastname" required></div>
             </div>
-            <label for="reg-phone">เบอร์โทรศัพท์:</label>
-            <input type="tel" id="reg-phone" placeholder="08X-XXX-XXXX" required>
-            <label for="reg-address">ที่อยู่ปัจจุบัน:</label>
-            <textarea id="reg-address" rows="2" placeholder="บ้านเลขที่ หมู่บ้าน ตำบล อำเภอ จังหวัด" required></textarea>
-            <label for="reg-farminfo">ข้อมูลการปลูกอ้อย:</label>
-            <textarea id="reg-farminfo" rows="2" placeholder="เช่น ส่งโรงงานมิตรผล, ปลูกพันธุ์ขอนแก่น 3"></textarea>
-            
-            <!-- ปุ่มนี้จะเปลี่ยนข้อความและการทำงานอัตโนมัติ (ลงทะเบียนใหม่ หรือ บันทึกแก้ไข) -->
+            <label>เบอร์โทรศัพท์:</label><input type="tel" id="reg-phone" required>
+            <label>ที่อยู่ปัจจุบัน:</label><textarea id="reg-address" rows="2" required></textarea>
+            <label>ข้อมูลการปลูกอ้อย:</label><textarea id="reg-farminfo" rows="2"></textarea>
             <button id="btn-register" onclick="submitRegistration()">ยืนยันการลงทะเบียน</button>
         </div>
 
-        <!-- หน้าหลักแจ้งพิกัดอ้อย -->
+        <!-- ================= หน้าแจ้งพิกัดอ้อย ================= -->
         <div id="main-page" class="page">
             <label>📍 1. วาดกรอบแปลงอ้อยของคุณ:</label>
             <div class="status-box" id="gps-status" style="background-color: #e3f2fd; color: #1565c0;">
                 <i>👆</i> กดปุ่มรูปห้าเหลี่ยมบนแผนที่ แล้ววาดตามขอบแปลง
             </div>
             <div id="map"></div>
-            <label for="quantity">🌱 2. ปริมาณใบอ้อย (ไร่):</label>
-            <input type="number" id="quantity" placeholder="ระบบจะคำนวณให้อัตโนมัติ" readonly>
-            <label for="harvest-date">🗓️ 3. วันที่ตัดอ้อยเสร็จ:</label>
-            <input type="date" id="harvest-date" required>
+            <label>🌱 2. ปริมาณใบอ้อย (ไร่):</label><input type="number" id="quantity" readonly>
+            <label>🗓️ 3. วันที่ตัดอ้อยเสร็จ:</label><input type="date" id="harvest-date" required>
             <button id="submit-btn" onclick="submitCaneData()" disabled>ส่งข้อมูลแจ้งคิวรถ</button>
-            <div class="the1-banner">ตัดอ้อยสด ลดการเผา สะสมแต้ม <span>The 1</span></div>
+        </div>
+
+        <!-- ================= หน้าการขายของฉัน (เพิ่มใหม่) ================= -->
+        <div id="sales-page" class="page">
+            <div class="section-title">📍 รายการที่กำลังดำเนินการ</div>
+            <div id="current-sales-container"></div>
+
+            <div class="section-title" style="margin-top: 30px;">ประวัติการขาย (เสร็จสิ้น/ยกเลิก)</div>
+            <div id="history-sales-container"></div>
         </div>
 
     </div>
@@ -103,7 +110,7 @@
         let userProfile = null;
         let currentLat = 17.295; let currentLng = 101.782; 
         let map; let drawnPolygon = null; let polygonGeoJSON = "";
-        let isEditMode = false; // ตัวแปรเช็คว่าเป็นโหมดแก้ไขข้อมูลหรือไม่
+        let isEditMode = false; 
 
         async function main() {
             try {
@@ -111,8 +118,8 @@
                 if (liff.isLoggedIn()) {
                     userProfile = await liff.getProfile();
                     document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName;
-                    const imgElement = document.getElementById("profile-img");
-                    imgElement.src = userProfile.pictureUrl; imgElement.style.display = "inline-block";
+                    document.getElementById("profile-img").src = userProfile.pictureUrl; 
+                    document.getElementById("profile-img").style.display = "inline-block";
 
                     const urlParams = new URLSearchParams(window.location.search);
                     const mode = urlParams.get('mode');
@@ -120,100 +127,141 @@
                     if (mode === 'register') {
                         document.getElementById("header-text").innerText = "🌱 ข้อมูลชาวไร่";
                         document.getElementById("register-page").classList.add("active");
-                        checkUserForRegister(); // ตรวจสอบว่าเคยลงทะเบียนแล้วหรือยัง เพื่อดึงข้อมูลมาให้แก้
+                        checkUserForRegister(); 
                     } else if (mode === 'report') {
-                        checkUserForReport(); // ตรวจสอบว่าเคยลงทะเบียนหรือยัง ถ้ายังให้ไล่ไปลงทะเบียน
+                        checkUserForAction('report'); 
+                    } else if (mode === 'sales') {
+                        checkUserForAction('sales'); 
                     } else {
                         document.getElementById("header-text").innerText = "🌱 ยินดีต้อนรับ";
                         Swal.fire('ข้อแนะนำ', 'กรุณาใช้งานผ่านเมนูด้านล่างในแชท LINE เท่านั้นครับ', 'info');
                     }
-                } else {
-                    liff.login();
-                }
-            } catch (err) {
-                document.getElementById("profile-info").innerText = "ไม่สามารถเชื่อมต่อ LINE ได้";
-            }
+                } else { liff.login(); }
+            } catch (err) { document.getElementById("profile-info").innerText = "ไม่สามารถเชื่อมต่อ LINE ได้"; }
         }
 
-        // --- โหมด 1: โหลดเข้าหน้าลงทะเบียน/แก้ไขประวัติ ---
         async function checkUserForRegister() {
             try {
-                const response = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "checkUser", userId: userProfile.userId }) });
-                const result = await response.json();
-                
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "checkUser", userId: userProfile.userId }) });
+                const result = await res.json();
                 if (result.status === "found") {
-                    // ถ้าพบข้อมูล แสดงว่าเป็นชาวไร่เดิม ให้เปิดโหมดแก้ไข (Edit Mode)
                     isEditMode = true;
                     document.getElementById("reg-firstname").value = result.data.firstName;
                     document.getElementById("reg-lastname").value = result.data.lastName;
                     document.getElementById("reg-phone").value = result.data.phone;
                     document.getElementById("reg-address").value = result.data.address;
                     document.getElementById("reg-farminfo").value = result.data.farmInfo;
-
                     document.getElementById("btn-register").innerText = "บันทึกการแก้ไขข้อมูล";
-                    
                     const statusBox = document.getElementById("reg-status-box");
-                    statusBox.innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว สามารถตรวจสอบหรือแก้ไขข้อมูลด้านล่างได้เลยครับ";
-                    statusBox.style.backgroundColor = "#e3f2fd";
-                    statusBox.style.color = "#1565c0";
+                    statusBox.innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว สามารถแก้ไขข้อมูลด้านล่างได้เลยครับ";
+                    statusBox.style.backgroundColor = "#e3f2fd"; statusBox.style.color = "#1565c0";
                 }
-            } catch (error) { console.error("Error fetching user data", error); }
+            } catch (error) { console.error(error); }
         }
 
-        // --- โหมด 2: โหลดเข้าหน้าแจ้งพิกัดอ้อย ---
-        async function checkUserForReport() {
+        // เช็คผู้ใช้ก่อนให้เข้าหน้าแจ้งพิกัด หรือ หน้าประวัติการขาย
+        async function checkUserForAction(targetAction) {
+            Swal.fire({ title: 'กำลังดึงข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
             try {
-                const response = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "checkUser", userId: userProfile.userId }) });
-                const result = await response.json();
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "checkUser", userId: userProfile.userId }) });
+                const result = await res.json();
                 
                 if (result.status === "found") {
-                    document.getElementById("header-text").innerText = "🌱 แจ้งพิกัดเก็บใบอ้อย";
-                    document.getElementById("main-page").classList.add("active");
-                    getLocation();
+                    Swal.close();
+                    if(targetAction === 'report') {
+                        document.getElementById("header-text").innerText = "🌱 แจ้งพิกัดเก็บใบอ้อย";
+                        document.getElementById("main-page").classList.add("active");
+                        getLocation();
+                    } else if (targetAction === 'sales') {
+                        document.getElementById("header-text").innerText = "🌱 การขายของฉัน";
+                        document.getElementById("sales-page").classList.add("active");
+                        fetchSalesData(); // ดึงข้อมูลการขายมาโชว์
+                    }
                 } else {
-                    Swal.fire({
-                        icon: 'warning', title: 'ยังไม่ได้ลงทะเบียน', text: 'กรุณาทำการ "ลงทะเบียน" ผ่านเมนูด้านล่างก่อนเริ่มใช้งานครับ', confirmButtonColor: '#7cb342'
-                    }).then(() => { liff.closeWindow(); });
+                    Swal.fire({ icon: 'warning', title: 'ยังไม่ได้ลงทะเบียน', text: 'กรุณา "ลงทะเบียน" ก่อนเริ่มใช้งานครับ', confirmButtonColor: '#7cb342' })
+                    .then(() => { liff.closeWindow(); });
                 }
             } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้', 'error'); }
         }
 
-        // --- ฟังก์ชันบันทึกข้อมูลส่วนตัว (ทั้งสร้างใหม่และอัปเดต) ---
-        async function submitRegistration() {
-            const fName = document.getElementById("reg-firstname").value; const lName = document.getElementById("reg-lastname").value;
-            const phone = document.getElementById("reg-phone").value; const address = document.getElementById("reg-address").value;
-            const farmInfo = document.getElementById("reg-farminfo").value;
-
-            if(!fName || !lName || !phone || !address) {
-                Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกข้อมูลส่วนตัวให้ครบถ้วนครับ', 'warning'); return;
-            }
-
-            const btn = document.getElementById("btn-register");
-            btn.innerText = "กำลังบันทึกข้อมูล..."; btn.disabled = true;
-
-            const payload = {
-                action: isEditMode ? "updateUser" : "register", // สลับ action ตามสถานะผู้ใช้
-                userId: userProfile.userId, lineName: userProfile.displayName,
-                firstName: fName, lastName: lName, phone: phone, address: address, farmInfo: farmInfo
-            };
-
+        // --- ระบบดึงข้อมูลการขายของฉัน ---
+        async function fetchSalesData() {
             try {
-                const response = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
-                const result = await response.json();
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "getSales", userId: userProfile.userId }) });
+                const result = await res.json();
                 
                 if (result.status === "success") {
-                    let successMsg = isEditMode ? 'อัปเดตข้อมูลของคุณเรียบร้อยแล้วครับ' : 'ลงทะเบียนสำเร็จ! คุณสามารถกดเมนู "แจ้งขายใบอ้อย" เพื่อเริ่มใช้งานได้เลยครับ';
-                    Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: successMsg, confirmButtonColor: '#7cb342' })
-                    .then(() => { 
-                        liff.closeWindow(); // บันทึกเสร็จปิดหน้าต่างทันที ให้ไปกดเมนูแจ้งพิกัดเอง
-                    });
+                    renderSalesUI(result.data);
                 }
             } catch (error) {
-                Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); btn.innerText = isEditMode ? "บันทึกการแก้ไขข้อมูล" : "ยืนยันการลงทะเบียน"; btn.disabled = false;
+                document.getElementById("current-sales-container").innerHTML = "<div class='empty-state'>ไม่สามารถดึงข้อมูลได้</div>";
             }
         }
 
-        // --- ฟังก์ชันแผนที่และแจ้งพิกัด ---
+        function renderSalesUI(salesData) {
+            const currentContainer = document.getElementById("current-sales-container");
+            const historyContainer = document.getElementById("history-sales-container");
+            currentContainer.innerHTML = ""; historyContainer.innerHTML = "";
+
+            if (salesData.length === 0) {
+                currentContainer.innerHTML = "<div class='empty-state'>คุณยังไม่มีรายการแจ้งคิวรถครับ</div>";
+                historyContainer.innerHTML = "<div class='empty-state'>ยังไม่มีประวัติการขาย</div>";
+                return;
+            }
+
+            salesData.forEach(item => {
+                // จัดการรูปแบบวันที่
+                const reqDate = new Date(item.timestamp).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' });
+                const hDate = new Date(item.harvestDate).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' });
+                
+                // กำหนดสีของ Badge สถานะ
+                let badgeClass = "pending";
+                let statusText = item.status === "Pending" ? "รอคิวรถ" : item.status;
+                
+                if (statusText.includes("กำลัง")) badgeClass = "processing";
+                if (statusText.includes("เสร็จ")) badgeClass = "completed";
+                if (statusText.includes("ยกเลิก")) badgeClass = "canceled";
+
+                const cardHTML = `
+                    <div class="sale-card">
+                        <div class="sale-header">
+                            <span class="sale-date">📅 แจ้งเมื่อ: ${reqDate}</span>
+                            <span class="badge ${badgeClass}">${statusText}</span>
+                        </div>
+                        <div class="sale-detail">
+                            <div>ปริมาณประเมิน: <span>${item.quantity} ไร่</span></div>
+                            <div>วันที่ตัดอ้อยเสร็จ: <span>${hDate}</span></div>
+                            <div>ผู้รับซื้อ: <span>${item.buyer}</span></div>
+                            <div>ราคา: <span>${item.price}</span></div>
+                        </div>
+                    </div>
+                `;
+
+                // แยกใส่คนละหน้าต่าง (กำลังดำเนินการ vs เสร็จ/ยกเลิก)
+                if (badgeClass === "completed" || badgeClass === "canceled") {
+                    historyContainer.innerHTML += cardHTML;
+                } else {
+                    currentContainer.innerHTML += cardHTML;
+                }
+            });
+
+            if (currentContainer.innerHTML === "") currentContainer.innerHTML = "<div class='empty-state'>ไม่มีรายการที่กำลังดำเนินการ</div>";
+            if (historyContainer.innerHTML === "") historyContainer.innerHTML = "<div class='empty-state'>ยังไม่มีประวัติการขายที่เสร็จสิ้น</div>";
+        }
+
+        // --- ส่วนที่เหลือ (ลงทะเบียน, แผนที่, บันทึกพิกัด) คงเดิม ---
+        async function submitRegistration() {
+            const fName = document.getElementById("reg-firstname").value; const lName = document.getElementById("reg-lastname").value;
+            const phone = document.getElementById("reg-phone").value; const address = document.getElementById("reg-address").value; const farmInfo = document.getElementById("reg-farminfo").value;
+            if(!fName || !lName || !phone || !address) { Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกข้อมูลส่วนตัวให้ครบถ้วนครับ', 'warning'); return; }
+            const btn = document.getElementById("btn-register"); btn.innerText = "กำลังบันทึกข้อมูล..."; btn.disabled = true;
+            const payload = { action: isEditMode ? "updateUser" : "register", userId: userProfile.userId, lineName: userProfile.displayName, firstName: fName, lastName: lName, phone: phone, address: address, farmInfo: farmInfo };
+            try {
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
+                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: isEditMode ? 'อัปเดตข้อมูลแล้ว' : 'ลงทะเบียนสำเร็จ!', confirmButtonColor: '#7cb342' }).then(() => { liff.closeWindow(); }); }
+            } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); btn.innerText = isEditMode ? "บันทึกการแก้ไขข้อมูล" : "ยืนยันการลงทะเบียน"; btn.disabled = false; }
+        }
+
         function renderMap(lat, lng) {
             if(!map) {
                 map = L.map('map').setView([lat, lng], 16);
@@ -229,18 +277,12 @@
             let geojson = layer.toGeoJSON(); polygonGeoJSON = JSON.stringify(geojson.geometry.coordinates);
             let areaRai = (turf.area(geojson) / 1600).toFixed(2);
             let center = turf.centerOfMass(geojson); currentLat = center.geometry.coordinates[1]; currentLng = center.geometry.coordinates[0];
-            document.getElementById("quantity").value = areaRai;
-            document.getElementById("gps-status").innerHTML = "<i>✅</i> วาดสำเร็จ! พื้นที่ประเมิน: <b>" + areaRai + " ไร่</b>";
-            document.getElementById("gps-status").style.backgroundColor = "#f0fdf4"; document.getElementById("gps-status").style.color = "#27ae60";
+            document.getElementById("quantity").value = areaRai; document.getElementById("gps-status").innerHTML = "<i>✅</i> วาดสำเร็จ! พื้นที่ประเมิน: <b>" + areaRai + " ไร่</b>"; document.getElementById("gps-status").style.backgroundColor = "#f0fdf4"; document.getElementById("gps-status").style.color = "#27ae60";
         }
 
         function getLocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => { currentLat = position.coords.latitude; currentLng = position.coords.longitude; renderMap(currentLat, currentLng); },
-                    (error) => { renderMap(currentLat, currentLng); Swal.fire('ข้อแนะนำ', 'กรุณาเลื่อนแผนที่ไปหาแปลงอ้อยของคุณด้วยตนเองครับ', 'info'); },
-                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-                );
+                navigator.geolocation.getCurrentPosition((position) => { currentLat = position.coords.latitude; currentLng = position.coords.longitude; renderMap(currentLat, currentLng); }, (error) => { renderMap(currentLat, currentLng); Swal.fire('ข้อแนะนำ', 'กรุณาเลื่อนแผนที่ไปหาแปลงอ้อยของคุณด้วยตนเองครับ', 'info'); }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
             } else { renderMap(currentLat, currentLng); }
         }
 
@@ -248,21 +290,12 @@
             const qty = document.getElementById("quantity").value; const hDate = document.getElementById("harvest-date").value;
             if(!drawnPolygon) { Swal.fire('ลืมวาดแปลงอ้อย', 'กรุณาวาดขอบเขตแปลงอ้อยในแผนที่ก่อนครับ', 'warning'); return; }
             if(!hDate) { Swal.fire('ลืมระบุวันที่', 'กรุณาระบุวันที่คาดว่าจะตัดอ้อยเสร็จด้วยนะครับ', 'warning'); return; }
-
             const btn = document.getElementById("submit-btn"); btn.innerText = "กำลังจัดส่งข้อมูล..."; btn.disabled = true;
-
-            const payload = {
-                action: "report_harvest", userId: userProfile.userId, userName: userProfile.displayName, latitude: currentLat, longitude: currentLng, quantity: Number(qty), harvestDate: hDate, polygon: polygonGeoJSON
-            };
-
+            const payload = { action: "report_harvest", userId: userProfile.userId, userName: userProfile.displayName, latitude: currentLat, longitude: currentLng, quantity: Number(qty), harvestDate: hDate, polygon: polygonGeoJSON };
             try {
-                const response = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
-                const result = await response.json();
-                if (result.status === "success") {
-                    Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ระบบได้รับพิกัดแปลงอ้อยและวันที่ของคุณเรียบร้อยแล้ว', confirmButtonColor: '#7cb342' }).then(() => { liff.closeWindow(); });
-                }
-            } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถส่งข้อมูลได้', 'error'); }
-            finally { btn.innerText = "ส่งข้อมูลแจ้งคิวรถ"; btn.disabled = false; }
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
+                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ระบบได้รับพิกัดของคุณเรียบร้อยแล้ว', confirmButtonColor: '#7cb342' }).then(() => { liff.closeWindow(); }); }
+            } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถส่งข้อมูลได้', 'error'); } finally { btn.innerText = "ส่งข้อมูลแจ้งคิวรถ"; btn.disabled = false; }
         }
 
         window.onload = main;
