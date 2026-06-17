@@ -8,9 +8,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- นำเข้าแผนที่ Leaflet (ฟรี) -->
+    <!-- แผนที่ Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- เครื่องมือวาดกรอบแผนที่ (Geoman) -->
+    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
+    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
+
+    <!-- เครื่องมือคำนวณพื้นที่ (Turf.js) -->
+    <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
 
     <style>
         :root {
@@ -35,14 +42,12 @@
         input { width: 100%; padding: 14px; margin-top: 8px; border: 2px solid #e0e0e0; border-radius: 12px; box-sizing: border-box; font-size: 16px; font-family: 'Kanit', sans-serif; transition: all 0.3s; }
         input:focus { border-color: var(--primary-green); outline: none; box-shadow: 0 0 0 3px var(--light-green); }
         
-        /* สไตล์แผนที่ */
-        #map { height: 250px; width: 100%; border-radius: 12px; margin-top: 10px; border: 2px solid #e0e0e0; z-index: 1; }
+        #map { height: 280px; width: 100%; border-radius: 12px; margin-top: 10px; border: 2px solid #e0e0e0; z-index: 1; }
         
-        .status-box { margin-top: 10px; padding: 12px; border-radius: 12px; background-color: var(--light-green); color: var(--dark-green); font-size: 14px; display: flex; align-items: center; font-weight: 500; }
-        .status-box i { margin-right: 8px; font-size: 18px;}
+        .status-box { margin-top: 10px; padding: 12px; border-radius: 12px; background-color: var(--light-green); color: var(--dark-green); font-size: 14px; display: flex; align-items: center; font-weight: 500; line-height: 1.4; }
+        .status-box i { margin-right: 8px; font-size: 20px;}
         
         button { width: 100%; padding: 16px; margin-top: 25px; background-color: var(--primary-green); color: white; border: none; border-radius: 15px; font-size: 18px; font-family: 'Kanit', sans-serif; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(124, 179, 66, 0.4); transition: 0.2s; }
-        button:active { transform: scale(0.98); }
         button:disabled { background-color: #cccccc; box-shadow: none; cursor: not-allowed; }
         .the1-banner { text-align: center; font-size: 13px; color: #777; margin-top: 20px; }
         .the1-banner span { color: #e3000f; font-weight: 600; }
@@ -61,22 +66,20 @@
             <div class="profile-text" id="profile-info">กำลังเชื่อมต่อระบบ...</div>
         </div>
 
-        <label for="quantity">ปริมาณใบอ้อย (ไร่):</label>
-        <input type="number" id="quantity" placeholder="ระบุจำนวนไร่ เช่น 10" required>
+        <!-- ย้ายแผนที่ขึ้นมาไว้ด้านบน เพื่อให้วาดก่อน -->
+        <label>📍 1. วาดกรอบแปลงอ้อยของคุณ:</label>
+        <div class="status-box" id="gps-status" style="background-color: #e3f2fd; color: #1565c0;">
+            <i>👆</i> กดที่ปุ่มรูปห้าเหลี่ยม (ด้านซ้ายแผนที่) แล้วจิ้มวาดตามขอบแปลงอ้อยให้ครบรอบ
+        </div>
+        <div id="map"></div>
 
-        <!-- ฟิลด์ใหม่: วันที่คาดว่าจะตัดอ้อยเสร็จ -->
-        <label for="harvest-date">วันที่ตัดอ้อยเสร็จ (พร้อมให้รถเข้าม้วน):</label>
+        <label for="quantity">🌱 2. ปริมาณใบอ้อย (ไร่):</label>
+        <input type="number" id="quantity" placeholder="ระบบจะคำนวณให้อัตโนมัติเมื่อวาดแผนที่เสร็จ" required>
+
+        <label for="harvest-date">🗓️ 3. วันที่ตัดอ้อยเสร็จ (พร้อมให้รถเข้าม้วน):</label>
         <input type="date" id="harvest-date" required>
 
-        <label>พิกัดแปลงอ้อย (สามารถเลื่อนหมุดได้):</label>
-        <!-- กล่องสำหรับแสดงแผนที่ -->
-        <div id="map"></div>
-        <div class="status-box" id="gps-status">
-            <i>📍</i> กำลังดึงพิกัด กรุณารอสักครู่...
-        </div>
-
         <button id="submit-btn" onclick="submitCaneData()" disabled>ส่งข้อมูลแจ้งคิวรถ</button>
-
         <div class="the1-banner">ตัดอ้อยสด ลดการเผา สะสมแต้ม <span>The 1</span></div>
     </div>
 
@@ -88,7 +91,9 @@
         let userProfile = null;
         let currentLat = 17.295; // ค่าเริ่มต้น
         let currentLng = 101.782; 
-        let map, marker;
+        let map;
+        let drawnPolygon = null;
+        let polygonGeoJSON = "";
 
         async function main() {
             try {
@@ -109,28 +114,84 @@
             }
         }
 
-        // ฟังก์ชันวาดแผนที่และสร้างหมุดที่เลื่อนได้
         function renderMap(lat, lng) {
             if(!map) {
-                map = L.map('map').setView([lat, lng], 15);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap'
+                map = L.map('map').setView([lat, lng], 16);
+                
+                // ใช้แผนที่ดาวเทียมของ Google (เห็นไร่อ้อยชัดเจน)
+                L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+                    attribution: '© Google Maps',
+                    maxZoom: 20
                 }).addTo(map);
 
-                marker = L.marker([lat, lng], {draggable: true}).addTo(map);
-
-                // เมื่อมีการลากหมุดไปวางที่ใหม่ ให้เก็บค่าพิกัดใหม่
-                marker.on('dragend', function(event){
-                    let position = marker.getLatLng();
-                    currentLat = position.lat;
-                    currentLng = position.lng;
-                    document.getElementById("gps-status").innerHTML = "<i>✅</i> ยืนยันตำแหน่งที่ปักหมุดแล้ว";
+                // เพิ่มเครื่องมือวาดกรอบ
+                map.pm.addControls({
+                    position: 'topleft',
+                    drawMarker: false,
+                    drawCircleMarker: false,
+                    drawPolyline: false,
+                    drawRectangle: false,
+                    drawCircle: false,
+                    drawPolygon: true, // เปิดเฉพาะวาดรูปหลายเหลี่ยม
+                    editMode: true,
+                    dragMode: false,
+                    cutPolygon: false,
+                    removalMode: true,
                 });
+
+                // เมื่อวาดเสร็จ
+                map.on('pm:create', function(e) {
+                    // ถ้าเคยวาดไว้แล้ว ให้ลบอันเก่าทิ้ง (อนุญาตให้มีแค่ 1 แปลงต่อการส่ง 1 ครั้ง)
+                    if (drawnPolygon) {
+                        drawnPolygon.remove();
+                    }
+                    drawnPolygon = e.layer;
+
+                    calculateArea(drawnPolygon);
+
+                    // เมื่อมีการแก้ไขหรือขยับมุมแปลง
+                    drawnPolygon.on('pm:edit', function() {
+                        calculateArea(drawnPolygon);
+                    });
+                });
+
+                // เมื่อลบแปลงทิ้ง
+                map.on('pm:remove', function(e) {
+                    drawnPolygon = null;
+                    polygonGeoJSON = "";
+                    document.getElementById("quantity").value = "";
+                    document.getElementById("gps-status").innerHTML = "<i>👆</i> กดที่ปุ่มรูปห้าเหลี่ยมเพื่อวาดแปลงอ้อยใหม่";
+                    document.getElementById("gps-status").style.backgroundColor = "#e3f2fd";
+                    document.getElementById("gps-status").style.color = "#1565c0";
+                });
+
             } else {
-                map.setView([lat, lng], 15);
-                marker.setLatLng([lat, lng]);
+                map.setView([lat, lng], 16);
             }
             document.getElementById("submit-btn").disabled = false;
+        }
+
+        // ฟังก์ชันคำนวณพื้นที่ (ตร.ม. เป็น ไร่)
+        function calculateArea(layer) {
+            let geojson = layer.toGeoJSON();
+            polygonGeoJSON = JSON.stringify(geojson.geometry.coordinates); // เก็บพิกัดทุกมุมไว้ส่งเข้าฐานข้อมูล
+
+            // คำนวณตารางเมตร
+            let areaSqm = turf.area(geojson);
+            
+            // แปลงเป็นไร่ (1 ไร่ = 1600 ตรม.)
+            let areaRai = (areaSqm / 1600).toFixed(2);
+
+            // ดึงจุดกึ่งกลางของแปลงอ้อยมาเป็นพิกัดหลัก
+            let center = turf.centerOfMass(geojson);
+            currentLat = center.geometry.coordinates[1];
+            currentLng = center.geometry.coordinates[0];
+
+            // แสดงผล
+            document.getElementById("quantity").value = areaRai;
+            document.getElementById("gps-status").innerHTML = "<i>✅</i> วาดสำเร็จ! พื้นที่ประเมิน: <b>" + areaRai + " ไร่</b>";
+            document.getElementById("gps-status").style.backgroundColor = "#f0fdf4";
+            document.getElementById("gps-status").style.color = "#27ae60";
         }
 
         function getLocation() {
@@ -140,12 +201,10 @@
                         currentLat = position.coords.latitude;
                         currentLng = position.coords.longitude;
                         renderMap(currentLat, currentLng);
-                        document.getElementById("gps-status").innerHTML = "<i>✅</i> เลื่อนหมุดไปยังจุดที่คุณต้องการได้เลย";
                     },
                     (error) => {
-                        // ถ้าหา GPS ไม่เจอ ให้ใช้ค่าเริ่มต้นและแสดงแผนที่
                         renderMap(currentLat, currentLng);
-                        document.getElementById("gps-status").innerHTML = "<i>⚠️</i> ไม่พบ GPS ปัจจุบัน กรุณาเลื่อนหมุดเอง";
+                        Swal.fire('ข้อแนะนำ', 'แอปไม่สามารถหาพิกัดปัจจุบันได้ กรุณาเลื่อนแผนที่ไปหาแปลงอ้อยของคุณด้วยตนเองครับ', 'info');
                     },
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );
@@ -158,27 +217,28 @@
             const qty = document.getElementById("quantity").value;
             const hDate = document.getElementById("harvest-date").value;
             
-            if(!qty || qty <= 0 || !hDate) {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'ข้อมูลไม่ครบถ้วน',
-                    text: 'กรุณาระบุจำนวนไร่ และวันที่ตัดอ้อยให้ครบถ้วนนะครับ',
-                    confirmButtonColor: '#7cb342'
-                });
+            if(!drawnPolygon) {
+                Swal.fire('ลืมวาดแปลงอ้อย', 'กรุณาวาดขอบเขตแปลงอ้อยในแผนที่ เพื่อให้ระบบคำนวณจำนวนไร่ก่อนครับ', 'warning');
+                return;
+            }
+
+            if(!hDate) {
+                Swal.fire('ลืมระบุวันที่', 'กรุณาระบุวันที่คาดว่าจะตัดอ้อยเสร็จด้วยนะครับ', 'warning');
                 return;
             }
 
             const btn = document.getElementById("submit-btn");
-            btn.innerText = "กำลังจัดส่งข้อมูลน้องอ้อยใจ...";
+            btn.innerText = "กำลังจัดส่งข้อมูล...";
             btn.disabled = true;
 
             const payload = {
                 userId: userProfile.userId,
                 userName: userProfile.displayName,
-                latitude: currentLat,
+                latitude: currentLat,         // พิกัดจุดกึ่งกลางแปลงอ้อย
                 longitude: currentLng,
-                quantity: Number(qty),
-                harvestDate: hDate // ส่งข้อมูลวันที่ไปด้วย
+                quantity: Number(qty),        // จำนวนไร่ที่คำนวณได้อัตโนมัติ
+                harvestDate: hDate,
+                polygon: polygonGeoJSON       // พิกัดมุมต่างๆ ของขอบเขตไร่
             };
 
             try {
@@ -192,20 +252,18 @@
                 if (result.status === "success") {
                     Swal.fire({
                         icon: 'success',
-                        title: 'สำเร็จ!',
-                        text: 'ระบบได้รับข้อมูลแล้ว รอคิวรถม้วนใบอ้อยได้เลยครับ',
-                        confirmButtonColor: '#7cb342',
-                        confirmButtonText: 'ตกลง'
+                        title: 'บันทึกสำเร็จ!',
+                        text: 'ระบบได้รับพิกัดแปลงอ้อยและวันที่ของคุณเรียบร้อยแล้ว',
+                        confirmButtonColor: '#7cb342'
                     }).then(() => {
                         liff.closeWindow(); 
                     });
                 } else {
                     Swal.fire('เกิดข้อผิดพลาด', result.message, 'error');
-                    btn.innerText = "ส่งข้อมูลแจ้งคิวรถ";
-                    btn.disabled = false;
                 }
             } catch (error) {
                 Swal.fire('การเชื่อมต่อล้มเหลว', 'ไม่สามารถส่งข้อมูลได้', 'error');
+            } finally {
                 btn.innerText = "ส่งข้อมูลแจ้งคิวรถ";
                 btn.disabled = false;
             }
