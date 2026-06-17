@@ -49,8 +49,6 @@
         .sale-detail { font-size: 14px; color: #444; line-height: 1.8; }
         .sale-detail span { font-weight: 600; color: #222; }
         .empty-state { text-align: center; color: #999; font-size: 14px; padding: 20px 0; }
-        
-        /* สไตล์สำหรับแผนที่ใน Pop-up */
         .swal-map-container { height: 180px; width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid #ccc; z-index: 9999; }
     </style>
 </head>
@@ -82,11 +80,17 @@
         </div>
 
         <div id="main-page" class="page">
-            <label>📍 1. วาดกรอบแปลงอ้อยของคุณ:</label>
-            <div class="status-box" id="gps-status" style="background-color: #e3f2fd; color: #1565c0;">
-                <i>👆</i> กดปุ่มรูปห้าเหลี่ยมบนแผนที่ แล้ววาดตามขอบแปลง
+            <label>📍 1. ค้นหาจุดใกล้เคียง & วาดกรอบแปลงอ้อย:</label>
+            <div style="display: flex; gap: 6px; margin-top: 8px; margin-bottom: 8px;">
+                <input type="text" id="search-place" placeholder="🔍 พิมพ์ชื่อ วัด, โรงเรียน, หมู่บ้าน, ตำบล" style="margin-top:0; padding: 12px; font-size: 15px;">
+                <button onclick="searchPlace()" style="margin-top:0; width: auto; padding: 0 20px; background-color: #1565c0; font-size: 15px; border-radius: 12px; box-shadow: none; white-space: nowrap;">ค้นหา</button>
             </div>
-            <div id="map" class="map-container"></div>
+            
+            <div class="status-box" id="gps-status" style="background-color: #e3f2fd; color: #1565c0;">
+                <i>👆</i> พิมพ์ค้นหา หรือกดปุ่มรูปห้าเหลี่ยมบนแผนที่แล้วจิ้มวาดตามขอบแปลง
+            </div>
+            <div id="map" class="map-container" style="height: 380px;"></div>
+            
             <label>🌱 2. ปริมาณใบอ้อย (ไร่):</label><input type="number" id="quantity" readonly>
             <label>🗓️ 3. วันที่ตัดอ้อยเสร็จ:</label><input type="date" id="harvest-date" required>
             <button id="submit-btn" onclick="submitCaneData()" disabled>ส่งข้อมูลแจ้งคิวรถ</button>
@@ -114,7 +118,7 @@
             <div class="status-box" style="background-color: #f3e5f5; color: #6a1b9a;">
                 <i>🚜</i> แผนที่รวมพิกัดใบอ้อย (รอรับซื้อ)
             </div>
-            <div id="buyer-map" class="map-container" style="height: 350px;"></div>
+            <div id="buyer-map" class="map-container" style="height: 380px;"></div>
             <div style="margin-top: 10px; font-size: 13px; color: #555; text-align: right;">
                 <span style="display:inline-block; width:10px; height:10px; background:#e74c3c; border-radius:50%;"></span> แปลงเดี่ยว 
                 <span style="display:inline-block; width:10px; height:10px; background:#f1c40f; border-radius:50%; margin-left:10px;"></span> กลุ่มคุ้มทุน (>100 ไร่)
@@ -134,19 +138,11 @@
         let userProfile = null;
         let currentLat = 17.295; let currentLng = 101.782; 
         let map; let drawnPolygon = null; let polygonGeoJSON = "";
-        let isEditMode = false; 
-        let isBuyerEditMode = false;
-        
-        // ตัวแปรสำหรับเก็บชื่อและเบอร์ของคนใช้แอป ณ ตอนนั้น
-        let buyerNameContext = "";
-        let buyerPhoneContext = "";
-        
-        // ตัวแปรเก็บข้อมูลการขายทั้งหมดเพื่อเอามาโชว์ใน Pop-up
+        let isEditMode = false; let isBuyerEditMode = false;
+        let buyerNameContext = ""; let buyerPhoneContext = "";
         let globalSalesData = [];
 
-        let buyerMapObj;
-        let buyerMarkers = {}; 
-        let buyerPolygonLayer = L.featureGroup(); 
+        let buyerMapObj; let buyerMarkers = {}; let buyerPolygonLayer = L.featureGroup(); 
 
         async function main() {
             try {
@@ -192,17 +188,13 @@
                 const result = await res.json();
                 if (result.status === "found") {
                     isEditMode = true;
-                    // แสดงชื่อจริง-นามสกุล ที่ลงทะเบียนไว้ แทนชื่อไลน์
                     document.getElementById("profile-info").innerText = "คุณ " + result.data.firstName + " " + result.data.lastName;
-                    
                     document.getElementById("reg-firstname").value = result.data.firstName; document.getElementById("reg-lastname").value = result.data.lastName;
                     document.getElementById("reg-phone").value = result.data.phone; document.getElementById("reg-address").value = result.data.address; document.getElementById("reg-farminfo").value = result.data.farmInfo;
                     document.getElementById("btn-register").innerText = "บันทึกการแก้ไขข้อมูล";
                     document.getElementById("reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว สามารถแก้ไขข้อมูลด้านล่างได้เลยครับ";
                     document.getElementById("reg-status-box").style.backgroundColor = "#e3f2fd"; document.getElementById("reg-status-box").style.color = "#1565c0";
-                } else {
-                    document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName;
-                }
+                } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; }
             } catch (error) { console.error(error); }
         }
 
@@ -226,7 +218,6 @@
                 if (result.status === "found") {
                     Swal.close();
                     document.getElementById("profile-info").innerText = "คุณ " + result.data.firstName + " " + result.data.lastName;
-                    
                     if(targetAction === 'report') { document.getElementById("main-page").classList.add("active"); getLocation(); } 
                     else if (targetAction === 'sales') { document.getElementById("sales-page").classList.add("active"); fetchSalesData(); }
                 } else {
@@ -236,15 +227,31 @@
             } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้', 'error'); }
         }
 
+        // ================= ฟังก์ชันค้นหาสถานที่อัจฉริยะ (ชาวไร่) =================
+        async function searchPlace() {
+            const query = document.getElementById("search-place").value;
+            if (!query) return;
+            Swal.fire({ title: 'กำลังค้นหาสถานที่...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+            try {
+                // ดึงข้อมูล Geocoding จากฐานข้อมูลกลาง OpenStreetMap ฟรี
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=th`);
+                const result = await res.json();
+                Swal.close();
+                if (result && result.length > 0) {
+                    const lat = parseFloat(result[0].lat); const lon = parseFloat(result[0].lon);
+                    if (map) { map.flyTo([lat, lon], 16, { duration: 1.5 }); } // บินไปหาพิกัด
+                } else {
+                    Swal.fire('ไม่พบสถานที่', 'กรุณาลองพิมพ์ระบุตำบล หรืออำเภอเพิ่มเติมให้ชัดเจนครับ', 'info');
+                }
+            } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบค้นหาได้', 'error'); }
+        }
+
         // ================= ระบบการขายของฉัน และแผนที่ขนาดย่อ =================
         async function fetchSalesData() {
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "getSales", userId: userProfile.userId }) });
                 const result = await res.json();
-                if (result.status === "success") { 
-                    globalSalesData = result.data; // เก็บข้อมูลลงตัวแปร Global
-                    renderSalesUI(result.data); 
-                }
+                if (result.status === "success") { globalSalesData = result.data; renderSalesUI(result.data); }
             } catch (error) { document.getElementById("current-sales-container").innerHTML = "<div class='empty-state'>ไม่สามารถดึงข้อมูลได้</div>"; }
         }
 
@@ -269,28 +276,19 @@
                             <div>ผู้รับซื้อ: <span>${item.buyer}</span></div>
                         </div>
                 `;
-                
-                // เพิ่มปุ่ม ดูรายละเอียด สำหรับรายการที่ยังไม่เสร็จสิ้น
                 if (badgeClass !== "completed" && badgeClass !== "canceled") {
-                    cardHTML += `<button onclick="viewSaleDetails(${index})" style="margin-top:12px; width:100%; padding:8px; background-color:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer;">🔍 ดูรายละเอียดเพิ่มเติม</button>`;
+                    cardHTML += `<button onclick="viewSaleDetails(${index})" style="margin-top:12px; width:100%; padding:8px; background-color:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer; font-family:'Kanit';">🔍 ดูรายละเอียดเพิ่มเติม & แผนที่</button>`;
                 }
-
-                cardHTML += `</div>`; // ปิด div sale-card
-
+                cardHTML += `</div>`;
                 if (badgeClass === "completed" || badgeClass === "canceled") { historyContainer.innerHTML += cardHTML; } else { currentContainer.innerHTML += cardHTML; }
             });
-            
             if (currentContainer.innerHTML === "") currentContainer.innerHTML = "<div class='empty-state'>ไม่มีรายการที่กำลังดำเนินการ</div>";
             if (historyContainer.innerHTML === "") historyContainer.innerHTML = "<div class='empty-state'>ยังไม่มีประวัติการขายที่เสร็จสิ้น</div>";
         }
 
-        // ฟังก์ชันแสดง Pop-up รายละเอียดพร้อมแผนที่ สำหรับชาวไร่
         function viewSaleDetails(index) {
             let item = globalSalesData[index];
-            let reqDate = new Date(item.timestamp).toLocaleDateString('th-TH');
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
-            
-            // สลับปุ่มโทรออกให้กดได้ ถ้ามีเบอร์โทร
             let phoneLink = item.buyerPhone !== "-" ? `<a href="tel:${item.buyerPhone}" style="color:#2e7d32; font-weight:bold; text-decoration:none;">📞 ${item.buyerPhone}</a>` : "รอผู้รับซื้อระบุ";
 
             Swal.fire({
@@ -307,35 +305,36 @@
                         <hr style="margin:10px 0; border:0; border-top:1px dashed #ccc;">
                         <b style="color:#7cb342;">แผนที่แปลงอ้อยของคุณ:</b>
                         <div id="swal-map" class="swal-map-container"></div>
-                    </div>
-                `,
-                confirmButtonText: 'ปิดหน้าต่าง',
-                confirmButtonColor: '#7cb342',
+                    </div>`,
+                confirmButtonText: 'ปิดหน้าต่าง', confirmButtonColor: '#7cb342',
                 didOpen: () => {
-                    // สร้างแผนที่ Leaflet ใน SweetAlert
-                    let sMap = L.map('swal-map', { zoomControl: false }).setView([item.lat, item.lon], 16);
-                    L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(sMap);
+                    let googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 });
+                    let sMap = L.map('swal-map', { zoomControl: false, layers: [googleHybrid] }).setView([item.lat, item.lon], 16);
                     L.marker([item.lat, item.lon]).addTo(sMap);
-                    
                     if (item.polygon && item.polygon !== "") {
                         try {
-                            let coords = JSON.parse(item.polygon);
-                            let flippedCoords = coords[0].map(p => [p[1], p[0]]);
+                            let coords = JSON.parse(item.polygon); let flippedCoords = coords[0].map(p => [p[1], p[0]]);
                             let polygon = L.polygon(flippedCoords, { color: '#7cb342', fillOpacity: 0.4 }).addTo(sMap);
-                            sMap.fitBounds(polygon.getBounds(), { padding: [10, 10] }); // ขยับให้แผนที่พอดีกับขนาดกรอบที่วาด
+                            sMap.fitBounds(polygon.getBounds(), { padding: [10, 10] });
                         } catch(e) {}
                     }
-                    // อัปเดตขนาดแผนที่กันแผนที่เทา
                     setTimeout(() => { sMap.invalidateSize(); }, 100);
                 }
             });
         }
 
-        // --- ส่วนวาดแผนที่แจ้งพิกัด ---
+        // --- ส่วนวาดแผนที่แจ้งพิกัด (เพิ่มสลับ Layer) ---
         function renderMap(lat, lng) {
             if(!map) {
-                map = L.map('map').setView([lat, lng], 16);
-                L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(map);
+                // สร้างเลเยอร์แผนที่ 2 แบบให้สลับได้
+                var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }); // ดาวเทียม+ถนนอ้างอิง
+                var googleStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20 }); // แผนที่นำทางปกติ
+
+                map = L.map('map', { center: [lat, lng], zoom: 16, layers: [googleHybrid] });
+                
+                var baseMaps = { "🛰️ แผนที่ดาวเทียม (มีชื่อสถานที่)": googleHybrid, "🗺️ แผนที่ถนนนำทางปกติ": googleStreets };
+                L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map); // ปุ่มสลับเลเยอร์ขวาบน
+
                 map.pm.addControls({ position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, dragMode: false, cutPolygon: false, removalMode: true });
                 map.on('pm:create', function(e) { if (drawnPolygon) drawnPolygon.remove(); drawnPolygon = e.layer; calculateArea(drawnPolygon); drawnPolygon.on('pm:edit', function() { calculateArea(drawnPolygon); }); });
                 map.on('pm:remove', function(e) { drawnPolygon = null; polygonGeoJSON = ""; document.getElementById("quantity").value = ""; document.getElementById("gps-status").innerHTML = "<i>👆</i> กดปุ่มรูปห้าเหลี่ยมบนแผนที่ แล้ววาดตามขอบแปลง"; document.getElementById("gps-status").style.backgroundColor = "#e3f2fd"; document.getElementById("gps-status").style.color = "#1565c0"; });
@@ -351,7 +350,7 @@
         }
 
         function getLocation() {
-            if (navigator.geolocation) { navigator.geolocation.getCurrentPosition((position) => { currentLat = position.coords.latitude; currentLng = position.coords.longitude; renderMap(currentLat, currentLng); }, (error) => { renderMap(currentLat, currentLng); Swal.fire('ข้อแนะนำ', 'กรุณาเลื่อนแผนที่ไปหาแปลงอ้อยของคุณด้วยตนเองครับ', 'info'); }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }); } else { renderMap(currentLat, currentLng); }
+            if (navigator.geolocation) { navigator.geolocation.getCurrentPosition((position) => { currentLat = position.coords.latitude; currentLng = position.coords.longitude; renderMap(currentLat, currentLng); }, (error) => { renderMap(currentLat, currentLng); Swal.fire('ข้อแนะนำ', 'กรุณาพิมพ์ค้นหาชื่อสถานที่ หรือเลื่อนแผนที่ไปหาแปลงอ้อยของคุณด้วยตนเองครับ', 'info'); }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }); } else { renderMap(currentLat, currentLng); }
         }
 
         async function submitCaneData() {
@@ -359,7 +358,7 @@
             if(!drawnPolygon) { Swal.fire('ลืมวาดแปลงอ้อย', 'กรุณาวาดขอบเขตแปลงอ้อยในแผนที่ก่อนครับ', 'warning'); return; }
             if(!hDate) { Swal.fire('ลืมระบุวันที่', 'กรุณาระบุวันที่คาดว่าจะตัดอ้อยเสร็จด้วยนะครับ', 'warning'); return; }
             const btn = document.getElementById("submit-btn"); btn.innerText = "กำลังจัดส่งข้อมูล..."; btn.disabled = true;
-            const payload = { action: "report_harvest", userId: userProfile.userId, userName: userProfile.displayName, latitude: currentLat, longitude: currentLng, quantity: Number(qty), harvestDate: hDate, polygon: polygonGeoJSON };
+            const payload = { action: "report_harvest", userId: userProfile.userId, userName: document.getElementById("profile-info").innerText.replace("คุณ ", ""), latitude: currentLat, longitude: currentLng, quantity: Number(qty), harvestDate: hDate, polygon: polygonGeoJSON };
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
                 if (result.status === "success") { Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ระบบได้รับพิกัดของคุณเรียบร้อยแล้ว', confirmButtonColor: '#7cb342' }).then(() => { liff.closeWindow(); }); }
@@ -372,36 +371,23 @@
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "checkBuyer", userId: userProfile.userId }) });
                 const result = await res.json();
                 if (result.status === "found") {
-                    isBuyerEditMode = true;
-                    document.getElementById("profile-info").innerText = "คุณ " + result.data.fullName;
-                    
-                    document.getElementById("buyer-fullname").value = result.data.fullName;
-                    document.getElementById("buyer-phone").value = result.data.phone;
-                    document.getElementById("buyer-vehicle").value = result.data.vehicleInfo;
-                    
+                    isBuyerEditMode = true; document.getElementById("profile-info").innerText = "คุณ " + result.data.fullName;
+                    document.getElementById("buyer-fullname").value = result.data.fullName; document.getElementById("buyer-phone").value = result.data.phone; document.getElementById("buyer-vehicle").value = result.data.vehicleInfo;
                     document.getElementById("btn-buyer-register").innerText = "บันทึกการแก้ไขข้อมูล";
                     document.getElementById("buyer-reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนรถม้วนแล้ว สามารถแก้ไขข้อมูลได้เลยครับ";
                     document.getElementById("buyer-reg-status-box").style.backgroundColor = "#e3f2fd"; document.getElementById("buyer-reg-status-box").style.color = "#1565c0";
-                } else {
-                    document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName;
-                }
+                } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; }
             } catch (error) { console.error(error); }
         }
 
         async function submitBuyerRegistration() {
-            const fName = document.getElementById("buyer-fullname").value; 
-            const phone = document.getElementById("buyer-phone").value; 
-            const vInfo = document.getElementById("buyer-vehicle").value;
-            
+            const fName = document.getElementById("buyer-fullname").value; const phone = document.getElementById("buyer-phone").value; const vInfo = document.getElementById("buyer-vehicle").value;
             if(!fName || !phone) { Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกชื่อและเบอร์โทรศัพท์ครับ', 'warning'); return; }
             const btn = document.getElementById("btn-buyer-register"); btn.innerText = "กำลังบันทึกข้อมูล..."; btn.disabled = true;
-            
             const payload = { action: isBuyerEditMode ? "updateBuyer" : "registerBuyer", userId: userProfile.userId, lineName: userProfile.displayName, fullName: fName, phone: phone, vehicleInfo: vInfo };
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
-                if (result.status === "success") { 
-                    Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: isBuyerEditMode ? 'อัปเดตข้อมูลแล้ว' : 'ลงทะเบียนเครือข่ายรถม้วนสำเร็จ!', confirmButtonColor: '#8e24aa' }).then(() => { liff.closeWindow(); }); 
-                }
+                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: isBuyerEditMode ? 'อัปเดตข้อมูลแล้ว' : 'ลงทะเบียนเครือข่ายรถม้วนสำเร็จ!', confirmButtonColor: '#8e24aa' }).then(() => { liff.closeWindow(); }); }
             } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); btn.innerText = isBuyerEditMode ? "บันทึกการแก้ไขข้อมูล" : "ยืนยันการลงทะเบียนรถม้วน"; btn.disabled = false; }
         }
 
@@ -411,13 +397,9 @@
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "checkBuyer", userId: userProfile.userId }) });
                 const result = await res.json();
                 if (result.status === "found") {
-                    Swal.close(); 
-                    buyerNameContext = result.data.fullName;
-                    buyerPhoneContext = result.data.phone; // เก็บเบอร์คนขับไว้เพื่อส่งให้ชาวไร่
+                    Swal.close(); buyerNameContext = result.data.fullName; buyerPhoneContext = result.data.phone;
                     document.getElementById("profile-info").innerText = "คุณ " + result.data.fullName;
-                    
-                    document.getElementById("buyer-page").classList.add("active");
-                    loadBuyerMap(); 
+                    document.getElementById("buyer-page").classList.add("active"); loadBuyerMap(); 
                 } else {
                     document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName;
                     Swal.fire({ icon: 'error', title: 'ยังไม่ได้ลงทะเบียน', html: `กรุณากดเมนู "ลงทะเบียนรถม้วน" เพื่อเปิดสิทธิ์การใช้งานก่อนครับ<br><br><span style="font-size:12px;color:#999;">รหัสอ้างอิง: ${userProfile.userId}</span>`, confirmButtonColor: '#8e24aa' }).then(() => { liff.closeWindow(); });
@@ -427,25 +409,18 @@
 
         async function loadBuyerMap() {
             if(!buyerMapObj) {
-                buyerMapObj = L.map('buyer-map').setView([17.295, 101.782], 10); 
-                L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(buyerMapObj);
+                var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 });
+                var googleStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20 });
+                buyerMapObj = L.map('buyer-map', { center: [17.295, 101.782], zoom: 10, layers: [googleHybrid] });
+                var baseMaps = { "🛰️ แผนที่ดาวเทียม": googleHybrid, "🗺️ แผนที่ถนนปกติ": googleStreets };
+                L.control.layers(baseMaps, null, { position: 'topright' }).addTo(buyerMapObj);
             }
-
-            buyerPolygonLayer.clearLayers();
-            document.getElementById('buyer-list-container').innerHTML = '';
-            buyerMarkers = {};
-
+            buyerPolygonLayer.clearLayers(); document.getElementById('buyer-list-container').innerHTML = ''; buyerMarkers = {};
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "getBuyerMap" }) });
-                const result = await res.json();
-                const listContainer = document.getElementById("buyer-list-container");
-
+                const result = await res.json(); const listContainer = document.getElementById("buyer-list-container");
                 if (result.status === "success") {
-                    if(result.data.length === 0) {
-                        listContainer.innerHTML = "<div class='empty-state'>✅ ขณะนี้ไม่มีรายการรอรับซื้อในระบบครับ</div>";
-                        return;
-                    }
-
+                    if(result.data.length === 0) { listContainer.innerHTML = "<div class='empty-state'>✅ ขณะนี้ไม่มีรายการรอรับซื้อในระบบครับ</div>"; return; }
                     result.data.forEach(item => {
                         let markerColor = item.clusterId.includes("CLS") ? '#f1c40f' : '#e74c3c'; 
                         let customIcon = L.divIcon({ className: 'custom-div-icon', html: `<div style='background-color:${markerColor}; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.6);'></div>` });
@@ -453,59 +428,38 @@
                         
                         let popupContent = `
                             <div style="font-family:'Kanit';">
-                                <b style="font-size:15px; color:#8e24aa;">👨‍🌾 ชาวไร่: ${item.farmerName}</b><br>
-                                <b>ปริมาณ:</b> ${item.qty} ไร่<br>
-                                <b>พร้อมม้วน:</b> ${hDate}<br>
-                                <b>กลุ่ม:</b> <span style="font-size:12px; color:#666;">${item.clusterId}</span><br><hr style="margin:8px 0;">
+                                <b style="font-size:15px; color:#8e24aa;">👨‍🌾 ชาวไร่: ${item.farmerName}</b><br><b>ปริมาณ:</b> ${item.qty} ไร่<br><b>พร้อมม้วน:</b> ${hDate}<br><b>กลุ่ม:</b> <span style="font-size:12px; color:#666;">${item.clusterId}</span><br><hr style="margin:8px 0;">
                                 <input type="number" id="price-${item.row}" placeholder="เสนอราคา (บาท/ตัน)" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box; font-family:'Kanit';">
                                 <button onclick="acceptJob(${item.row})" style="width:100%; padding:8px; background-color:#8e24aa; color:white; border:none; border-radius:5px; cursor:pointer; font-family:'Kanit'; font-weight:600;">ตกลงรับงานนี้</button>
                             </div>`;
 
                         let marker = L.marker([item.lat, item.lon], { icon: customIcon }).bindPopup(popupContent);
-                        buyerMarkers[item.row] = marker;
-                        buyerPolygonLayer.addLayer(marker); 
-
+                        buyerMarkers[item.row] = marker; buyerPolygonLayer.addLayer(marker); 
                         if (item.polygon && item.polygon !== "") {
                             try {
-                                let coords = JSON.parse(item.polygon);
-                                let flippedCoords = coords[0].map(p => [p[1], p[0]]);
-                                let polygon = L.polygon(flippedCoords, { color: markerColor, fillOpacity: 0.3 });
-                                buyerPolygonLayer.addLayer(polygon);
+                                let coords = JSON.parse(item.polygon); let flippedCoords = coords[0].map(p => [p[1], p[0]]);
+                                let polygon = L.polygon(flippedCoords, { color: markerColor, fillOpacity: 0.3 }); buyerPolygonLayer.addLayer(polygon);
                             } catch(e) {}
                         }
-
                         let badgeColor = item.clusterId.includes("CLS") ? "background:#fff3cd; color:#856404;" : "background:#f8d7da; color:#721c24;";
                         let badgeText = item.clusterId.includes("CLS") ? "กลุ่มคุ้มทุน (>100 ไร่)" : "แปลงเดี่ยว";
 
                         let cardHTML = `
                             <div class="sale-card" style="border-left: 5px solid ${markerColor};">
-                                <div class="sale-header">
-                                    <span style="font-weight:600; font-size:15px; color:#333;">👨‍🌾 คุณ ${item.farmerName}</span>
-                                    <span class="badge" style="${badgeColor}">${badgeText}</span>
-                                </div>
-                                <div class="sale-detail">
-                                    <div>ปริมาณประเมิน: <span>${item.qty} ไร่</span></div>
-                                    <div>วันที่พร้อมเข้าม้วน: <span>${hDate}</span></div>
-                                </div>
-                                <button onclick="viewOnMap(${item.row}, ${item.lat}, ${item.lon})" style="margin-top:12px; width:100%; padding:10px; background-color:#f3e5f5; color:#8e24aa; border:1px solid #ce93d8; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit'; font-size:15px; transition:0.2s;">
-                                    📍 ดูแผนที่และเสนอราคา
-                                </button>
-                            </div>
-                        `;
+                                <div class="sale-header"><span style="font-weight:600; font-size:15px; color:#333;">👨‍🌾 คุณ ${item.farmerName}</span><span class="badge" style="${badgeColor}">${badgeText}</span></div>
+                                <div class="sale-detail"><div>ปริมาณประเมิน: <span>${item.qty} ไร่</span></div><div>วันที่พร้อมเข้าม้วน: <span>${hDate}</span></div></div>
+                                <button onclick="viewOnMap(${item.row}, ${item.lat}, ${item.lon})" style="margin-top:12px; width:100%; padding:10px; background-color:#f3e5f5; color:#8e24aa; border:1px solid #ce93d8; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit'; font-size:15px; transition:0.2s;">📍 ดูแผนที่และเสนอราคา</button>
+                            </div>`;
                         listContainer.innerHTML += cardHTML;
                     });
-
                     buyerPolygonLayer.addTo(buyerMapObj);
-                    if(buyerPolygonLayer.getLayers().length > 0) {
-                        buyerMapObj.fitBounds(buyerPolygonLayer.getBounds(), { padding: [30, 30] });
-                    }
+                    if(buyerPolygonLayer.getLayers().length > 0) { buyerMapObj.fitBounds(buyerPolygonLayer.getBounds(), { padding: [30, 30] }); }
                 }
             } catch (error) { console.error("Load map error", error); }
         }
 
         function viewOnMap(row, lat, lon) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            buyerMapObj.flyTo([lat, lon], 17, { duration: 1.5 });
+            window.scrollTo({ top: 0, behavior: 'smooth' }); buyerMapObj.flyTo([lat, lon], 17, { duration: 1.5 });
             setTimeout(() => { if(buyerMarkers[row]) { buyerMarkers[row].openPopup(); } }, 1500);
         }
 
@@ -513,8 +467,6 @@
             let priceInput = document.getElementById(`price-${rowId}`).value;
             if(!priceInput) { Swal.fire('ระบุราคา', 'กรุณาระบุราคารับซื้อก่อนกดรับงานครับ', 'warning'); return; }
             Swal.fire({ title: 'กำลังยืนยันรับงาน...', didOpen: () => { Swal.showLoading() } });
-            
-            // ส่งเบอร์โทรของคนขับ (buyerPhoneContext) ไปให้ระบบด้วย
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "acceptJob", row: rowId, buyerName: buyerNameContext, buyerPhone: buyerPhoneContext, price: priceInput }) });
                 const result = await res.json();
