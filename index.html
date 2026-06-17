@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CaneConnect - แจ้งเก็บใบอ้อย</title>
+    
+    <!-- นำเข้าฟอนต์ Kanit จาก Google Fonts ให้เหมือนในโปสเตอร์ -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- นำเข้า SweetAlert2 สำหรับแจ้งเตือนสวยๆ (แทน alert ปกติ) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --primary-green: #7cb342; /* สีเขียวอ้อยใจ */
+            --light-green: #f1f8e9;
+            --dark-green: #558b2f;
+            --text-dark: #333333;
+            --bg-color: #fafafa;
+        }
+
+        body { 
+            font-family: 'Kanit', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-dark); 
+            padding: 0; 
+            margin: 0; 
+        }
+
+        /* ส่วนหัว Header (โลโก้และคำทักทาย) */
+        .header {
+            background-color: var(--primary-green);
+            color: white;
+            padding: 30px 20px 40px;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 4px 10px rgba(124, 179, 66, 0.3);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* กรอบคำพูดสไตล์ "น้องอ้อยใจ" */
+        .speech-bubble {
+            background: white;
+            color: var(--dark-green);
+            border-radius: 20px;
+            padding: 10px 15px;
+            font-size: 14px;
+            display: inline-block;
+            margin-top: 10px;
+            font-weight: 500;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* ตัวการ์ดเนื้อหาหลัก */
+        .container { 
+            background: #ffffff; 
+            padding: 25px 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06); 
+            margin: -25px 20px 30px; /* ดึงการ์ดขึ้นไปซ้อนกับ Header */
+            position: relative;
+            z-index: 10;
+        }
+
+        .profile-section {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+
+        .profile-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-green);
+            margin-bottom: 10px;
+            display: none; /* ซ่อนไว้ก่อน จะโชว์ตอนโหลดรูปเสร็จ */
+            object-fit: cover;
+        }
+
+        .profile-text { 
+            color: var(--text-dark); 
+            font-size: 16px; 
+            font-weight: 500;
+        }
+
+        label { 
+            font-weight: 500; 
+            display: block; 
+            margin-top: 15px; 
+            font-size: 15px; 
+            color: #555; 
+        }
+
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            margin-top: 8px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 12px; 
+            box-sizing: border-box; 
+            font-size: 18px; 
+            font-family: 'Kanit', sans-serif;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary-green);
+            outline: none;
+            box-shadow: 0 0 0 3px var(--light-green);
+        }
+
+        /* กล่องสถานะ GPS */
+        .status-box { 
+            margin-top: 10px; 
+            padding: 12px; 
+            border-radius: 12px; 
+            background-color: #fff3f3; 
+            color: #d32f2f; 
+            font-size: 14px; 
+            display: flex; 
+            align-items: center; 
+            font-weight: 500;
+        }
+        .status-box.success { 
+            background-color: var(--light-green); 
+            color: var(--dark-green); 
+        }
+        .status-box i { margin-right: 8px; font-size: 18px;}
+
+        /* ปุ่มกด */
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            margin-top: 25px; 
+            background-color: var(--primary-green); 
+            color: white; 
+            border: none; 
+            border-radius: 15px; 
+            font-size: 18px; 
+            font-family: 'Kanit', sans-serif;
+            font-weight: 600; 
+            cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(124, 179, 66, 0.4);
+            transition: 0.2s; 
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:disabled { 
+            background-color: #cccccc; 
+            box-shadow: none;
+            cursor: not-allowed; 
+        }
+
+        /* แบนเนอร์ The 1 */
+        .the1-banner {
+            text-align: center;
+            font-size: 13px;
+            color: #777;
+            margin-top: 20px;
+        }
+        .the1-banner span {
+            color: #e3000f; /* สีแดง The 1 */
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ส่วนหัวสีเขียว -->
+    <div class="header">
+        <h1>CaneConnect</h1>
+        <div class="speech-bubble">
+            🌱 ผมน้องอ้อยใจ พร้อมช่วยลดการเผาครับ!
+        </div>
+    </div>
+
+    <!-- ส่วนเนื้อหาหลัก -->
+    <div class="container">
+        
+        <!-- ข้อมูลผู้ใช้งาน -->
+        <div class="profile-section">
+            <img id="profile-img" class="profile-img" src="" alt="Profile Image">
+            <div class="profile-text" id="profile-info">กำลังเชื่อมต่อระบบ...</div>
+        </div>
+
+        <!-- ฟอร์มกรอกข้อมูล -->
+        <label for="quantity">ปริมาณใบอ้อย (ไร่):</label>
+        <input type="number" id="quantity" placeholder="ระบุจำนวนไร่ เช่น 10" required>
+
+        <label>พิกัดแปลงอ้อยปัจจุบัน:</label>
+        <div class="status-box" id="gps-status">
+            <i>⏳</i> กำลังค้นหาพิกัด...
+        </div>
+
+        <button id="submit-btn" onclick="submitCaneData()" disabled>ส่งข้อมูลแจ้งคิวรถ</button>
+
+        <!-- ข้อความเชิญชวนแบบโปสเตอร์ -->
+        <div class="the1-banner">
+            ตัดอ้อยสด ลดการเผา สะสมแต้ม <span>The 1</span>
+        </div>
+    </div>
+
+    <!-- นำเข้า LIFF SDK -->
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    
+    <script>
+        // ตั้งค่าตัวแปรจากที่คุณให้มา
+        const LIFF_ID = "2010423459-prdYAD4u"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwKNL6jqjvtpuBxDzgqBIQiKLjA7_2QupvMAK9tcod5SlBbcs7iIbswlglT76xI5xOwng/exec";
+        
+        let userProfile = null;
+        let currentLat = null;
+        let currentLng = null;
+
+        // ฟังก์ชันเริ่มต้น (โหลดหน้าแอป)
+        async function main() {
+            try {
+                await liff.init({ liffId: LIFF_ID });
+                
+                if (liff.isLoggedIn()) {
+                    userProfile = await liff.getProfile();
+                    
+                    // อัปเดตชื่อและรูปโปรไฟล์
+                    document.getElementById("profile-info").innerText = "สวัสดีครับ คุณ " + userProfile.displayName;
+                    const imgElement = document.getElementById("profile-img");
+                    imgElement.src = userProfile.pictureUrl;
+                    imgElement.style.display = "inline-block";
+
+                    // เริ่มค้นหาพิกัด GPS
+                    getLocation();
+                } else {
+                    liff.login(); // บังคับล็อกอิน
+                }
+            } catch (err) {
+                console.error("LIFF Init Error: ", err);
+                document.getElementById("profile-info").innerText = "ไม่สามารถเชื่อมต่อ LINE ได้";
+            }
+        }
+
+        // ฟังก์ชันดึงพิกัด GPS อัตโนมัติ
+        function getLocation() {
+            if (navigator.geolocation) {
+                // ใช้ watchPosition หรือ getCurrentPosition แบบ high accuracy
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        currentLat = position.coords.latitude;
+                        currentLng = position.coords.longitude;
+                        
+                        const gpsBox = document.getElementById("gps-status");
+                        gpsBox.innerHTML = "<i>✅</i> ดึงพิกัดแปลงสำเร็จแล้ว";
+                        gpsBox.classList.add("success");
+                        
+                        // เปิดปุ่มให้กดส่งได้
+                        document.getElementById("submit-btn").disabled = false; 
+                    },
+                    (error) => {
+                        const gpsBox = document.getElementById("gps-status");
+                        gpsBox.innerHTML = "<i>❌</i> กรุณาเปิด GPS ในมือถือของคุณ";
+                        
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'หาพิกัดไม่พบ',
+                            text: 'แอปต้องการพิกัด GPS เพื่อส่งรถไปรับใบอ้อย กรุณาเปิด Location (ตำแหน่งที่ตั้ง) ในมือถือครับ',
+                            confirmButtonColor: '#7cb342'
+                        });
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            } else {
+                Swal.fire('ข้อผิดพลาด', 'มือถือของคุณไม่รองรับระบบ GPS', 'error');
+            }
+        }
+
+        // ฟังก์ชันเมื่อกดส่งข้อมูล
+        async function submitCaneData() {
+            const qty = document.getElementById("quantity").value;
+            
+            // เช็คว่ากรอกข้อมูลหรือยัง
+            if(!qty || qty <= 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'ลืมระบุจำนวนไร่',
+                    text: 'รบกวนคุณพี่ชาวไร่ ระบุปริมาณใบอ้อย (ไร่) ด้วยนะครับ',
+                    confirmButtonColor: '#7cb342'
+                });
+                return;
+            }
+
+            // เปลี่ยนสถานะปุ่ม
+            const btn = document.getElementById("submit-btn");
+            btn.innerText = "กำลังจัดส่งข้อมูลน้องอ้อยใจ...";
+            btn.disabled = true;
+
+            // เตรียมข้อมูลส่ง
+            const payload = {
+                userId: userProfile.userId,
+                userName: userProfile.displayName,
+                latitude: currentLat,
+                longitude: currentLng,
+                quantity: Number(qty)
+            };
+
+            try {
+                // ยิงข้อมูลไปหา Google Apps Script
+                const response = await fetch(GAS_WEB_APP_URL, {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === "success") {
+                    // ใช้ SweetAlert2 แสดง Pop-up สวยๆ แจ้งเตือนความสำเร็จ
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'สำเร็จ!',
+                        text: 'ระบบได้รับพิกัดของคุณแล้ว รอคิวรถม้วนใบอ้อยได้เลยครับ',
+                        confirmButtonColor: '#7cb342',
+                        confirmButtonText: 'ตกลง'
+                    }).then(() => {
+                        liff.closeWindow(); // ปิดหน้าต่างแอปกลับไปที่ห้องแชท
+                    });
+                } else {
+                    Swal.fire('เกิดข้อผิดพลาด', result.message, 'error');
+                    btn.innerText = "ส่งข้อมูลแจ้งคิวรถ";
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                Swal.fire('การเชื่อมต่อล้มเหลว', 'ไม่สามารถส่งข้อมูลได้ กรุณาลองใหม่อีกครั้ง', 'error');
+                btn.innerText = "ส่งข้อมูลแจ้งคิวรถ";
+                btn.disabled = false;
+            }
+        }
+
+        // เริ่มการทำงาน
+        window.onload = main;
+    </script>
+</body>
+</html>
