@@ -56,10 +56,7 @@
         .cluster-title { font-weight: 600; color: #b8860b; margin-bottom: 8px; display: flex; align-items: center; font-size: 16px; }
         .cluster-title i { margin-right: 6px; font-size: 18px; }
         
-        /* สไตล์ตารางวิเคราะห์ความคุ้มค่า (Financial Analysis Table) */
-        .profit-sheet { background: white; border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px dashed #f1c40f; font-size: 13px; color: #555; }
-        .profit-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
-        .profit-row.highlight { font-weight: bold; color: #c0392b; border-top: 1px solid #ddd; padding-top: 4px; margin-top: 4px; }
+        .profit-sheet { background: white; border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px dashed #b8860b; font-size: 14px; color: #555; }
     </style>
 </head>
 <body>
@@ -129,7 +126,7 @@
                 <span style="display:inline-block; width:10px; height:10px; background:#f1c40f; border-radius:50%; margin-left:10px;"></span> กลุ่มคุ้มทุน (>100 ไร่)
             </div>
 
-            <div class="section-title buyer-section-title" style="margin-top: 25px;">📋 แผงวิเคราะห์คลัสเตอร์และจุดคุ้มทุนโลจิสติกส์</div>
+            <div class="section-title buyer-section-title" style="margin-top: 25px;">📋 แนะนำแปลงอ้อยจัดกลุ่มคุ้มทุน</div>
             <div id="buyer-list-container"></div>
         </div>
 
@@ -148,6 +145,9 @@
         let globalSalesData = [];
 
         let buyerMapObj; let buyerMarkers = {}; let buyerPolygonLayer = L.featureGroup(); 
+        
+        // เก็บข้อมูล ID แปลงในแต่ละคลัสเตอร์ เพื่อให้กดรับงานยกพวงได้
+        let clusterDataMap = {}; 
 
         async function main() {
             try {
@@ -214,7 +214,7 @@
             } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบค้นหาได้', 'error'); }
         }
 
-        // ================= ระบบการขายของฉัน และแผนที่ขนาดย่อ =================
+        // ================= ระบบการขายของฉัน (ชาวไร่) =================
         async function fetchSalesData() {
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "getSales", userId: userProfile.userId }) });
@@ -253,7 +253,7 @@
                 cardHTML += `</div>`;
                 
                 if (badgeClass === "waiting") {
-                    cardHTML += `<button onclick="viewOffers(${index})" style="margin-top:12px; width:100%; padding:10px; background-color:#fff3cd; color:#856404; border:1px solid #ffeeba; border-radius:8px; font-weight:600; font-size:15px; cursor:pointer; font-family:'Kanit';">👀 ดูรายชื่อผู้เสนอซื้อ & แผนที่</button>`;
+                    cardHTML += `<button onclick="viewOffers(${index})" style="margin-top:12px; width:100%; padding:10px; background-color:#fff3cd; color:#856404; border:1px solid #ffeeba; border-radius:8px; font-weight:600; font-size:15px; cursor:pointer; font-family:'Kanit'; box-shadow: 0 2px 4px rgba(217,119,6,0.1);">👀 ดูรายชื่อผู้เสนอซื้อ & แผนที่</button>`;
                 } else if (badgeClass !== "completed" && badgeClass !== "canceled") {
                     cardHTML += `<button onclick="viewSaleDetails(${index})" style="margin-top:12px; width:100%; padding:8px; background-color:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer; font-family:'Kanit';">🔍 ดูรายละเอียดเพิ่มเติม & แผนที่</button>`;
                 }
@@ -272,7 +272,7 @@
             offersHTML += `<b style="font-size:16px;">รายชื่อรถม้วนที่เสนอซื้อ (${item.quantity} ไร่)</b><br><br>`;
             
             if (item.offers && item.offers.length > 0) {
-                item.offers.forEach((offer, oIndex) => {
+                item.offers.forEach((offer) => {
                     offersHTML += `
                         <div style="border:1px solid #ddd; border-radius:8px; padding:10px; margin-bottom:10px; background:#f9f9f9;">
                             <b>คุณ:</b> ${offer.buyerName}<br>
@@ -337,10 +337,10 @@
             if(!map) {
                 var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }); var googleStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20 });
                 map = L.map('map', { center: [lat, lng], zoom: 16, layers: [googleHybrid] });
-                var baseMaps = { "🛰️ แผนที่ดาวเทียม": googleHybrid, "🗺️ แผนที่ถนนปกติ": googleStreets }; L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
+                var baseMaps = { "🛰️ แผนที่ดาวเทียม (มีชื่อสถานที่)": googleHybrid, "🗺️ แผนที่ถนนนำทางปกติ": googleStreets }; L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
                 map.pm.addControls({ position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, dragMode: false, cutPolygon: false, removalMode: true });
                 map.on('pm:create', function(e) { if (drawnPolygon) drawnPolygon.remove(); drawnPolygon = e.layer; calculateArea(drawnPolygon); drawnPolygon.on('pm:edit', function() { calculateArea(drawnPolygon); }); });
-                map.on('pm:remove', function(e) { drawnPolygon = null; polygonGeoJSON = ""; });
+                map.on('pm:remove', function(e) { drawnPolygon = null; polygonGeoJSON = ""; document.getElementById("quantity").value = ""; });
             } else { map.setView([lat, lng], 16); }
             document.getElementById("submit-btn").disabled = false;
         }
@@ -367,7 +367,7 @@
             } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถส่งข้อมูลได้', 'error'); } finally { btn.innerText = "ส่งข้อมูลแจ้งคิวรถ"; btn.disabled = false; }
         }
 
-        // ================= โหมดผู้รับซื้อ (จัดกลุ่ม & แข่งเสนอราคาบนตารางความคุ้มค่า) =================
+        // ================= โหมดผู้รับซื้อ (จัดกลุ่ม & เสนอราคายกคลัสเตอร์) =================
         async function checkBuyerForRegister() {
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "checkBuyer", userId: userProfile.userId }) });
@@ -414,7 +414,7 @@
                 var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 });
                 buyerMapObj = L.map('buyer-map', { center: [17.295, 101.782], zoom: 10, layers: [googleHybrid] });
             }
-            buyerPolygonLayer.clearLayers(); document.getElementById('buyer-list-container').innerHTML = ''; buyerMarkers = {};
+            buyerPolygonLayer.clearLayers(); document.getElementById('buyer-list-container').innerHTML = ''; buyerMarkers = {}; clusterDataMap = {};
 
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "getBuyerMap" }) });
@@ -451,26 +451,37 @@
                         }
                     });
 
-                    // วาดแผงรายการกลุ่มวิเคราะห์ความคุ้มค่าทางการเงิน (Financial Breakdown UI)
+                    // วาดแผงรายการกลุ่มวิเคราะห์ความคุ้มค่า (แบบเข้าใจง่าย เน้นระยะทาง/วันตัด)
                     for (let cId in clusters) {
                         let cData = clusters[cId];
-                        let totalEstTons = (cData.totalRai * 0.8).toFixed(1); // 1 ไร่ได้ใบอ้อย 0.8 ตัน
-                        let estRevenue = Math.floor(totalEstTons * 800); // สมมุติราคาโรงงานรับซื้อ 800 บ./ตัน
-                        let machineDepreciation = 3000; // ค่าเสื่อมเคลื่อนย้ายเครื่องจักรคงที่ต่อกลุ่ม
-                        let logisticsCost = Math.floor(cData.items.length * 400); // ค่าขนส่งระหว่างแปลงย่อยภายในกลุ่ม
-                        let netProfitMargin = estRevenue - (machineDepreciation + logisticsCost);
+                        
+                        // เก็บชุด ID เอาไว้สำหรับฟังก์ชันเหมาคลัสเตอร์
+                        let rowIds = cData.items.map(i => i.row);
+                        clusterDataMap[cId] = rowIds;
+
+                        // คำนวณความห่างของวัน
+                        let minDateStr = Math.min(...cData.items.map(i => new Date(i.harvestDate).getTime()));
+                        let maxDateStr = Math.max(...cData.items.map(i => new Date(i.harvestDate).getTime()));
+                        let diffDays = Math.ceil((maxDateStr - minDateStr) / (1000 * 3600 * 24));
+                        let d1 = new Date(minDateStr).toLocaleDateString('th-TH');
+                        let d2 = new Date(maxDateStr).toLocaleDateString('th-TH');
 
                         let clusterHTML = `
                             <div class="cluster-group">
-                                <div class="cluster-title"><i>🌟</i> กลุ่ม ${cId.substring(4, 12)} (รวมพื้นที่ ${cData.totalRai} ไร่)</div>
+                                <div class="cluster-title"><i>🌟</i> โซนรวบรวม ${cId.substring(4, 12)}</div>
                                 
                                 <div class="profit-sheet">
-                                    <div class="profit-row"><span>📋 ปริมาณชีวมวลใบอ้อยคาดการณ์:</span><b>${totalEstTons} ตัน</b></div>
-                                    <div class="profit-row"><span>💰 รายรับประเมิน (โรงงานปลายทาง):</span><b>~${estRevenue.toLocaleString()} บาท</b></div>
-                                    <div class="profit-row"><span>🚜 ค่าขนย้ายและเสื่อมสภาพเครื่องจักร:</span><b>-${machineDepreciation.toLocaleString()} บาท</b></div>
-                                    <div class="profit-row"><span>📦 ค่าโลจิสติกส์เชื่อมโยงพิกัดแปลง:</span><b>-${logisticsCost.toLocaleString()} บาท</b></div>
-                                    <div class="profit-row highlight"><span>📈 กำไรสุทธิขั้นต้นที่แนะนำผู้รับเหมา:</span><span>+${netProfitMargin.toLocaleString()} บาท</span></div>
-                                </div>`;
+                                    <div style="margin-bottom:6px;"><span>📍 ระยะห่างระหว่างแปลง:</span> <b style="color:#b8860b; float:right;">รัศมีไม่เกิน 10 กม.</b></div>
+                                    <div style="margin-bottom:6px;"><span>🗓️ ช่วงเวลาเข้าม้วน:</span> <b style="color:#b8860b; float:right;">ห่างกันสูงสุด ${diffDays} วัน</b></div>
+                                    <div style="font-size:12px; color:#777; text-align:right;">(${d1} ถึง ${d2})</div>
+                                    <hr style="border:0; border-top:1px solid #f1c40f; margin:8px 0;">
+                                    <div style="font-size:15px;"><span>📦 พื้นที่รวมคุ้มทุน:</span> <b style="color:#2e7d32; float:right;">${cData.totalRai} ไร่</b></div>
+                                </div>
+                                
+                                <button onclick="acceptClusterJob('${cId}')" style="width:100%; padding:12px; margin-bottom:15px; background-color:#f1c40f; color:#856404; border:none; border-radius:8px; font-weight:600; font-size:15px; cursor:pointer; box-shadow:0 4px 8px rgba(241,196,15,0.3); font-family:'Kanit';">
+                                    🤝 เสนอซื้อยกกลุ่มคลัสเตอร์นี้
+                                </button>
+                        `;
                         
                         cData.items.forEach(item => {
                             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
@@ -479,7 +490,7 @@
                                 <div class="sale-card" style="border-left: 5px solid #f1c40f; margin-bottom:10px; background:#fff;">
                                     <div class="sale-header"><span style="font-weight:600; color:#333;">👨‍🌾 คุณ ${item.farmerName}</span></div>
                                     <div class="sale-detail"><div>ปริมาณ: <span>${item.qty} ไร่</span></div><div>พร้อมเข้าม้วน: <span>${hDate}</span></div>${offerStatus}</div>
-                                    <button onclick="viewOnMap(${item.row}, ${item.lat}, ${item.lon})" style="margin-top:10px; width:100%; padding:8px; background-color:#fcf3cf; color:#b8860b; border:1px solid #f1c40f; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">📍 ดูแผนที่และเสนอราคา</button>
+                                    <button onclick="viewOnMap(${item.row}, ${item.lat}, ${item.lon})" style="margin-top:10px; width:100%; padding:8px; background-color:#fcf3cf; color:#b8860b; border:1px solid #f1c40f; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">📍 ดูแผนที่รายแปลง</button>
                                 </div>`;
                         });
                         clusterHTML += `</div>`;
@@ -487,26 +498,19 @@
                     }
 
                     if (singlePlots.length > 0) {
-                        listContainer.innerHTML += `<div class="section-title buyer-section-title" style="margin-top: 25px; font-size:16px;">📋 แปลงอิสระ (ยังไม่เข้าเกณฑ์จุดคุ้มทุนโลจิสติกส์)</div>`;
+                        listContainer.innerHTML += `<div class="section-title buyer-section-title" style="margin-top: 25px; font-size:16px;">📋 แปลงอิสระ (ยังไม่เข้าเกณฑ์จุดคุ้มทุน)</div>`;
                         singlePlots.forEach(item => {
                             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
                             let offerStatus = item.offerCount > 0 ? `<div style="color:#d97706; font-size:12px; font-weight:bold; margin-top:5px;">⚠️ แข่งขัน: มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : "";
-                            
-                            // คำนวณความเสี่ยงแปลงเดี่ยว
-                            let singleTons = (item.qty * 0.8).toFixed(1);
-                            let singleRev = Math.floor(singleTons * 800);
-                            let lossRisk = singleRev - 3400; // ค่าขนย้ายแปลงเดียวจะกินทุนสูงกว่า
-
                             listContainer.innerHTML += `
                                 <div class="sale-card" style="border-left: 5px solid #e74c3c;">
                                     <div class="sale-header"><span style="font-weight:600; color:#333;">👨‍🌾 คุณ ${item.farmerName}</span></div>
                                     <div class="sale-detail">
-                                        <div>ปริมาณประเมิน: <span>${item.qty} ไร่ (${singleTons} ตัน)</span></div>
+                                        <div>ปริมาณประเมิน: <span>${item.qty} ไร่</span></div>
                                         <div>วันที่พร้อมเข้าม้วน: <span>${hDate}</span></div>
-                                        <div style="font-size:11px; color:#c0392b; font-weight:500;">⚠️ หมายเหตุ: แปลงเดี่ยวมีค่าขนย้ายสูงเฉลี่ย 3,000 บ. ผลตอบแทนประเมิน: ${lossRisk.toLocaleString()} บาท (แนะนำรอการจับกลุ่มคลัสเตอร์)</div>
                                         ${offerStatus}
                                     </div>
-                                    <button onclick="viewOnMap(${item.row}, ${item.lat}, ${item.lon})" style="margin-top:10px; width:100%; padding:8px; background-color:#f3e5f5; color:#8e24aa; border:1px solid #ce93d8; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">📍 ดูแผนที่และเสนอราคาแข่ง</button>
+                                    <button onclick="viewOnMap(${item.row}, ${item.lat}, ${item.lon})" style="margin-top:10px; width:100%; padding:8px; background-color:#f3e5f5; color:#8e24aa; border:1px solid #ce93d8; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">📍 ดูแผนที่และเสนอราคาแปลงนี้</button>
                                 </div>`;
                         });
                     }
@@ -529,8 +533,48 @@
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "acceptJob", row: rowId, userId: userProfile.userId, buyerName: buyerNameContext, buyerPhone: buyerPhoneContext, price: priceInput }) });
                 const result = await res.json();
-                if (result.status === "success") { Swal.fire({title: 'เสนอราคาสำเร็จ!', text: 'ระบบส่งข้อมูลราคาของคุณให้ชาวไร่พิจารณาแล้วครับ หากชาวไร่กดยืนยันเลือกคุณ สถานะจะเปลี่ยนทันที', icon: 'success', confirmButtonColor: '#8e24aa'}).then(() => { location.reload(); }); }
+                if (result.status === "success") { Swal.fire({title: 'เสนอราคาสำเร็จ!', text: 'ระบบส่งข้อมูลราคาของคุณให้ชาวไร่พิจารณาแล้วครับ', icon: 'success', confirmButtonColor: '#8e24aa'}).then(() => { location.reload(); }); }
             } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคาได้', 'error'); }
+        }
+
+        // ฟังก์ชันใหม่: เสนอซื้อแบบเหมากลุ่ม (ส่งแจ้งเตือนให้หลายแปลงพร้อมกัน)
+        async function acceptClusterJob(cId) {
+            let rowIds = clusterDataMap[cId];
+            if(!rowIds || rowIds.length === 0) return;
+
+            const { value: priceInput } = await Swal.fire({
+                title: 'เสนอราคายกคลัสเตอร์',
+                input: 'number',
+                inputLabel: 'ระบุราคารับซื้อเหมา (บาท/ตัน)',
+                inputPlaceholder: 'เช่น 800',
+                showCancelButton: true,
+                confirmButtonText: 'ส่งข้อเสนอซื้อเหมา',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: '#f1c40f',
+                cancelButtonColor: '#777',
+                customClass: { confirmButton: 'cluster-btn' }
+            });
+
+            if (priceInput) {
+                Swal.fire({ title: 'กำลังกระจายคำเสนอซื้อ...', didOpen: () => { Swal.showLoading() } });
+                try {
+                    const res = await fetch(GAS_WEB_APP_URL, { 
+                        method: "POST", 
+                        body: JSON.stringify({ 
+                            action: "acceptClusterJob", 
+                            rows: rowIds, 
+                            userId: userProfile.userId, 
+                            buyerName: buyerNameContext, 
+                            buyerPhone: buyerPhoneContext, 
+                            price: priceInput 
+                        }) 
+                    });
+                    const result = await res.json();
+                    if (result.status === "success") { 
+                        Swal.fire({title: 'เสนอราคายกกลุ่มสำเร็จ!', text: 'ข้อเสนอของคุณถูกส่งไปยังชาวไร่ทุกคนในโซนนี้แล้วครับ', icon: 'success', confirmButtonColor: '#8e24aa'}).then(() => { location.reload(); }); 
+                    }
+                } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคายกกลุ่มได้', 'error'); }
+            }
         }
 
         window.onload = main;
