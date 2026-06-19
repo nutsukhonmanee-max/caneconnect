@@ -23,9 +23,11 @@
         .profile-section { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #e0e0e0; }
         .profile-img { width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--primary-green); margin-bottom: 10px; display: none; object-fit: cover; }
         .profile-text { color: var(--text-dark); font-size: 16px; font-weight: 500; }
-        label { font-weight: 500; display: block; margin-top: 15px; font-size: 15px; color: #555; }
-        input[type="text"], input[type="tel"], input[type="number"], input[type="date"], textarea { width: 100%; padding: 14px; margin-top: 8px; border: 2px solid #e0e0e0; border-radius: 12px; box-sizing: border-box; font-size: 16px; font-family: 'Kanit', sans-serif; transition: all 0.3s; }
-        input:focus, textarea:focus { border-color: var(--primary-green); outline: none; box-shadow: 0 0 0 3px var(--light-green); }
+        
+        label { font-weight: 500; display: block; margin-top: 15px; font-size: 14px; color: #555; }
+        input[type="text"], input[type="tel"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 12px; margin-top: 6px; border: 2px solid #e0e0e0; border-radius: 10px; box-sizing: border-box; font-size: 15px; font-family: 'Kanit', sans-serif; transition: all 0.3s; background: #fff; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary-green); outline: none; box-shadow: 0 0 0 3px var(--light-green); }
+        
         .map-container { height: 280px; width: 100%; border-radius: 12px; margin-top: 10px; border: 2px solid #e0e0e0; z-index: 1; }
         .status-box { margin-top: 10px; padding: 12px; border-radius: 12px; background-color: var(--light-green); color: var(--dark-green); font-size: 14px; display: flex; align-items: center; font-weight: 500; line-height: 1.4; }
         .status-box i { margin-right: 8px; font-size: 20px;}
@@ -33,20 +35,26 @@
         button:disabled { background-color: #cccccc; box-shadow: none; cursor: not-allowed; }
         .page { display: none; }
         .page.active { display: block; }
-        .row { display: flex; gap: 10px; }
-        .row > div { flex: 1; }
+        
+        /* Grid สำหรับฟอร์มลงทะเบียน */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .form-grid.col-3 { grid-template-columns: 1fr 1fr 1fr; }
+        .full-width { grid-column: 1 / -1; }
         
         .section-title { font-size: 18px; font-weight: 600; color: var(--dark-green); border-bottom: 2px solid var(--primary-green); padding-bottom: 5px; margin-top: 20px; margin-bottom: 15px; }
         .buyer-section-title { color: #8e24aa; border-bottom: 2px solid #8e24aa; }
         .sale-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .sale-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed #eee; }
         .sale-date { font-size: 13px; color: #777; }
+        
         .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
         .badge.pending { background: #e8f5e9; color: #2e7d32; }       
         .badge.waiting { background: #ffe8cc; color: #d97706; }       
         .badge.processing { background: #cce5ff; color: #004085; }    
+        .badge.verify { background: #d1c4e9; color: #4a148c; }    
         .badge.completed { background: #d4edda; color: #155724; }     
         .badge.canceled { background: #f8d7da; color: #721c24; }      
+        
         .sale-detail { font-size: 14px; color: #444; line-height: 1.8; }
         .sale-detail span { font-weight: 600; color: #222; }
         .empty-state { text-align: center; color: #999; font-size: 14px; padding: 20px 0; }
@@ -59,6 +67,9 @@
         .control-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: #4a148c; font-weight: 500; }
         .slider-input { width: 100%; margin: 8px 0; accent-color: #8e24aa; }
         .val-badge { background: #8e24aa; color: white; padding: 2px 8px; border-radius: 10px; font-size: 13px; }
+        
+        /* สไตล์สำหรับพรีวิวรูปภาพ */
+        .image-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 10px; display: none; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
@@ -74,33 +85,63 @@
             <div class="profile-text" id="profile-info">กำลังเชื่อมต่อฐานข้อมูล...</div>
         </div>
 
+        <!-- ================= 1. หน้าลงทะเบียนชาวไร่ (ละเอียด) ================= -->
         <div id="register-page" class="page">
             <div class="status-box" id="reg-status-box" style="background-color: #fff3cd; color: #856404; margin-bottom: 20px;">
-                <i>📝</i> กรุณากรอกข้อมูลเพื่อลงทะเบียนเข้าสู่ระบบครับ
+                <i>📝</i> กรุณากรอกข้อมูลส่วนตัวเพื่อลงทะเบียนครับ
             </div>
-            <div class="row">
-                <div><label>ชื่อ:</label><input type="text" id="reg-firstname" required></div>
-                <div><label>นามสกุล:</label><input type="text" id="reg-lastname" required></div>
+            
+            <div class="form-grid col-3">
+                <div style="grid-column: span 1;">
+                    <label>คำนำหน้า:</label>
+                    <select id="reg-prefix">
+                        <option value="นาย">นาย</option><option value="นาง">นาง</option><option value="นางสาว">นางสาว</option>
+                    </select>
+                </div>
+                <div style="grid-column: span 2;"><label>ชื่อจริง:</label><input type="text" id="reg-firstname" required></div>
+                <div class="full-width"><label>นามสกุล:</label><input type="text" id="reg-lastname" required></div>
+                
+                <div class="full-width"><label>วัน/เดือน/ปีเกิด:</label><input type="date" id="reg-dob" required></div>
+                <div class="full-width"><label>เบอร์โทรศัพท์:</label><input type="tel" id="reg-phone" required></div>
             </div>
-            <label>เบอร์โทรศัพท์:</label><input type="tel" id="reg-phone" required>
-            <label>ที่อยู่ปัจจุบัน:</label><textarea id="reg-address" rows="2" required></textarea>
-            <label>ข้อมูลการปลูกอ้อย:</label><textarea id="reg-farminfo" rows="2"></textarea>
+
+            <div class="section-title" style="margin-top: 25px;">ที่อยู่ปัจจุบัน</div>
+            <div class="form-grid">
+                <div><label>บ้านเลขที่:</label><input type="text" id="reg-no" required></div>
+                <div><label>หมู่ที่:</label><input type="text" id="reg-moo" required></div>
+                <div><label>ตำบล:</label><input type="text" id="reg-subdist" required></div>
+                <div><label>อำเภอ:</label><input type="text" id="reg-dist" required></div>
+                <div class="full-width"><label>จังหวัด:</label><input type="text" id="reg-prov" required></div>
+                <div class="full-width"><label>รหัสไปรษณีย์:</label><input type="text" id="reg-zip" required></div>
+                <div class="full-width"><label>ข้อมูลการปลูกอ้อย (เช่น ส่งโรงงานไหน):</label><textarea id="reg-farminfo" rows="2"></textarea></div>
+            </div>
+            
             <button id="btn-register" onclick="submitRegistration()">ยืนยันการลงทะเบียน</button>
         </div>
 
+        <!-- ================= 2. หน้าแจ้งพิกัดอ้อย (ชาวไร่) ================= -->
         <div id="main-page" class="page">
             <label>📍 1. ค้นหาจุดใกล้เคียง & วาดกรอบแปลงอ้อย:</label>
             <div style="display: flex; gap: 6px; margin-top: 8px; margin-bottom: 8px;">
-                <input type="text" id="search-place" placeholder="🔍 พิมพ์ชื่อ วัด, โรงเรียน, หมู่บ้าน, ตำบล" style="margin-top:0; padding: 12px; font-size: 15px;">
+                <input type="text" id="search-place" placeholder="🔍 พิมพ์ชื่อ วัด, โรงเรียน, หมู่บ้าน" style="margin-top:0; padding: 12px; font-size: 15px;">
                 <button onclick="searchPlace()" style="margin-top:0; width: auto; padding: 0 20px; background-color: #1565c0; font-size: 15px; border-radius: 12px; box-shadow: none; white-space: nowrap;">ค้นหา</button>
             </div>
             <div class="status-box" id="gps-status" style="background-color: #e3f2fd; color: #1565c0;"><i>👆</i> พิมพ์ค้นหา หรือกดปุ่มรูปห้าเหลี่ยมบนแผนที่แล้วจิ้มวาดตามขอบแปลง</div>
-            <div id="map" class="map-container" style="height: 380px;"></div>
-            <label>🌱 2. ปริมาณใบอ้อย (ไร่):</label><input type="number" id="quantity" readonly>
-            <label>🗓️ 3. วันที่ตัดอ้อยเสร็จ:</label><input type="date" id="harvest-date" required>
+            <div id="map" class="map-container" style="height: 350px;"></div>
+            
+            <div class="form-grid" style="margin-top: 15px;">
+                <div><label>🌱 2. ปริมาณ (ไร่):</label><input type="number" id="quantity" readonly></div>
+                <div><label>🗓️ 3. วันที่ตัดเสร็จ:</label><input type="date" id="harvest-date" required></div>
+            </div>
+            
+            <label>📸 4. อัปโหลดภาพแปลงอ้อย/สภาพใบ (เพื่อให้รถม้วนเห็นหน้างาน):</label>
+            <input type="file" id="field-photo-input" accept="image/*" onchange="previewFieldPhoto(event)" style="padding: 10px; background:#fff;">
+            <img id="field-photo-preview" class="image-preview" src="">
+
             <button id="submit-btn" onclick="submitCaneData()" disabled>ส่งข้อมูลแจ้งคิวรถ</button>
         </div>
 
+        <!-- ================= 3. หน้าการขายของฉัน (ชาวไร่) ================= -->
         <div id="sales-page" class="page">
             <div id="farmer-dashboard-container" style="display:none;"></div>
             <div class="section-title">📍 รายการที่กำลังดำเนินการ</div>
@@ -109,16 +150,34 @@
             <div id="history-sales-container"></div>
         </div>
 
+        <!-- ================= 4. หน้าลงทะเบียนผู้รับซื้อ (ละเอียด) ================= -->
         <div id="register-buyer-page" class="page">
             <div class="status-box" id="buyer-reg-status-box" style="background-color: #f3e5f5; color: #6a1b9a; margin-bottom: 20px;">
                 <i>🚜</i> ลงทะเบียนสำหรับเครือข่ายรถม้วนใบอ้อย
             </div>
-            <label>ชื่อ-นามสกุล (หรือชื่อบริษัท):</label><input type="text" id="buyer-fullname" placeholder="ระบุชื่อที่ต้องการให้ชาวไร่เห็น" required>
-            <label>เบอร์โทรศัพท์ติดต่อ:</label><input type="tel" id="buyer-phone" required>
-            <label>ข้อมูลรถ (เช่น จำนวนรถ, ทะเบียน, พื้นที่รับงาน):</label><textarea id="buyer-vehicle" rows="2" placeholder="เช่น รถม้วน 2 คัน รับงานโซนผาขาว"></textarea>
+            
+            <div class="form-grid col-3">
+                <div style="grid-column: span 1;"><label>คำนำหน้า:</label><select id="buyer-prefix"><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="บริษัท">บริษัท</option></select></div>
+                <div style="grid-column: span 2;"><label>ชื่อจริง (หรือชื่อบริษัท):</label><input type="text" id="buyer-firstname" required></div>
+                <div class="full-width"><label>นามสกุล:</label><input type="text" id="buyer-lastname"></div>
+                <div class="full-width"><label>วัน/เดือน/ปีเกิด (หรือจดทะเบียน):</label><input type="date" id="buyer-dob" required></div>
+                <div class="full-width"><label>เบอร์โทรศัพท์:</label><input type="tel" id="buyer-phone" required></div>
+            </div>
+
+            <div class="section-title" style="margin-top: 25px;">ที่อยู่ปัจจุบัน / ที่ตั้งอู่รถ</div>
+            <div class="form-grid">
+                <div><label>บ้านเลขที่:</label><input type="text" id="buyer-no" required></div>
+                <div><label>หมู่ที่:</label><input type="text" id="buyer-moo" required></div>
+                <div><label>ตำบล:</label><input type="text" id="buyer-subdist" required></div>
+                <div><label>อำเภอ:</label><input type="text" id="buyer-dist" required></div>
+                <div class="full-width"><label>จังหวัด:</label><input type="text" id="buyer-prov" required></div>
+                <div class="full-width"><label>รหัสไปรษณีย์:</label><input type="text" id="buyer-zip" required></div>
+                <div class="full-width"><label>ข้อมูลรถ (เช่น จำนวนรถ, ทะเบียน, พื้นที่รับงาน):</label><textarea id="buyer-vehicle" rows="2"></textarea></div>
+            </div>
             <button id="btn-buyer-register" onclick="submitBuyerRegistration()" style="background-color: #8e24aa;">ยืนยันการลงทะเบียนรถม้วน</button>
         </div>
 
+        <!-- ================= 5. หน้าควบคุมของผู้รับซื้อ (Buyer Map & List) ================= -->
         <div id="buyer-page" class="page">
             <div class="control-panel">
                 <div style="font-weight:600; font-size:16px; margin-bottom:10px;">⚙️ ปรับแต่งเกณฑ์รับงานของรถคุณ</div>
@@ -127,13 +186,19 @@
                 <div class="control-row" style="margin-top: 15px;"><span>กรอบวันตัดอ้อยห่างกันสูงสุด</span><span class="val-badge" id="val-days">5 วัน</span></div>
                 <input type="range" class="slider-input" id="slider-days" min="1" max="14" value="5" step="1" oninput="updateClusterLogic()">
             </div>
+            
             <div id="buyer-map" class="map-container" style="height: 380px;"></div>
             <div style="margin-top: 10px; font-size: 13px; color: #555; text-align: right;">
                 <span style="display:inline-block; width:10px; height:10px; background:#4caf50; border-radius:50%;"></span> แปลงเดี่ยวสุดคุ้ม
                 <span style="display:inline-block; width:10px; height:10px; background:#f1c40f; border-radius:50%; margin-left:10px;"></span> กลุ่มคุ้มทุน 
                 <span style="display:inline-block; width:10px; height:10px; background:#e74c3c; border-radius:50%; margin-left:10px;"></span> แปลงย่อย
             </div>
-            <div class="section-title buyer-section-title" style="margin-top: 25px;">📋 แนะนำแปลงอ้อยจัดกลุ่มคุ้มทุน</div>
+
+            <div class="section-title buyer-section-title" style="margin-top: 25px;">📋 รายการที่พร้อมเข้าประมูลเสนอราคา</div>
+            
+            <!-- แผงงานที่กำลังดำเนินการของรถม้วน -->
+            <div id="buyer-active-jobs-container"></div>
+
             <div id="buyer-list-container"></div>
         </div>
 
@@ -150,8 +215,42 @@
         let isEditMode = false; let isBuyerEditMode = false;
         let buyerNameContext = ""; let buyerPhoneContext = "";
         let globalSalesData = [];
+
         let buyerMapObj; let buyerMarkers = {}; let buyerPolygonLayer = L.featureGroup(); 
         let rawBuyerData = []; let clusterDataMap = {}; 
+        
+        let compressedFieldPhoto = ""; // ตัวแปรเก็บรูปภาพแปลงอ้อย
+
+        // ฟังก์ชันบีบอัดรูปภาพ (Image Compression) ป้องกัน Google Sheets ค้าง
+        function compressImage(file, callback) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = event => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 600; // ย่อขนาดความกว้าง
+                    const scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scaleSize;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    callback(canvas.toDataURL('image/jpeg', 0.6)); // บีบอัด 60%
+                }
+            }
+        }
+
+        function previewFieldPhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                compressImage(file, (base64) => {
+                    compressedFieldPhoto = base64;
+                    document.getElementById('field-photo-preview').src = base64;
+                    document.getElementById('field-photo-preview').style.display = 'block';
+                });
+            }
+        }
 
         async function main() {
             try {
@@ -177,18 +276,33 @@
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "checkUser", userId: userProfile.userId }) });
                 const result = await res.json();
                 if (result.status === "found") {
-                    isEditMode = true; document.getElementById("profile-info").innerText = "คุณ " + result.data.firstName + " " + result.data.lastName;
-                    document.getElementById("reg-firstname").value = result.data.firstName; document.getElementById("reg-lastname").value = result.data.lastName; document.getElementById("reg-phone").value = result.data.phone; document.getElementById("reg-address").value = result.data.address; document.getElementById("reg-farminfo").value = result.data.farmInfo;
-                    document.getElementById("btn-register").innerText = "บันทึกการแก้ไขข้อมูล"; document.getElementById("reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว สามารถแก้ไขข้อมูลด้านล่างได้เลยครับ"; document.getElementById("reg-status-box").style.backgroundColor = "#e3f2fd"; document.getElementById("reg-status-box").style.color = "#1565c0";
+                    isEditMode = true; 
+                    let d = result.data;
+                    document.getElementById("profile-info").innerText = "คุณ " + d.firstName + " " + d.lastName;
+                    
+                    document.getElementById("reg-prefix").value = d.prefix; document.getElementById("reg-firstname").value = d.firstName; document.getElementById("reg-lastname").value = d.lastName;
+                    if(d.dob) document.getElementById("reg-dob").value = d.dob.split('T')[0];
+                    document.getElementById("reg-no").value = d.addressNo; document.getElementById("reg-moo").value = d.moo; document.getElementById("reg-subdist").value = d.subDist; 
+                    document.getElementById("reg-dist").value = d.dist; document.getElementById("reg-prov").value = d.prov; document.getElementById("reg-zip").value = d.zip;
+                    document.getElementById("reg-phone").value = d.phone; document.getElementById("reg-farminfo").value = d.farmInfo;
+                    
+                    document.getElementById("btn-register").innerText = "บันทึกการแก้ไขข้อมูล"; 
+                    document.getElementById("reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว สามารถแก้ไขข้อมูลด้านล่างได้เลยครับ"; document.getElementById("reg-status-box").style.backgroundColor = "#e3f2fd"; document.getElementById("reg-status-box").style.color = "#1565c0";
                 } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; }
             } catch (error) { console.error(error); }
         }
 
         async function submitRegistration() {
-            const fName = document.getElementById("reg-firstname").value; const lName = document.getElementById("reg-lastname").value; const phone = document.getElementById("reg-phone").value; const address = document.getElementById("reg-address").value; const farmInfo = document.getElementById("reg-farminfo").value;
-            if(!fName || !lName || !phone || !address) { Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกข้อมูลส่วนตัวให้ครบถ้วนครับ', 'warning'); return; }
+            const payload = { 
+                action: isEditMode ? "updateUser" : "register", userId: userProfile.userId, lineName: userProfile.displayName, 
+                prefix: document.getElementById("reg-prefix").value, firstName: document.getElementById("reg-firstname").value, lastName: document.getElementById("reg-lastname").value, dob: document.getElementById("reg-dob").value,
+                addressNo: document.getElementById("reg-no").value, moo: document.getElementById("reg-moo").value, subDist: document.getElementById("reg-subdist").value,
+                dist: document.getElementById("reg-dist").value, prov: document.getElementById("reg-prov").value, zip: document.getElementById("reg-zip").value,
+                phone: document.getElementById("reg-phone").value, farmInfo: document.getElementById("reg-farminfo").value
+            };
+            if(!payload.firstName || !payload.phone || !payload.prov) { Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกข้อมูลสำคัญให้ครบถ้วนครับ', 'warning'); return; }
+            
             const btn = document.getElementById("btn-register"); btn.innerText = "กำลังบันทึกข้อมูล..."; btn.disabled = true;
-            const payload = { action: isEditMode ? "updateUser" : "register", userId: userProfile.userId, lineName: userProfile.displayName, firstName: fName, lastName: lName, phone: phone, address: address, farmInfo: farmInfo };
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
                 if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: isEditMode ? 'อัปเดตข้อมูลแล้ว' : 'ลงทะเบียนสำเร็จ!', confirmButtonColor: '#7cb342' }).then(() => { liff.closeWindow(); }); }
@@ -218,7 +332,7 @@
             } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบค้นหาได้', 'error'); }
         }
 
-        // ================= ระบบการขายของฉัน และแจ้งปิดคิวปิดงาน =================
+        // ================= ระบบการขายของฉัน (เพิ่มปุ่มชาวไร่กดยืนยันปิดงาน) =================
         async function fetchSalesData() {
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "getSales", userId: userProfile.userId }) });
@@ -228,8 +342,10 @@
         }
 
         function renderSalesUI(salesData) {
-            const currentContainer = document.getElementById("current-sales-container"); const historyContainer = document.getElementById("history-sales-container");
+            const currentContainer = document.getElementById("current-sales-container"); 
+            const historyContainer = document.getElementById("history-sales-container");
             const dashboardContainer = document.getElementById("farmer-dashboard-container");
+
             currentContainer.innerHTML = ""; historyContainer.innerHTML = "";
             let sumRai = 0; let sumTon = 0; let sumIncome = 0; let sumPM25 = 0;
 
@@ -241,53 +357,49 @@
                 
                 let badgeClass = "pending"; let statusText = item.status === "Pending" ? "รอรับงาน" : item.status;
                 if (statusText === "รอชาวไร่ยืนยัน") badgeClass = "waiting";
-                if (statusText.includes("กำลัง")) badgeClass = "processing"; 
+                if (statusText === "กำลังดำเนินการ") badgeClass = "processing"; 
+                if (statusText === "รอชาวไร่ตรวจสอบ") badgeClass = "verify"; // สถานะใหม่: รถม้วนอัปโหลดชั่งน้ำหนักแล้ว รอชาวไร่กด OK
                 if (statusText.includes("เสร็จ")) badgeClass = "completed"; 
                 if (statusText.includes("ยกเลิก")) badgeClass = "canceled";
 
-                // ดึงสถิติจากผลงานที่สำเร็จจริง (Completed)
                 if (badgeClass === "completed") {
-                    let rai = parseFloat(item.actualQty) || 0;
-                    let ton = parseFloat(item.actualWeight) || 0;
-                    let priceMatch = item.price ? item.price.toString().match(/\d+/g) : null;
-                    let pricePerTon = priceMatch ? parseFloat(priceMatch.join('')) : 0;
+                    let rai = parseFloat(item.actualQty) || 0; let ton = parseFloat(item.actualWeight) || 0;
+                    let priceMatch = item.price ? item.price.toString().match(/\d+/g) : null; let pricePerTon = priceMatch ? parseFloat(priceMatch.join('')) : 0;
                     sumRai += rai; sumTon += ton; sumIncome += (ton * pricePerTon); sumPM25 += (ton * 3.0);
                 }
 
                 let cardHTML = `
                     <div class="sale-card">
-                        <div class="sale-header"><span class="sale-date">📅 แจ้งเมื่อ: ${reqDate}</span><span class="badge ${badgeClass}">${statusText}</span></div>
+                        <div class="sale-header"><span class="sale-date">📅 แจ้งเมื่อ: ${reqDate}</span><span class="badge ${badgeClass}">${statusText === "รอชาวไร่ตรวจสอบ" ? "รอคุณยืนยันปิดงาน" : statusText}</span></div>
                         <div class="sale-detail">
                             <div>ปริมาณประเมิน: <span>${item.quantity} ไร่</span></div>
                             <div>วันที่พร้อมเข้าม้วน: <span>${hDate}</span></div>`;
                 
                 if (badgeClass === "waiting" && item.offers && item.offers.length > 0) {
                     cardHTML += `<div style="color:#d97706; font-weight:bold; margin-top:5px;">⚠️ มีผู้เสนอราคาเข้ามารับงาน ${item.offers.length} ราย</div>`;
-                } else if (badgeClass === "processing" || badgeClass === "completed") {
+                } else if (badgeClass === "processing" || badgeClass === "verify" || badgeClass === "completed") {
                     cardHTML += `<div>ผู้รับซื้อ: <span>${item.buyer}</span></div><div>ราคาที่ตกลง: <span style="color:#2e7d32">${item.price}</span></div>`;
-                    if(badgeClass === "completed") {
-                        cardHTML += `<div style="margin-top:5px; padding-top:5px; border-top:1px dashed #eee; font-size:12px; color:#555;">🌾 ไร่จริง: <b>${item.actualQty} ไร่</b> | ⚖️ น้ำหนักจริง: <b>${item.actualWeight}</b></div>`;
+                    if(badgeClass === "verify" || badgeClass === "completed") {
+                        cardHTML += `<div style="margin-top:5px; padding-top:5px; border-top:1px dashed #eee; font-size:12px; color:#555;">🌾 ไร่จริง: <b>${item.actualQty} ไร่</b> | ⚖️ น้ำหนักจริง: <b>${item.actualWeight} ตัน</b></div>`;
                     }
                 }
                 cardHTML += `</div>`;
                 
-                // การสับเปลี่ยนแถบปุ่มกดตามเงื่อนไข (เพิ่มระบบเคลียร์หลักฐานสำหรับงานสถานะ กำลังดำเนินการ)
+                // ปุ่มกดสับเปลี่ยนตามสถานะของฝั่งคนขาย
                 if (statusText === "รอชาวไร่ยืนยัน") {
                     cardHTML += `
                         <div style="display:flex; gap:10px; margin-top:12px;">
                             <button onclick="viewOffers(${index})" style="margin-top:0; flex:1; padding:10px; background-color:#f5f5f5; color:#555; border:1px solid #ccc; border-radius:8px; font-weight:600; font-size:14px; font-family:'Kanit';">🔎 ดูแปลง</button>
                             <button onclick="viewOffers(${index})" style="margin-top:0; flex:2; padding:10px; background-color:#7cb342; color:white; border:none; border-radius:8px; font-weight:600; font-size:14px; font-family:'Kanit';">✔️ เลือกผู้ซื้อ</button>
                         </div>`;
-                } else if (statusText === "กำลังดำเนินการ") {
-                    cardHTML += `
-                        <div style="display:flex; gap:10px; margin-top:12px;">
-                            <button onclick="viewSaleDetails(${index})" style="margin-top:0; flex:1; padding:10px; background-color:#f5f5f5; color:#2e7d32; border:1px solid #a5d6a7; border-radius:8px; font-weight:600; font-size:14px; font-family:'Kanit';">🔎 ดูสัญญา</button>
-                            <button onclick="openCloseJobModal(${item.row}, ${item.quantity})" style="margin-top:0; flex:2; padding:10px; background-color:#1565c0; color:white; border:none; border-radius:8px; font-weight:600; font-size:14px; font-family:'Kanit'; box-shadow:0 4px 8px rgba(21,101,192,0.2);">📸 ถ่ายรูปปิดงาน</button>
-                        </div>`;
+                } else if (statusText === "รอชาวไร่ตรวจสอบ") {
+                    // ปุ่มใหม่: ชาวไร่กดเข้าไปดูบิลชั่งน้ำหนักที่รถม้วนอัปโหลด แล้วกดยืนยันปิดบัญชี
+                    cardHTML += `<button onclick="farmerVerifyCloseJob(${index})" style="margin-top:12px; width:100%; padding:10px; background-color:#4a148c; color:white; border:none; border-radius:8px; font-weight:600; font-size:15px; cursor:pointer; font-family:'Kanit'; box-shadow:0 4px 8px rgba(74,20,140,0.3);">📝 ตรวจสอบหลักฐานและปิดงาน</button>`;
                 } else if (badgeClass !== "completed" && badgeClass !== "canceled") {
-                    cardHTML += `<button onclick="viewSaleDetails(${index})" style="margin-top:12px; width:100%; padding:8px; background-color:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer; font-family:'Kanit';">🔍 ดูรายละเอียดเพิ่มเติม & แผนที่</button>`;
+                    cardHTML += `<button onclick="viewSaleDetails(${index})" style="margin-top:12px; width:100%; padding:8px; background-color:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer; font-family:'Kanit';">🔍 ดูรายละเอียดเพิ่มเติม</button>`;
                 }
                 cardHTML += `</div>`;
+                
                 if (badgeClass === "completed" || badgeClass === "canceled") { historyContainer.innerHTML += cardHTML; } else { currentContainer.innerHTML += cardHTML; }
             });
             
@@ -315,55 +427,40 @@
             dashboardContainer.style.display = "block";
         }
 
-        // หน้าต่างอัปโหลดรูปและกรอกน้ำหนักจริงเพื่อแจ้งปิดงาน (เพิ่มใหม่)
-        async function openCloseJobModal(rowId, estQty) {
+        // หน้าต่างให้ชาวไร่ดูใบชั่งน้ำหนักที่รถอัปโหลดมา และกดยืนยันปิดงาน
+        function farmerVerifyCloseJob(index) {
+            let item = globalSalesData[index];
+            let priceMatch = item.price ? item.price.toString().match(/\d+/g) : null; 
+            let pricePerTon = priceMatch ? parseFloat(priceMatch.join('')) : 0;
+            let totalIncome = (item.actualWeight * pricePerTon).toLocaleString('th-TH');
+            
+            let imgHTML = item.closeProof && item.closeProof.length > 50 ? `<img src="${item.closeProof}" style="width:100%; border-radius:8px; margin-top:10px; border:1px solid #ddd;">` : `<div style="padding:20px; background:#eee; text-align:center; border-radius:8px; margin-top:10px;">ไม่พบรูปภาพหลักฐาน</div>`;
+
             Swal.fire({
-                title: '📸 ส่งหลักฐานปิดงานหน้างาน',
+                title: 'ตรวจสอบหลักฐานรับซื้อ',
                 html: `
                     <div style="text-align:left; font-family:'Kanit'; font-size:14px; color:#444;">
-                        <label style="margin-top:0;">🌾 1. จำนวนไร่ที่เก็บได้จริง:</label>
-                        <input type="number" id="close-actual-qty" value="${estQty}" step="0.1" style="margin-bottom:12px; padding:10px;">
-                        
-                        <label>⚖️ 2. น้ำหนักใบอ้อยรวมจริง (ตัน):</label>
-                        <input type="number" id="close-actual-weight" placeholder="เช่น 12.5 (ดูจากใบชั่งน้ำหนัก)" step="0.1" style="margin-bottom:12px; padding:10px;">
-                        
-                        <label>📸 3. ถ่ายรูปแปลง/อัปโหลดใบชั่งน้ำหนักประกอบ:</label>
-                        <input type="file" id="close-photo" accept="image/*" style="border:none; padding:5px; margin-top:5px;">
-                    </div>`,
-                showCancelButton: true, confirmButtonText: '🚀 ยืนยันปิดงานส่งหลักฐาน', cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: '#1565c0', cancelButtonColor: '#777',
-                preConfirm: () => {
-                    const actualQty = document.getElementById('close-actual-qty').value;
-                    const actualWeight = document.getElementById('close-actual-weight').value;
-                    const photoFile = document.getElementById('close-photo').files[0];
-
-                    if (!actualQty || actualQty <= 0 || !actualWeight || actualWeight <= 0) {
-                        Swal.showValidationMessage('กรุณากรอกจำนวนไร่จริง และน้ำหนักจริงให้ครบถ้วนครับ'); return false;
-                    }
-                    if (!photoFile) {
-                        Swal.showValidationMessage('กรุณาถ่ายภาพหรืออัปโหลดรูปภาพหลักฐานหน้างานด้วยครับ'); return false;
-                    }
-                    return { actualQty, actualWeight, photoUploaded: true };
-                }
+                        <div style="background:#f1f8e9; padding:10px; border-radius:8px; border:1px solid #7cb342; margin-bottom:15px;">
+                            <b>ผู้รับซื้อ:</b> ${item.buyer}<br>
+                            <b>พื้นที่เก็บเกี่ยวจริง:</b> ${item.actualQty} ไร่<br>
+                            <b style="color:#d97706; font-size:16px;">น้ำหนักสุทธิ: ${item.actualWeight} ตัน</b><br>
+                            <b style="color:#2e7d32; font-size:16px;">รายรับที่จะได้รับ: ${totalIncome} บาท</b>
+                        </div>
+                        <b>📸 ภาพถ่ายใบชั่งน้ำหนัก / หน้างาน:</b>
+                        ${imgHTML}
+                        <div style="margin-top:15px; font-size:13px; color:#c0392b;">*หากกดยืนยันแล้ว ข้อมูลจะถูกบันทึกเข้าระบบเพื่อสะสมแต้มและไม่สามารถแก้ไขได้อีก</div>
+                    </div>
+                `,
+                showCancelButton: true, confirmButtonText: '✔️ ข้อมูลถูกต้อง ยืนยันปิดการขาย', cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: '#7cb342', cancelButtonColor: '#777'
             }).then(async (result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({ title: 'กำลังประมวลผลระบบบัญชี...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+                if(result.isConfirmed) {
+                    Swal.fire({ title: 'กำลังปิดระบบบัญชี...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
                     try {
-                        const res = await fetch(GAS_WEB_APP_URL, {
-                            method: "POST",
-                            body: JSON.stringify({
-                                action: "closeJob", row: rowId,
-                                actualQty: Number(result.value.actualQty),
-                                actualWeight: Number(result.value.actualWeight),
-                                photoUploaded: true
-                            })
-                        });
+                        const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "farmerConfirmClose", row: item.row }) });
                         const data = await res.json();
-                        if (data.status === "success") {
-                            Swal.fire('ปิดงานสำเร็จ!', 'ระบบบันทึกหลักฐานหน้างาน น้ำหนักจริง และพื้นที่จริงเข้าสู่ระบบตรวจสอบแต้ม The 1 แล้วครับ', 'success')
-                            .then(() => { fetchSalesData(); }); // รีเฟรชหน้ารายการ
-                        }
-                    } catch(e) { Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์หลักได้', 'error'); }
+                        if (data.status === "success") { Swal.fire('สำเร็จ!', 'ยืนยันปิดการขายเรียบร้อยแล้ว รายได้และแต้มรักษ์โลกอัปเดตเข้าบัญชีคุณแล้วครับ', 'success').then(() => { fetchSalesData(); }); }
+                    } catch(e) { Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'error'); }
                 }
             });
         }
@@ -371,8 +468,8 @@
         function viewOffers(index) {
             let item = globalSalesData[index];
             let offersHTML = `<div style="text-align:left; font-family:'Kanit';">`;
-            offersHTML += `<b style="color:#7cb342; font-size:15px;">ตรวจสอบพิกัดแปลงอ้อย:</b><div id="swal-map" class="swal-map-container" style="margin-bottom:15px;"></div><hr style="border:0; border-top:1px dashed #ccc; margin-bottom:15px;">`;
             offersHTML += `<b style="font-size:16px;">รายชื่อรถม้วนที่เสนอซื้อ (${item.quantity} ไร่)</b><br><br>`;
+            
             if (item.offers && item.offers.length > 0) {
                 item.offers.forEach((offer) => {
                     offersHTML += `
@@ -383,19 +480,7 @@
                 });
             } else { offersHTML += `<i>ยังไม่มีข้อมูลการเสนอราคา</i>`; }
             offersHTML += `</div>`;
-            Swal.fire({
-                title: 'เลือกผู้มารับซื้อ', html: offersHTML, showConfirmButton: false, showCancelButton: true, cancelButtonText: 'ปิดหน้าต่าง',
-                didOpen: () => {
-                    let googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 });
-                    let sMap = L.map('swal-map', { zoomControl: false, layers: [googleHybrid] }).setView([item.lat, item.lon], 16);
-                    if (item.polygon && item.polygon !== "") {
-                        try {
-                            let coords = JSON.parse(item.polygon); let flippedCoords = coords[0].map(p => [p[1], p[0]]); let polygon = L.polygon(flippedCoords, { color: '#7cb342', fillOpacity: 0.4 }).addTo(sMap); sMap.fitBounds(polygon.getBounds(), { padding: [10, 10] });
-                        } catch(e) {}
-                    } else { L.marker([item.lat, item.lon]).addTo(sMap); }
-                    setTimeout(() => { sMap.invalidateSize(); }, 100);
-                }
-            });
+            Swal.fire({ title: 'เลือกผู้มารับซื้อ', html: offersHTML, showConfirmButton: false, showCancelButton: true, cancelButtonText: 'ปิดหน้าต่าง' });
         }
 
         async function confirmSaleOffer(rowId, bName, bPhone, bPrice) {
@@ -413,9 +498,11 @@
         function viewSaleDetails(index) {
             let item = globalSalesData[index]; let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
             let phoneLink = item.buyerPhone !== "-" ? `<a href="tel:${item.buyerPhone}" style="color:#2e7d32; font-weight:bold; text-decoration:none;">📞 ${item.buyerPhone}</a>` : "รอผู้รับซื้อระบุ";
+            let imgField = item.fieldPhoto && item.fieldPhoto.length > 50 ? `<img src="${item.fieldPhoto}" style="width:100%; border-radius:8px; margin-top:5px; border:1px solid #ddd;">` : "";
+
             Swal.fire({
                 title: 'รายละเอียดการแจ้งคิวรถ',
-                html: `<div style="text-align:left; font-family:'Kanit'; font-size:14px; line-height:1.8; color:#444;"><b>สถานะปัจจุบัน:</b> <span style="color:#004085; font-weight:bold;">${item.status === "Pending" ? "รอรถรับงาน" : item.status}</span><br><b>ปริมาณพื้นที่:</b> ${item.quantity} ไร่<br><b>กำหนดตัดเสร็จ:</b> ${hDate}<br><hr style="margin:10px 0; border:0; border-top:1px dashed #ccc;"><b>ผู้เสนอซื้อ:</b> ${item.buyer}<br><b>เบอร์โทรติดต่อ:</b> ${phoneLink}<br><b>ราคาประเมิน:</b> ${item.price}<br><hr style="margin:10px 0; border:0; border-top:1px dashed #ccc;"><b style="color:#7cb342;">ขอบเขตแปลงอ้อย:</b><div id="swal-map" class="swal-map-container"></div></div>`,
+                html: `<div style="text-align:left; font-family:'Kanit'; font-size:14px; line-height:1.8; color:#444;"><b>สถานะปัจจุบัน:</b> <span style="color:#004085; font-weight:bold;">${item.status === "Pending" ? "รอรถรับงาน" : item.status}</span><br><b>ปริมาณพื้นที่:</b> ${item.quantity} ไร่<br><b>กำหนดตัดเสร็จ:</b> ${hDate}<br><hr style="margin:10px 0; border:0; border-top:1px dashed #ccc;"><b>ผู้เสนอซื้อ:</b> ${item.buyer}<br><b>เบอร์โทรติดต่อ:</b> ${phoneLink}<br><b>ราคาประเมิน:</b> ${item.price}<br><hr style="margin:10px 0; border:0; border-top:1px dashed #ccc;"><b style="color:#7cb342;">แผนที่และสภาพแปลง:</b>${imgField}<div id="swal-map" class="swal-map-container"></div></div>`,
                 confirmButtonText: 'ปิดหน้าต่าง', confirmButtonColor: '#7cb342',
                 didOpen: () => {
                     let googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 });
@@ -428,6 +515,7 @@
             });
         }
 
+        // --- ส่วนวาดแผนที่แจ้งพิกัด ---
         function renderMap(lat, lng) {
             if(!map) {
                 var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }); var googleStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20 });
@@ -435,7 +523,7 @@
                 var baseMaps = { "🛰️ แผนที่ดาวเทียม": googleHybrid, "🗺️ แผนที่ถนนปกติ": googleStreets }; L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
                 map.pm.addControls({ position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, dragMode: false, cutPolygon: false, removalMode: true });
                 map.on('pm:create', function(e) { if (drawnPolygon) drawnPolygon.remove(); drawnPolygon = e.layer; calculateArea(drawnPolygon); drawnPolygon.on('pm:edit', function() { calculateArea(drawnPolygon); }); });
-                map.on('pm:remove', function(e) { drawnPolygon = null; polygonGeoJSON = ""; });
+                map.on('pm:remove', function(e) { drawnPolygon = null; polygonGeoJSON = ""; document.getElementById("quantity").value = ""; });
             } else { map.setView([lat, lng], 16); }
             document.getElementById("submit-btn").disabled = false;
         }
@@ -454,34 +542,50 @@
             const qty = document.getElementById("quantity").value; const hDate = document.getElementById("harvest-date").value;
             if(!drawnPolygon) { Swal.fire('ลืมวาดแปลงอ้อย', 'กรุณาวาดขอบเขตแปลงอ้อยในแผนที่ก่อนครับ', 'warning'); return; }
             if(!hDate) { Swal.fire('ลืมระบุวันที่', 'กรุณาระบุวันที่คาดว่าจะตัดอ้อยเสร็จด้วยนะครับ', 'warning'); return; }
+            if(!compressedFieldPhoto) { Swal.fire('ข้อแนะนำ', 'กรุณาอัปโหลดรูปสภาพแปลงใบอ้อย เพื่อให้รถม้วนประเมินงานได้ง่ายขึ้นครับ', 'info'); return; }
+            
             const btn = document.getElementById("submit-btn"); btn.innerText = "กำลังจัดส่งข้อมูล..."; btn.disabled = true;
-            const payload = { action: "report_harvest", userId: userProfile.userId, userName: document.getElementById("profile-info").innerText.replace("คุณ ", ""), latitude: currentLat, longitude: currentLng, quantity: Number(qty), harvestDate: hDate, polygon: polygonGeoJSON };
+            const payload = { action: "report_harvest", userId: userProfile.userId, userName: document.getElementById("profile-info").innerText.replace("คุณ ", ""), latitude: currentLat, longitude: currentLng, quantity: Number(qty), harvestDate: hDate, polygon: polygonGeoJSON, fieldPhoto: compressedFieldPhoto };
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
-                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ระบบได้รับพิกัดของคุณเรียบร้อยแล้ว', confirmButtonColor: '#7cb342' }).then(() => { liff.closeWindow(); }); }
+                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ระบบได้รับพิกัดและรูปแปลงของคุณเรียบร้อยแล้ว', confirmButtonColor: '#7cb342' }).then(() => { liff.closeWindow(); }); }
             } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถส่งข้อมูลได้', 'error'); } finally { btn.innerText = "ส่งข้อมูลแจ้งคิวรถ"; btn.disabled = false; }
         }
 
-        // ================= โหมดผู้รับซื้อ =================
+        // ================= โหมดผู้รับซื้อ (จัดกลุ่ม & อัปโหลดน้ำหนักปิดงาน) =================
         async function checkBuyerForRegister() {
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "checkBuyer", userId: userProfile.userId }) });
                 const result = await res.json();
                 if (result.status === "found") {
-                    isBuyerEditMode = true; document.getElementById("profile-info").innerText = "คุณ " + result.data.fullName;
-                    document.getElementById("buyer-fullname").value = result.data.fullName; document.getElementById("buyer-phone").value = result.data.phone; document.getElementById("buyer-vehicle").value = result.data.vehicleInfo;
+                    isBuyerEditMode = true; 
+                    let d = result.data;
+                    document.getElementById("profile-info").innerText = "คุณ " + d.fullName;
+                    
+                    document.getElementById("buyer-prefix").value = d.prefix; document.getElementById("buyer-firstname").value = d.firstName; document.getElementById("buyer-lastname").value = d.lastName;
+                    if(d.dob) document.getElementById("buyer-dob").value = d.dob.split('T')[0];
+                    document.getElementById("buyer-no").value = d.addressNo; document.getElementById("buyer-moo").value = d.moo; document.getElementById("buyer-subdist").value = d.subDist; 
+                    document.getElementById("buyer-dist").value = d.dist; document.getElementById("buyer-prov").value = d.prov; document.getElementById("buyer-zip").value = d.zip;
+                    document.getElementById("buyer-phone").value = d.phone; document.getElementById("buyer-vehicle").value = d.vehicleInfo;
+                    
                     document.getElementById("btn-buyer-register").innerText = "บันทึกการแก้ไขข้อมูล";
-                    document.getElementById("buyer-reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนรถม้วนแล้ว สามารถแก้ไขข้อมูลได้เลยครับ";
-                    document.getElementById("buyer-reg-status-box").style.backgroundColor = "#e3f2fd"; document.getElementById("buyer-reg-status-box").style.color = "#1565c0";
+                    document.getElementById("buyer-reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนรถม้วนแล้ว สามารถแก้ไขข้อมูลได้เลยครับ"; document.getElementById("buyer-reg-status-box").style.backgroundColor = "#e3f2fd"; document.getElementById("buyer-reg-status-box").style.color = "#1565c0";
                 } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; }
             } catch (error) { console.error(error); }
         }
 
         async function submitBuyerRegistration() {
-            const fName = document.getElementById("buyer-fullname").value; const phone = document.getElementById("buyer-phone").value; const vInfo = document.getElementById("buyer-vehicle").value;
-            if(!fName || !phone) { Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกชื่อและเบอร์โทรศัพท์ครับ', 'warning'); return; }
+            const payload = { 
+                action: isBuyerEditMode ? "updateBuyer" : "registerBuyer", userId: userProfile.userId, lineName: userProfile.displayName, 
+                prefix: document.getElementById("buyer-prefix").value, firstName: document.getElementById("buyer-firstname").value, lastName: document.getElementById("buyer-lastname").value, dob: document.getElementById("buyer-dob").value,
+                addressNo: document.getElementById("buyer-no").value, moo: document.getElementById("buyer-moo").value, subDist: document.getElementById("buyer-subdist").value,
+                dist: document.getElementById("buyer-dist").value, prov: document.getElementById("buyer-prov").value, zip: document.getElementById("buyer-zip").value,
+                phone: document.getElementById("buyer-phone").value, vehicleInfo: document.getElementById("buyer-vehicle").value,
+                fullName: document.getElementById("buyer-prefix").value + document.getElementById("buyer-firstname").value + " " + document.getElementById("buyer-lastname").value
+            };
+            if(!payload.firstName || !payload.phone || !payload.prov) { Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกข้อมูลสำคัญให้ครบถ้วนครับ', 'warning'); return; }
             const btn = document.getElementById("btn-buyer-register"); btn.innerText = "กำลังบันทึกข้อมูล..."; btn.disabled = true;
-            const payload = { action: isBuyerEditMode ? "updateBuyer" : "registerBuyer", userId: userProfile.userId, lineName: userProfile.displayName, fullName: fName, phone: phone, vehicleInfo: vInfo };
+            
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
                 if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: isBuyerEditMode ? 'อัปเดตข้อมูลแล้ว' : 'ลงทะเบียนเครือข่ายรถม้วนสำเร็จ!', confirmButtonColor: '#8e24aa' }).then(() => { liff.closeWindow(); }); }
@@ -505,9 +609,13 @@
         }
 
         async function fetchBuyerRawData() {
-            if(!buyerMapObj) { var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }); buyerMapObj = L.map('buyer-map', { center: [17.295, 101.782], zoom: 10, layers: [googleHybrid] }); }
+            if(!buyerMapObj) {
+                var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 });
+                buyerMapObj = L.map('buyer-map', { center: [17.295, 101.782], zoom: 10, layers: [googleHybrid] });
+            }
             try {
-                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "getBuyerMap" }) }); const result = await res.json();
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "getBuyerMap", buyerName: buyerNameContext }) });
+                const result = await res.json();
                 if (result.status === "success") { rawBuyerData = result.data; updateClusterLogic(); }
             } catch (error) { console.error("Load map error", error); }
         }
@@ -518,16 +626,47 @@
             var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); return R * c;
         }
 
+        // ระบบของฝั่งคนซื้อ (โชว์ลิสต์งาน + แผงปิดงาน)
         function updateClusterLogic() {
             let maxDist = parseInt(document.getElementById("slider-dist").value); let maxDays = parseInt(document.getElementById("slider-days").value);
             document.getElementById("val-dist").innerText = maxDist + " กม."; document.getElementById("val-days").innerText = maxDays + " วัน";
-            buyerPolygonLayer.clearLayers(); document.getElementById('buyer-list-container').innerHTML = ''; buyerMarkers = {}; clusterDataMap = {};
-            const listContainer = document.getElementById("buyer-list-container");
-            if(rawBuyerData.length === 0) { listContainer.innerHTML = "<div class='empty-state'>✅ ขณะนี้ไม่มีรายการรอรับซื้อในระบบครับ</div>"; return; }
+            
+            buyerPolygonLayer.clearLayers(); document.getElementById('buyer-list-container').innerHTML = ''; document.getElementById('buyer-active-jobs-container').innerHTML = '';
+            buyerMarkers = {}; clusterDataMap = {};
+            const listContainer = document.getElementById("buyer-list-container"); const activeContainer = document.getElementById("buyer-active-jobs-container");
+            
+            if(rawBuyerData.length === 0) { listContainer.innerHTML = "<div class='empty-state'>✅ ขณะนี้ไม่มีรายการในระบบครับ</div>"; return; }
 
-            let premiumSingles = []; let unassigned = []; let dynamicClusters = [];
-            rawBuyerData.forEach(p => { p.assigned = false; if (p.qty >= 100) { p.assigned = true; premiumSingles.push(p); } else { unassigned.push(p); } });
+            let premiumSingles = []; let unassigned = []; let dynamicClusters = []; let activeJobs = [];
+            
+            rawBuyerData.forEach(p => { 
+                p.assigned = false; 
+                // คัดแยกงานที่ตัวเองรับไปแล้วมากองไว้ด้านบน (กำลังดำเนินการ)
+                if(p.status === "กำลังดำเนินการ") { activeJobs.push(p); }
+                else if (p.qty >= 100) { p.assigned = true; premiumSingles.push(p); } 
+                else { unassigned.push(p); } 
+            });
 
+            // วาดงานที่ตัวเองรับผิดชอบอยู่ เพื่อให้คนขับรถกดแจ้งน้ำหนักปิดงานได้
+            if(activeJobs.length > 0) {
+                activeContainer.innerHTML = `<div class="section-title buyer-section-title" style="margin-top: 5px; color:#1565c0; border-color:#1565c0;">🚚 งานของฉันที่กำลังดำเนินการ</div>`;
+                activeJobs.forEach(item => {
+                    let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
+                    activeContainer.innerHTML += `
+                        <div class="sale-card" style="border-left: 5px solid #1565c0; background:#e3f2fd;">
+                            <div class="sale-header"><span style="font-weight:600; color:#333;">👨‍🌾 คุณ ${item.farmerName}</span><span class="badge processing">กำลังดำเนินการ</span></div>
+                            <div class="sale-detail"><div>เป้าหมาย: <span style="color:#1565c0; font-size:16px;">${item.qty} ไร่</span></div><div>วันนัดหมาย: <span>${hDate}</span></div></div>
+                            <div style="display:flex; gap:10px; margin-top:10px;">
+                                <button onclick="viewOnMap(${item.row}, ${item.lat}, ${item.lon})" style="flex:1; padding:8px; background-color:#fff; color:#1565c0; border:1px solid #90caf9; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">📍 นำทาง</button>
+                                <button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" style="flex:2; padding:8px; background-color:#1565c0; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">📸 แจ้งปิดงาน</button>
+                            </div>
+                        </div>`;
+                        // วาดหมุดสีน้ำเงินในแผนที่
+                        drawMarkerOnMap(item, '#1565c0', true);
+                });
+            }
+
+            // ระบบจัดกลุ่มงานใหม่ที่รอประมูล (ใช้โค้ดเดิม)
             let clusterCounter = 1;
             for (let i = 0; i < unassigned.length; i++) {
                 if (unassigned[i].assigned) continue;
@@ -543,10 +682,11 @@
             }
             let singles = unassigned.filter(p => !p.assigned);
 
+            // ... (โค้ดวาด premiumSingles, dynamicClusters, singles ลงใน listContainer ทำงานเหมือนเดิม)
             if (premiumSingles.length > 0) {
-                listContainer.innerHTML += `<div class="section-title buyer-section-title" style="margin-top: 5px; color:#4caf50; border-color:#4caf50;">👑 แปลงเดี่ยวสุดคุ้ม (ไม่ต้องรวมกลุ่ม)</div>`;
+                listContainer.innerHTML += `<div class="section-title buyer-section-title" style="margin-top: 25px; color:#4caf50; border-color:#4caf50;">👑 แปลงเดี่ยวสุดคุ้ม (ไม่ต้องรวมกลุ่ม)</div>`;
                 premiumSingles.forEach(item => {
-                    drawMarkerOnMap(item, '#4caf50'); let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
+                    drawMarkerOnMap(item, '#4caf50', false); let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
                     let offerStatus = item.offerCount > 0 ? `<div style="color:#d97706; font-size:12px; font-weight:bold; margin-top:5px;">⚠️ แข่งขัน: มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : "";
                     listContainer.innerHTML += `<div class="sale-card" style="border-left: 5px solid #4caf50;"><div class="sale-header"><span style="font-weight:600; color:#333;">👨‍🌾 คุณ ${item.farmerName}</span></div><div class="sale-detail"><div>ปริมาณ: <span style="color:#2e7d32; font-size:16px;">${item.qty} ไร่</span></div><div>วันที่พร้อมเข้าม้วน: <span>${hDate}</span></div>${offerStatus}</div><div style="display:flex; gap:10px; margin-top:10px;"><button onclick="viewOnMap(${item.row}, ${item.lat}, ${item.lon})" style="flex:1; padding:8px; background-color:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">📍 ดูแผนที่</button><button onclick="acceptJob(${item.row})" style="flex:2; padding:8px; background-color:#4caf50; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">เสนอราคาแปลงนี้</button></div></div>`;
                 });
@@ -561,7 +701,7 @@
 
                     let clusterHTML = `<div class="cluster-group"><div class="cluster-title"><i>🚚</i> โซนรวบรวม ${cData.id}</div><div style="font-size:13px; color:#666; margin-bottom:10px; background:white; padding:8px; border-radius:8px;"><div>📍 ห่างกันไม่เกิน <b>${maxDist} กม.</b></div><div>🗓️ วันตัดห่างกัน <b>${diffDays} วัน</b> (${d1} - ${d2})</div><div style="font-size:15px; margin-top:5px;">📦 รวมพื้นที่: <b style="color:#2e7d32;">${cData.totalRai} ไร่</b></div></div><button onclick="acceptClusterJob('${cData.id}')" style="width:100%; padding:12px; margin-bottom:15px; background-color:#f1c40f; color:#856404; border:none; border-radius:8px; font-weight:600; font-size:15px; cursor:pointer; box-shadow:0 4px 8px rgba(241,196,15,0.3); font-family:'Kanit';">🤝 เสนอซื้อยกกลุ่มคลัสเตอร์นี้</button>`;
                     cData.items.forEach(item => {
-                        drawMarkerOnMap(item, '#f1c40f'); let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
+                        drawMarkerOnMap(item, '#f1c40f', false); let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
                         let offerStatus = item.offerCount > 0 ? `<div style="color:#d97706; font-size:12px; font-weight:bold; margin-top:5px;">⚠️ แข่งขัน: มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : "";
                         clusterHTML += `<div class="sale-card" style="border-left: 5px solid #f1c40f; margin-bottom:10px; background:#fff; padding:10px;"><div class="sale-header" style="margin-bottom:5px; padding-bottom:5px;"><span style="font-weight:600; color:#333;">คุณ ${item.farmerName}</span><span style="color:#666; font-size:12px;">${item.qty} ไร่</span></div><div class="sale-detail" style="font-size:12px;">พร้อมเข้าม้วน: <span>${hDate}</span>${offerStatus}</div><button onclick="viewOnMap(${item.row}, ${item.lat}, ${item.lon})" style="margin-top:8px; width:100%; padding:6px; background-color:#fcf3cf; color:#b8860b; border:1px solid #f1c40f; border-radius:6px; font-weight:600; cursor:pointer; font-family:'Kanit'; font-size:12px;">📍 ดูแผนที่</button></div>`;
                     });
@@ -572,7 +712,7 @@
             if (singles.length > 0) {
                 listContainer.innerHTML += `<div class="section-title buyer-section-title" style="margin-top: 25px; color:#e74c3c; border-color:#e74c3c;">📋 แปลงย่อย (ยังไม่เข้าเกณฑ์กลุ่ม)</div>`;
                 singles.forEach(item => {
-                    drawMarkerOnMap(item, '#e74c3c'); let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
+                    drawMarkerOnMap(item, '#e74c3c', false); let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
                     let offerStatus = item.offerCount > 0 ? `<div style="color:#d97706; font-size:12px; font-weight:bold; margin-top:5px;">⚠️ แข่งขัน: มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : "";
                     listContainer.innerHTML += `<div class="sale-card" style="border-left: 5px solid #e74c3c;"><div class="sale-header"><span style="font-weight:600; color:#333;">👨‍🌾 คุณ ${item.farmerName}</span></div><div class="sale-detail"><div>ปริมาณ: <span>${item.qty} ไร่</span></div><div>วันที่พร้อมเข้าม้วน: <span>${hDate}</span></div>${offerStatus}</div><div style="display:flex; gap:10px; margin-top:10px;"><button onclick="viewOnMap(${item.row}, ${item.lat}, ${item.lon})" style="flex:1; padding:8px; background-color:#fdebd0; color:#b9770e; border:1px solid #fad7a1; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">📍 ดูแผนที่</button><button onclick="acceptJob(${item.row})" style="flex:2; padding:8px; background-color:#e74c3c; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">เสนอราคาแปลงนี้</button></div></div>`;
                 });
@@ -580,14 +720,28 @@
             buyerPolygonLayer.addTo(buyerMapObj); if(buyerPolygonLayer.getLayers().length > 0) { buyerMapObj.fitBounds(buyerPolygonLayer.getBounds(), { padding: [30, 30] }); }
         }
 
-        function drawMarkerOnMap(item, colorHex) {
+        function drawMarkerOnMap(item, colorHex, isActive) {
             let customIcon = L.divIcon({ className: 'custom-div-icon', html: `<div style='background-color:${colorHex}; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.6);'></div>` });
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
-            let popupContent = `<div style="font-family:'Kanit';"><b style="font-size:15px; color:#8e24aa;">👨‍🌾 ชาวไร่: ${item.farmerName}</b><br><b>ปริมาณ:</b> ${item.qty} ไร่<br><b>พร้อมม้วน:</b> ${hDate}<br><hr style="margin:8px 0;"><input type="number" id="price-${item.row}" placeholder="เสนอราคาแข่ง (บาท/ตัน)" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box; font-family:'Kanit';"><button onclick="acceptJob(${item.row})" style="width:100%; padding:8px; background-color:#8e24aa; color:white; border:none; border-radius:5px; cursor:pointer; font-family:'Kanit'; font-weight:600;">ส่งราคาให้ชาวไร่เลือก</button></div>`;
+            
+            // แสดงรูปภาพสภาพแปลงอ้อยใน Pop-up ด้วย ถ้ามี
+            let imgField = item.fieldPhoto && item.fieldPhoto.length > 50 ? `<img src="${item.fieldPhoto}" style="width:100%; border-radius:5px; margin-bottom:5px; border:1px solid #ddd;">` : "";
+            
+            let popupContent = `<div style="font-family:'Kanit';"><b style="font-size:15px; color:#8e24aa;">👨‍🌾 ชาวไร่: ${item.farmerName}</b><br><b>ปริมาณ:</b> ${item.qty} ไร่<br><b>พร้อมม้วน:</b> ${hDate}<br><hr style="margin:8px 0;">${imgField}`;
+            
+            if(!isActive) {
+                popupContent += `<input type="number" id="price-${item.row}" placeholder="เสนอราคาแข่ง (บาท/ตัน)" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box; font-family:'Kanit';"><button onclick="acceptJob(${item.row})" style="width:100%; padding:8px; background-color:#8e24aa; color:white; border:none; border-radius:5px; cursor:pointer; font-family:'Kanit'; font-weight:600;">ส่งราคาให้ชาวไร่เลือก</button>`;
+            } else {
+                popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" style="width:100%; padding:8px; background-color:#1565c0; color:white; border:none; border-radius:5px; cursor:pointer; font-family:'Kanit'; font-weight:600;">📸 อัปโหลดบิลชั่งน้ำหนักเพื่อปิดงาน</button>`;
+            }
+            popupContent += `</div>`;
+            
             let marker = L.marker([item.lat, item.lon], { icon: customIcon }).bindPopup(popupContent);
             buyerMarkers[item.row] = marker; buyerPolygonLayer.addLayer(marker); 
             if (item.polygon && item.polygon !== "") { try { let coords = JSON.parse(item.polygon); let flippedCoords = coords[0].map(p => [p[1], p[0]]); let polygon = L.polygon(flippedCoords, { color: colorHex, fillOpacity: 0.3 }); buyerPolygonLayer.addLayer(polygon); } catch(e) {} }
         }
+
+        function viewOnMap(row, lat, lon) { window.scrollTo({ top: 0, behavior: 'smooth' }); buyerMapObj.flyTo([lat, lon], 17, { duration: 1.5 }); setTimeout(() => { if(buyerMarkers[row]) { buyerMarkers[row].openPopup(); } }, 1500); }
 
         async function acceptJob(rowId) {
             let priceInput = document.getElementById(`price-${rowId}`) ? document.getElementById(`price-${rowId}`).value : null;
@@ -611,6 +765,67 @@
                     const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "acceptClusterJob", rows: rowIds, userId: userProfile.userId, buyerName: buyerNameContext, buyerPhone: buyerPhoneContext, price: priceInput }) });
                     const result = await res.json(); if (result.status === "success") { Swal.fire({title: 'เสนอราคายกกลุ่มสำเร็จ!', text: 'ข้อเสนอถูกส่งไปยังชาวไร่ทุกคนในโซนนี้แล้วครับ', icon: 'success', confirmButtonColor: '#8e24aa'}).then(() => { location.reload(); }); }
                 } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคายกกลุ่มได้', 'error'); }
+            }
+        }
+
+        // ฟังก์ชันฝั่งผู้รับเหมา: กรอกน้ำหนัก ถ่ายรูปส่งให้ชาวไร่กด OK ปิดคิว
+        async function buyerCloseJobModal(rowId, estQty) {
+            let compProofPhoto = "";
+            const { value: formValues } = await Swal.fire({
+                title: '📸 แจ้งส่งงานชั่งน้ำหนัก',
+                html: `
+                    <div style="text-align:left; font-family:'Kanit'; font-size:14px; color:#444;">
+                        <label style="margin-top:0;">🌾 พื้นที่ดำเนินการเสร็จสิ้น (ไร่):</label>
+                        <input type="number" id="close-actual-qty" value="${estQty}" step="0.1" style="width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:5px;">
+                        
+                        <label>⚖️ น้ำหนักใบอ้อยรวมจริง (ตัน):</label>
+                        <input type="number" id="close-actual-weight" placeholder="ระบุน้ำหนักสุทธิตามใบชั่ง" step="0.1" style="width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:5px;">
+                        
+                        <label>📸 ถ่ายรูป/อัปโหลดใบชั่งน้ำหนัก:</label>
+                        <input type="file" id="close-photo" accept="image/*" style="border:none; padding:5px; margin-top:5px;">
+                        <img id="close-photo-preview" style="width:100%; display:none; margin-top:10px; border-radius:5px;">
+                    </div>`,
+                showCancelButton: true, confirmButtonText: 'ส่งหลักฐานให้ชาวไร่ตรวจสอบ', cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: '#1565c0', cancelButtonColor: '#777',
+                didOpen: () => {
+                    document.getElementById('close-photo').addEventListener('change', (e) => {
+                        const file = e.target.files[0];
+                        if(file) {
+                            compressImage(file, (base64) => {
+                                compProofPhoto = base64;
+                                document.getElementById('close-photo-preview').src = base64;
+                                document.getElementById('close-photo-preview').style.display = 'block';
+                            });
+                        }
+                    });
+                },
+                preConfirm: () => {
+                    const actualQty = document.getElementById('close-actual-qty').value;
+                    const actualWeight = document.getElementById('close-actual-weight').value;
+                    if (!actualQty || !actualWeight) { Swal.showValidationMessage('กรุณากรอกจำนวนไร่และน้ำหนักจริงให้ครบถ้วน'); return false; }
+                    if (!compProofPhoto) { Swal.showValidationMessage('กรุณาอัปโหลดรูปภาพใบชั่งน้ำหนัก'); return false; }
+                    return { actualQty, actualWeight };
+                }
+            });
+
+            if (formValues) {
+                Swal.fire({ title: 'กำลังอัปโหลดส่งให้ชาวไร่...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+                try {
+                    const res = await fetch(GAS_WEB_APP_URL, {
+                        method: "POST",
+                        body: JSON.stringify({
+                            action: "buyerCloseJob", row: rowId,
+                            actualQty: Number(formValues.actualQty),
+                            actualWeight: Number(formValues.actualWeight),
+                            photoProof: compProofPhoto
+                        })
+                    });
+                    const data = await res.json();
+                    if (data.status === "success") {
+                        Swal.fire('ส่งงานสำเร็จ!', 'รอชาวไร่กดยืนยันตรวจสอบข้อมูลเพื่อปิดดีลเข้าสู่ระบบบัญชีครับ', 'success')
+                        .then(() => { location.reload(); });
+                    }
+                } catch(e) { Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'error'); }
             }
         }
 
