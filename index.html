@@ -66,15 +66,16 @@
         .slider-input { width: 100%; margin: 8px 0; accent-color: #8e24aa; }
         .val-badge { background: #8e24aa; color: white; padding: 2px 8px; border-radius: 10px; font-size: 13px; }
         
-        .photo-gallery { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .photo-gallery img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
+        /* สไตล์ Gallery ให้เลื่อนซ้ายขวาได้ */
+        .photo-gallery { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 10px; margin-top: 10px; padding-bottom: 10px; -webkit-overflow-scrolling: touch; }
+        .photo-gallery img { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; flex-shrink: 0; }
         
+        /* สไตล์ Island Modal ใน SweetAlert ให้รูปเลื่อนได้ */
         .island-modal { text-align: left; font-family: 'Kanit'; font-size: 14px; color: #333; line-height: 1.6; }
         .island-info-box { background: #f9f9f9; padding: 12px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 15px; }
-        .island-gallery { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; }
-        .island-gallery img { width: 120px; height: 120px; object-fit: cover; border-radius: 8px; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: zoom-in; transition: transform 0.2s;}
-        .island-gallery img:hover { transform: scale(1.05); }
-
+        .island-gallery { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 10px; padding-bottom: 10px; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory;}
+        .island-gallery img { width: 150px; height: 150px; object-fit: cover; border-radius: 8px; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: zoom-in; scroll-snap-align: start; }
+        
         /* ระบบ Loading แอนิเมชันรถม้วน */
         #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .anim-container { position: relative; width: 150px; height: 60px; border-bottom: 3px solid var(--primary-green); overflow: hidden; margin-bottom: 15px; }
@@ -90,13 +91,13 @@
 </head>
 <body>
 
-    <!-- หน้าจอ Loading -->
+    <!-- หน้าจอ Loading แอนิเมชัน -->
     <div id="loading-screen">
         <div class="anim-container">
-            <div class="anim-truck">🚜</div>
+            <div class="anim-truck" id="loader-truck">🚜</div>
             <div class="anim-cane">🌾</div>
         </div>
-        <h3 style="color:#7cb342; font-family:'Kanit'; margin:0;">กำลังประมวลผล...</h3>
+        <h3 style="color:#7cb342; font-family:'Kanit'; margin:0;" id="loader-text">กำลังประมวลผล...</h3>
         <p style="color:#666; font-size:14px; margin-top:5px;">โปรดรอสักครู่</p>
     </div>
 
@@ -117,7 +118,7 @@
             <div class="profile-text" id="profile-info">เชื่อมต่อฐานข้อมูล...</div>
         </div>
 
-        <!-- ================= 1. หน้าลงทะเบียนชาวไร่ (ละเอียด) ================= -->
+        <!-- ================= 1. หน้าลงทะเบียนชาวไร่ ================= -->
         <div id="register-page" class="page">
             <div class="status-box" id="reg-status-box" style="background-color: #fff3cd; color: #856404; margin-bottom: 20px;">
                 <i>📝</i> กรุณากรอกข้อมูลส่วนตัวเพื่อลงทะเบียนครับ
@@ -165,7 +166,7 @@
                 <option value="ทางแคบ/ลำบาก ต้องดูหน้างาน">ทางแคบ/ลำบาก ต้องดูหน้างาน</option>
             </select>
 
-            <label>📸 5. ถ่ายภาพแปลงอ้อย/สภาพใบ (เลือกได้สูงสุด 4 รูป):</label>
+            <label>📸 5. ถ่ายภาพแปลง/สภาพใบ (เลื่อนขวาดูรูป):</label>
             <input type="file" id="field-photo-input" accept="image/*" multiple onchange="previewMultiplePhotos(event)" style="padding: 10px; background:#fff;">
             <div id="photo-preview-container" class="photo-gallery"></div>
 
@@ -218,7 +219,7 @@
             
             <div id="buyer-map" class="map-container" style="height: 380px;"></div>
             <div style="margin-top: 10px; font-size: 13px; color: #555; text-align: right;">
-                <span style="display:inline-block; width:10px; height:10px; background:#4caf50; border-radius:50%;"></span> แปลงเดี่ยว 
+                <span style="display:inline-block; width:10px; height:10px; background:#4caf50; border-radius:50%;"></span> แปลงเดี่ยวสุดคุ้ม
                 <span style="display:inline-block; width:10px; height:10px; background:#f1c40f; border-radius:50%; margin-left:10px;"></span> กลุ่มคุ้มทุน 
                 <span style="display:inline-block; width:10px; height:10px; background:#e74c3c; border-radius:50%; margin-left:10px;"></span> แปลงย่อย
             </div>
@@ -258,7 +259,7 @@
                 reader.onload = event => {
                     const img = new Image(); img.src = event.target.result;
                     img.onload = () => {
-                        const canvas = document.createElement('canvas'); const MAX_WIDTH = 600;
+                        const canvas = document.createElement('canvas'); const MAX_WIDTH = 800; // เพิ่มความชัดรูปนิดนึง
                         const scaleSize = MAX_WIDTH / img.width;
                         canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
                         const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -304,12 +305,16 @@
                     else if (mode === 'register_buyer') { 
                         document.getElementById("main-header").style.backgroundColor = "#8e24aa"; 
                         document.getElementById("header-text").innerText = "🚜 ข้อมูลรถม้วน"; 
+                        document.getElementById("loader-truck").style.color = "#8e24aa";
+                        document.getElementById("loader-text").style.color = "#8e24aa";
                         document.getElementById("register-buyer-page").classList.add("active"); 
                         await checkBuyerForRegister(); 
                     } 
                     else if (mode === 'buyer') { 
                         document.getElementById("main-header").style.backgroundColor = "#8e24aa"; 
-                        document.getElementById("header-text").innerText = "🗺️ ศูนย์คุมรถม้วน"; 
+                        document.getElementById("header-text").innerText = "🗺️ ศูนย์คุมรถม้วน";
+                        document.getElementById("loader-truck").style.color = "#8e24aa";
+                        document.getElementById("loader-text").style.color = "#8e24aa";
                         await checkBuyerForAction(); 
                     } 
                     else { 
@@ -424,11 +429,11 @@
                 }
                 cardHTML += `</div>`;
                 
-                // คืนปุ่ม ดูรายละเอียดแปลง สำหรับหน้าชาวไร่
+                // ปุ่มกดสับเปลี่ยน
                 if (statusText === "รอชาวไร่ยืนยัน") {
                     cardHTML += `
                         <div style="display:flex; gap:10px; margin-top:12px;">
-                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" style="margin-top:0; flex:1; padding:10px; background-color:#f5f5f5; color:#555; border:1px solid #ccc; border-radius:8px; font-weight:600; font-size:14px; font-family:'Kanit';">🔎 ดูรายละเอียดแปลง</button>
+                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" style="margin-top:0; flex:1; padding:10px; background-color:#f5f5f5; color:#555; border:1px solid #ccc; border-radius:8px; font-weight:600; font-size:14px; font-family:'Kanit';">🔎 ดูรายละเอียด</button>
                             <button onclick="viewOffers(${index})" style="margin-top:0; flex:1.5; padding:10px; background-color:#7cb342; color:white; border:none; border-radius:8px; font-weight:600; font-size:14px; font-family:'Kanit';">✔️ ดูข้อเสนอ & เลือกผู้ซื้อ</button>
                         </div>`;
                 } else if (statusText === "รอชาวไร่ตรวจสอบ") {
@@ -448,21 +453,24 @@
             dashboardContainer.style.display = "block";
         }
 
+        // ระบบ Island Modal (สำหรับชาวไร่และคนขับรถ ดูข้อมูลแปลงอ้อยแบบเต็มๆ)
         function viewSaleIslandModal(index, role) {
             let item = role === 'farmer' ? globalSalesData[index] : rawBuyerData.find(p => p.row === index);
             if(!item) return;
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
-            let phoneLink = item.buyerPhone && item.buyerPhone !== "-" ? `<a href="tel:${item.buyerPhone}" style="color:#2e7d32; font-weight:bold; text-decoration:none;">📞 ${item.buyerPhone}</a>` : "-";
             
             let photoGalleryHTML = "";
             if(item.photos && item.photos.length > 0) {
                 photoGalleryHTML = `<div class="island-gallery">`;
                 item.photos.forEach(img => { photoGalleryHTML += `<img src="${img}" onclick="openImageViewer('${img}')">`; });
                 photoGalleryHTML += `</div>`;
-            } else { photoGalleryHTML = `<div style="color:#999; font-size:12px; margin-bottom:10px;">(ชาวไร่ไม่ได้แนบรูปสภาพแปลง)</div>`; }
+            } else { photoGalleryHTML = `<div style="color:#999; font-size:12px; margin-bottom:10px;">(ไม่มีรูปภาพประกอบ)</div>`; }
 
             let extraInfo = "";
+            let actionHTML = "";
+
             if (role === 'farmer') {
+                let phoneLink = item.buyerPhone && item.buyerPhone !== "-" ? `<a href="tel:${item.buyerPhone}" style="color:#2e7d32; font-weight:bold; text-decoration:none;">📞 ${item.buyerPhone}</a>` : "-";
                 extraInfo = `
                     <div class="island-info-box">
                         <b>สถานะ:</b> <span style="color:#004085; font-weight:bold;">${item.status === "Pending" ? "รอรถรับงาน" : item.status}</span><br>
@@ -475,7 +483,18 @@
                     <div class="island-info-box" style="border-color:#ce93d8; background:#f3e5f5;">
                         <b style="color:#8e24aa; font-size:16px;">👨‍🌾 ข้อมูลชาวไร่</b><br>
                         <b>ชื่อ:</b> คุณ ${item.farmerName}<br>
+                        <b>เบอร์โทรศัพท์:</b> <a href="tel:${item.farmerPhone}" style="color:#8e24aa; text-decoration:none; font-weight:bold;">📞 ${item.farmerPhone}</a><br>
                     </div>`;
+                
+                // คืนปุ่มเสนอราคาเข้าไปใน Modal ของผู้รับเหมาด้วย เผื่อกดเข้ามาดูรูปแล้วอยากจิ้มเสนอราคาเลย
+                if (item.status !== "กำลังดำเนินการ") {
+                    actionHTML = `
+                        <hr style="margin:15px 0; border:0; border-top:1px solid #ccc;">
+                        <label>💰 เสนอราคารับซื้อ (บาท/ตัน):</label>
+                        <input type="number" id="island-bid-price" placeholder="เช่น 800" style="margin-bottom:10px; width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; font-family:'Kanit';">
+                        <button onclick="submitIslandBid(${item.row})" style="width:100%; padding:12px; background-color:#8e24aa; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">ส่งข้อเสนอราคาให้ชาวไร่</button>
+                    `;
+                }
             }
 
             Swal.fire({
@@ -488,11 +507,36 @@
                             <b>วันตัดอ้อยเสร็จ:</b> ${hDate}<br>
                             <b>สภาพทางเข้าแปลง:</b> <span style="color:#c0392b; font-weight:600;">${item.access || "ไม่ระบุ"}</span>
                         </div>
-                        <b>📸 ภาพสภาพแปลง / ใบอ้อย:</b>
+                        <b style="color:#7cb342;">🗺️ แผนที่แปลงอ้อย:</b>
+                        <div id="swal-map" class="swal-map-container" style="margin-bottom:15px;"></div>
+                        <b>📸 ภาพสภาพแปลง / ใบอ้อย (เลื่อนซ้าย-ขวา):</b>
                         ${photoGalleryHTML}
+                        ${actionHTML}
                     </div>`,
-                confirmButtonText: 'ปิดหน้าต่าง', confirmButtonColor: '#7cb342'
+                showConfirmButton: true, confirmButtonText: 'ปิดหน้าต่าง', confirmButtonColor: '#7cb342',
+                didOpen: () => {
+                    let googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 });
+                    let sMap = L.map('swal-map', { zoomControl: false, layers: [googleHybrid] }).setView([item.lat, item.lon], 16);
+                    if (item.polygon && item.polygon !== "") {
+                        try {
+                            let coords = JSON.parse(item.polygon); let flippedCoords = coords[0].map(p => [p[1], p[0]]);
+                            let polygon = L.polygon(flippedCoords, { color: '#7cb342', fillOpacity: 0.4 }).addTo(sMap);
+                            sMap.fitBounds(polygon.getBounds(), { padding: [10, 10] });
+                        } catch(e) {}
+                    } else { L.marker([item.lat, item.lon]).addTo(sMap); }
+                    setTimeout(() => { sMap.invalidateSize(); }, 100);
+                }
             });
+        }
+
+        async function submitIslandBid(rowId) {
+            let priceInput = document.getElementById('island-bid-price').value;
+            if(!priceInput) { Swal.showValidationMessage('กรุณาระบุราคา'); return; }
+            Swal.fire({ title: 'กำลังส่งคำเสนอซื้อ...', didOpen: () => { Swal.showLoading() } });
+            try {
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "acceptJob", row: rowId, userId: userProfile.userId, buyerName: buyerNameContext, buyerPhone: buyerPhoneContext, price: priceInput }) });
+                const result = await res.json(); if (result.status === "success") { Swal.fire({title: 'เสนอราคาสำเร็จ!', text: 'ระบบส่งข้อมูลราคาของคุณให้ชาวไร่พิจารณาแล้วครับ', icon: 'success', confirmButtonColor: '#8e24aa'}).then(() => { location.reload(); }); }
+            } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคาได้', 'error'); }
         }
 
         function farmerVerifyCloseJob(index) {
@@ -519,7 +563,11 @@
             offersHTML += `<b style="font-size:16px;">รายชื่อรถม้วนที่เสนอซื้อ (${item.quantity} ไร่)</b><br><br>`;
             if (item.offers && item.offers.length > 0) {
                 item.offers.forEach((offer) => {
-                    offersHTML += `<div style="border:1px solid #ddd; border-radius:8px; padding:10px; margin-bottom:10px; background:#f9f9f9;"><b>คุณ:</b> ${offer.buyerName}<br><b>เบอร์โทร:</b> <a href="tel:${offer.phone}" style="color:#2e7d32; text-decoration:none;">${offer.phone}</a><br><b style="color:#d97706; font-size:16px;">เสนอราคา: ${offer.price} บาท/ตัน</b><br><button onclick="confirmSaleOffer(${item.row}, '${offer.buyerName}', '${offer.phone}', '${offer.price}')" style="margin-top:8px; width:100%; padding:8px; background-color:#7cb342; color:white; border:none; border-radius:5px; cursor:pointer; font-family:'Kanit'; font-weight:600;">✔️ เลือกผู้ซื้อรายนี้</button></div>`;
+                    offersHTML += `
+                        <div style="border:1px solid #ddd; border-radius:8px; padding:10px; margin-bottom:10px; background:#f9f9f9;">
+                            <b>คุณ:</b> ${offer.buyerName}<br><b>เบอร์โทร:</b> <a href="tel:${offer.phone}" style="color:#2e7d32; text-decoration:none;">${offer.phone}</a><br><b style="color:#d97706; font-size:16px;">เสนอราคา: ${offer.price} บาท/ตัน</b><br>
+                            <button onclick="confirmSaleOffer(${item.row}, '${offer.buyerName}', '${offer.phone}', '${offer.price}')" style="margin-top:8px; width:100%; padding:8px; background-color:#7cb342; color:white; border:none; border-radius:5px; cursor:pointer; font-family:'Kanit'; font-weight:600;">✔️ เลือกผู้ซื้อรายนี้</button>
+                        </div>`;
                 });
             } else { offersHTML += `<i>ยังไม่มีข้อมูลการเสนอราคา</i>`; }
             offersHTML += `</div>`;
@@ -685,7 +733,15 @@
                 premiumSingles.forEach(item => {
                     drawMarkerOnMap(item, '#4caf50', false); let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
                     let offerStatus = item.offerCount > 0 ? `<div style="color:#d97706; font-size:12px; font-weight:bold; margin-top:5px;">⚠️ แข่งขัน: มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : "";
-                    listContainer.innerHTML += `<div class="sale-card" style="border-left: 5px solid #4caf50;"><div class="sale-header"><span style="font-weight:600; color:#333;">👨‍🌾 คุณ ${item.farmerName}</span></div><div class="sale-detail"><div>ปริมาณ: <span style="color:#2e7d32; font-size:16px;">${item.qty} ไร่</span></div><div>วันที่พร้อมเข้าม้วน: <span>${hDate}</span></div>${offerStatus}</div><div style="display:flex; gap:10px; margin-top:10px;"><button onclick="viewSaleIslandModal(${item.row}, 'buyer')" style="flex:1; padding:8px; background-color:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">📋 ดูรายละเอียด</button></div></div>`;
+                    listContainer.innerHTML += `
+                        <div class="sale-card" style="border-left: 5px solid #4caf50;">
+                            <div class="sale-header"><span style="font-weight:600; color:#333;">👨‍🌾 คุณ ${item.farmerName}</span></div>
+                            <div class="sale-detail"><div>ปริมาณ: <span style="color:#2e7d32; font-size:16px;">${item.qty} ไร่</span></div><div>วันที่พร้อมเข้าม้วน: <span>${hDate}</span></div>${offerStatus}</div>
+                            <div style="display:flex; gap:10px; margin-top:10px;">
+                                <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" style="flex:1; padding:8px; background-color:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">📋 รายละเอียด</button>
+                                <button onclick="acceptJob(${item.row})" style="flex:1; padding:8px; background-color:#8e24aa; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">💰 เสนอราคา</button>
+                            </div>
+                        </div>`;
                 });
             }
 
@@ -700,7 +756,15 @@
                     cData.items.forEach(item => {
                         drawMarkerOnMap(item, '#f1c40f', false); let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
                         let offerStatus = item.offerCount > 0 ? `<div style="color:#d97706; font-size:12px; font-weight:bold; margin-top:5px;">⚠️ แข่งขัน: มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : "";
-                        clusterHTML += `<div class="sale-card" style="border-left: 5px solid #f1c40f; margin-bottom:10px; background:#fff; padding:10px;"><div class="sale-header" style="margin-bottom:5px; padding-bottom:5px;"><span style="font-weight:600; color:#333;">คุณ ${item.farmerName}</span><span style="color:#666; font-size:12px;">${item.qty} ไร่</span></div><div class="sale-detail" style="font-size:12px;">พร้อมเข้าม้วน: <span>${hDate}</span>${offerStatus}</div><button onclick="viewSaleIslandModal(${item.row}, 'buyer')" style="margin-top:8px; width:100%; padding:6px; background-color:#fcf3cf; color:#b8860b; border:1px solid #f1c40f; border-radius:6px; font-weight:600; cursor:pointer; font-family:'Kanit'; font-size:12px;">📋 ดูรายละเอียด</button></div>`;
+                        clusterHTML += `
+                            <div class="sale-card" style="border-left: 5px solid #f1c40f; margin-bottom:10px; background:#fff; padding:10px;">
+                                <div class="sale-header" style="margin-bottom:5px; padding-bottom:5px;"><span style="font-weight:600; color:#333;">คุณ ${item.farmerName}</span><span style="color:#666; font-size:12px;">${item.qty} ไร่</span></div>
+                                <div class="sale-detail" style="font-size:12px;">พร้อมเข้าม้วน: <span>${hDate}</span>${offerStatus}</div>
+                                <div style="display:flex; gap:10px; margin-top:10px;">
+                                    <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" style="flex:1; padding:6px; background-color:#fcf3cf; color:#b8860b; border:1px solid #f1c40f; border-radius:6px; font-weight:600; cursor:pointer; font-family:'Kanit'; font-size:12px;">📋 รายละเอียด</button>
+                                    <button onclick="acceptJob(${item.row})" style="flex:1; padding:6px; background-color:#8e24aa; color:white; border:none; border-radius:6px; font-weight:600; cursor:pointer; font-family:'Kanit'; font-size:12px;">💰 เสนอราคา</button>
+                                </div>
+                            </div>`;
                     });
                     clusterHTML += `</div>`; listContainer.innerHTML += clusterHTML;
                 });
@@ -711,7 +775,15 @@
                 singles.forEach(item => {
                     drawMarkerOnMap(item, '#e74c3c', false); let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
                     let offerStatus = item.offerCount > 0 ? `<div style="color:#d97706; font-size:12px; font-weight:bold; margin-top:5px;">⚠️ แข่งขัน: มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : "";
-                    listContainer.innerHTML += `<div class="sale-card" style="border-left: 5px solid #e74c3c;"><div class="sale-header"><span style="font-weight:600; color:#333;">👨‍🌾 คุณ ${item.farmerName}</span></div><div class="sale-detail"><div>ปริมาณ: <span>${item.qty} ไร่</span></div><div>วันที่พร้อมเข้าม้วน: <span>${hDate}</span></div>${offerStatus}</div><div style="display:flex; gap:10px; margin-top:10px;"><button onclick="viewSaleIslandModal(${item.row}, 'buyer')" style="flex:1; padding:8px; background-color:#fdebd0; color:#b9770e; border:1px solid #fad7a1; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">📋 ดูรายละเอียด</button></div></div>`;
+                    listContainer.innerHTML += `
+                        <div class="sale-card" style="border-left: 5px solid #e74c3c;">
+                            <div class="sale-header"><span style="font-weight:600; color:#333;">👨‍🌾 คุณ ${item.farmerName}</span></div>
+                            <div class="sale-detail"><div>ปริมาณ: <span>${item.qty} ไร่</span></div><div>วันที่พร้อมเข้าม้วน: <span>${hDate}</span></div>${offerStatus}</div>
+                            <div style="display:flex; gap:10px; margin-top:10px;">
+                                <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" style="flex:1; padding:8px; background-color:#fdebd0; color:#b9770e; border:1px solid #fad7a1; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">📋 รายละเอียด</button>
+                                <button onclick="acceptJob(${item.row})" style="flex:1; padding:8px; background-color:#8e24aa; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Kanit';">💰 เสนอราคา</button>
+                            </div>
+                        </div>`;
                 });
             }
             buyerPolygonLayer.addTo(buyerMapObj); if(buyerPolygonLayer.getLayers().length > 0) { buyerMapObj.fitBounds(buyerPolygonLayer.getBounds(), { padding: [30, 30] }); }
@@ -734,7 +806,10 @@
 
         async function acceptJob(rowId) {
             let priceInput = document.getElementById('island-bid-price') ? document.getElementById('island-bid-price').value : null;
-            if(!priceInput) { Swal.showValidationMessage('กรุณาระบุราคา'); return; }
+            if(!priceInput) {
+                const { value: p } = await Swal.fire({ title: 'เสนอราคารับซื้อ', input: 'number', inputLabel: 'ระบุราคา (บาท/ตัน)', inputPlaceholder: 'เช่น 800', showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#8e24aa' });
+                if(p) priceInput = p; else return;
+            }
             Swal.fire({ title: 'กำลังส่งคำเสนอซื้อ...', didOpen: () => { Swal.showLoading() } });
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "acceptJob", row: rowId, userId: userProfile.userId, buyerName: buyerNameContext, buyerPhone: buyerPhoneContext, price: priceInput }) });
