@@ -260,7 +260,15 @@
                 <div><label>🗓️ 4. วันที่ตัดเสร็จ:</label><input type="date" id="harvest-date" required></div>
             </div>
             
-            <label>🛣️ 5. สภาพทางเข้าแปลง:</label>
+            <label>🚜 5. สภาพแปลงอ้อย (ตอเก่า/หิน):</label>
+            <select id="field-condition">
+                <option value="ไม่มีตอเก่า/หิน (แปลงสะอาด)">ไม่มีตอเก่า/หิน (แปลงสะอาด)</option>
+                <option value="มีตอเก่า">มีตอเก่า</option>
+                <option value="มีหินปะปน">มีหินปะปน</option>
+                <option value="มีทั้งตอเก่าและหิน">มีทั้งตอเก่าและหิน</option>
+            </select>
+
+            <label>🛣️ 6. สภาพทางเข้าแปลง:</label>
             <select id="field-access">
                 <option value="รถบรรทุก 10 ล้อ เข้าได้สะดวก">รถบรรทุก 10 ล้อ เข้าได้สะดวก</option>
                 <option value="รถ 6 ล้อ เข้าได้">รถ 6 ล้อ เข้าได้</option>
@@ -268,7 +276,7 @@
                 <option value="ทางแคบ/ลำบาก ต้องดูหน้างาน">ทางแคบ/ลำบาก ต้องดูหน้างาน</option>
             </select>
 
-            <label>📸 6. ภาพหน้างาน (เลือกได้ 1-4 รูป):</label>
+            <label>📸 7. ภาพหน้างาน (เลือกได้ 1-4 รูป):</label>
             <input type="file" id="field-photo-input" accept="image/*" multiple onchange="previewMultiplePhotos(event)">
             <div id="photo-preview-container" class="photo-gallery"></div>
 
@@ -405,7 +413,7 @@
         function openImageViewer(src) { document.getElementById('image-viewer-img').src = src; document.getElementById('image-viewer').style.display = 'flex'; }
         function closeImageViewer() { document.getElementById('image-viewer').style.display = 'none'; }
 
-        // โหลดข้อมูลจังหวัด (แก้ไข API URL ใหม่แล้ว)
+        // โหลดข้อมูลจังหวัด
         async function loadThaiData() {
             try {
                 const res = await fetch('https://raw.githubusercontent.com/kongvut/thai-province-data/master/api/v1/province_with_amphure_tambon.json');
@@ -515,6 +523,21 @@
             return true;
         }
 
+        // ================= ระบบตรวจสอบพิกัดทับซ้อน (Anti-Overlap) =================
+        function checkPolygonOverlap(newFeature, excludeIndex = -1) {
+            if (!userSavedPlots || userSavedPlots.length === 0) return null;
+            for (let i = 0; i < userSavedPlots.length; i++) {
+                if (i === parseInt(excludeIndex)) continue; 
+                try {
+                    let savedCoords = JSON.parse(userSavedPlots[i].polygon);
+                    let savedFeature = turf.polygon(savedCoords);
+                    let overlap = turf.intersect(newFeature, savedFeature);
+                    if (overlap != null) { return userSavedPlots[i].name; }
+                } catch(e) { console.error(e); }
+            }
+            return null;
+        }
+
         // ================= ระบบจัดการแปลงอ้อย (Saved Plots) =================
         function renderSavedPlotsList() {
             const container = document.getElementById('saved-plots-container');
@@ -530,11 +553,14 @@
             let optionsHtml = '<option value="">-- ไม่เลือก (ต้องการวาดพิกัดใหม่) --</option>';
             
             userSavedPlots.forEach((plot, index) => {
+                let pCond = plot.condition || "ไม่ระบุสภาพ";
+                let pAcc = plot.access || "ไม่ระบุทางเข้า";
                 html += `
                 <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface); padding:12px; border:1px solid var(--border); border-radius:8px; margin-bottom:8px;">
                     <div>
                         <div style="font-weight:600; color:var(--text-main);">${plot.name}</div>
                         <div style="font-size:13px; color:var(--text-muted);">พื้นที่: <span style="color:var(--primary); font-weight:500;">${plot.area} ไร่</span></div>
+                        <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">🚜 ${pCond} | 🛣️ ${pAcc}</div>
                     </div>
                     <button type="button" onclick="removeSavedPlot(${index})" style="background:var(--danger); color:white; border:none; border-radius:6px; padding:6px 12px; font-size:12px; width:auto; margin:0;">ลบ</button>
                 </div>`;
@@ -556,10 +582,27 @@
 
             Swal.fire({
                 html: `
-                    <div style="text-align: left; font-family: 'Kanit';">
+                    <div style="text-align: left; font-family: 'Kanit'; max-height: 75vh; overflow-y: auto; overflow-x: hidden; padding-right: 5px;">
                         <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">วาดแปลงอ้อยใหม่</div>
                         <label style="margin-top:0;">ชื่อแปลงอ้อย (เช่น แปลงหลังบ้าน):</label>
-                        <input type="text" id="plot-name" class="swal2-input" placeholder="กรอกชื่อแปลง" style="width: 100%; box-sizing: border-box; margin: 0 0 15px 0; font-family: 'Kanit';">
+                        <input type="text" id="plot-name" class="swal2-input" placeholder="กรอกชื่อแปลง" style="width: 100%; box-sizing: border-box; margin: 0 0 15px 0; font-family: 'Kanit'; padding: 12px; height: auto;">
+                        
+                        <label>สภาพแปลง (ตอเก่า/หิน):</label>
+                        <select id="plot-condition" class="swal2-input" style="width: 100%; box-sizing: border-box; margin: 0 0 10px 0; font-family: 'Kanit'; padding: 10px; height: auto;">
+                            <option value="ไม่มีตอเก่า/หิน (แปลงสะอาด)">ไม่มีตอเก่า/หิน (แปลงสะอาด)</option>
+                            <option value="มีตอเก่า">มีตอเก่า</option>
+                            <option value="มีหินปะปน">มีหินปะปน</option>
+                            <option value="มีทั้งตอเก่าและหิน">มีทั้งตอเก่าและหิน</option>
+                        </select>
+                        
+                        <label>สภาพทางเข้าแปลง:</label>
+                        <select id="plot-access" class="swal2-input" style="width: 100%; box-sizing: border-box; margin: 0 0 15px 0; font-family: 'Kanit'; padding: 10px; height: auto;">
+                            <option value="รถบรรทุก 10 ล้อ เข้าได้สะดวก">รถบรรทุก 10 ล้อ เข้าได้สะดวก</option>
+                            <option value="รถ 6 ล้อ เข้าได้">รถ 6 ล้อ เข้าได้</option>
+                            <option value="รถกระบะ / รถไถ เล็กเท่านั้น">รถกระบะ / รถไถ เล็กเท่านั้น</option>
+                            <option value="ทางแคบ/ลำบาก ต้องดูหน้างาน">ทางแคบ/ลำบาก ต้องดูหน้างาน</option>
+                        </select>
+
                         <label>วาดขอบเขตแปลง:</label>
                         <div id="modal-map" style="height: 300px; border-radius: 12px; border: 1px solid var(--border); width: 100%;"></div>
                         <div id="modal-area-text" style="margin-top:10px; color:var(--primary); font-weight:600; text-align:center;">พื้นที่ประมาณ: 0.00 ไร่</div>
@@ -571,41 +614,33 @@
                 confirmButtonColor: THEME_PRIMARY,
                 cancelButtonColor: '#BFC9C5',
                 didOpen: () => {
-                    // สร้างแผนที่ชั่วคราวบนตำแหน่งล่าสุดก่อน (เผื่อ GPS ค้นหาช้า)
                     modalMap = L.map('modal-map').setView([currentLat, currentLng], 15);
                     L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(modalMap);
                     modalMap.pm.addControls({ position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, dragMode: false, cutPolygon: false, removalMode: true });
 
-                    // ฟังก์ชันสำหรับสั่งแผนที่ขยับและปักหมุด
                     const updateModalMap = (lat, lng) => {
                         currentLat = lat; currentLng = lng;
                         modalMap.setView([lat, lng], 16);
-                        
-                        if (modalLocMarker) {
-                            modalLocMarker.setLatLng([lat, lng]);
-                        } else {
-                            modalLocMarker = L.marker([lat, lng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit; font-weight:500; font-size:14px; text-align:center;'>📍 ตำแหน่งของคุณ</div>").openPopup();
-                        }
-                        // บังคับรีเฟรชแผนที่ ป้องกันปัญหาแผนที่เทาเวลาขยับ
+                        if (modalLocMarker) { modalLocMarker.setLatLng([lat, lng]); } else { modalLocMarker = L.marker([lat, lng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>").openPopup(); }
                         modalMap.invalidateSize(); 
                     };
-
                     updateModalMap(currentLat, currentLng);
 
-                    // สั่งดึงพิกัด GPS ปัจจุบัน (maximumAge: 0 บังคับไม่ให้ใช้ข้อมูลเก่า)
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(
-                            (pos) => { 
-                                updateModalMap(pos.coords.latitude, pos.coords.longitude); 
-                            }, 
-                            (err) => { 
-                                console.log("ไม่สามารถดึง GPS ได้:", err); 
-                            }, 
+                            (pos) => { updateModalMap(pos.coords.latitude, pos.coords.longitude); }, 
+                            (err) => { console.log("GPS error"); }, 
                             { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                         );
                     }
 
                     modalMap.on('pm:create', function(e) {
+                        let isOverlap = checkPolygonOverlap(e.layer.toGeoJSON(), -1);
+                        if(isOverlap) {
+                            Swal.fire('พิกัดทับซ้อน!', `พื้นที่นี้ทับซ้อนกับแปลง "${isOverlap}" ที่บันทึกไว้แล้ว กรุณาวาดใหม่ครับ`, 'warning');
+                            e.layer.remove(); return;
+                        }
+
                         if(modalDrawnPolygon) modalDrawnPolygon.remove();
                         modalDrawnPolygon = e.layer;
                         
@@ -618,7 +653,12 @@
                             document.getElementById('modal-area-text').innerText = `พื้นที่ประมาณ: ${tempArea} ไร่`;
                         }
                         calcModalArea();
-                        modalDrawnPolygon.on('pm:edit', calcModalArea);
+                        
+                        modalDrawnPolygon.on('pm:edit', function() {
+                            let overlapEdit = checkPolygonOverlap(modalDrawnPolygon.toGeoJSON(), -1);
+                            if(overlapEdit) { Swal.fire('ระวังพิกัดทับซ้อน', `การแก้ไขนี้กินพื้นที่แปลง "${overlapEdit}"`, 'warning'); }
+                            calcModalArea();
+                        });
                     });
                     
                     modalMap.on('pm:remove', function(e) {
@@ -626,14 +666,15 @@
                         document.getElementById('modal-area-text').innerText = `พื้นที่ประมาณ: 0.00 ไร่`;
                     });
 
-                    // ดีเลย์นิดหน่อยให้ Popup โหลดเสร็จแล้วขยับหน้าจอ
                     setTimeout(() => { modalMap.invalidateSize(); }, 300);
                 },
                 preConfirm: () => {
                     const pName = document.getElementById('plot-name').value;
+                    const pCond = document.getElementById('plot-condition').value;
+                    const pAcc = document.getElementById('plot-access').value;
                     if (!pName) { Swal.showValidationMessage('กรุณาตั้งชื่อแปลง'); return false; }
                     if (!tempPolygonGeoJSON) { Swal.showValidationMessage('กรุณาวาดแปลงบนแผนที่'); return false; }
-                    return { name: pName, polygon: tempPolygonGeoJSON, area: tempArea, center: tempCenter };
+                    return { name: pName, polygon: tempPolygonGeoJSON, area: tempArea, center: tempCenter, condition: pCond, access: pAcc };
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -646,35 +687,39 @@
         function loadSavedPlotToMap() {
             const index = document.getElementById('select-saved-plot').value;
             
-            // กรณีผู้ใช้เลือก "-- ไม่เลือก (ต้องการวาดพิกัดใหม่) --"
             if(index === "") {
                 if(drawnPolygon) { drawnPolygon.remove(); drawnPolygon = null; }
-                polygonGeoJSON = "";
-                document.getElementById("quantity").value = "";
+                polygonGeoJSON = ""; document.getElementById("quantity").value = "";
                 document.getElementById("gps-status").innerHTML = "<i>👆</i> แตะไอคอนห้าเหลี่ยมเพื่อเริ่มวาด";
                 
-                // สั่งให้ดึง GPS ปัจจุบันใหม่ และเด้งแผนที่กลับมายังจุดที่ยืนอยู่
-                getLocation();
-                return;
+                // รีเซ็ต Dropdown กลับเป็นค่าเริ่มต้น
+                document.getElementById("field-condition").selectedIndex = 0;
+                document.getElementById("field-access").selectedIndex = 0;
+
+                getLocation(); return;
             }
             
-            // กรณีผู้ใช้เลือก "แปลงที่เคยลงทะเบียนไว้"
             const plot = userSavedPlots[index];
             if(!plot) return;
             
-            polygonGeoJSON = plot.polygon;
-            document.getElementById("quantity").value = plot.area;
+            polygonGeoJSON = plot.polygon; document.getElementById("quantity").value = plot.area;
             document.getElementById("gps-status").innerHTML = "<i>✅</i> โหลดแปลง: <b>" + plot.name + " (" + plot.area + " ไร่)</b>";
             
-            if(!map) { renderMap(plot.center[0], plot.center[1]); }
+            if(plot.condition) document.getElementById('field-condition').value = plot.condition;
+            if(plot.access) document.getElementById('field-access').value = plot.access;
             
+            if(!map) { renderMap(plot.center[0], plot.center[1]); }
             if(drawnPolygon) { drawnPolygon.remove(); }
             
             try {
                 let coords = JSON.parse(plot.polygon);
                 let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
                 drawnPolygon = L.polygon(flippedCoords, { color: THEME_PRIMARY, fillOpacity: 0.4 }).addTo(map);
-                drawnPolygon.on('pm:edit', function() { calculateArea(drawnPolygon); });
+                drawnPolygon.on('pm:edit', function() { 
+                    let overlapEdit = checkPolygonOverlap(drawnPolygon.toGeoJSON(), index);
+                    if(overlapEdit) { Swal.fire('ระวังพิกัดทับซ้อน', `การแก้ไขนี้ทับซ้อนแปลง "${overlapEdit}"`, 'warning'); }
+                    calculateArea(drawnPolygon); 
+                });
                 map.fitBounds(drawnPolygon.getBounds(), { padding: [20, 20] });
             } catch(e) { console.error("Error drawing saved plot", e); }
         }
@@ -760,7 +805,6 @@
                     setAddressDropdowns("reg", d.prov, d.dist, d.subDist, d.zip);
                     document.getElementById("reg-phone").value = d.phone; document.getElementById("reg-farminfo").value = d.farmInfo;
                     
-                    // โหลดแปลงอ้อยที่เคยบันทึกไว้
                     if(d.savedPlots) { try { userSavedPlots = JSON.parse(d.savedPlots); renderSavedPlotsList(); } catch(e){} }
                     
                     document.getElementById("btn-register").innerText = "ยืนยันการแก้ไขข้อมูล"; 
@@ -772,7 +816,6 @@
         async function submitRegistration() {
             if(!validateForm('register-page')) return;
             
-            // ส่งข้อมูล savedPlots แนบไปกับ Payload ด้วย
             const payload = { action: isEditMode ? "updateUser" : "register", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("reg-prefix").value, firstName: document.getElementById("reg-firstname").value, lastName: document.getElementById("reg-lastname").value, dob: document.getElementById("reg-dob").value, addressNo: document.getElementById("reg-no").value, moo: document.getElementById("reg-moo").value, subDist: document.getElementById("reg-subdist").value, dist: document.getElementById("reg-dist").value, prov: document.getElementById("reg-prov").value, zip: document.getElementById("reg-zip").value, phone: document.getElementById("reg-phone").value, farmInfo: document.getElementById("reg-farminfo").value, savedPlots: JSON.stringify(userSavedPlots) };
             
             const btn = document.getElementById("btn-register"); btn.innerText = "กำลังบันทึกข้อมูล..."; btn.disabled = true;
@@ -937,7 +980,7 @@
                         <div class="island-info-box">
                             <div style="margin-bottom:4px;"><b>พื้นที่:</b> <span style="color:var(--primary); font-weight:500;">${item.quantity || item.qty} ไร่</span></div>
                             <div style="margin-bottom:4px;"><b>วันพร้อมม้วน:</b> ${hDate}</div>
-                            <div><b>ทางเข้าแปลง:</b> <span style="color:var(--accent); font-weight:500;">${item.access || "ไม่ระบุ"}</span></div>
+                            <div style="margin-bottom:4px;"><b>เงื่อนไขแปลง:</b> <span style="color:var(--accent); font-weight:500;">${item.access || "ไม่ระบุ"}</span></div>
                         </div>
                         <div style="font-weight:500; margin-bottom:8px;">🗺️ แผนที่พิกัด:</div>
                         <div id="swal-map" class="swal-map-container"></div>
@@ -1022,7 +1065,24 @@
                 var baseMaps = { "ดาวเทียม": googleHybrid, "ถนน": googleStreets }; L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
                 map.pm.addControls({ position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, dragMode: false, cutPolygon: false, removalMode: true });
                 
-                map.on('pm:create', function(e) { if (drawnPolygon) drawnPolygon.remove(); drawnPolygon = e.layer; calculateArea(drawnPolygon); drawnPolygon.on('pm:edit', function() { calculateArea(drawnPolygon); }); });
+                map.on('pm:create', function(e) { 
+                    let excludeIdx = document.getElementById('select-saved-plot').value;
+                    let isOverlap = checkPolygonOverlap(e.layer.toGeoJSON(), excludeIdx);
+                    if(isOverlap) {
+                        Swal.fire('พิกัดทับซ้อน!', `พื้นที่นี้ทับซ้อนกับแปลง "${isOverlap}" ที่คุณบันทึกไว้ กรุณาวาดใหม่ครับ`, 'warning');
+                        e.layer.remove(); return;
+                    }
+
+                    if (drawnPolygon) drawnPolygon.remove(); 
+                    drawnPolygon = e.layer; 
+                    calculateArea(drawnPolygon); 
+                    
+                    drawnPolygon.on('pm:edit', function() { 
+                        let overlapEdit = checkPolygonOverlap(drawnPolygon.toGeoJSON(), document.getElementById('select-saved-plot').value);
+                        if(overlapEdit) { Swal.fire('ระวังพิกัดทับซ้อน', `การแก้ไขนี้กินพื้นที่แปลง "${overlapEdit}"`, 'warning'); }
+                        calculateArea(drawnPolygon); 
+                    }); 
+                });
                 map.on('pm:remove', function(e) { drawnPolygon = null; polygonGeoJSON = ""; document.getElementById("quantity").value = ""; });
                 
                 userLocMarker = L.marker([lat, lng]).addTo(map).bindPopup("<div style='font-family:Kanit; font-weight:500; font-size:14px; text-align:center;'>📍 ตำแหน่งของคุณ</div>").openPopup();
@@ -1045,12 +1105,17 @@
 
         async function submitCaneData() {
             if(!validateForm('main-page')) return;
-            const qty = document.getElementById("quantity").value; const hDate = document.getElementById("harvest-date").value; const access = document.getElementById("field-access").value;
+            const qty = document.getElementById("quantity").value; const hDate = document.getElementById("harvest-date").value; 
+            const cond = document.getElementById("field-condition").value; const access = document.getElementById("field-access").value;
+            
+            // นำข้อมูลสภาพแปลง + ทางเข้า มัดรวมกันเพื่อส่งเข้า Database
+            const combinedAccess = `ทางเข้า: ${access} | สภาพแปลง: ${cond}`;
+
             if(!drawnPolygon) { Swal.fire('คำแนะนำ', 'กรุณาวาดขอบเขตแปลงในแผนที่ก่อนครับ', 'warning'); return; }
             
             const btn = document.getElementById("submit-btn"); btn.innerText = "กำลังอัปโหลด..."; btn.disabled = true; showLoader();
             
-            const payload = { action: "report_harvest", userId: userProfile.userId, userName: document.getElementById("profile-info").innerText.replace("คุณ ", ""), latitude: currentLat, longitude: currentLng, quantity: Number(qty), harvestDate: hDate, polygon: polygonGeoJSON, accessibility: access, fieldPhotos: compressedFieldPhotos };
+            const payload = { action: "report_harvest", userId: userProfile.userId, userName: document.getElementById("profile-info").innerText.replace("คุณ ", ""), latitude: currentLat, longitude: currentLng, quantity: Number(qty), harvestDate: hDate, polygon: polygonGeoJSON, accessibility: combinedAccess, fieldPhotos: compressedFieldPhotos };
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
                 hideLoader();
@@ -1209,7 +1274,7 @@
                     <div class="sale-detail">
                         <div>ปริมาณพื้นที่: <span style="font-size:16px; color:${colorHex}; font-weight:600;">${item.qty} ไร่</span></div>
                         <div>พร้อมม้วน: <span>${hDate}</span></div>
-                        <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">ทางเข้า: ${item.access}</div>
+                        <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">เงื่อนไขแปลง: ${item.access}</div>
                         ${offerStatus}
                     </div>
                     <div style="display:flex; gap:10px; margin-top:16px;">
