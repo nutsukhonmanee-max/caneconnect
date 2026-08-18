@@ -224,18 +224,34 @@
                     </select>
                 </div>
             </div>
+
+            <!-- ส่วนเพิ่มแปลงอ้อยตอนลงทะเบียน -->
+            <div class="section-title">📍 ข้อมูลแปลงอ้อยของฉัน (วาดเก็บไว้เพื่อความสะดวก)</div>
+            <div id="saved-plots-container" style="margin-bottom: 15px;">
+                <div class="empty-state" style="padding: 20px 0;">ยังไม่มีแปลงที่บันทึกไว้</div>
+            </div>
+            <button type="button" onclick="openAddPlotModal()" style="background-color: var(--info); margin-top: 0; margin-bottom: 24px; padding: 12px; font-size: 15px;">+ วาดเพิ่มแปลงอ้อย</button>
+
             <button id="btn-register" onclick="submitRegistration()">ยืนยันการลงทะเบียน</button>
         </div>
 
         <!-- ================= 2. หน้าแจ้งพิกัดอ้อย ================= -->
         <div id="main-page" class="page">
+            
+            <div style="margin-bottom: 20px; padding: 15px; background: #FFF9E6; border-radius: var(--radius-md); border: 1px solid #FDEBD0;">
+                <label style="color: var(--accent); font-weight: 600; margin-top: 0;">⭐ เลือกแปลงที่เคยลงทะเบียนไว้ (ถ้ามี):</label>
+                <select id="select-saved-plot" onchange="loadSavedPlotToMap()" style="border: 1px solid var(--accent); margin-top: 8px;">
+                    <option value="">-- ไม่เลือก (ต้องการวาดพิกัดใหม่) --</option>
+                </select>
+            </div>
+
             <label>📍 1. ค้นหาสถานที่อ้างอิงใกล้แปลง:</label>
             <div style="display: flex; gap: 8px;">
                 <input type="text" id="search-place" placeholder="พิมพ์ชื่อ วัด, โรงเรียน, หมู่บ้าน" style="margin-top:0;">
                 <button onclick="searchPlace()" style="margin-top:0; width: auto; padding: 0 20px; background-color: var(--info); font-size: 14px;">ค้นหา</button>
             </div>
             
-            <label style="margin-top:20px;">🗺️ 2. วาดกรอบแปลงอ้อยของคุณ:</label>
+            <label style="margin-top:20px;">🗺️ 2. ตรวจสอบ/วาดกรอบแปลงอ้อยของคุณ:</label>
             <div class="status-box" id="gps-status" style="margin-top:0; background:var(--primary-light); border-color:var(--primary); color:var(--primary-dark);"><i>👆</i> แตะไอคอนห้าเหลี่ยมเพื่อเริ่มวาด</div>
             <div id="map" class="map-container"></div>
             
@@ -377,6 +393,7 @@
         let isEditMode = false; let isBuyerEditMode = false;
         let buyerNameContext = ""; let buyerPhoneContext = "";
         let globalSalesData = [];
+        let userSavedPlots = [];
 
         let buyerMapObj; let buyerMarkers = {}; let buyerPolygonLayer = L.featureGroup(); 
         let rawBuyerData = []; let clusterDataMap = {}; 
@@ -388,10 +405,9 @@
         function openImageViewer(src) { document.getElementById('image-viewer-img').src = src; document.getElementById('image-viewer').style.display = 'flex'; }
         function closeImageViewer() { document.getElementById('image-viewer').style.display = 'none'; }
 
-        // โหลดข้อมูลจังหวัด
+        // โหลดข้อมูลจังหวัด (แก้ไข API URL ใหม่แล้ว)
         async function loadThaiData() {
             try {
-                // แก้ไขลิงก์ตรงนี้เป็นเส้นทางไฟล์เวอร์ชันที่ถูกต้อง (เพิ่ม /api/v1/)
                 const res = await fetch('https://raw.githubusercontent.com/kongvut/thai-province-data/master/api/v1/province_with_amphure_tambon.json');
                 thaiData = await res.json();
                 populateProvinces("reg-prov");
@@ -400,7 +416,6 @@
                 setupAddressDropdowns("buyer");
             } catch(e) {
                 console.error("Failed to load Thai data", e);
-                // เพิ่ม Alert เพื่อไม่ให้ระบบค้างเงียบๆ ถ้าเน็ตหลุดหรือโหลดไม่ได้
                 Swal.fire('ข้อผิดพลาด', 'ไม่สามารถโหลดข้อมูลจังหวัดได้ โปรดลองรีเฟรชใหม่อีกครั้ง', 'error');
             }
         }
@@ -474,28 +489,16 @@
             });
         }
 
-        // ตั้งค่าที่อยู่ตอน Edit Profile
         function setAddressDropdowns(prefix, prov, dist, subdist, zip) {
             const provSelect = document.getElementById(`${prefix}-prov`);
-            if(prov) {
-                provSelect.value = prov;
-                provSelect.dispatchEvent(new Event('change')); 
-            }
-            
+            if(prov) { provSelect.value = prov; provSelect.dispatchEvent(new Event('change')); }
             const distSelect = document.getElementById(`${prefix}-dist`);
-            if(dist) {
-                distSelect.value = dist;
-                distSelect.dispatchEvent(new Event('change'));
-            }
-
+            if(dist) { distSelect.value = dist; distSelect.dispatchEvent(new Event('change')); }
             const subdistSelect = document.getElementById(`${prefix}-subdist`);
-            if(subdist) {
-                subdistSelect.value = subdist;
-            }
+            if(subdist) { subdistSelect.value = subdist; }
             if(zip) document.getElementById(`${prefix}-zip`).value = zip;
         }
 
-        // ฟังก์ชันตรวจสอบการกรอกข้อมูลและ Scroll ไปยังจุดที่ลืม
         function validateForm(containerId) {
             const container = document.getElementById(containerId);
             const requiredFields = container.querySelectorAll('[required]');
@@ -503,23 +506,144 @@
                 if (!requiredFields[i].value.trim()) {
                     requiredFields[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
                     requiredFields[i].focus({preventScroll: true});
-                    
                     let label = requiredFields[i].previousElementSibling;
                     let fieldName = label ? label.innerText.replace(':', '').replace('*', '').trim() : 'ช่องนี้';
-                    
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'ข้อมูลไม่ครบถ้วน',
-                        text: `กรุณากรอกข้อมูลใน "${fieldName}" ให้ครบถ้วนครับ`,
-                        confirmButtonText: 'ตกลง',
-                        confirmButtonColor: THEME_PRIMARY
-                    });
+                    Swal.fire({ icon: 'warning', title: 'ข้อมูลไม่ครบถ้วน', text: `กรุณากรอกข้อมูลใน "${fieldName}" ให้ครบถ้วนครับ`, confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY });
                     return false;
                 }
             }
             return true;
         }
 
+        // ================= ระบบจัดการแปลงอ้อย (Saved Plots) =================
+        function renderSavedPlotsList() {
+            const container = document.getElementById('saved-plots-container');
+            const selectDropdown = document.getElementById('select-saved-plot');
+            
+            if (userSavedPlots.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="padding: 20px 0;">ยังไม่มีแปลงที่บันทึกไว้</div>';
+                selectDropdown.innerHTML = '<option value="">-- ไม่เลือก (ต้องการวาดพิกัดใหม่) --</option>';
+                return;
+            }
+
+            let html = '';
+            let optionsHtml = '<option value="">-- ไม่เลือก (ต้องการวาดพิกัดใหม่) --</option>';
+            
+            userSavedPlots.forEach((plot, index) => {
+                html += `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface); padding:12px; border:1px solid var(--border); border-radius:8px; margin-bottom:8px;">
+                    <div>
+                        <div style="font-weight:600; color:var(--text-main);">${plot.name}</div>
+                        <div style="font-size:13px; color:var(--text-muted);">พื้นที่: <span style="color:var(--primary); font-weight:500;">${plot.area} ไร่</span></div>
+                    </div>
+                    <button type="button" onclick="removeSavedPlot(${index})" style="background:var(--danger); color:white; border:none; border-radius:6px; padding:6px 12px; font-size:12px; width:auto; margin:0;">ลบ</button>
+                </div>`;
+                optionsHtml += `<option value="${index}">${plot.name} (${plot.area} ไร่)</option>`;
+            });
+            
+            container.innerHTML = html;
+            selectDropdown.innerHTML = optionsHtml;
+        }
+
+        function removeSavedPlot(index) {
+            userSavedPlots.splice(index, 1);
+            renderSavedPlotsList();
+        }
+
+        function openAddPlotModal() {
+            let tempPolygonGeoJSON = ""; let tempArea = 0; let tempCenter = [];
+            let modalMap = null; let modalDrawnPolygon = null;
+
+            Swal.fire({
+                html: `
+                    <div style="text-align: left; font-family: 'Kanit';">
+                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">วาดแปลงอ้อยใหม่</div>
+                        <label style="margin-top:0;">ชื่อแปลงอ้อย (เช่น แปลงหลังบ้าน):</label>
+                        <input type="text" id="plot-name" class="swal2-input" placeholder="กรอกชื่อแปลง" style="width: 100%; box-sizing: border-box; margin: 0 0 15px 0; font-family: 'Kanit';">
+                        <label>วาดขอบเขตแปลง:</label>
+                        <div id="modal-map" style="height: 300px; border-radius: 12px; border: 1px solid var(--border); width: 100%;"></div>
+                        <div id="modal-area-text" style="margin-top:10px; color:var(--primary); font-weight:600; text-align:center;">พื้นที่ประมาณ: 0.00 ไร่</div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'บันทึกแปลง',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: THEME_PRIMARY,
+                cancelButtonColor: '#BFC9C5',
+                didOpen: () => {
+                    modalMap = L.map('modal-map').setView([currentLat, currentLng], 15);
+                    L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(modalMap);
+                    
+                    modalMap.pm.addControls({ position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, dragMode: false, cutPolygon: false, removalMode: true });
+                    
+                    modalMap.on('pm:create', function(e) {
+                        if(modalDrawnPolygon) modalDrawnPolygon.remove();
+                        modalDrawnPolygon = e.layer;
+                        
+                        function calcModalArea() {
+                            let geojson = modalDrawnPolygon.toGeoJSON();
+                            tempPolygonGeoJSON = JSON.stringify(geojson.geometry.coordinates);
+                            tempArea = (turf.area(geojson) / 1600).toFixed(2);
+                            let center = turf.centerOfMass(geojson);
+                            tempCenter = [center.geometry.coordinates[1], center.geometry.coordinates[0]];
+                            document.getElementById('modal-area-text').innerText = `พื้นที่ประมาณ: ${tempArea} ไร่`;
+                        }
+                        calcModalArea();
+                        modalDrawnPolygon.on('pm:edit', calcModalArea);
+                    });
+                    
+                    modalMap.on('pm:remove', function(e) {
+                        modalDrawnPolygon = null; tempPolygonGeoJSON = ""; tempArea = 0; tempCenter = [];
+                        document.getElementById('modal-area-text').innerText = `พื้นที่ประมาณ: 0.00 ไร่`;
+                    });
+
+                    setTimeout(() => { modalMap.invalidateSize(); }, 300);
+                },
+                preConfirm: () => {
+                    const pName = document.getElementById('plot-name').value;
+                    if (!pName) { Swal.showValidationMessage('กรุณาตั้งชื่อแปลง'); return false; }
+                    if (!tempPolygonGeoJSON) { Swal.showValidationMessage('กรุณาวาดแปลงบนแผนที่'); return false; }
+                    return { name: pName, polygon: tempPolygonGeoJSON, area: tempArea, center: tempCenter };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    userSavedPlots.push(result.value);
+                    renderSavedPlotsList();
+                }
+            });
+        }
+
+        function loadSavedPlotToMap() {
+            const index = document.getElementById('select-saved-plot').value;
+            if(index === "") {
+                if(drawnPolygon) { drawnPolygon.remove(); drawnPolygon = null; }
+                polygonGeoJSON = "";
+                document.getElementById("quantity").value = "";
+                document.getElementById("gps-status").innerHTML = "<i>👆</i> แตะไอคอนห้าเหลี่ยมเพื่อเริ่มวาด";
+                return;
+            }
+            
+            const plot = userSavedPlots[index];
+            if(!plot) return;
+            
+            polygonGeoJSON = plot.polygon;
+            document.getElementById("quantity").value = plot.area;
+            document.getElementById("gps-status").innerHTML = "<i>✅</i> โหลดแปลง: <b>" + plot.name + " (" + plot.area + " ไร่)</b>";
+            
+            if(!map) { renderMap(plot.center[0], plot.center[1]); }
+            
+            if(drawnPolygon) { drawnPolygon.remove(); }
+            
+            try {
+                let coords = JSON.parse(plot.polygon);
+                let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
+                drawnPolygon = L.polygon(flippedCoords, { color: THEME_PRIMARY, fillOpacity: 0.4 }).addTo(map);
+                drawnPolygon.on('pm:edit', function() { calculateArea(drawnPolygon); });
+                map.fitBounds(drawnPolygon.getBounds(), { padding: [20, 20] });
+            } catch(e) { console.error("Error drawing saved plot", e); }
+        }
+
+        // ================= Core Logic =================
         function compressImageAsync(file) {
             return new Promise(resolve => {
                 const reader = new FileReader(); reader.readAsDataURL(file);
@@ -597,10 +721,12 @@
                     document.getElementById("reg-prefix").value = d.prefix; document.getElementById("reg-firstname").value = d.firstName; document.getElementById("reg-lastname").value = d.lastName;
                     if(d.dob) document.getElementById("reg-dob").value = d.dob.split('T')[0];
                     document.getElementById("reg-no").value = d.addressNo; document.getElementById("reg-moo").value = d.moo; 
-                    
                     setAddressDropdowns("reg", d.prov, d.dist, d.subDist, d.zip);
-                    
                     document.getElementById("reg-phone").value = d.phone; document.getElementById("reg-farminfo").value = d.farmInfo;
+                    
+                    // โหลดแปลงอ้อยที่เคยบันทึกไว้
+                    if(d.savedPlots) { try { userSavedPlots = JSON.parse(d.savedPlots); renderSavedPlotsList(); } catch(e){} }
+                    
                     document.getElementById("btn-register").innerText = "ยืนยันการแก้ไขข้อมูล"; 
                     document.getElementById("reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว สามารถแก้ไขข้อมูลด้านล่างได้เลยครับ"; 
                 } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; }
@@ -609,8 +735,10 @@
 
         async function submitRegistration() {
             if(!validateForm('register-page')) return;
-
-            const payload = { action: isEditMode ? "updateUser" : "register", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("reg-prefix").value, firstName: document.getElementById("reg-firstname").value, lastName: document.getElementById("reg-lastname").value, dob: document.getElementById("reg-dob").value, addressNo: document.getElementById("reg-no").value, moo: document.getElementById("reg-moo").value, subDist: document.getElementById("reg-subdist").value, dist: document.getElementById("reg-dist").value, prov: document.getElementById("reg-prov").value, zip: document.getElementById("reg-zip").value, phone: document.getElementById("reg-phone").value, farmInfo: document.getElementById("reg-farminfo").value };
+            
+            // ส่งข้อมูล savedPlots แนบไปกับ Payload ด้วย
+            const payload = { action: isEditMode ? "updateUser" : "register", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("reg-prefix").value, firstName: document.getElementById("reg-firstname").value, lastName: document.getElementById("reg-lastname").value, dob: document.getElementById("reg-dob").value, addressNo: document.getElementById("reg-no").value, moo: document.getElementById("reg-moo").value, subDist: document.getElementById("reg-subdist").value, dist: document.getElementById("reg-dist").value, prov: document.getElementById("reg-prov").value, zip: document.getElementById("reg-zip").value, phone: document.getElementById("reg-phone").value, farmInfo: document.getElementById("reg-farminfo").value, savedPlots: JSON.stringify(userSavedPlots) };
+            
             const btn = document.getElementById("btn-register"); btn.innerText = "กำลังบันทึกข้อมูล..."; btn.disabled = true;
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
@@ -624,7 +752,12 @@
                 const result = await res.json();
                 if (result.status === "found") {
                     document.getElementById("profile-info").innerText = "คุณ " + result.data.firstName + " " + result.data.lastName;
-                    if(targetAction === 'report') { document.getElementById("main-page").classList.add("active"); getLocation(); } 
+                    
+                    if(targetAction === 'report') { 
+                        if(result.data.savedPlots) { try { userSavedPlots = JSON.parse(result.data.savedPlots); renderSavedPlotsList(); } catch(e){} }
+                        document.getElementById("main-page").classList.add("active"); 
+                        getLocation(); 
+                    } 
                     else if (targetAction === 'sales') { document.getElementById("sales-page").classList.add("active"); await fetchSalesData(); }
                 } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; Swal.fire({ icon: 'warning', title: 'โปรดลงทะเบียน', text: 'กรุณาลงทะเบียนข้อมูลชาวไร่ก่อนใช้งานครับ', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); }); }
             } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้', 'error'); }
@@ -848,28 +981,18 @@
 
         function renderMap(lat, lng) {
             if(!map) {
-                var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }); 
-                var googleStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20 });
+                var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }); var googleStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20 });
                 map = L.map('map', { center: [lat, lng], zoom: 16, layers: [googleHybrid] });
-                var baseMaps = { "ดาวเทียม": googleHybrid, "ถนน": googleStreets }; 
-                L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
+                var baseMaps = { "ดาวเทียม": googleHybrid, "ถนน": googleStreets }; L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
                 map.pm.addControls({ position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, dragMode: false, cutPolygon: false, removalMode: true });
                 
                 map.on('pm:create', function(e) { if (drawnPolygon) drawnPolygon.remove(); drawnPolygon = e.layer; calculateArea(drawnPolygon); drawnPolygon.on('pm:edit', function() { calculateArea(drawnPolygon); }); });
                 map.on('pm:remove', function(e) { drawnPolygon = null; polygonGeoJSON = ""; document.getElementById("quantity").value = ""; });
                 
-                // เพิ่มหมุดชี้ตำแหน่งปัจจุบัน พร้อมข้อความ
                 userLocMarker = L.marker([lat, lng]).addTo(map).bindPopup("<div style='font-family:Kanit; font-weight:500; font-size:14px; text-align:center;'>📍 ตำแหน่งของคุณ</div>").openPopup();
-                
             } else { 
                 map.setView([lat, lng], 16); 
-                
-                // อัปเดตตำแหน่งหมุดหากมีการดึงพิกัดใหม่
-                if(userLocMarker) {
-                    userLocMarker.setLatLng([lat, lng]);
-                } else {
-                    userLocMarker = L.marker([lat, lng]).addTo(map).bindPopup("<div style='font-family:Kanit; font-weight:500; font-size:14px; text-align:center;'>📍 ตำแหน่งของคุณ</div>").openPopup();
-                }
+                if(userLocMarker) { userLocMarker.setLatLng([lat, lng]); } else { userLocMarker = L.marker([lat, lng]).addTo(map).bindPopup("<div style='font-family:Kanit; font-weight:500; font-size:14px; text-align:center;'>📍 ตำแหน่งของคุณ</div>").openPopup(); }
             }
             document.getElementById("submit-btn").disabled = false;
         }
@@ -909,9 +1032,7 @@
                     document.getElementById("buyer-prefix").value = d.prefix; document.getElementById("buyer-firstname").value = d.firstName; document.getElementById("buyer-lastname").value = d.lastName;
                     if(d.dob) document.getElementById("buyer-dob").value = d.dob.split('T')[0];
                     document.getElementById("buyer-no").value = d.addressNo; document.getElementById("buyer-moo").value = d.moo;
-                    
                     setAddressDropdowns("buyer", d.prov, d.dist, d.subDist, d.zip);
-                    
                     document.getElementById("buyer-phone").value = d.phone; document.getElementById("buyer-vehicle").value = d.vehicleInfo;
                     document.getElementById("btn-buyer-register").innerText = "ยืนยันการแก้ไขข้อมูล";
                     document.getElementById("buyer-reg-status-box").innerHTML = "<i>ℹ️</i> ระบบพบข้อมูลพาร์ทเนอร์แล้ว"; 
@@ -921,7 +1042,6 @@
 
         async function submitBuyerRegistration() {
             if(!validateForm('register-buyer-page')) return;
-
             const payload = { action: isBuyerEditMode ? "updateBuyer" : "registerBuyer", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("buyer-prefix").value, firstName: document.getElementById("buyer-firstname").value, lastName: document.getElementById("buyer-lastname").value, dob: document.getElementById("buyer-dob").value, addressNo: document.getElementById("buyer-no").value, moo: document.getElementById("buyer-moo").value, subDist: document.getElementById("buyer-subdist").value, dist: document.getElementById("buyer-dist").value, prov: document.getElementById("buyer-prov").value, zip: document.getElementById("buyer-zip").value, phone: document.getElementById("buyer-phone").value, vehicleInfo: document.getElementById("buyer-vehicle").value, fullName: document.getElementById("buyer-prefix").value + document.getElementById("buyer-firstname").value + " " + document.getElementById("buyer-lastname").value };
             
             const btn = document.getElementById("btn-buyer-register"); btn.innerText = "กำลังบันทึก..."; btn.disabled = true;
