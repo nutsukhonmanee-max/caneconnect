@@ -14,7 +14,7 @@
     <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
 
     <style>
-        /* Modern Minimalist Color Palette (อิงสีน้องอ้อยใจ Cane Connect) */
+        /* Modern Minimalist Color Palette */
         :root { 
             --primary: #6DB33F; 
             --primary-light: #F0F8EC;
@@ -34,7 +34,6 @@
         
         body { 
             font-family: 'Kanit', sans-serif; 
-            /* ไล่สีเขียวอ่อนละมุนจากมุมซ้ายบนลงมา */
             background: linear-gradient(135deg, #F0F8EC 0%, #F7F9F8 100%); 
             color: var(--text-main); 
             padding: 0; 
@@ -44,7 +43,6 @@
             position: relative;
         }
 
-        /* เพิ่มลายน้ำพื้นหลัง (Watermark) มาสคอตน้องอ้อยใจ */
         body::before {
             content: "";
             position: fixed;
@@ -56,12 +54,11 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            opacity: 0.06; /* ความจาง 6% ให้ดูเป็นลายน้ำสวยๆ ไม่กวนสายตา */
-            z-index: -1; /* ให้อยู่หลังสุด */
-            pointer-events: none; /* ป้องกันไม่ให้บล็อกการจิ้มหน้าจอหรือกดปุ่ม */
+            opacity: 0.06; 
+            z-index: -1; 
+            pointer-events: none; 
         }
         
-        /* Modern App Header */
         .header { background-color: var(--surface); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.02); position: sticky; top: 0; z-index: 1000;}
         .header h1 { margin: 0; font-size: 22px; font-weight: 600; color: var(--primary-dark); letter-spacing: 0.5px; }
         .speech-bubble { background: var(--primary-light); color: var(--primary-dark); border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 600; }
@@ -72,17 +69,16 @@
         .profile-img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); display: none; }
         .profile-text { font-size: 17px; font-weight: 600; color: var(--text-main); }
         
-        /* Clean Forms */
         label { font-weight: 500; display: block; margin-top: 16px; font-size: 14px; color: var(--text-muted); margin-bottom: 6px;}
         input[type="text"], input[type="tel"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); box-sizing: border-box; font-size: 15px; font-family: 'Kanit', sans-serif; transition: all 0.2s ease; background: var(--surface); color: var(--text-main); }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(109, 179, 63, 0.15); }
+        select:disabled { background-color: #F4F6F5; color: #999; cursor: not-allowed; }
         
         .map-container { height: 320px; width: 100%; border-radius: var(--radius-md); margin-top: 10px; border: 1px solid var(--border); z-index: 1; overflow: hidden;}
         
         .status-box { margin-top: 10px; padding: 14px; border-radius: var(--radius-md); background-color: var(--primary-light); color: var(--primary-dark); font-size: 14px; display: flex; align-items: center; font-weight: 500; border: 1px dashed var(--primary);}
         .status-box i { margin-right: 10px; font-size: 18px;}
         
-        /* Modern Buttons */
         button { width: 100%; padding: 16px; margin-top: 24px; background-color: var(--primary); color: white; border: none; border-radius: var(--radius-md); font-size: 16px; font-family: 'Kanit', sans-serif; font-weight: 600; cursor: pointer; transition: 0.2s ease; letter-spacing: 0.3px;}
         button:hover { background-color: var(--primary-dark); transform: translateY(-1px); }
         button:active { transform: translateY(1px); }
@@ -94,7 +90,6 @@
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .form-grid.col-3 { grid-template-columns: 1fr 1fr 1fr; } .full-width { grid-column: 1 / -1; }
         
-        /* Premium Cards */
         .section-title { font-size: 17px; font-weight: 600; color: var(--text-main); margin-top: 30px; margin-bottom: 16px; display: flex; align-items: center; }
         .buyer-section-title { color: var(--primary-dark); }
         
@@ -102,20 +97,18 @@
         .sale-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
         .sale-date { font-size: 13px; color: var(--text-muted); }
         
-        /* Minimalist Badges */
         .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: 0.3px;}
-        .badge.pending { background: #EAF2F8; color: var(--info); }       
-        .badge.waiting { background: #FEF5E7; color: var(--accent); }       
+        .badge.pending { background: #EAF2F8; color: var(--info); }        
+        .badge.waiting { background: #FEF5E7; color: var(--accent); }        
         .badge.processing { background: #EAF2F8; color: var(--info); }    
         .badge.verify { background: #F4ECF7; color: #8E44AD; }    
-        .badge.completed { background: var(--primary-light); color: var(--primary-dark); }     
+        .badge.completed { background: var(--primary-light); color: var(--primary-dark); }      
         .badge.canceled { background: #FDEDEC; color: var(--danger); }      
         
         .sale-detail { font-size: 14px; color: var(--text-main); line-height: 2; } 
         .sale-detail span { font-weight: 600; color: var(--primary-dark); }
         .empty-state { text-align: center; color: var(--text-muted); font-size: 14px; padding: 40px 0; background: var(--surface); border-radius: var(--radius-md); border: 1px dashed var(--border);}
         
-        /* Cluster UI */
         .cluster-group { background-color: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 24px; box-shadow: var(--shadow-soft); }
         .cluster-title { font-weight: 600; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; font-size: 16px; }
         .control-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-soft); }
@@ -123,25 +116,11 @@
         .slider-input { width: 100%; margin: 8px 0; accent-color: var(--primary); } 
         .val-badge { background: var(--primary-light); color: var(--primary-dark); padding: 4px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; }
         
-        /* Gallery */
         .photo-gallery { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 12px; margin-top: 10px; padding-bottom: 10px; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory;}
         .photo-gallery img { width: 100px; height: 100px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border); flex-shrink: 0; scroll-snap-align: start; }
         
-        /* Island Modal (SweetAlert Override & Custom Red Close Button) */
         .swal2-popup { border-radius: 24px !important; padding: 24px !important; font-family: 'Kanit', sans-serif !important; padding-top: 35px !important;}
-        .swal2-close {
-            color: var(--danger) !important;
-            background: #FDEDEC !important;
-            border-radius: 50% !important;
-            width: 38px !important;
-            height: 38px !important;
-            font-size: 24px !important;
-            position: absolute !important;
-            top: 12px !important;
-            right: 12px !important;
-            transition: all 0.2s ease !important;
-            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2) !important;
-        }
+        .swal2-close { color: var(--danger) !important; background: #FDEDEC !important; border-radius: 50% !important; width: 38px !important; height: 38px !important; font-size: 24px !important; position: absolute !important; top: 12px !important; right: 12px !important; transition: all 0.2s ease !important; box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2) !important; }
         .swal2-close:hover { background: var(--danger) !important; color: white !important; }
         
         .island-modal { text-align: left; font-size: 14px; color: var(--text-main); line-height: 1.6; }
@@ -150,20 +129,17 @@
         .island-gallery img { width: 140px; height: 140px; object-fit: cover; border-radius: var(--radius-md); flex-shrink: 0; cursor: zoom-in; scroll-snap-align: start; border: 1px solid var(--border);}
         .swal-map-container { height: 200px; width: 100%; border-radius: var(--radius-md); margin-top: 12px; margin-bottom: 16px; border: 1px solid var(--border); z-index: 9999; overflow: hidden;}
         
-        /* Minimalist Loader */
         #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(247,249,248,0.95); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px);}
         .anim-container { position: relative; width: 120px; height: 50px; border-bottom: 3px solid var(--primary); overflow: hidden; margin-bottom: 20px; }
         .anim-truck { position: absolute; bottom: -8px; left: -40px; font-size: 32px; animation: driveTruck 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1); }
         .anim-cane { position: absolute; bottom: -8px; right: 5px; font-size: 30px; }
         @keyframes driveTruck { 0% { left: -40px; } 70% { left: 80px; } 100% { left: 80px; opacity: 0; } }
 
-        /* Lightbox */
         #image-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20,25,22,0.95); z-index: 100000; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(5px);}
         #image-viewer-img { max-width: 90%; max-height: 80%; border-radius: 16px; object-fit: contain; box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
         .close-viewer { position: absolute; top: 30px; right: 30px; color: white; font-size: 32px; cursor: pointer; width: 44px; height: 44px; text-align: center; line-height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); transition: 0.2s;}
         .close-viewer:hover { background: var(--danger); border-color: var(--danger); }
         
-        /* Dashboard Card styling */
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .dash-card { background: var(--surface); padding: 16px; border-radius: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center;}
     </style>
@@ -213,13 +189,42 @@
             <div class="form-grid">
                 <div><label>บ้านเลขที่:</label><input type="text" id="reg-no" required></div>
                 <div><label>หมู่ที่:</label><input type="text" id="reg-moo" required></div>
-                <div><label>ตำบล:</label><input type="text" id="reg-subdist" required></div>
-                <div><label>อำเภอ:</label><input type="text" id="reg-dist" required></div>
-                <div class="full-width"><label>จังหวัด:</label><input type="text" id="reg-prov" required></div>
-                <div class="full-width"><label>รหัสไปรษณีย์:</label><input type="text" id="reg-zip" required></div>
-                <div class="full-width"><label>ข้อมูลการปลูกอ้อย:</label><textarea id="reg-farminfo" rows="2" placeholder="เช่น ส่งลานเทไหน หรือโรงงานไหน"></textarea></div>
+                
+                <div class="full-width">
+                    <label>จังหวัด:</label>
+                    <select id="reg-prov" required>
+                        <option value="">กำลังโหลดข้อมูล...</option>
+                    </select>
+                </div>
+                <div>
+                    <label>อำเภอ:</label>
+                    <select id="reg-dist" required disabled>
+                        <option value="">เลือกจังหวัดก่อน</option>
+                    </select>
+                </div>
+                <div>
+                    <label>ตำบล:</label>
+                    <select id="reg-subdist" required disabled>
+                        <option value="">เลือกอำเภอก่อน</option>
+                    </select>
+                </div>
+                <div class="full-width">
+                    <label>รหัสไปรษณีย์:</label>
+                    <input type="text" id="reg-zip" required readonly style="background-color: #F4F6F5;">
+                </div>
+
+                <div class="full-width">
+                    <label>ข้อมูลการปลูกอ้อย (ไร่):</label>
+                    <select id="reg-farminfo" required>
+                        <option value="" disabled selected>เลือกขนาดพื้นที่ปลูกอ้อย</option>
+                        <option value="1-20 ไร่">1-20 ไร่</option>
+                        <option value="21-50 ไร่">21-50 ไร่</option>
+                        <option value="50-100 ไร่">50-100 ไร่</option>
+                        <option value="100 ไร่ขึ้นไป">100 ไร่ขึ้นไป</option>
+                    </select>
+                </div>
             </div>
-            <button id="btn-register" onclick="submitRegistration()">บันทึกข้อมูลส่วนตัว</button>
+            <button id="btn-register" onclick="submitRegistration()">ยืนยันการลงทะเบียน</button>
         </div>
 
         <!-- ================= 2. หน้าแจ้งพิกัดอ้อย ================= -->
@@ -262,7 +267,6 @@
             <div class="section-title">📦 ประวัติการขาย (เสร็จสิ้น)</div>
             <div id="history-sales-container"></div>
             
-            <!-- 🌟 ย้าย Dashboard ลงมาล่างสุด -->
             <div id="farmer-dashboard-container" style="display:none; margin-top: 40px; margin-bottom: 20px;"></div>
         </div>
 
@@ -282,13 +286,33 @@
             <div class="form-grid">
                 <div><label>บ้านเลขที่:</label><input type="text" id="buyer-no" required></div>
                 <div><label>หมู่ที่:</label><input type="text" id="buyer-moo" required></div>
-                <div><label>ตำบล:</label><input type="text" id="buyer-subdist" required></div>
-                <div><label>อำเภอ:</label><input type="text" id="buyer-dist" required></div>
-                <div class="full-width"><label>จังหวัด:</label><input type="text" id="buyer-prov" required></div>
-                <div class="full-width"><label>รหัสไปรษณีย์:</label><input type="text" id="buyer-zip" required></div>
+                
+                <div class="full-width">
+                    <label>จังหวัด:</label>
+                    <select id="buyer-prov" required>
+                        <option value="">กำลังโหลดข้อมูล...</option>
+                    </select>
+                </div>
+                <div>
+                    <label>อำเภอ:</label>
+                    <select id="buyer-dist" required disabled>
+                        <option value="">เลือกจังหวัดก่อน</option>
+                    </select>
+                </div>
+                <div>
+                    <label>ตำบล:</label>
+                    <select id="buyer-subdist" required disabled>
+                        <option value="">เลือกอำเภอก่อน</option>
+                    </select>
+                </div>
+                <div class="full-width">
+                    <label>รหัสไปรษณีย์:</label>
+                    <input type="text" id="buyer-zip" required readonly style="background-color: #F4F6F5;">
+                </div>
+
                 <div class="full-width"><label>ข้อมูลเครื่องจักร (เช่น ทะเบียนรถ):</label><textarea id="buyer-vehicle" rows="2"></textarea></div>
             </div>
-            <button id="btn-buyer-register" onclick="submitBuyerRegistration()">บันทึกข้อมูลพาร์ทเนอร์</button>
+            <button id="btn-buyer-register" onclick="submitBuyerRegistration()">ยืนยันการลงทะเบียน</button>
         </div>
 
         <!-- ================= 5. หน้าควบคุมของผู้รับซื้อ ================= -->
@@ -357,11 +381,141 @@
         let buyerMapObj; let buyerMarkers = {}; let buyerPolygonLayer = L.featureGroup(); 
         let rawBuyerData = []; let clusterDataMap = {}; 
         let compressedFieldPhotos = []; 
+        let thaiData = [];
 
         function showLoader() { document.getElementById("loading-screen").style.display = "flex"; }
         function hideLoader() { document.getElementById("loading-screen").style.display = "none"; }
         function openImageViewer(src) { document.getElementById('image-viewer-img').src = src; document.getElementById('image-viewer').style.display = 'flex'; }
         function closeImageViewer() { document.getElementById('image-viewer').style.display = 'none'; }
+
+        // โหลดข้อมูลจังหวัด
+        async function loadThaiData() {
+            try {
+                const res = await fetch('https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province_with_amphure_tambon.json');
+                thaiData = await res.json();
+                populateProvinces("reg-prov");
+                populateProvinces("buyer-prov");
+                setupAddressDropdowns("reg");
+                setupAddressDropdowns("buyer");
+            } catch(e) {
+                console.error("Failed to load Thai data", e);
+            }
+        }
+
+        function populateProvinces(selectId) {
+            const select = document.getElementById(selectId);
+            if(!select) return;
+            select.innerHTML = '<option value="" disabled selected>เลือกจังหวัด</option>';
+            let sorted = [...thaiData].sort((a, b) => a.name_th.localeCompare(b.name_th));
+            sorted.forEach(prov => {
+                select.innerHTML += `<option value="${prov.name_th}" data-id="${prov.id}">${prov.name_th}</option>`;
+            });
+        }
+
+        function setupAddressDropdowns(prefix) {
+            const provSelect = document.getElementById(`${prefix}-prov`);
+            const distSelect = document.getElementById(`${prefix}-dist`);
+            const subdistSelect = document.getElementById(`${prefix}-subdist`);
+            const zipInput = document.getElementById(`${prefix}-zip`);
+            if(!provSelect) return;
+
+            provSelect.addEventListener('change', function() {
+                const selectedOpt = this.options[this.selectedIndex];
+                const selectedProvId = selectedOpt ? selectedOpt.getAttribute('data-id') : null;
+                
+                distSelect.innerHTML = '<option value="" disabled selected>เลือกอำเภอ</option>';
+                subdistSelect.innerHTML = '<option value="" disabled selected>เลือกตำบล</option>';
+                zipInput.value = '';
+                
+                distSelect.disabled = !selectedProvId;
+                subdistSelect.disabled = true;
+
+                if (selectedProvId) {
+                    const provData = thaiData.find(p => p.id == selectedProvId);
+                    if (provData && provData.amphure) {
+                        let sortedAmp = [...provData.amphure].sort((a,b) => a.name_th.localeCompare(b.name_th));
+                        sortedAmp.forEach(amp => {
+                            distSelect.innerHTML += `<option value="${amp.name_th}" data-id="${amp.id}">${amp.name_th}</option>`;
+                        });
+                    }
+                }
+            });
+
+            distSelect.addEventListener('change', function() {
+                const provOpt = provSelect.options[provSelect.selectedIndex];
+                const selectedProvId = provOpt ? provOpt.getAttribute('data-id') : null;
+                
+                const distOpt = this.options[this.selectedIndex];
+                const selectedDistId = distOpt ? distOpt.getAttribute('data-id') : null;
+                
+                subdistSelect.innerHTML = '<option value="" disabled selected>เลือกตำบล</option>';
+                zipInput.value = '';
+                subdistSelect.disabled = !selectedDistId;
+
+                if (selectedProvId && selectedDistId) {
+                    const provData = thaiData.find(p => p.id == selectedProvId);
+                    const distData = provData.amphure.find(a => a.id == selectedDistId);
+                    if (distData && distData.tambon) {
+                        let sortedTam = [...distData.tambon].sort((a,b) => a.name_th.localeCompare(b.name_th));
+                        sortedTam.forEach(tam => {
+                            subdistSelect.innerHTML += `<option value="${tam.name_th}" data-zip="${tam.zip_code}">${tam.name_th}</option>`;
+                        });
+                    }
+                }
+            });
+
+            subdistSelect.addEventListener('change', function() {
+                const tamOpt = this.options[this.selectedIndex];
+                const zip = tamOpt ? tamOpt.getAttribute('data-zip') : '';
+                if (zip) zipInput.value = zip;
+            });
+        }
+
+        // ตั้งค่าที่อยู่ตอน Edit Profile
+        function setAddressDropdowns(prefix, prov, dist, subdist, zip) {
+            const provSelect = document.getElementById(`${prefix}-prov`);
+            if(prov) {
+                provSelect.value = prov;
+                provSelect.dispatchEvent(new Event('change')); 
+            }
+            
+            const distSelect = document.getElementById(`${prefix}-dist`);
+            if(dist) {
+                distSelect.value = dist;
+                distSelect.dispatchEvent(new Event('change'));
+            }
+
+            const subdistSelect = document.getElementById(`${prefix}-subdist`);
+            if(subdist) {
+                subdistSelect.value = subdist;
+            }
+            if(zip) document.getElementById(`${prefix}-zip`).value = zip;
+        }
+
+        // ฟังก์ชันตรวจสอบการกรอกข้อมูลและ Scroll ไปยังจุดที่ลืม
+        function validateForm(containerId) {
+            const container = document.getElementById(containerId);
+            const requiredFields = container.querySelectorAll('[required]');
+            for (let i = 0; i < requiredFields.length; i++) {
+                if (!requiredFields[i].value.trim()) {
+                    requiredFields[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    requiredFields[i].focus({preventScroll: true});
+                    
+                    let label = requiredFields[i].previousElementSibling;
+                    let fieldName = label ? label.innerText.replace(':', '').replace('*', '').trim() : 'ช่องนี้';
+                    
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'ข้อมูลไม่ครบถ้วน',
+                        text: `กรุณากรอกข้อมูลใน "${fieldName}" ให้ครบถ้วนครับ`,
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: THEME_PRIMARY
+                    });
+                    return false;
+                }
+            }
+            return true;
+        }
 
         function compressImageAsync(file) {
             return new Promise(resolve => {
@@ -390,6 +544,7 @@
 
         async function main() {
             showLoader();
+            await loadThaiData();
             try {
                 await liff.init({ liffId: LIFF_ID });
                 if (liff.isLoggedIn()) {
@@ -438,21 +593,26 @@
                     isEditMode = true; let d = result.data; document.getElementById("profile-info").innerText = "คุณ " + d.firstName + " " + d.lastName;
                     document.getElementById("reg-prefix").value = d.prefix; document.getElementById("reg-firstname").value = d.firstName; document.getElementById("reg-lastname").value = d.lastName;
                     if(d.dob) document.getElementById("reg-dob").value = d.dob.split('T')[0];
-                    document.getElementById("reg-no").value = d.addressNo; document.getElementById("reg-moo").value = d.moo; document.getElementById("reg-subdist").value = d.subDist; document.getElementById("reg-dist").value = d.dist; document.getElementById("reg-prov").value = d.prov; document.getElementById("reg-zip").value = d.zip;
+                    document.getElementById("reg-no").value = d.addressNo; document.getElementById("reg-moo").value = d.moo; 
+                    
+                    setAddressDropdowns("reg", d.prov, d.dist, d.subDist, d.zip);
+                    
                     document.getElementById("reg-phone").value = d.phone; document.getElementById("reg-farminfo").value = d.farmInfo;
-                    document.getElementById("btn-register").innerText = "บันทึกการแก้ไขข้อมูล"; document.getElementById("reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว สามารถแก้ไขข้อมูลด้านล่างได้เลยครับ"; 
+                    document.getElementById("btn-register").innerText = "ยืนยันการแก้ไขข้อมูล"; 
+                    document.getElementById("reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว สามารถแก้ไขข้อมูลด้านล่างได้เลยครับ"; 
                 } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; }
             } catch (error) { console.error(error); }
         }
 
         async function submitRegistration() {
+            if(!validateForm('register-page')) return;
+
             const payload = { action: isEditMode ? "updateUser" : "register", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("reg-prefix").value, firstName: document.getElementById("reg-firstname").value, lastName: document.getElementById("reg-lastname").value, dob: document.getElementById("reg-dob").value, addressNo: document.getElementById("reg-no").value, moo: document.getElementById("reg-moo").value, subDist: document.getElementById("reg-subdist").value, dist: document.getElementById("reg-dist").value, prov: document.getElementById("reg-prov").value, zip: document.getElementById("reg-zip").value, phone: document.getElementById("reg-phone").value, farmInfo: document.getElementById("reg-farminfo").value };
-            if(!payload.firstName || !payload.phone || !payload.prov) { Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกข้อมูลสำคัญให้ครบถ้วนครับ', 'warning'); return; }
             const btn = document.getElementById("btn-register"); btn.innerText = "กำลังบันทึกข้อมูล..."; btn.disabled = true;
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
-                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: isEditMode ? 'อัปเดตข้อมูลแล้ว' : 'ลงทะเบียนสำเร็จ!', confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); }); }
-            } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); btn.innerText = isEditMode ? "บันทึกการแก้ไขข้อมูล" : "บันทึกข้อมูลส่วนตัว"; btn.disabled = false; }
+                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: isEditMode ? 'อัปเดตข้อมูลแล้ว' : 'ลงทะเบียนสำเร็จ!', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); }); }
+            } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); btn.innerText = isEditMode ? "ยืนยันการแก้ไขข้อมูล" : "ยืนยันการลงทะเบียน"; btn.disabled = false; }
         }
 
         async function checkUserForAction(targetAction) {
@@ -463,7 +623,7 @@
                     document.getElementById("profile-info").innerText = "คุณ " + result.data.firstName + " " + result.data.lastName;
                     if(targetAction === 'report') { document.getElementById("main-page").classList.add("active"); getLocation(); } 
                     else if (targetAction === 'sales') { document.getElementById("sales-page").classList.add("active"); await fetchSalesData(); }
-                } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; Swal.fire({ icon: 'warning', title: 'โปรดลงทะเบียน', text: 'กรุณาลงทะเบียนข้อมูลชาวไร่ก่อนใช้งานครับ', confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); }); }
+                } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; Swal.fire({ icon: 'warning', title: 'โปรดลงทะเบียน', text: 'กรุณาลงทะเบียนข้อมูลชาวไร่ก่อนใช้งานครับ', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); }); }
             } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้', 'error'); }
         }
 
@@ -532,7 +692,6 @@
                 if (badgeClass === "completed" || badgeClass === "canceled") { historyContainer.innerHTML += cardHTML; } else { currentContainer.innerHTML += cardHTML; }
             });
 
-            // Modern Minimalist Dashboard (ย้ายลงล่างสุดตาม Request)
             dashboardContainer.innerHTML = `
                 <div style="background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft);">
                     <div style="font-size: 16px; font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; display: flex; align-items: center; color: var(--primary);">
@@ -647,7 +806,7 @@
                     Swal.fire({ title: 'กำลังบันทึกบัญชี...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
                     try {
                         const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "farmerConfirmClose", row: item.row }) });
-                        const data = await res.json(); if (data.status === "success") { Swal.fire({title:'สำเร็จ!', text:'ปิดดีลเรียบร้อย ข้อมูลสะสมเข้าโปรไฟล์แล้วครับ', icon:'success', confirmButtonColor: THEME_PRIMARY}).then(() => { fetchSalesData(); }); }
+                        const data = await res.json(); if (data.status === "success") { Swal.fire({title:'สำเร็จ!', text:'ปิดดีลเรียบร้อย ข้อมูลสะสมเข้าโปรไฟล์แล้วครับ', icon:'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { fetchSalesData(); }); }
                     } catch(e) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อได้', 'error'); }
                 }
             });
@@ -673,13 +832,13 @@
         }
 
         async function confirmSaleOffer(rowId, bName, bPhone, bPrice) {
-            const confirmAlert = await Swal.fire({ html: `<div style="font-family:'Kanit';">คุณตกลงขายใบอ้อยให้ <b>${bName}</b><br>ในราคา <b style="color:var(--primary);">${bPrice} บ./ตัน</b> ใช่หรือไม่?</div>`, showCancelButton: true, confirmButtonColor: THEME_PRIMARY, confirmButtonText: 'ยืนยัน', cancelButtonText: 'ยกเลิก', cancelButtonColor: '#BFC9C5' });
+            const confirmAlert = await Swal.fire({ html: `<div style="font-family:'Kanit';">คุณตกลงขายใบอ้อยให้ <b>${bName}</b><br>ในราคา <b style="color:var(--primary);">${bPrice} บ./ตัน</b> ใช่หรือไม่?</div>`, showCancelButton: true, confirmButtonColor: THEME_PRIMARY, confirmButtonText: 'ตกลง', cancelButtonText: 'ยกเลิก', cancelButtonColor: '#BFC9C5' });
             if (confirmAlert.isConfirmed) {
                 Swal.fire({ title: 'กำลังล็อคคิว...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
                 try {
                     const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "confirmSale", row: rowId, chosenBuyerName: bName, chosenPhone: bPhone, chosenPrice: bPrice }) });
                     const result = await res.json();
-                    if (result.status === "success") { Swal.fire({title:'สำเร็จ!', text:'จองคิวรถม้วนเรียบร้อยแล้วครับ', icon:'success', confirmButtonColor: THEME_PRIMARY}).then(() => { fetchSalesData(); }); }
+                    if (result.status === "success") { Swal.fire({title:'สำเร็จ!', text:'จองคิวรถม้วนเรียบร้อยแล้วครับ', icon:'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { fetchSalesData(); }); }
                 } catch (error) { Swal.fire('ล้มเหลว', 'เชื่อมต่อระบบไม่สำเร็จ', 'error'); }
             }
         }
@@ -707,9 +866,9 @@
         }
 
         async function submitCaneData() {
+            if(!validateForm('main-page')) return;
             const qty = document.getElementById("quantity").value; const hDate = document.getElementById("harvest-date").value; const access = document.getElementById("field-access").value;
             if(!drawnPolygon) { Swal.fire('คำแนะนำ', 'กรุณาวาดขอบเขตแปลงในแผนที่ก่อนครับ', 'warning'); return; }
-            if(!hDate) { Swal.fire('คำแนะนำ', 'กรุณาระบุวันที่ตัดเสร็จด้วยครับ', 'warning'); return; }
             
             const btn = document.getElementById("submit-btn"); btn.innerText = "กำลังอัปโหลด..."; btn.disabled = true; showLoader();
             
@@ -717,7 +876,7 @@
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
                 hideLoader();
-                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'ประกาศคิวสำเร็จ!', text: 'ข้อมูลส่งถึงเครือข่ายรถม้วนแล้วครับ', confirmButtonColor: THEME_PRIMARY }).then((result) => { if(result.isConfirmed) { liff.closeWindow(); } }); }
+                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'ประกาศคิวสำเร็จ!', text: 'ข้อมูลส่งถึงเครือข่ายรถม้วนแล้วครับ', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then((result) => { if(result.isConfirmed) { liff.closeWindow(); } }); }
             } catch (error) { hideLoader(); Swal.fire('ล้มเหลว', 'ไม่สามารถส่งข้อมูลได้', 'error'); btn.innerText = "ประกาศหาคิวรถม้วน"; btn.disabled = false; }
         }
 
@@ -730,22 +889,27 @@
                     isBuyerEditMode = true; let d = result.data; document.getElementById("profile-info").innerText = "คุณ " + d.fullName;
                     document.getElementById("buyer-prefix").value = d.prefix; document.getElementById("buyer-firstname").value = d.firstName; document.getElementById("buyer-lastname").value = d.lastName;
                     if(d.dob) document.getElementById("buyer-dob").value = d.dob.split('T')[0];
-                    document.getElementById("buyer-no").value = d.addressNo; document.getElementById("buyer-moo").value = d.moo; document.getElementById("buyer-subdist").value = d.subDist; document.getElementById("buyer-dist").value = d.dist; document.getElementById("buyer-prov").value = d.prov; document.getElementById("buyer-zip").value = d.zip;
+                    document.getElementById("buyer-no").value = d.addressNo; document.getElementById("buyer-moo").value = d.moo;
+                    
+                    setAddressDropdowns("buyer", d.prov, d.dist, d.subDist, d.zip);
+                    
                     document.getElementById("buyer-phone").value = d.phone; document.getElementById("buyer-vehicle").value = d.vehicleInfo;
-                    document.getElementById("btn-buyer-register").innerText = "บันทึกการแก้ไขข้อมูล";
+                    document.getElementById("btn-buyer-register").innerText = "ยืนยันการแก้ไขข้อมูล";
                     document.getElementById("buyer-reg-status-box").innerHTML = "<i>ℹ️</i> ระบบพบข้อมูลพาร์ทเนอร์แล้ว"; 
                 } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; }
             } catch (error) { console.error(error); }
         }
 
         async function submitBuyerRegistration() {
+            if(!validateForm('register-buyer-page')) return;
+
             const payload = { action: isBuyerEditMode ? "updateBuyer" : "registerBuyer", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("buyer-prefix").value, firstName: document.getElementById("buyer-firstname").value, lastName: document.getElementById("buyer-lastname").value, dob: document.getElementById("buyer-dob").value, addressNo: document.getElementById("buyer-no").value, moo: document.getElementById("buyer-moo").value, subDist: document.getElementById("buyer-subdist").value, dist: document.getElementById("buyer-dist").value, prov: document.getElementById("buyer-prov").value, zip: document.getElementById("buyer-zip").value, phone: document.getElementById("buyer-phone").value, vehicleInfo: document.getElementById("buyer-vehicle").value, fullName: document.getElementById("buyer-prefix").value + document.getElementById("buyer-firstname").value + " " + document.getElementById("buyer-lastname").value };
-            if(!payload.firstName || !payload.phone || !payload.prov) { Swal.fire('คำแนะนำ', 'กรุณากรอกข้อมูลให้ครบถ้วนครับ', 'warning'); return; }
+            
             const btn = document.getElementById("btn-buyer-register"); btn.innerText = "กำลังบันทึก..."; btn.disabled = true;
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
-                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: isBuyerEditMode ? 'อัปเดตข้อมูลแล้ว' : 'ลงทะเบียนสำเร็จ!', confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); }); }
-            } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); btn.innerText = isBuyerEditMode ? "บันทึกการแก้ไขข้อมูล" : "บันทึกข้อมูลพาร์ทเนอร์"; btn.disabled = false; }
+                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: isBuyerEditMode ? 'อัปเดตข้อมูลแล้ว' : 'ลงทะเบียนสำเร็จ!', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); }); }
+            } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); btn.innerText = isBuyerEditMode ? "ยืนยันการแก้ไขข้อมูล" : "ยืนยันการลงทะเบียน"; btn.disabled = false; }
         }
 
         async function checkBuyerForAction() {
@@ -758,7 +922,7 @@
                     document.getElementById("buyer-page").classList.add("active"); await fetchBuyerRawData(); 
                 } else {
                     document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName;
-                    Swal.fire({ icon: 'error', title: 'โปรดลงทะเบียน', text: `กรุณาลงทะเบียนพาร์ทเนอร์ก่อนใช้งานครับ`, confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); });
+                    Swal.fire({ icon: 'error', title: 'โปรดลงทะเบียน', text: `กรุณาลงทะเบียนพาร์ทเนอร์ก่อนใช้งานครับ`, confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); });
                 }
             } catch (error) { Swal.fire('ข้อผิดพลาด', 'ระบบขัดข้อง', 'error'); }
         }
@@ -932,7 +1096,7 @@
                 Swal.fire({ title: 'กำลังกระจายคำเสนอ...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
                 try {
                     const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "acceptClusterJob", rows: rowIds, userId: userProfile.userId, buyerName: buyerNameContext, buyerPhone: buyerPhoneContext, price: priceInput }) });
-                    const result = await res.json(); if (result.status === "success") { Swal.fire({title: 'สำเร็จ!', text: 'ส่งข้อเสนอให้ชาวไร่ในโซนนี้แล้ว', icon: 'success', confirmButtonColor: THEME_PRIMARY}).then(() => { location.reload(); }); }
+                    const result = await res.json(); if (result.status === "success") { Swal.fire({title: 'สำเร็จ!', text: 'ส่งข้อเสนอให้ชาวไร่ในโซนนี้แล้ว', icon: 'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { location.reload(); }); }
                 } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคาได้', 'error'); }
             }
         }
@@ -959,7 +1123,7 @@
                 Swal.fire({ title: 'กำลังอัปโหลด...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
                 try {
                     const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "buyerCloseJob", row: rowId, actualQty: Number(formValues.actualQty), actualWeight: Number(formValues.actualWeight), photoProof: compProofPhoto }) });
-                    const data = await res.json(); if (data.status === "success") { Swal.fire('ส่งงานสำเร็จ!', 'รอชาวไร่ตรวจสอบเพื่อปิดบัญชีครับ', 'success').then(() => { location.reload(); }); }
+                    const data = await res.json(); if (data.status === "success") { Swal.fire({title:'ส่งงานสำเร็จ!', text:'รอชาวไร่ตรวจสอบเพื่อปิดบัญชีครับ', icon:'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { location.reload(); }); }
                 } catch(e) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อได้', 'error'); }
             }
         }
@@ -970,7 +1134,7 @@
                 Swal.fire({ title: 'กำลังส่งคำเสนอซื้อ...', didOpen: () => { Swal.showLoading() } });
                 try {
                     const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "acceptJob", row: rowId, userId: userProfile.userId, buyerName: buyerNameContext, buyerPhone: buyerPhoneContext, price: priceInput }) });
-                    const result = await res.json(); if (result.status === "success") { Swal.fire({title: 'สำเร็จ!', text: 'ส่งราคาให้ชาวไร่พิจารณาแล้วครับ', icon: 'success', confirmButtonColor: THEME_PRIMARY}).then(() => { location.reload(); }); }
+                    const result = await res.json(); if (result.status === "success") { Swal.fire({title: 'สำเร็จ!', text: 'ส่งราคาให้ชาวไร่พิจารณาแล้วครับ', icon: 'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { location.reload(); }); }
                 } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคาได้', 'error'); }
             }
         }
