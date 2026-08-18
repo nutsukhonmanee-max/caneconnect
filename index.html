@@ -552,7 +552,7 @@
 
         function openAddPlotModal() {
             let tempPolygonGeoJSON = ""; let tempArea = 0; let tempCenter = [];
-            let modalMap = null; let modalDrawnPolygon = null;
+            let modalMap = null; let modalDrawnPolygon = null; let modalLocMarker = null;
 
             Swal.fire({
                 html: `
@@ -571,21 +571,38 @@
                 confirmButtonColor: THEME_PRIMARY,
                 cancelButtonColor: '#BFC9C5',
                 didOpen: () => {
+                    // สร้างแผนที่ชั่วคราวบนตำแหน่งล่าสุดก่อน (เผื่อ GPS ค้นหาช้า)
                     modalMap = L.map('modal-map').setView([currentLat, currentLng], 15);
                     L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(modalMap);
-                    
                     modalMap.pm.addControls({ position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, dragMode: false, cutPolygon: false, removalMode: true });
-                    
-                    // เพิ่มระบบดึง GPS ณ วินาทีที่เปิดหน้าต่างวาดแปลง
+
+                    // ฟังก์ชันสำหรับสั่งแผนที่ขยับและปักหมุด
+                    const updateModalMap = (lat, lng) => {
+                        currentLat = lat; currentLng = lng;
+                        modalMap.setView([lat, lng], 16);
+                        
+                        if (modalLocMarker) {
+                            modalLocMarker.setLatLng([lat, lng]);
+                        } else {
+                            modalLocMarker = L.marker([lat, lng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit; font-weight:500; font-size:14px; text-align:center;'>📍 ตำแหน่งของคุณ</div>").openPopup();
+                        }
+                        // บังคับรีเฟรชแผนที่ ป้องกันปัญหาแผนที่เทาเวลาขยับ
+                        modalMap.invalidateSize(); 
+                    };
+
+                    updateModalMap(currentLat, currentLng);
+
+                    // สั่งดึงพิกัด GPS ปัจจุบัน (maximumAge: 0 บังคับไม่ให้ใช้ข้อมูลเก่า)
                     if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition((pos) => {
-                            let lat = pos.coords.latitude;
-                            let lng = pos.coords.longitude;
-                            modalMap.setView([lat, lng], 16);
-                            L.marker([lat, lng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>").openPopup();
-                        }, (err) => {
-                            console.log("GPS modal error");
-                        }, { enableHighAccuracy: true, timeout: 10000 });
+                        navigator.geolocation.getCurrentPosition(
+                            (pos) => { 
+                                updateModalMap(pos.coords.latitude, pos.coords.longitude); 
+                            }, 
+                            (err) => { 
+                                console.log("ไม่สามารถดึง GPS ได้:", err); 
+                            }, 
+                            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                        );
                     }
 
                     modalMap.on('pm:create', function(e) {
@@ -609,6 +626,7 @@
                         document.getElementById('modal-area-text').innerText = `พื้นที่ประมาณ: 0.00 ไร่`;
                     });
 
+                    // ดีเลย์นิดหน่อยให้ Popup โหลดเสร็จแล้วขยับหน้าจอ
                     setTimeout(() => { modalMap.invalidateSize(); }, 300);
                 },
                 preConfirm: () => {
