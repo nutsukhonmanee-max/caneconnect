@@ -69,10 +69,15 @@
         .profile-img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); display: none; }
         .profile-text { font-size: 17px; font-weight: 600; color: var(--text-main); }
         
+        /* แท็บเมนู (Tab Navigation) */
+        .tab-nav { display: flex; gap: 8px; margin-bottom: 20px; background: var(--border); padding: 4px; border-radius: var(--radius-md); }
+        .tab-btn { flex: 1; padding: 12px; background: transparent; color: var(--text-muted); border: none; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.2s; }
+        .tab-btn.active { background: var(--surface); color: var(--primary-dark); box-shadow: var(--shadow-soft); }
+
         label { font-weight: 500; display: block; margin-top: 16px; font-size: 14px; color: var(--text-muted); margin-bottom: 6px;}
         input[type="text"], input[type="tel"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); box-sizing: border-box; font-size: 15px; font-family: 'Kanit', sans-serif; transition: all 0.2s ease; background: var(--surface); color: var(--text-main); }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(109, 179, 63, 0.15); }
-        select:disabled { background-color: #F4F6F5; color: #999; cursor: not-allowed; }
+        select:disabled, input:disabled { background-color: #F4F6F5; color: #999; cursor: not-allowed; border-color: transparent; }
         
         .map-container { height: 320px; width: 100%; border-radius: var(--radius-md); margin-top: 10px; border: 1px solid var(--border); z-index: 1; overflow: hidden;}
         
@@ -175,64 +180,75 @@
 
         <!-- ================= 1. หน้าลงทะเบียนชาวไร่ ================= -->
         <div id="register-page" class="page">
-            <div class="status-box" id="reg-status-box">
-                <i>📝</i> ยินดีต้อนรับ กรุณากรอกข้อมูลส่วนตัว
-            </div>
-            <div class="form-grid col-3">
-                <div style="grid-column: span 1;"><label>คำนำหน้า:</label><select id="reg-prefix"><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="นางสาว">นางสาว</option></select></div>
-                <div style="grid-column: span 2;"><label>ชื่อจริง:</label><input type="text" id="reg-firstname" required placeholder="สมชาย"></div>
-                <div class="full-width"><label>นามสกุล:</label><input type="text" id="reg-lastname" required placeholder="ใจดี"></div>
-                <div class="full-width"><label>วัน/เดือน/ปีเกิด:</label><input type="date" id="reg-dob" required></div>
-                <div class="full-width"><label>เบอร์โทรศัพท์:</label><input type="tel" id="reg-phone" required placeholder="08X-XXX-XXXX"></div>
-            </div>
-            <div class="section-title">ที่อยู่ปัจจุบัน</div>
-            <div class="form-grid">
-                <div><label>บ้านเลขที่:</label><input type="text" id="reg-no" required></div>
-                <div><label>หมู่ที่:</label><input type="text" id="reg-moo" required></div>
-                
-                <div class="full-width">
-                    <label>จังหวัด:</label>
-                    <select id="reg-prov" required>
-                        <option value="">กำลังโหลดข้อมูล...</option>
-                    </select>
-                </div>
-                <div>
-                    <label>อำเภอ:</label>
-                    <select id="reg-dist" required disabled>
-                        <option value="">เลือกจังหวัดก่อน</option>
-                    </select>
-                </div>
-                <div>
-                    <label>ตำบล:</label>
-                    <select id="reg-subdist" required disabled>
-                        <option value="">เลือกอำเภอก่อน</option>
-                    </select>
-                </div>
-                <div class="full-width">
-                    <label>รหัสไปรษณีย์:</label>
-                    <input type="text" id="reg-zip" required readonly style="background-color: #F4F6F5;">
-                </div>
-
-                <div class="full-width">
-                    <label>ข้อมูลการปลูกอ้อย (ไร่):</label>
-                    <select id="reg-farminfo" required>
-                        <option value="" disabled selected>เลือกขนาดพื้นที่ปลูกอ้อย</option>
-                        <option value="1-20 ไร่">1-20 ไร่</option>
-                        <option value="21-50 ไร่">21-50 ไร่</option>
-                        <option value="50-100 ไร่">50-100 ไร่</option>
-                        <option value="100 ไร่ขึ้นไป">100 ไร่ขึ้นไป</option>
-                    </select>
-                </div>
+            
+            <!-- แท็บเมนู -->
+            <div class="tab-nav">
+                <button id="btn-tab-personal" class="tab-btn active" onclick="switchRegTab('personal')">👤 ข้อมูลส่วนตัว</button>
+                <button id="btn-tab-plots" class="tab-btn" onclick="switchRegTab('plots')">📍 แปลงของฉัน</button>
             </div>
 
-            <!-- ส่วนเพิ่มแปลงอ้อยตอนลงทะเบียน -->
-            <div class="section-title">📍 ข้อมูลแปลงอ้อยของฉัน (วาดเก็บไว้เพื่อความสะดวก)</div>
-            <div id="saved-plots-container" style="margin-bottom: 15px;">
-                <div class="empty-state" style="padding: 20px 0;">ยังไม่มีแปลงที่บันทึกไว้</div>
-            </div>
-            <button type="button" onclick="openAddPlotModal()" style="background-color: var(--info); margin-top: 0; margin-bottom: 24px; padding: 12px; font-size: 15px;">+ วาดเพิ่มแปลงอ้อย</button>
+            <!-- หน้าต่าง: ข้อมูลส่วนตัว -->
+            <div id="tab-personal">
+                <div class="status-box" id="reg-status-box">
+                    <i>📝</i> ยินดีต้อนรับ กรุณากรอกข้อมูลส่วนตัว
+                </div>
+                <div class="form-grid col-3">
+                    <div style="grid-column: span 1;"><label>คำนำหน้า:</label><select id="reg-prefix"><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="นางสาว">นางสาว</option></select></div>
+                    <div style="grid-column: span 2;"><label>ชื่อจริง:</label><input type="text" id="reg-firstname" required placeholder="สมชาย"></div>
+                    <div class="full-width"><label>นามสกุล:</label><input type="text" id="reg-lastname" required placeholder="ใจดี"></div>
+                    <div class="full-width"><label>วัน/เดือน/ปีเกิด:</label><input type="date" id="reg-dob" required></div>
+                    <div class="full-width"><label>เบอร์โทรศัพท์:</label><input type="tel" id="reg-phone" required placeholder="08X-XXX-XXXX"></div>
+                </div>
+                <div class="section-title">ที่อยู่ปัจจุบัน</div>
+                <div class="form-grid">
+                    <div><label>บ้านเลขที่:</label><input type="text" id="reg-no" required></div>
+                    <div><label>หมู่ที่:</label><input type="text" id="reg-moo" required></div>
+                    
+                    <div class="full-width">
+                        <label>จังหวัด:</label>
+                        <select id="reg-prov" required><option value="">กำลังโหลดข้อมูล...</option></select>
+                    </div>
+                    <div>
+                        <label>อำเภอ:</label>
+                        <select id="reg-dist" required disabled><option value="">เลือกจังหวัดก่อน</option></select>
+                    </div>
+                    <div>
+                        <label>ตำบล:</label>
+                        <select id="reg-subdist" required disabled><option value="">เลือกอำเภอก่อน</option></select>
+                    </div>
+                    <div class="full-width">
+                        <label>รหัสไปรษณีย์:</label>
+                        <input type="text" id="reg-zip" required readonly style="background-color: #F4F6F5;">
+                    </div>
 
-            <button id="btn-register" onclick="submitRegistration()">ยืนยันการลงทะเบียน</button>
+                    <div class="full-width">
+                        <label>ข้อมูลการปลูกอ้อย (ไร่):</label>
+                        <select id="reg-farminfo" required>
+                            <option value="" disabled selected>เลือกขนาดพื้นที่ปลูกอ้อย</option>
+                            <option value="1-20 ไร่">1-20 ไร่</option>
+                            <option value="21-50 ไร่">21-50 ไร่</option>
+                            <option value="50-100 ไร่">50-100 ไร่</option>
+                            <option value="100 ไร่ขึ้นไป">100 ไร่ขึ้นไป</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button id="btn-enable-edit" type="button" onclick="enableProfileEdit()" style="display:none; background-color: var(--accent);">✏️ แก้ไขข้อมูลส่วนตัว</button>
+                <button id="btn-register" onclick="submitRegistration()">บันทึกข้อมูลส่วนตัว</button>
+            </div>
+
+            <!-- หน้าต่าง: แปลงของฉัน -->
+            <div id="tab-plots" style="display:none;">
+                <div class="status-box" style="background: #FFF9E6; border-color: var(--accent); color: var(--accent);">
+                    <i>💡</i> วาดแปลงเก็บไว้ เพื่อความสะดวกรวดเร็วในการแจ้งขาย
+                </div>
+                <div id="saved-plots-container" style="margin-top: 15px; margin-bottom: 15px;">
+                    <div class="empty-state" style="padding: 20px 0;">ยังไม่มีแปลงที่บันทึกไว้</div>
+                </div>
+                <button type="button" onclick="openAddPlotModal(-1)" style="background-color: var(--info); margin-top: 0; padding: 14px; font-size: 15px;">+ วาดเพิ่มแปลงอ้อย</button>
+                <button type="button" onclick="submitRegistration()" style="background-color: var(--primary); margin-top: 15px;">💾 บันทึกการเปลี่ยนแปลง</button>
+            </div>
+            
         </div>
 
         <!-- ================= 2. หน้าแจ้งพิกัดอ้อย ================= -->
@@ -336,7 +352,8 @@
 
                 <div class="full-width"><label>ข้อมูลเครื่องจักร (เช่น ทะเบียนรถ):</label><textarea id="buyer-vehicle" rows="2"></textarea></div>
             </div>
-            <button id="btn-buyer-register" onclick="submitBuyerRegistration()">ยืนยันการลงทะเบียน</button>
+            <button id="btn-enable-buyer-edit" type="button" onclick="enableBuyerProfileEdit()" style="display:none; background-color: var(--accent);">✏️ แก้ไขข้อมูล</button>
+            <button id="btn-buyer-register" onclick="submitBuyerRegistration()">บันทึกข้อมูล</button>
         </div>
 
         <!-- ================= 5. หน้าควบคุมของผู้รับซื้อ ================= -->
@@ -413,6 +430,47 @@
         function openImageViewer(src) { document.getElementById('image-viewer-img').src = src; document.getElementById('image-viewer').style.display = 'flex'; }
         function closeImageViewer() { document.getElementById('image-viewer').style.display = 'none'; }
 
+        // ================= ระบบแท็บเมนู =================
+        function switchRegTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-personal').style.display = 'none';
+            document.getElementById('tab-plots').style.display = 'none';
+            
+            if(tabName === 'personal') {
+                document.getElementById('btn-tab-personal').classList.add('active');
+                document.getElementById('tab-personal').style.display = 'block';
+            } else {
+                document.getElementById('btn-tab-plots').classList.add('active');
+                document.getElementById('tab-plots').style.display = 'block';
+            }
+        }
+
+        // ================= ระบบล็อกฟอร์ม (Read-Only) =================
+        function toggleProfileInputs(disabled, prefix) {
+            let ids = [];
+            if (prefix === 'reg') {
+                ids = ['reg-prefix', 'reg-firstname', 'reg-lastname', 'reg-dob', 'reg-phone', 'reg-no', 'reg-moo', 'reg-prov', 'reg-dist', 'reg-subdist', 'reg-farminfo'];
+            } else {
+                ids = ['buyer-prefix', 'buyer-firstname', 'buyer-lastname', 'buyer-dob', 'buyer-phone', 'buyer-no', 'buyer-moo', 'buyer-prov', 'buyer-dist', 'buyer-subdist', 'buyer-vehicle'];
+            }
+            ids.forEach(id => {
+                let el = document.getElementById(id);
+                if(el) el.disabled = disabled;
+            });
+        }
+
+        function enableProfileEdit() {
+            toggleProfileInputs(false, 'reg');
+            document.getElementById('btn-enable-edit').style.display = 'none';
+            document.getElementById('btn-register').style.display = 'block';
+        }
+
+        function enableBuyerProfileEdit() {
+            toggleProfileInputs(false, 'buyer');
+            document.getElementById('btn-enable-buyer-edit').style.display = 'none';
+            document.getElementById('btn-buyer-register').style.display = 'block';
+        }
+
         // โหลดข้อมูลจังหวัด
         async function loadThaiData() {
             try {
@@ -453,8 +511,11 @@
                 subdistSelect.innerHTML = '<option value="" disabled selected>เลือกตำบล</option>';
                 zipInput.value = '';
                 
-                distSelect.disabled = !selectedProvId;
-                subdistSelect.disabled = true;
+                // If form is disabled due to Read-Only mode, do not re-enable automatically
+                if(!provSelect.disabled) {
+                    distSelect.disabled = !selectedProvId;
+                    subdistSelect.disabled = true;
+                }
 
                 if (selectedProvId) {
                     const provData = thaiData.find(p => p.id == selectedProvId);
@@ -476,7 +537,10 @@
                 
                 subdistSelect.innerHTML = '<option value="" disabled selected>เลือกตำบล</option>';
                 zipInput.value = '';
-                subdistSelect.disabled = !selectedDistId;
+                
+                if(!distSelect.disabled) {
+                    subdistSelect.disabled = !selectedDistId;
+                }
 
                 if (selectedProvId && selectedDistId) {
                     const provData = thaiData.find(p => p.id == selectedProvId);
@@ -545,7 +609,7 @@
             
             if (userSavedPlots.length === 0) {
                 container.innerHTML = '<div class="empty-state" style="padding: 20px 0;">ยังไม่มีแปลงที่บันทึกไว้</div>';
-                selectDropdown.innerHTML = '<option value="">-- ไม่เลือก (ต้องการวาดพิกัดใหม่) --</option>';
+                if(selectDropdown) selectDropdown.innerHTML = '<option value="">-- ไม่เลือก (ต้องการวาดพิกัดใหม่) --</option>';
                 return;
             }
 
@@ -562,28 +626,47 @@
                         <div style="font-size:13px; color:var(--text-muted);">พื้นที่: <span style="color:var(--primary); font-weight:500;">${plot.area} ไร่</span></div>
                         <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">🚜 ${pCond} | 🛣️ ${pAcc}</div>
                     </div>
-                    <button type="button" onclick="removeSavedPlot(${index})" style="background:var(--danger); color:white; border:none; border-radius:6px; padding:6px 12px; font-size:12px; width:auto; margin:0;">ลบ</button>
+                    <div style="display:flex; gap: 8px;">
+                        <button type="button" onclick="openAddPlotModal(${index})" style="background:var(--info); color:white; border:none; border-radius:6px; padding:6px 12px; font-size:12px; width:auto; margin:0;">แก้ไข</button>
+                        <button type="button" onclick="removeSavedPlot(${index})" style="background:var(--danger); color:white; border:none; border-radius:6px; padding:6px 12px; font-size:12px; width:auto; margin:0;">ลบ</button>
+                    </div>
                 </div>`;
                 optionsHtml += `<option value="${index}">${plot.name} (${plot.area} ไร่)</option>`;
             });
             
             container.innerHTML = html;
-            selectDropdown.innerHTML = optionsHtml;
+            if(selectDropdown) selectDropdown.innerHTML = optionsHtml;
         }
 
         function removeSavedPlot(index) {
-            userSavedPlots.splice(index, 1);
-            renderSavedPlotsList();
+            Swal.fire({
+                title: 'ยืนยันการลบ?',
+                text: `คุณต้องการลบแปลง "${userSavedPlots[index].name}" ใช่หรือไม่`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: var(--danger),
+                cancelButtonColor: '#BFC9C5',
+                confirmButtonText: 'ใช่, ลบทิ้ง',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    userSavedPlots.splice(index, 1);
+                    renderSavedPlotsList();
+                }
+            });
         }
 
-        function openAddPlotModal() {
-            let tempPolygonGeoJSON = ""; let tempArea = 0; let tempCenter = [];
+        function openAddPlotModal(editIndex = -1) {
+            let plotToEdit = editIndex >= 0 ? userSavedPlots[editIndex] : null;
+            let tempPolygonGeoJSON = plotToEdit ? plotToEdit.polygon : ""; 
+            let tempArea = plotToEdit ? plotToEdit.area : 0; 
+            let tempCenter = plotToEdit ? plotToEdit.center : [];
             let modalMap = null; let modalDrawnPolygon = null; let modalLocMarker = null;
 
             Swal.fire({
                 html: `
                     <div style="text-align: left; font-family: 'Kanit'; max-height: 75vh; overflow-y: auto; overflow-x: hidden; padding-right: 5px;">
-                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">วาดแปลงอ้อยใหม่</div>
+                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">${plotToEdit ? 'แก้ไขแปลงอ้อย' : 'วาดแปลงอ้อยใหม่'}</div>
                         <label style="margin-top:0;">ชื่อแปลงอ้อย (เช่น แปลงหลังบ้าน):</label>
                         <input type="text" id="plot-name" class="swal2-input" placeholder="กรอกชื่อแปลง" style="width: 100%; box-sizing: border-box; margin: 0 0 15px 0; font-family: 'Kanit'; padding: 12px; height: auto;">
                         
@@ -603,9 +686,9 @@
                             <option value="ทางแคบ/ลำบาก ต้องดูหน้างาน">ทางแคบ/ลำบาก ต้องดูหน้างาน</option>
                         </select>
 
-                        <label>วาดขอบเขตแปลง:</label>
+                        <label>วาดขอบเขตแปลง (กดที่มุมเพื่อขยับได้เลย):</label>
                         <div id="modal-map" style="height: 300px; border-radius: 12px; border: 1px solid var(--border); width: 100%;"></div>
-                        <div id="modal-area-text" style="margin-top:10px; color:var(--primary); font-weight:600; text-align:center;">พื้นที่ประมาณ: 0.00 ไร่</div>
+                        <div id="modal-area-text" style="margin-top:10px; color:var(--primary); font-weight:600; text-align:center;">พื้นที่ประมาณ: ${tempArea} ไร่</div>
                     </div>
                 `,
                 showCancelButton: true,
@@ -614,7 +697,18 @@
                 confirmButtonColor: THEME_PRIMARY,
                 cancelButtonColor: '#BFC9C5',
                 didOpen: () => {
-                    modalMap = L.map('modal-map').setView([currentLat, currentLng], 15);
+                    // Pre-fill values if editing
+                    if (plotToEdit) {
+                        document.getElementById('plot-name').value = plotToEdit.name;
+                        if(plotToEdit.condition) document.getElementById('plot-condition').value = plotToEdit.condition;
+                        if(plotToEdit.access) document.getElementById('plot-access').value = plotToEdit.access;
+                    }
+
+                    // Set map center
+                    let startLat = plotToEdit && tempCenter.length == 2 ? tempCenter[0] : currentLat;
+                    let startLng = plotToEdit && tempCenter.length == 2 ? tempCenter[1] : currentLng;
+
+                    modalMap = L.map('modal-map').setView([startLat, startLng], 15);
                     L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(modalMap);
                     modalMap.pm.addControls({ position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, dragMode: false, cutPolygon: false, removalMode: true });
 
@@ -624,18 +718,45 @@
                         if (modalLocMarker) { modalLocMarker.setLatLng([lat, lng]); } else { modalLocMarker = L.marker([lat, lng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>").openPopup(); }
                         modalMap.invalidateSize(); 
                     };
-                    updateModalMap(currentLat, currentLng);
 
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(
-                            (pos) => { updateModalMap(pos.coords.latitude, pos.coords.longitude); }, 
-                            (err) => { console.log("GPS error"); }, 
-                            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-                        );
+                    // Draw existing polygon if editing
+                    if (plotToEdit && plotToEdit.polygon) {
+                        try {
+                            let coords = JSON.parse(plotToEdit.polygon);
+                            let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
+                            modalDrawnPolygon = L.polygon(flippedCoords, { color: THEME_PRIMARY }).addTo(modalMap);
+                            modalMap.fitBounds(modalDrawnPolygon.getBounds(), { padding: [10, 10] });
+
+                            modalDrawnPolygon.on('pm:edit', function() {
+                                let overlapEdit = checkPolygonOverlap(modalDrawnPolygon.toGeoJSON(), editIndex);
+                                if(overlapEdit) { Swal.fire('ระวังพิกัดทับซ้อน', `การแก้ไขนี้กินพื้นที่แปลง "${overlapEdit}"`, 'warning'); }
+                                calcModalArea();
+                            });
+                        } catch(e) { console.error(e); }
+                    } else {
+                        // Locate user if adding new
+                        updateModalMap(currentLat, currentLng);
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(
+                                (pos) => { updateModalMap(pos.coords.latitude, pos.coords.longitude); }, 
+                                (err) => { console.log("GPS error"); }, 
+                                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                            );
+                        }
+                    }
+
+                    function calcModalArea() {
+                        if(!modalDrawnPolygon) return;
+                        let geojson = modalDrawnPolygon.toGeoJSON();
+                        tempPolygonGeoJSON = JSON.stringify(geojson.geometry.coordinates);
+                        tempArea = (turf.area(geojson) / 1600).toFixed(2);
+                        let center = turf.centerOfMass(geojson);
+                        tempCenter = [center.geometry.coordinates[1], center.geometry.coordinates[0]];
+                        document.getElementById('modal-area-text').innerText = `พื้นที่ประมาณ: ${tempArea} ไร่`;
                     }
 
                     modalMap.on('pm:create', function(e) {
-                        let isOverlap = checkPolygonOverlap(e.layer.toGeoJSON(), -1);
+                        let isOverlap = checkPolygonOverlap(e.layer.toGeoJSON(), editIndex);
                         if(isOverlap) {
                             Swal.fire('พิกัดทับซ้อน!', `พื้นที่นี้ทับซ้อนกับแปลง "${isOverlap}" ที่บันทึกไว้แล้ว กรุณาวาดใหม่ครับ`, 'warning');
                             e.layer.remove(); return;
@@ -643,19 +764,10 @@
 
                         if(modalDrawnPolygon) modalDrawnPolygon.remove();
                         modalDrawnPolygon = e.layer;
-                        
-                        function calcModalArea() {
-                            let geojson = modalDrawnPolygon.toGeoJSON();
-                            tempPolygonGeoJSON = JSON.stringify(geojson.geometry.coordinates);
-                            tempArea = (turf.area(geojson) / 1600).toFixed(2);
-                            let center = turf.centerOfMass(geojson);
-                            tempCenter = [center.geometry.coordinates[1], center.geometry.coordinates[0]];
-                            document.getElementById('modal-area-text').innerText = `พื้นที่ประมาณ: ${tempArea} ไร่`;
-                        }
                         calcModalArea();
                         
                         modalDrawnPolygon.on('pm:edit', function() {
-                            let overlapEdit = checkPolygonOverlap(modalDrawnPolygon.toGeoJSON(), -1);
+                            let overlapEdit = checkPolygonOverlap(modalDrawnPolygon.toGeoJSON(), editIndex);
                             if(overlapEdit) { Swal.fire('ระวังพิกัดทับซ้อน', `การแก้ไขนี้กินพื้นที่แปลง "${overlapEdit}"`, 'warning'); }
                             calcModalArea();
                         });
@@ -678,7 +790,11 @@
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    userSavedPlots.push(result.value);
+                    if(editIndex >= 0) {
+                        userSavedPlots[editIndex] = result.value;
+                    } else {
+                        userSavedPlots.push(result.value);
+                    }
                     renderSavedPlotsList();
                 }
             });
@@ -692,7 +808,6 @@
                 polygonGeoJSON = ""; document.getElementById("quantity").value = "";
                 document.getElementById("gps-status").innerHTML = "<i>👆</i> แตะไอคอนห้าเหลี่ยมเพื่อเริ่มวาด";
                 
-                // รีเซ็ต Dropdown กลับเป็นค่าเริ่มต้น
                 document.getElementById("field-condition").selectedIndex = 0;
                 document.getElementById("field-access").selectedIndex = 0;
 
@@ -807,22 +922,27 @@
                     
                     if(d.savedPlots) { try { userSavedPlots = JSON.parse(d.savedPlots); renderSavedPlotsList(); } catch(e){} }
                     
-                    document.getElementById("btn-register").innerText = "ยืนยันการแก้ไขข้อมูล"; 
-                    document.getElementById("reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว สามารถแก้ไขข้อมูลด้านล่างได้เลยครับ"; 
+                    // ปิดการแก้ไขชั่วคราว (Read Only)
+                    toggleProfileInputs(true, 'reg');
+                    document.getElementById('btn-enable-edit').style.display = 'block';
+                    document.getElementById('btn-register').style.display = 'none';
+
+                    document.getElementById("reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว กดปุ่มแก้ไขด้านล่างหากต้องการเปลี่ยนข้อมูลครับ"; 
                 } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; }
             } catch (error) { console.error(error); }
         }
 
         async function submitRegistration() {
-            if(!validateForm('register-page')) return;
+            // ถ้าอยู่ในหน้าต่างข้อมูลส่วนตัว และยังไม่ได้กรอกให้ครบ จะไม่ยอมให้ผ่าน
+            if(document.getElementById('tab-personal').style.display !== 'none' && !validateForm('tab-personal')) return;
             
             const payload = { action: isEditMode ? "updateUser" : "register", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("reg-prefix").value, firstName: document.getElementById("reg-firstname").value, lastName: document.getElementById("reg-lastname").value, dob: document.getElementById("reg-dob").value, addressNo: document.getElementById("reg-no").value, moo: document.getElementById("reg-moo").value, subDist: document.getElementById("reg-subdist").value, dist: document.getElementById("reg-dist").value, prov: document.getElementById("reg-prov").value, zip: document.getElementById("reg-zip").value, phone: document.getElementById("reg-phone").value, farmInfo: document.getElementById("reg-farminfo").value, savedPlots: JSON.stringify(userSavedPlots) };
             
-            const btn = document.getElementById("btn-register"); btn.innerText = "กำลังบันทึกข้อมูล..."; btn.disabled = true;
+            Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
-                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: isEditMode ? 'อัปเดตข้อมูลแล้ว' : 'ลงทะเบียนสำเร็จ!', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); }); }
-            } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); btn.innerText = isEditMode ? "ยืนยันการแก้ไขข้อมูล" : "ยืนยันการลงทะเบียน"; btn.disabled = false; }
+                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: 'บันทึกข้อมูลเข้าสู่ระบบแล้ว', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); }); }
+            } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); }
         }
 
         async function checkUserForAction(targetAction) {
@@ -1108,7 +1228,6 @@
             const qty = document.getElementById("quantity").value; const hDate = document.getElementById("harvest-date").value; 
             const cond = document.getElementById("field-condition").value; const access = document.getElementById("field-access").value;
             
-            // นำข้อมูลสภาพแปลง + ทางเข้า มัดรวมกันเพื่อส่งเข้า Database
             const combinedAccess = `ทางเข้า: ${access} | สภาพแปลง: ${cond}`;
 
             if(!drawnPolygon) { Swal.fire('คำแนะนำ', 'กรุณาวาดขอบเขตแปลงในแผนที่ก่อนครับ', 'warning'); return; }
@@ -1135,7 +1254,11 @@
                     document.getElementById("buyer-no").value = d.addressNo; document.getElementById("buyer-moo").value = d.moo;
                     setAddressDropdowns("buyer", d.prov, d.dist, d.subDist, d.zip);
                     document.getElementById("buyer-phone").value = d.phone; document.getElementById("buyer-vehicle").value = d.vehicleInfo;
-                    document.getElementById("btn-buyer-register").innerText = "ยืนยันการแก้ไขข้อมูล";
+                    
+                    toggleProfileInputs(true, 'buyer');
+                    document.getElementById('btn-enable-buyer-edit').style.display = 'block';
+                    document.getElementById('btn-buyer-register').style.display = 'none';
+
                     document.getElementById("buyer-reg-status-box").innerHTML = "<i>ℹ️</i> ระบบพบข้อมูลพาร์ทเนอร์แล้ว"; 
                 } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; }
             } catch (error) { console.error(error); }
@@ -1145,11 +1268,11 @@
             if(!validateForm('register-buyer-page')) return;
             const payload = { action: isBuyerEditMode ? "updateBuyer" : "registerBuyer", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("buyer-prefix").value, firstName: document.getElementById("buyer-firstname").value, lastName: document.getElementById("buyer-lastname").value, dob: document.getElementById("buyer-dob").value, addressNo: document.getElementById("buyer-no").value, moo: document.getElementById("buyer-moo").value, subDist: document.getElementById("buyer-subdist").value, dist: document.getElementById("buyer-dist").value, prov: document.getElementById("buyer-prov").value, zip: document.getElementById("buyer-zip").value, phone: document.getElementById("buyer-phone").value, vehicleInfo: document.getElementById("buyer-vehicle").value, fullName: document.getElementById("buyer-prefix").value + document.getElementById("buyer-firstname").value + " " + document.getElementById("buyer-lastname").value };
             
-            const btn = document.getElementById("btn-buyer-register"); btn.innerText = "กำลังบันทึก..."; btn.disabled = true;
+            Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
-                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: isBuyerEditMode ? 'อัปเดตข้อมูลแล้ว' : 'ลงทะเบียนสำเร็จ!', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); }); }
-            } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); btn.innerText = isBuyerEditMode ? "ยืนยันการแก้ไขข้อมูล" : "ยืนยันการลงทะเบียน"; btn.disabled = false; }
+                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: 'บันทึกข้อมูลแล้ว', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); }); }
+            } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); }
         }
 
         async function checkBuyerForAction() {
