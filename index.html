@@ -14,11 +14,12 @@
     <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
 
     <style>
-        /* Modern Minimalist Color Palette */
+        /* Modern Premium Color Palette */
         :root { 
             --primary: #6DB33F; 
             --primary-light: #F0F8EC;
             --primary-dark: #4A8C28;
+            --primary-gradient: linear-gradient(135deg, #6DB33F 0%, #4A8C28 100%);
             --bg-main: #F7F9F8; 
             --surface: #FFFFFF; 
             --text-main: #2C3E50; 
@@ -28,8 +29,9 @@
             --danger: #E74C3C;
             --info: #2980B9;
             --radius-lg: 20px;
-            --radius-md: 12px;
-            --shadow-soft: 0 8px 24px rgba(44, 62, 80, 0.05);
+            --radius-md: 14px;
+            --shadow-soft: 0 10px 30px rgba(44, 62, 80, 0.05);
+            --shadow-btn: 0 4px 15px rgba(109, 179, 63, 0.25);
         }
         
         body { 
@@ -59,35 +61,48 @@
             pointer-events: none; 
         }
         
-        .header { background-color: var(--surface); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.02); position: sticky; top: 0; z-index: 1000;}
+        /* Header */
+        .header { background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 1000;}
         .header h1 { margin: 0; font-size: 22px; font-weight: 600; color: var(--primary-dark); letter-spacing: 0.5px; }
-        .speech-bubble { background: var(--primary-light); color: var(--primary-dark); border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 600; }
+        .speech-bubble { background: var(--primary-light); color: var(--primary-dark); border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 600; box-shadow: inset 0 2px 4px rgba(109,179,63,0.1); }
         
         .container { padding: 24px; position: relative; z-index: 10; padding-bottom: 60px; max-width: 600px; margin: 0 auto;}
         
-        .profile-section { display: flex; align-items: center; gap: 15px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-        .profile-img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); display: none; }
-        .profile-text { font-size: 17px; font-weight: 600; color: var(--text-main); }
+        .profile-section { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+        .profile-img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); display: none; box-shadow: var(--shadow-soft); }
+        .profile-text { font-size: 18px; font-weight: 600; color: var(--text-main); }
         
-        /* แท็บเมนู (Tab Navigation) */
-        .tab-nav { display: flex; gap: 8px; margin-bottom: 20px; background: var(--border); padding: 4px; border-radius: var(--radius-md); }
-        .tab-btn { flex: 1; padding: 12px; background: transparent; color: var(--text-muted); border: none; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.2s; }
-        .tab-btn.active { background: var(--surface); color: var(--primary-dark); box-shadow: var(--shadow-soft); }
+        /* แท็บเมนู (Tab Navigation) สวยขึ้น */
+        .tab-nav { display: flex; gap: 8px; margin-bottom: 20px; background: #E9ECEB; padding: 6px; border-radius: 16px; }
+        .tab-btn { flex: 1; padding: 12px; background: transparent; color: var(--text-muted); border: none; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tab-btn.active { background: var(--surface); color: var(--primary-dark); box-shadow: 0 4px 12px rgba(0,0,0,0.06); transform: scale(1.02); }
 
+        /* Forms */
         label { font-weight: 500; display: block; margin-top: 16px; font-size: 14px; color: var(--text-muted); margin-bottom: 6px;}
-        input[type="text"], input[type="tel"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); box-sizing: border-box; font-size: 15px; font-family: 'Kanit', sans-serif; transition: all 0.2s ease; background: var(--surface); color: var(--text-main); }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(109, 179, 63, 0.15); }
-        select:disabled, input:disabled { background-color: #F4F6F5; color: #999; cursor: not-allowed; border-color: transparent; }
+        input[type="text"], input[type="tel"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); box-sizing: border-box; font-size: 15px; font-family: 'Kanit', sans-serif; transition: all 0.3s ease; background: var(--surface); color: var(--text-main); box-shadow: inset 0 2px 4px rgba(0,0,0,0.01); }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(109, 179, 63, 0.15); background: #FFF; }
         
-        .map-container { height: 320px; width: 100%; border-radius: var(--radius-md); margin-top: 10px; border: 1px solid var(--border); z-index: 1; overflow: hidden;}
+        /* ปรับสีช่องที่ถูกล็อก (Read-Only) ให้อ่านง่ายและชัดเจนขึ้น */
+        input:disabled, select:disabled, textarea:disabled, input[readonly], select[readonly] { 
+            background-color: #F8FAF9 !important; 
+            color: var(--text-main) !important; 
+            -webkit-text-fill-color: var(--text-main) !important; /* บังคับให้ iOS ไม่ทำสีเทา */
+            opacity: 1 !important; 
+            border: 1px dashed #BDC6C1 !important; 
+            cursor: not-allowed; 
+            font-weight: 500;
+        }
         
-        .status-box { margin-top: 10px; padding: 14px; border-radius: var(--radius-md); background-color: var(--primary-light); color: var(--primary-dark); font-size: 14px; display: flex; align-items: center; font-weight: 500; border: 1px dashed var(--primary);}
-        .status-box i { margin-right: 10px; font-size: 18px;}
+        .map-container { height: 320px; width: 100%; border-radius: var(--radius-md); margin-top: 10px; border: 1px solid var(--border); z-index: 1; overflow: hidden; box-shadow: var(--shadow-soft);}
         
-        button { width: 100%; padding: 16px; margin-top: 24px; background-color: var(--primary); color: white; border: none; border-radius: var(--radius-md); font-size: 16px; font-family: 'Kanit', sans-serif; font-weight: 600; cursor: pointer; transition: 0.2s ease; letter-spacing: 0.3px;}
-        button:hover { background-color: var(--primary-dark); transform: translateY(-1px); }
-        button:active { transform: translateY(1px); }
-        button:disabled { background-color: #D5DCD8; cursor: not-allowed; transform: none;}
+        .status-box { margin-top: 10px; padding: 16px; border-radius: var(--radius-md); background-color: var(--primary-light); color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; font-weight: 500; border: 1px dashed var(--primary); box-shadow: 0 4px 10px rgba(109, 179, 63, 0.05);}
+        .status-box i { margin-right: 12px; font-size: 20px;}
+        
+        /* Buttons */
+        button { width: 100%; padding: 16px; margin-top: 24px; background: var(--primary-gradient); color: white; border: none; border-radius: var(--radius-md); font-size: 16px; font-family: 'Kanit', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.3px; box-shadow: var(--shadow-btn);}
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(109, 179, 63, 0.35); }
+        button:active { transform: translateY(1px); box-shadow: 0 2px 10px rgba(109, 179, 63, 0.2); }
+        button:disabled { background: #D5DCD8; cursor: not-allowed; transform: none; box-shadow: none; color: #999;}
         
         .page { display: none; animation: fadeIn 0.4s ease; } .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -98,11 +113,13 @@
         .section-title { font-size: 17px; font-weight: 600; color: var(--text-main); margin-top: 30px; margin-bottom: 16px; display: flex; align-items: center; }
         .buyer-section-title { color: var(--primary-dark); }
         
-        .sale-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow-soft); position: relative; overflow: hidden; }
-        .sale-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+        /* Cards */
+        .sale-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; margin-bottom: 18px; box-shadow: var(--shadow-soft); position: relative; overflow: hidden; transition: transform 0.2s ease;}
+        .sale-card:hover { transform: translateY(-2px); }
+        .sale-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
         .sale-date { font-size: 13px; color: var(--text-muted); }
         
-        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: 0.3px;}
+        .badge { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: 0.3px;}
         .badge.pending { background: #EAF2F8; color: var(--info); }        
         .badge.waiting { background: #FEF5E7; color: var(--accent); }        
         .badge.processing { background: #EAF2F8; color: var(--info); }    
@@ -116,15 +133,15 @@
         
         .cluster-group { background-color: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 24px; box-shadow: var(--shadow-soft); }
         .cluster-title { font-weight: 600; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; font-size: 16px; }
-        .control-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-soft); }
+        .control-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; margin-bottom: 20px; box-shadow: var(--shadow-soft); }
         .control-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: var(--text-main); font-weight: 600; }
         .slider-input { width: 100%; margin: 8px 0; accent-color: var(--primary); } 
         .val-badge { background: var(--primary-light); color: var(--primary-dark); padding: 4px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; }
         
         .photo-gallery { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 12px; margin-top: 10px; padding-bottom: 10px; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory;}
-        .photo-gallery img { width: 100px; height: 100px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border); flex-shrink: 0; scroll-snap-align: start; }
+        .photo-gallery img { width: 100px; height: 100px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border); flex-shrink: 0; scroll-snap-align: start; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
         
-        .swal2-popup { border-radius: 24px !important; padding: 24px !important; font-family: 'Kanit', sans-serif !important; padding-top: 35px !important;}
+        .swal2-popup { border-radius: 24px !important; padding: 24px !important; font-family: 'Kanit', sans-serif !important; padding-top: 35px !important; box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;}
         .swal2-close { color: var(--danger) !important; background: #FDEDEC !important; border-radius: 50% !important; width: 38px !important; height: 38px !important; font-size: 24px !important; position: absolute !important; top: 12px !important; right: 12px !important; transition: all 0.2s ease !important; box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2) !important; }
         .swal2-close:hover { background: var(--danger) !important; color: white !important; }
         
@@ -146,7 +163,7 @@
         .close-viewer:hover { background: var(--danger); border-color: var(--danger); }
         
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .dash-card { background: var(--surface); padding: 16px; border-radius: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center;}
+        .dash-card { background: var(--surface); padding: 18px; border-radius: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; box-shadow: var(--shadow-soft);}
     </style>
 </head>
 <body>
@@ -189,9 +206,13 @@
 
             <!-- หน้าต่าง: ข้อมูลส่วนตัว -->
             <div id="tab-personal">
-                <div class="status-box" id="reg-status-box">
+                <div class="status-box" id="reg-status-box" style="margin-bottom: 10px;">
                     <i>📝</i> ยินดีต้อนรับ กรุณากรอกข้อมูลส่วนตัว
                 </div>
+                
+                <!-- ย้ายปุ่มแก้ไขมาไว้ด้านบน -->
+                <button id="btn-enable-edit" type="button" onclick="enableProfileEdit()" style="display:none; background: #FFF9E6; color: var(--accent); border: 1px solid #FDEBD0; margin-top: 5px; margin-bottom: 15px; box-shadow: none; border-radius: 12px; font-size: 15px;">✏️ ปลดล็อกเพื่อแก้ไขข้อมูล</button>
+
                 <div class="form-grid col-3">
                     <div style="grid-column: span 1;"><label>คำนำหน้า:</label><select id="reg-prefix"><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="นางสาว">นางสาว</option></select></div>
                     <div style="grid-column: span 2;"><label>ชื่อจริง:</label><input type="text" id="reg-firstname" required placeholder="สมชาย"></div>
@@ -218,7 +239,7 @@
                     </div>
                     <div class="full-width">
                         <label>รหัสไปรษณีย์:</label>
-                        <input type="text" id="reg-zip" required readonly style="background-color: #F4F6F5;">
+                        <input type="text" id="reg-zip" required readonly>
                     </div>
 
                     <div class="full-width">
@@ -233,7 +254,6 @@
                     </div>
                 </div>
 
-                <button id="btn-enable-edit" type="button" onclick="enableProfileEdit()" style="display:none; background-color: var(--accent);">✏️ แก้ไขข้อมูลส่วนตัว</button>
                 <button id="btn-register" onclick="submitRegistration()">บันทึกข้อมูลส่วนตัว</button>
             </div>
 
@@ -245,8 +265,8 @@
                 <div id="saved-plots-container" style="margin-top: 15px; margin-bottom: 15px;">
                     <div class="empty-state" style="padding: 20px 0;">ยังไม่มีแปลงที่บันทึกไว้</div>
                 </div>
-                <button type="button" onclick="openAddPlotModal(-1)" style="background-color: var(--info); margin-top: 0; padding: 14px; font-size: 15px;">+ วาดเพิ่มแปลงอ้อย</button>
-                <button type="button" onclick="submitRegistration()" style="background-color: var(--primary); margin-top: 15px;">💾 บันทึกการเปลี่ยนแปลง</button>
+                <button type="button" onclick="openAddPlotModal(-1)" style="background: var(--info); box-shadow: 0 4px 15px rgba(41, 128, 185, 0.25); margin-top: 0; padding: 14px; font-size: 15px;">+ วาดเพิ่มแปลงอ้อย</button>
+                <button type="button" onclick="submitRegistration()" style="margin-top: 15px;">💾 บันทึกการเปลี่ยนแปลง</button>
             </div>
             
         </div>
@@ -254,9 +274,9 @@
         <!-- ================= 2. หน้าแจ้งพิกัดอ้อย ================= -->
         <div id="main-page" class="page">
             
-            <div style="margin-bottom: 20px; padding: 15px; background: #FFF9E6; border-radius: var(--radius-md); border: 1px solid #FDEBD0;">
+            <div style="margin-bottom: 20px; padding: 18px; background: #FFF9E6; border-radius: var(--radius-md); border: 1px solid #FDEBD0; box-shadow: var(--shadow-soft);">
                 <label style="color: var(--accent); font-weight: 600; margin-top: 0;">⭐ เลือกแปลงที่เคยลงทะเบียนไว้ (ถ้ามี):</label>
-                <select id="select-saved-plot" onchange="loadSavedPlotToMap()" style="border: 1px solid var(--accent); margin-top: 8px;">
+                <select id="select-saved-plot" onchange="loadSavedPlotToMap()" style="border: 2px solid var(--accent); margin-top: 8px; font-weight: 500;">
                     <option value="">-- ไม่เลือก (ต้องการวาดพิกัดใหม่) --</option>
                 </select>
             </div>
@@ -264,7 +284,7 @@
             <label>📍 1. ค้นหาสถานที่อ้างอิงใกล้แปลง:</label>
             <div style="display: flex; gap: 8px;">
                 <input type="text" id="search-place" placeholder="พิมพ์ชื่อ วัด, โรงเรียน, หมู่บ้าน" style="margin-top:0;">
-                <button onclick="searchPlace()" style="margin-top:0; width: auto; padding: 0 20px; background-color: var(--info); font-size: 14px;">ค้นหา</button>
+                <button onclick="searchPlace()" style="margin-top:0; width: auto; padding: 0 20px; background: var(--info); box-shadow: none; font-size: 14px;">ค้นหา</button>
             </div>
             
             <label style="margin-top:20px;">🗺️ 2. ตรวจสอบ/วาดกรอบแปลงอ้อยของคุณ:</label>
@@ -293,7 +313,7 @@
             </select>
 
             <label>📸 7. ภาพหน้างาน (เลือกได้ 1-4 รูป):</label>
-            <input type="file" id="field-photo-input" accept="image/*" multiple onchange="previewMultiplePhotos(event)">
+            <input type="file" id="field-photo-input" accept="image/*" multiple onchange="previewMultiplePhotos(event)" style="padding: 10px;">
             <div id="photo-preview-container" class="photo-gallery"></div>
 
             <button id="submit-btn" onclick="submitCaneData()" disabled>ประกาศหาคิวรถม้วน</button>
@@ -312,9 +332,13 @@
 
         <!-- ================= 4. หน้าลงทะเบียนผู้รับซื้อ ================= -->
         <div id="register-buyer-page" class="page">
-            <div class="status-box" id="buyer-reg-status-box">
+            <div class="status-box" id="buyer-reg-status-box" style="margin-bottom: 10px;">
                 <i>🚜</i> ลงทะเบียนพาร์ทเนอร์รถม้วน
             </div>
+            
+            <!-- ย้ายปุ่มแก้ไขมาไว้ด้านบน -->
+            <button id="btn-enable-buyer-edit" type="button" onclick="enableBuyerProfileEdit()" style="display:none; background: #FFF9E6; color: var(--accent); border: 1px solid #FDEBD0; margin-top: 5px; margin-bottom: 15px; box-shadow: none; border-radius: 12px; font-size: 15px;">✏️ ปลดล็อกเพื่อแก้ไขข้อมูล</button>
+
             <div class="form-grid col-3">
                 <div style="grid-column: span 1;"><label>คำนำหน้า:</label><select id="buyer-prefix"><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="บริษัท">บริษัท</option></select></div>
                 <div style="grid-column: span 2;"><label>ชื่อจริง/บริษัท:</label><input type="text" id="buyer-firstname" required></div>
@@ -347,12 +371,12 @@
                 </div>
                 <div class="full-width">
                     <label>รหัสไปรษณีย์:</label>
-                    <input type="text" id="buyer-zip" required readonly style="background-color: #F4F6F5;">
+                    <input type="text" id="buyer-zip" required readonly>
                 </div>
 
                 <div class="full-width"><label>ข้อมูลเครื่องจักร (เช่น ทะเบียนรถ):</label><textarea id="buyer-vehicle" rows="2"></textarea></div>
             </div>
-            <button id="btn-enable-buyer-edit" type="button" onclick="enableBuyerProfileEdit()" style="display:none; background-color: var(--accent);">✏️ แก้ไขข้อมูล</button>
+            
             <button id="btn-buyer-register" onclick="submitBuyerRegistration()">บันทึกข้อมูล</button>
         </div>
 
@@ -511,7 +535,6 @@
                 subdistSelect.innerHTML = '<option value="" disabled selected>เลือกตำบล</option>';
                 zipInput.value = '';
                 
-                // If form is disabled due to Read-Only mode, do not re-enable automatically
                 if(!provSelect.disabled) {
                     distSelect.disabled = !selectedProvId;
                     subdistSelect.disabled = true;
@@ -620,15 +643,15 @@
                 let pCond = plot.condition || "ไม่ระบุสภาพ";
                 let pAcc = plot.access || "ไม่ระบุทางเข้า";
                 html += `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface); padding:12px; border:1px solid var(--border); border-radius:8px; margin-bottom:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface); padding:16px; border:1px solid var(--border); border-radius:12px; margin-bottom:10px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
                     <div>
-                        <div style="font-weight:600; color:var(--text-main);">${plot.name}</div>
-                        <div style="font-size:13px; color:var(--text-muted);">พื้นที่: <span style="color:var(--primary); font-weight:500;">${plot.area} ไร่</span></div>
-                        <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">🚜 ${pCond} | 🛣️ ${pAcc}</div>
+                        <div style="font-weight:600; color:var(--text-main); font-size:16px;">${plot.name}</div>
+                        <div style="font-size:13px; color:var(--text-muted);">พื้นที่: <span style="color:var(--primary); font-weight:600;">${plot.area} ไร่</span></div>
+                        <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">🚜 ${pCond} <br> 🛣️ ${pAcc}</div>
                     </div>
-                    <div style="display:flex; gap: 8px;">
-                        <button type="button" onclick="openAddPlotModal(${index})" style="background:var(--info); color:white; border:none; border-radius:6px; padding:6px 12px; font-size:12px; width:auto; margin:0;">แก้ไข</button>
-                        <button type="button" onclick="removeSavedPlot(${index})" style="background:var(--danger); color:white; border:none; border-radius:6px; padding:6px 12px; font-size:12px; width:auto; margin:0;">ลบ</button>
+                    <div style="display:flex; flex-direction: column; gap: 6px;">
+                        <button type="button" onclick="openAddPlotModal(${index})" style="background:var(--info); color:white; border:none; border-radius:8px; padding:8px 14px; font-size:13px; width:auto; margin:0; box-shadow: none;">แก้ไข</button>
+                        <button type="button" onclick="removeSavedPlot(${index})" style="background:#FDEBD0; color:var(--danger); border:none; border-radius:8px; padding:8px 14px; font-size:13px; width:auto; margin:0; box-shadow: none;">ลบ</button>
                     </div>
                 </div>`;
                 optionsHtml += `<option value="${index}">${plot.name} (${plot.area} ไร่)</option>`;
@@ -644,7 +667,7 @@
                 text: `คุณต้องการลบแปลง "${userSavedPlots[index].name}" ใช่หรือไม่`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#E74C3C', // <--- แก้ไขสีตรงนี้ให้ถูกต้องครับ
+                confirmButtonColor: '#E74C3C',
                 cancelButtonColor: '#BFC9C5',
                 confirmButtonText: 'ใช่, ลบทิ้ง',
                 cancelButtonText: 'ยกเลิก'
@@ -657,6 +680,37 @@
         }
 
         function openAddPlotModal(editIndex = -1) {
+            // ถ้าระบุ Index แปลว่ากำลังแก้ไขแผนที่ ให้แสดง Modal เลย ไม่ต้องเสียเวลาโหลด GPS ใหม่
+            if (editIndex >= 0 && userSavedPlots[editIndex].center && userSavedPlots[editIndex].center.length === 2) {
+                currentLat = userSavedPlots[editIndex].center[0];
+                currentLng = userSavedPlots[editIndex].center[1];
+                showAddPlotSwal(editIndex);
+            } else {
+                // ถ้าเป็นการสร้างใหม่ ให้บังคับค้นหา GPS ก่อน แล้วค่อยเด้งแผนที่
+                Swal.fire({ title: 'กำลังค้นหาตำแหน่งของคุณ...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => { 
+                            currentLat = pos.coords.latitude; 
+                            currentLng = pos.coords.longitude; 
+                            Swal.close();
+                            showAddPlotSwal(-1);
+                        }, 
+                        (err) => { 
+                            console.log("GPS error", err);
+                            Swal.close();
+                            showAddPlotSwal(-1); // แม้หาไม่เจอก็ให้เปิดแผนที่ในพิกัดสำรอง
+                        }, 
+                        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+                    );
+                } else {
+                    Swal.close();
+                    showAddPlotSwal(-1);
+                }
+            }
+        }
+
+        function showAddPlotSwal(editIndex) {
             let plotToEdit = editIndex >= 0 ? userSavedPlots[editIndex] : null;
             let tempPolygonGeoJSON = plotToEdit ? plotToEdit.polygon : ""; 
             let tempArea = plotToEdit ? plotToEdit.area : 0; 
@@ -697,35 +751,26 @@
                 confirmButtonColor: THEME_PRIMARY,
                 cancelButtonColor: '#BFC9C5',
                 didOpen: () => {
-                    // Pre-fill values if editing
                     if (plotToEdit) {
                         document.getElementById('plot-name').value = plotToEdit.name;
                         if(plotToEdit.condition) document.getElementById('plot-condition').value = plotToEdit.condition;
                         if(plotToEdit.access) document.getElementById('plot-access').value = plotToEdit.access;
                     }
 
-                    // Set map center
-                    let startLat = plotToEdit && tempCenter.length == 2 ? tempCenter[0] : currentLat;
-                    let startLng = plotToEdit && tempCenter.length == 2 ? tempCenter[1] : currentLng;
-
-                    modalMap = L.map('modal-map').setView([startLat, startLng], 15);
+                    modalMap = L.map('modal-map').setView([currentLat, currentLng], 16);
                     L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(modalMap);
                     modalMap.pm.addControls({ position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, dragMode: false, cutPolygon: false, removalMode: true });
 
-                    const updateModalMap = (lat, lng) => {
-                        currentLat = lat; currentLng = lng;
-                        modalMap.setView([lat, lng], 16);
-                        if (modalLocMarker) { modalLocMarker.setLatLng([lat, lng]); } else { modalLocMarker = L.marker([lat, lng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>").openPopup(); }
-                        modalMap.invalidateSize(); 
-                    };
+                    if (!plotToEdit) {
+                        modalLocMarker = L.marker([currentLat, currentLng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>").openPopup();
+                    }
 
-                    // Draw existing polygon if editing
                     if (plotToEdit && plotToEdit.polygon) {
                         try {
                             let coords = JSON.parse(plotToEdit.polygon);
                             let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
                             modalDrawnPolygon = L.polygon(flippedCoords, { color: THEME_PRIMARY }).addTo(modalMap);
-                            modalMap.fitBounds(modalDrawnPolygon.getBounds(), { padding: [10, 10] });
+                            modalMap.fitBounds(modalDrawnPolygon.getBounds(), { padding: [15, 15] });
 
                             modalDrawnPolygon.on('pm:edit', function() {
                                 let overlapEdit = checkPolygonOverlap(modalDrawnPolygon.toGeoJSON(), editIndex);
@@ -733,16 +778,6 @@
                                 calcModalArea();
                             });
                         } catch(e) { console.error(e); }
-                    } else {
-                        // Locate user if adding new
-                        updateModalMap(currentLat, currentLng);
-                        if (navigator.geolocation) {
-                            navigator.geolocation.getCurrentPosition(
-                                (pos) => { updateModalMap(pos.coords.latitude, pos.coords.longitude); }, 
-                                (err) => { console.log("GPS error"); }, 
-                                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-                            );
-                        }
                     }
 
                     function calcModalArea() {
@@ -877,7 +912,9 @@
 
                     if (mode === 'register') { 
                         document.getElementById("header-text").innerText = "ลงทะเบียนชาวไร่"; 
-                        document.getElementById("register-page").classList.add("active"); 
+                        document.getElementById("register-page").classList.add("active");
+                        // ดึงพิกัดซุ่มไว้รอเลยเผื่อเข้าแท็บวาดแปลง
+                        if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(p => { currentLat = p.coords.latitude; currentLng = p.coords.longitude; }, e => {}, {maximumAge:0}); }
                         await checkUserForRegister(); 
                     } 
                     else if (mode === 'report') { 
@@ -915,7 +952,14 @@
                 if (result.status === "found") {
                     isEditMode = true; let d = result.data; document.getElementById("profile-info").innerText = "คุณ " + d.firstName + " " + d.lastName;
                     document.getElementById("reg-prefix").value = d.prefix; document.getElementById("reg-firstname").value = d.firstName; document.getElementById("reg-lastname").value = d.lastName;
-                    if(d.dob) document.getElementById("reg-dob").value = d.dob.split('T')[0];
+                    
+                    // แก้ไขบั๊กวันที่ร่นถอยหลัง (Timezone +7)
+                    if(d.dob) { 
+                        let dobDate = new Date(d.dob); 
+                        dobDate.setHours(dobDate.getHours() + 7); 
+                        document.getElementById("reg-dob").value = dobDate.toISOString().split('T')[0]; 
+                    }
+
                     document.getElementById("reg-no").value = d.addressNo; document.getElementById("reg-moo").value = d.moo; 
                     setAddressDropdowns("reg", d.prov, d.dist, d.subDist, d.zip);
                     document.getElementById("reg-phone").value = d.phone; document.getElementById("reg-farminfo").value = d.farmInfo;
@@ -927,13 +971,12 @@
                     document.getElementById('btn-enable-edit').style.display = 'block';
                     document.getElementById('btn-register').style.display = 'none';
 
-                    document.getElementById("reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว กดปุ่มแก้ไขด้านล่างหากต้องการเปลี่ยนข้อมูลครับ"; 
+                    document.getElementById("reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว กดปลดล็อกหากต้องการเปลี่ยนข้อมูลครับ"; 
                 } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; }
             } catch (error) { console.error(error); }
         }
 
         async function submitRegistration() {
-            // ถ้าอยู่ในหน้าต่างข้อมูลส่วนตัว และยังไม่ได้กรอกให้ครบ จะไม่ยอมให้ผ่าน
             if(document.getElementById('tab-personal').style.display !== 'none' && !validateForm('tab-personal')) return;
             
             const payload = { action: isEditMode ? "updateUser" : "register", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("reg-prefix").value, firstName: document.getElementById("reg-firstname").value, lastName: document.getElementById("reg-lastname").value, dob: document.getElementById("reg-dob").value, addressNo: document.getElementById("reg-no").value, moo: document.getElementById("reg-moo").value, subDist: document.getElementById("reg-subdist").value, dist: document.getElementById("reg-dist").value, prov: document.getElementById("reg-prov").value, zip: document.getElementById("reg-zip").value, phone: document.getElementById("reg-phone").value, farmInfo: document.getElementById("reg-farminfo").value, savedPlots: JSON.stringify(userSavedPlots) };
@@ -1250,7 +1293,14 @@
                 if (result.status === "found") {
                     isBuyerEditMode = true; let d = result.data; document.getElementById("profile-info").innerText = "คุณ " + d.fullName;
                     document.getElementById("buyer-prefix").value = d.prefix; document.getElementById("buyer-firstname").value = d.firstName; document.getElementById("buyer-lastname").value = d.lastName;
-                    if(d.dob) document.getElementById("buyer-dob").value = d.dob.split('T')[0];
+                    
+                    // แก้ไขบั๊กวันที่ร่นถอยหลัง (Timezone +7)
+                    if(d.dob) { 
+                        let dobDate = new Date(d.dob); 
+                        dobDate.setHours(dobDate.getHours() + 7); 
+                        document.getElementById("buyer-dob").value = dobDate.toISOString().split('T')[0]; 
+                    }
+
                     document.getElementById("buyer-no").value = d.addressNo; document.getElementById("buyer-moo").value = d.moo;
                     setAddressDropdowns("buyer", d.prov, d.dist, d.subDist, d.zip);
                     document.getElementById("buyer-phone").value = d.phone; document.getElementById("buyer-vehicle").value = d.vehicleInfo;
@@ -1259,7 +1309,7 @@
                     document.getElementById('btn-enable-buyer-edit').style.display = 'block';
                     document.getElementById('btn-buyer-register').style.display = 'none';
 
-                    document.getElementById("buyer-reg-status-box").innerHTML = "<i>ℹ️</i> ระบบพบข้อมูลพาร์ทเนอร์แล้ว"; 
+                    document.getElementById("buyer-reg-status-box").innerHTML = "<i>ℹ️</i> ระบบพบข้อมูลพาร์ทเนอร์แล้ว กดปลดล็อกหากต้องการแก้ข้อมูลครับ"; 
                 } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; }
             } catch (error) { console.error(error); }
         }
@@ -1401,8 +1451,8 @@
                         ${offerStatus}
                     </div>
                     <div style="display:flex; gap:10px; margin-top:16px;">
-                        <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" style="flex:1; padding:10px; background-color:var(--bg-main); color:var(--text-main); border:none; border-radius:10px; font-weight:500; font-size:14px;">📋 ข้อมูลแปลง</button>
-                        <button onclick="acceptJob(${item.row})" style="flex:1; padding:10px; background-color:var(--primary); color:white; border:none; border-radius:10px; font-weight:500; font-size:14px;">💰 เสนอราคา</button>
+                        <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" style="flex:1; padding:10px; background-color:var(--bg-main); color:var(--text-main); border:none; border-radius:10px; font-weight:500; font-size:14px; box-shadow:none;">📋 ข้อมูลแปลง</button>
+                        <button onclick="acceptJob(${item.row})" style="flex:1; padding:10px; background-color:var(--primary); color:white; border:none; border-radius:10px; font-weight:500; font-size:14px; box-shadow:none;">💰 เสนอราคา</button>
                     </div>
                 </div>`;
         }
@@ -1419,7 +1469,7 @@
                         <div style="margin-bottom:4px;">📍 รัศมีห่างกัน: <b>ไม่เกิน ${maxDist} กม.</b></div><div>🗓️ กรอบวัน: <b>${d1} - ${d2}</b></div>
                         <div style="font-size:16px; margin-top:8px; font-weight:600; color:var(--text-main);">📦 รวมพื้นที่: <b style="color:var(--accent);">${cData.totalRai} ไร่</b></div>
                     </div>
-                    <button onclick="acceptClusterJob('${cData.id}')" style="width:100%; padding:14px; margin-bottom:16px; background-color:var(--accent); color:white; border:none; border-radius:12px; font-weight:500; font-size:15px;">🤝 เสนอซื้อเหมากลุ่ม</button>`;
+                    <button onclick="acceptClusterJob('${cData.id}')" style="width:100%; padding:14px; margin-bottom:16px; background-color:var(--accent); color:white; border:none; border-radius:12px; font-weight:500; font-size:15px; box-shadow:none;">🤝 เสนอซื้อเหมากลุ่ม</button>`;
             
             cData.items.forEach(item => {
                 drawMarkerOnMap(item, THEME_ACCENT, false); let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
@@ -1429,8 +1479,8 @@
                         <div class="sale-header" style="margin-bottom:8px; padding-bottom:8px;"><span style="font-weight:600; font-size:14px;">คุณ ${item.farmerName}</span><span style="color:var(--accent); font-weight:600; font-size:14px;">${item.qty} ไร่</span></div>
                         <div class="sale-detail" style="font-size:13px;">พร้อมม้วน: <span>${hDate}</span>${offerStatus}</div>
                         <div style="display:flex; gap:8px; margin-top:12px;">
-                            <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" style="flex:1; padding:8px; background-color:var(--bg-main); color:var(--text-main); border:none; border-radius:8px; font-weight:500; font-size:13px;">📋 ข้อมูลแปลง</button>
-                            <button onclick="acceptJob(${item.row})" style="flex:1; padding:8px; background-color:var(--primary); color:white; border:none; border-radius:8px; font-weight:500; font-size:13px;">💰 เสนอราคา</button>
+                            <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" style="flex:1; padding:8px; background-color:var(--bg-main); color:var(--text-main); border:none; border-radius:8px; font-weight:500; font-size:13px; box-shadow:none;">📋 ข้อมูลแปลง</button>
+                            <button onclick="acceptJob(${item.row})" style="flex:1; padding:8px; background-color:var(--primary); color:white; border:none; border-radius:8px; font-weight:500; font-size:13px; box-shadow:none;">💰 เสนอราคา</button>
                         </div>
                     </div>`;
             });
