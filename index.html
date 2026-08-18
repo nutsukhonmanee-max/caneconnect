@@ -391,7 +391,8 @@
         // โหลดข้อมูลจังหวัด
         async function loadThaiData() {
             try {
-                const res = await fetch('https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province_with_amphure_tambon.json');
+                // แก้ไขลิงก์ตรงนี้เป็นเส้นทางไฟล์เวอร์ชันที่ถูกต้อง (เพิ่ม /api/v1/)
+                const res = await fetch('https://raw.githubusercontent.com/kongvut/thai-province-data/master/api/v1/province_with_amphure_tambon.json');
                 thaiData = await res.json();
                 populateProvinces("reg-prov");
                 populateProvinces("buyer-prov");
@@ -399,6 +400,8 @@
                 setupAddressDropdowns("buyer");
             } catch(e) {
                 console.error("Failed to load Thai data", e);
+                // เพิ่ม Alert เพื่อไม่ให้ระบบค้างเงียบๆ ถ้าเน็ตหลุดหรือโหลดไม่ได้
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถโหลดข้อมูลจังหวัดได้ โปรดลองรีเฟรชใหม่อีกครั้ง', 'error');
             }
         }
 
