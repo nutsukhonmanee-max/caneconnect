@@ -71,7 +71,7 @@
         .profile-img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); display: none; box-shadow: var(--shadow-soft); }
         .profile-text { font-size: 18px; font-weight: 600; color: var(--text-main); }
         
-        /* แท็บเมนู (Tab Navigation) สวยขึ้น */
+        /* แท็บเมนู (Tab Navigation) */
         .tab-nav { display: flex; gap: 8px; margin-bottom: 20px; background: #E9ECEB; padding: 6px; border-radius: 16px; }
         .tab-btn { flex: 1; padding: 12px; background: transparent; color: var(--text-muted); border: none; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .tab-btn.active { background: var(--surface); color: var(--primary-dark); box-shadow: 0 4px 12px rgba(0,0,0,0.06); transform: scale(1.02); }
@@ -81,11 +81,11 @@
         input[type="text"], input[type="tel"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); box-sizing: border-box; font-size: 15px; font-family: 'Kanit', sans-serif; transition: all 0.3s ease; background: var(--surface); color: var(--text-main); box-shadow: inset 0 2px 4px rgba(0,0,0,0.01); }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(109, 179, 63, 0.15); background: #FFF; }
         
-        /* ปรับสีช่องที่ถูกล็อก (Read-Only) ให้อ่านง่ายและชัดเจนขึ้น */
+        /* ปรับสีช่องที่ถูกล็อก (Read-Only) */
         input:disabled, select:disabled, textarea:disabled, input[readonly], select[readonly] { 
             background-color: #F8FAF9 !important; 
             color: var(--text-main) !important; 
-            -webkit-text-fill-color: var(--text-main) !important; /* บังคับให้ iOS ไม่ทำสีเทา */
+            -webkit-text-fill-color: var(--text-main) !important;
             opacity: 1 !important; 
             border: 1px dashed #BDC6C1 !important; 
             cursor: not-allowed; 
@@ -116,10 +116,7 @@
         .btn-warning:hover { box-shadow: 0 4px 0 #B9770E, 0 6px 10px rgba(0,0,0,0.15); }
         .btn-warning:active { box-shadow: 0 0 0 #B9770E, 0 2px 5px rgba(0,0,0,0.1); }
 
-        .btn-ghost {
-            background: #FFF9E6; color: var(--accent); border: 2px solid #FDEBD0;
-            box-shadow: 0 4px 0 #FDEBD0; margin-top: 5px; margin-bottom: 15px; border-radius: 12px;
-        }
+        .btn-ghost { background: #FFF9E6; color: var(--accent); border: 2px solid #FDEBD0; box-shadow: 0 4px 0 #FDEBD0; margin-top: 5px; margin-bottom: 15px; border-radius: 12px; }
         .btn-ghost:hover { transform: translateY(2px); box-shadow: 0 2px 0 #FDEBD0; }
         .btn-ghost:active { transform: translateY(4px); box-shadow: 0 0 0 #FDEBD0; }
 
@@ -166,7 +163,7 @@
         .photo-gallery { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 12px; margin-top: 10px; padding-bottom: 10px; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory;}
         .photo-gallery img { width: 100px; height: 100px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border); flex-shrink: 0; scroll-snap-align: start; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
         
-        .swal2-popup { border-radius: 24px !important; padding: 24px !important; font-family: 'Kanit', sans-serif !important; padding-top: 35px !important; box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;}
+        .swal2-popup { border-radius: 20px !important; padding: 20px !important; font-family: 'Kanit', sans-serif !important; box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;}
         .swal2-close { color: var(--danger) !important; background: #FDEDEC !important; border-radius: 50% !important; width: 38px !important; height: 38px !important; font-size: 24px !important; position: absolute !important; top: 12px !important; right: 12px !important; transition: all 0.2s ease !important; box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2) !important; }
         .swal2-close:hover { background: var(--danger) !important; color: white !important; }
         
@@ -235,7 +232,6 @@
                     <i>📝</i> ยินดีต้อนรับ กรุณากรอกข้อมูลส่วนตัว
                 </div>
                 
-                <!-- ย้ายปุ่มแก้ไขมาไว้ด้านบน -->
                 <button id="btn-enable-edit" type="button" class="btn-main btn-ghost" onclick="enableProfileEdit()" style="display:none;">✏️ ปลดล็อกเพื่อแก้ไขข้อมูล</button>
 
                 <div class="form-grid col-3">
@@ -288,7 +284,7 @@
                     <i>💡</i> วาดแปลงเก็บไว้ เพื่อความสะดวกรวดเร็วในการแจ้งขาย
                 </div>
                 
-                <!-- แผนที่รวมแปลง -->
+                <!-- แผนที่รวมแปลงทั้งหมด -->
                 <div id="all-plots-map" class="map-container" style="height: 250px; margin-top: 15px; margin-bottom: 20px; display: none; border: 2px solid var(--primary); border-radius: var(--radius-md);"></div>
 
                 <button type="button" class="btn-main btn-info" onclick="openAddPlotModal(-1)">+ วาดเพิ่มแปลงอ้อย</button>
@@ -367,7 +363,6 @@
                 <i>🚜</i> ลงทะเบียนพาร์ทเนอร์รถม้วน
             </div>
             
-            <!-- ย้ายปุ่มแก้ไขมาไว้ด้านบน -->
             <button id="btn-enable-buyer-edit" type="button" class="btn-main btn-ghost" onclick="enableBuyerProfileEdit()" style="display:none;">✏️ ปลดล็อกเพื่อแก้ไขข้อมูล</button>
 
             <div class="form-grid col-3">
@@ -497,8 +492,8 @@
             } else {
                 document.getElementById('btn-tab-plots').classList.add('active');
                 document.getElementById('tab-plots').style.display = 'block';
-                // บังคับรีเฟรชขนาดแผนที่รวมเมื่อเปิดแท็บ
-                setTimeout(() => { if(allPlotsMapObj) allPlotsMapObj.invalidateSize(); }, 100);
+                // เมื่อเปิดแท็บนี้ ค่อยเรนเดอร์และซูมแผนที่รวมเพื่อป้องกัน Leaflet Error
+                setTimeout(() => { renderAllPlotsMap(); }, 150);
             }
         }
 
@@ -666,6 +661,9 @@
 
         function renderAllPlotsMap() {
             const container = document.getElementById('all-plots-map');
+            // ป้องกัน Error จาก Leaflet ถ้าแท็บถูกซ่อนอยู่และมีความกว้าง 0
+            if (!container || container.offsetWidth === 0) return; 
+
             if (userSavedPlots.length === 0) {
                 container.style.display = 'none';
                 return;
@@ -690,10 +688,13 @@
                 } catch(e) {}
             });
 
-            if (allPlotsLayer.getLayers().length > 0) {
-                allPlotsMapObj.fitBounds(allPlotsLayer.getBounds(), { padding: [20, 20] });
-            }
-            setTimeout(() => { allPlotsMapObj.invalidateSize(); }, 300);
+            setTimeout(() => { 
+                allPlotsMapObj.invalidateSize(); 
+                if (allPlotsLayer.getLayers().length > 0) {
+                    // จำกัดระดับการซูมสูงสุดเพื่อไม่ให้เข้าไปใกล้จนเกินไปเมื่อมีแปลงเดียว
+                    allPlotsMapObj.fitBounds(allPlotsLayer.getBounds(), { padding: [40, 40], maxZoom: 15 });
+                }
+            }, 300);
         }
 
         // ================= ระบบจัดการแปลงอ้อย (Saved Plots) =================
@@ -701,25 +702,27 @@
             const container = document.getElementById('saved-plots-container');
             const selectDropdown = document.getElementById('select-saved-plot');
             
-            // ตรวจสอบและอัปเดตช่อง "ข้อมูลการปลูกอ้อย (ไร่)" ตามผลรวมพื้นที่ในแปลงอัตโนมัติ
+            // อัปเดตช่อง Dropdown พื้นที่ปลูกรวมอัตโนมัติ
             let totalArea = userSavedPlots.reduce((sum, plot) => sum + parseFloat(plot.area), 0);
             let farmInfoSelect = document.getElementById("reg-farminfo");
-            let currentSelect = farmInfoSelect.value;
-            let expectedValue = "";
             
-            if(totalArea >= 100) expectedValue = "100 ไร่ขึ้นไป";
-            else if(totalArea >= 50) expectedValue = "50-100 ไร่";
-            else if(totalArea >= 21) expectedValue = "21-50 ไร่";
-            else if(totalArea > 0) expectedValue = "1-20 ไร่";
+            if(farmInfoSelect) {
+                let currentSelect = farmInfoSelect.value;
+                let expectedValue = "";
+                if(totalArea >= 100) expectedValue = "100 ไร่ขึ้นไป";
+                else if(totalArea >= 50) expectedValue = "50-100 ไร่";
+                else if(totalArea >= 21) expectedValue = "21-50 ไร่";
+                else if(totalArea > 0) expectedValue = "1-20 ไร่";
 
-            let levels = {"":0, "1-20 ไร่":1, "21-50 ไร่":2, "50-100 ไร่":3, "100 ไร่ขึ้นไป":4};
-            // ปรับอัปเกรดให้ถ้าพิกัดวาดเกินที่เคยกรอกไว้
-            if(expectedValue !== "" && levels[expectedValue] > levels[currentSelect]) {
-                farmInfoSelect.value = expectedValue;
-                Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, icon: 'info', title: 'อัปเดตขนาดพื้นที่ปลูกอ้อยตามแปลงที่วาดแล้ว' });
+                let levels = {"":0, "1-20 ไร่":1, "21-50 ไร่":2, "50-100 ไร่":3, "100 ไร่ขึ้นไป":4};
+                
+                if(expectedValue !== "" && levels[expectedValue] > levels[currentSelect]) {
+                    farmInfoSelect.value = expectedValue;
+                    Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, icon: 'info', title: 'อัปเดตขนาดพื้นที่รวมอัตโนมัติ' });
+                }
             }
 
-            renderAllPlotsMap(); // อัปเดตแผนที่รวม
+            renderAllPlotsMap(); 
 
             if (userSavedPlots.length === 0) {
                 container.innerHTML = '<div class="empty-state" style="padding: 20px 0;">ยังไม่มีแปลงที่บันทึกไว้</div>';
@@ -773,7 +776,6 @@
         function openAddPlotModal(editIndex = -1) {
             Swal.fire({ title: 'กำลังโหลดแผนที่...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
             
-            // บังคับหา GPS ให้เสร็จก่อนเปิดแผนที่
             if (navigator.geolocation && (editIndex < 0 || !userSavedPlots[editIndex].center)) {
                 navigator.geolocation.getCurrentPosition(
                     (pos) => { 
@@ -804,30 +806,30 @@
 
             Swal.fire({
                 html: `
-                    <div style="text-align: left; font-family: 'Kanit'; max-height: 75vh; overflow-y: auto; overflow-x: hidden; padding-right: 5px;">
-                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">${plotToEdit ? 'แก้ไขแปลงอ้อย' : 'วาดแปลงอ้อยใหม่'}</div>
-                        <label style="margin-top:0;">ชื่อแปลงอ้อย (เช่น แปลงหลังบ้าน):</label>
-                        <input type="text" id="plot-name" class="swal2-input" placeholder="กรอกชื่อแปลง" style="width: 100%; box-sizing: border-box; margin: 0 0 15px 0; font-family: 'Kanit'; padding: 12px; height: auto;">
+                    <div style="text-align: left; font-family: 'Kanit'; padding: 0;">
+                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--primary-dark);">📍 ${plotToEdit ? 'แก้ไขแปลงอ้อย' : 'วาดแปลงอ้อยใหม่'}</div>
                         
-                        <label>สภาพแปลง (ตอเก่า/หิน):</label>
-                        <select id="plot-condition" class="swal2-input" style="width: 100%; box-sizing: border-box; margin: 0 0 10px 0; font-family: 'Kanit'; padding: 10px; height: auto;">
-                            <option value="ไม่มีตอเก่า/หิน (แปลงสะอาด)">ไม่มีตอเก่า/หิน (แปลงสะอาด)</option>
-                            <option value="มีตอเก่า">มีตอเก่า</option>
-                            <option value="มีหินปะปน">มีหินปะปน</option>
-                            <option value="มีทั้งตอเก่าและหิน">มีทั้งตอเก่าและหิน</option>
-                        </select>
+                        <input type="text" id="plot-name" class="swal2-input" placeholder="ตั้งชื่อแปลง (เช่น แปลงหน้าบ้าน)" style="width: 100%; box-sizing: border-box; margin: 0 0 10px 0; font-family: 'Kanit'; padding: 10px; font-size: 14px;">
                         
-                        <label>สภาพทางเข้าแปลง:</label>
-                        <select id="plot-access" class="swal2-input" style="width: 100%; box-sizing: border-box; margin: 0 0 15px 0; font-family: 'Kanit'; padding: 10px; height: auto;">
-                            <option value="รถบรรทุก 10 ล้อ เข้าได้สะดวก">รถบรรทุก 10 ล้อ เข้าได้สะดวก</option>
-                            <option value="รถ 6 ล้อ เข้าได้">รถ 6 ล้อ เข้าได้</option>
-                            <option value="รถกระบะ / รถไถ เล็กเท่านั้น">รถกระบะ / รถไถ เล็กเท่านั้น</option>
-                            <option value="ทางแคบ/ลำบาก ต้องดูหน้างาน">ทางแคบ/ลำบาก ต้องดูหน้างาน</option>
-                        </select>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                            <select id="plot-condition" class="swal2-input" style="width: 100%; box-sizing: border-box; margin: 0; font-family: 'Kanit'; padding: 8px; font-size: 13px;">
+                                <option value="แปลงสะอาด (ไม่มีตอ/หิน)">แปลงสะอาด (ไม่มีตอ/หิน)</option>
+                                <option value="มีตอเก่า">มีตอเก่า</option>
+                                <option value="มีหินปะปน">มีหินปะปน</option>
+                                <option value="มีทั้งตอและหิน">มีทั้งตอและหิน</option>
+                            </select>
+                            <select id="plot-access" class="swal2-input" style="width: 100%; box-sizing: border-box; margin: 0; font-family: 'Kanit'; padding: 8px; font-size: 13px;">
+                                <option value="รถบรรทุก 10 ล้อ เข้าได้สะดวก">รถ 10 ล้อ เข้าได้</option>
+                                <option value="รถ 6 ล้อ เข้าได้">รถ 6 ล้อ เข้าได้</option>
+                                <option value="รถกระบะ/รถไถเล็กเท่านั้น">รถกระบะ/รถไถ เล็ก</option>
+                                <option value="ทางแคบ ต้องดูหน้างาน">ทางแคบ ต้องดูหน้างาน</option>
+                            </select>
+                        </div>
 
-                        <label>วาดขอบเขตแปลง (กดที่มุมเพื่อขยับได้เลย):</label>
-                        <div id="modal-map" style="height: 300px; border-radius: 12px; border: 1px solid var(--border); width: 100%;"></div>
-                        <div id="modal-area-text" style="margin-top:10px; color:var(--primary); font-weight:600; text-align:center;">พื้นที่ประมาณ: ${tempArea} ไร่</div>
+                        <div style="font-size: 14px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px;">✏️ แตะไอคอนห้าเหลี่ยม เพื่อวาดขอบเขต</div>
+                        <div id="modal-map" style="height: 40vh; min-height: 250px; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);"></div>
+                        
+                        <div id="modal-area-text" style="margin-top:12px; color:var(--primary-dark); font-weight:600; text-align:center; font-size: 18px; background: var(--primary-light); padding: 8px; border-radius: 12px; border: 1px dashed var(--primary);">พื้นที่รวม: ${tempArea} ไร่</div>
                     </div>
                 `,
                 showCancelButton: true,
@@ -875,7 +877,7 @@
                         tempArea = (turf.area(geojson) / 1600).toFixed(2);
                         let center = turf.centerOfMass(geojson);
                         tempCenter = [center.geometry.coordinates[1], center.geometry.coordinates[0]];
-                        document.getElementById('modal-area-text').innerText = `พื้นที่ประมาณ: ${tempArea} ไร่`;
+                        document.getElementById('modal-area-text').innerHTML = `พื้นที่รวม: <span style="font-size:24px;">${tempArea}</span> ไร่`;
                     }
 
                     modalMap.on('pm:create', function(e) {
@@ -898,7 +900,7 @@
                     
                     modalMap.on('pm:remove', function(e) {
                         modalDrawnPolygon = null; tempPolygonGeoJSON = ""; tempArea = 0; tempCenter = [];
-                        document.getElementById('modal-area-text').innerText = `พื้นที่ประมาณ: 0.00 ไร่`;
+                        document.getElementById('modal-area-text').innerHTML = `พื้นที่รวม: 0.00 ไร่`;
                     });
 
                     setTimeout(() => { modalMap.invalidateSize(); }, 300);
@@ -1040,14 +1042,12 @@
                     isEditMode = true; let d = result.data; document.getElementById("profile-info").innerText = "คุณ " + d.firstName + " " + d.lastName;
                     document.getElementById("reg-prefix").value = d.prefix; document.getElementById("reg-firstname").value = d.firstName; document.getElementById("reg-lastname").value = d.lastName;
                     
-                    // แก้ไขบั๊กวันที่ (ชดเชยเวลา Timezone +7)
                     if(d.dob) { 
                         let dobDate = new Date(d.dob); 
                         dobDate.setHours(dobDate.getHours() + 7); 
                         document.getElementById("reg-dob").value = dobDate.toISOString().split('T')[0]; 
                     }
 
-                    // แก้ไขบั๊กเบอร์โทรศัพท์เลข 0 หาย
                     let fPhone = d.phone ? d.phone.toString() : "";
                     if(fPhone.startsWith("'")) fPhone = fPhone.substring(1);
                     if((fPhone.length === 8 || fPhone.length === 9) && !fPhone.startsWith("0")) fPhone = "0" + fPhone;
@@ -1070,7 +1070,6 @@
         async function submitRegistration() {
             if(document.getElementById('tab-personal').style.display !== 'none' && !validateForm('tab-personal')) return;
             
-            // ใส่ ' หน้าเบอร์โทรป้องกัน Google Sheets ลบเลข 0
             let phoneInput = document.getElementById("reg-phone").value.trim();
             let formattedPhone = phoneInput.startsWith("'") ? phoneInput : "'" + phoneInput;
 
@@ -1081,7 +1080,6 @@
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
                 if (result.status === "success") { 
                     Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: 'บันทึกข้อมูลเข้าสู่ระบบแล้ว', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY });
-                    // ไม่ออกจากหน้าต่างแล้ว เปลี่ยนสถานะให้เป็น Lock แทน
                     isEditMode = true;
                     toggleProfileInputs(true, 'reg');
                     document.getElementById('btn-enable-edit').style.display = 'block';
@@ -1287,7 +1285,7 @@
                     Swal.fire({ title: 'กำลังบันทึกบัญชี...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
                     try {
                         const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "farmerConfirmClose", row: item.row }) });
-                        const data = await res.json(); if (data.status === "success") { Swal.fire({title:'สำเร็จ!', text:'ปิดดีลเรียบร้อย ข้อมูลสะสมเข้าโปรไฟล์แล้วครับ', icon:'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { location.reload(); }); }
+                        const data = await res.json(); if (data.status === "success") { Swal.fire({title:'สำเร็จ!', text:'ปิดดีลเรียบร้อย ข้อมูลสะสมเข้าโปรไฟล์แล้วครับ', icon:'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { fetchSalesData(); }); }
                     } catch(e) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อได้', 'error'); }
                 }
             });
@@ -1319,7 +1317,7 @@
                 try {
                     const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "confirmSale", row: rowId, chosenBuyerName: bName, chosenPhone: bPhone, chosenPrice: bPrice }) });
                     const result = await res.json();
-                    if (result.status === "success") { Swal.fire({title:'สำเร็จ!', text:'จองคิวรถม้วนเรียบร้อยแล้วครับ', icon:'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { location.reload(); }); }
+                    if (result.status === "success") { Swal.fire({title:'สำเร็จ!', text:'จองคิวรถม้วนเรียบร้อยแล้วครับ', icon:'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { fetchSalesData(); }); }
                 } catch (error) { Swal.fire('ล้มเหลว', 'เชื่อมต่อระบบไม่สำเร็จ', 'error'); }
             }
         }
