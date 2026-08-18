@@ -373,7 +373,7 @@
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwKNL6jqjvtpuBxDzgqBIQiKLjA7_2QupvMAK9tcod5SlBbcs7iIbswlglT76xI5xOwng/exec";
         
         let userProfile = null; let currentLat = 17.295; let currentLng = 101.782; 
-        let map; let drawnPolygon = null; let polygonGeoJSON = "";
+        let map; let drawnPolygon = null; let polygonGeoJSON = ""; let userLocMarker = null;
         let isEditMode = false; let isBuyerEditMode = false;
         let buyerNameContext = ""; let buyerPhoneContext = "";
         let globalSalesData = [];
@@ -848,13 +848,29 @@
 
         function renderMap(lat, lng) {
             if(!map) {
-                var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }); var googleStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20 });
+                var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }); 
+                var googleStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20 });
                 map = L.map('map', { center: [lat, lng], zoom: 16, layers: [googleHybrid] });
-                var baseMaps = { "ดาวเทียม": googleHybrid, "ถนน": googleStreets }; L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
+                var baseMaps = { "ดาวเทียม": googleHybrid, "ถนน": googleStreets }; 
+                L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
                 map.pm.addControls({ position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, dragMode: false, cutPolygon: false, removalMode: true });
+                
                 map.on('pm:create', function(e) { if (drawnPolygon) drawnPolygon.remove(); drawnPolygon = e.layer; calculateArea(drawnPolygon); drawnPolygon.on('pm:edit', function() { calculateArea(drawnPolygon); }); });
                 map.on('pm:remove', function(e) { drawnPolygon = null; polygonGeoJSON = ""; document.getElementById("quantity").value = ""; });
-            } else { map.setView([lat, lng], 16); }
+                
+                // เพิ่มหมุดชี้ตำแหน่งปัจจุบัน พร้อมข้อความ
+                userLocMarker = L.marker([lat, lng]).addTo(map).bindPopup("<div style='font-family:Kanit; font-weight:500; font-size:14px; text-align:center;'>📍 ตำแหน่งของคุณ</div>").openPopup();
+                
+            } else { 
+                map.setView([lat, lng], 16); 
+                
+                // อัปเดตตำแหน่งหมุดหากมีการดึงพิกัดใหม่
+                if(userLocMarker) {
+                    userLocMarker.setLatLng([lat, lng]);
+                } else {
+                    userLocMarker = L.marker([lat, lng]).addTo(map).bindPopup("<div style='font-family:Kanit; font-weight:500; font-size:14px; text-align:center;'>📍 ตำแหน่งของคุณ</div>").openPopup();
+                }
+            }
             document.getElementById("submit-btn").disabled = false;
         }
 
