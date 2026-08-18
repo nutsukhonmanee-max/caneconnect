@@ -31,7 +31,6 @@
             --radius-lg: 20px;
             --radius-md: 14px;
             --shadow-soft: 0 10px 30px rgba(44, 62, 80, 0.05);
-            --shadow-btn: 0 4px 15px rgba(109, 179, 63, 0.25);
         }
         
         body { 
@@ -98,11 +97,37 @@
         .status-box { margin-top: 10px; padding: 16px; border-radius: var(--radius-md); background-color: var(--primary-light); color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; font-weight: 500; border: 1px dashed var(--primary); box-shadow: 0 4px 10px rgba(109, 179, 63, 0.05);}
         .status-box i { margin-right: 12px; font-size: 20px;}
         
-        /* Buttons */
-        button { width: 100%; padding: 16px; margin-top: 24px; background: var(--primary-gradient); color: white; border: none; border-radius: var(--radius-md); font-size: 16px; font-family: 'Kanit', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.3px; box-shadow: var(--shadow-btn);}
-        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(109, 179, 63, 0.35); }
-        button:active { transform: translateY(1px); box-shadow: 0 2px 10px rgba(109, 179, 63, 0.2); }
-        button:disabled { background: #D5DCD8; cursor: not-allowed; transform: none; box-shadow: none; color: #999;}
+        /* ================= ปุ่มแบบ 3 มิติ (3D Buttons) ================= */
+        .btn-main { 
+            width: 100%; padding: 16px; margin-top: 24px; margin-bottom: 8px;
+            background: var(--primary-gradient); color: white; border: none; border-radius: var(--radius-md); 
+            font-size: 16px; font-family: 'Kanit', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.1s ease; letter-spacing: 0.3px; 
+            box-shadow: 0 6px 0 var(--primary-dark), 0 10px 15px rgba(0,0,0,0.15);
+        }
+        .btn-main:hover { transform: translateY(2px); box-shadow: 0 4px 0 var(--primary-dark), 0 6px 10px rgba(0,0,0,0.15); }
+        .btn-main:active { transform: translateY(6px); box-shadow: 0 0 0 var(--primary-dark), 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-main:disabled { background: #D5DCD8; box-shadow: 0 6px 0 #BFC9C5; color: #999; cursor: not-allowed; transform: none; }
+
+        .btn-info { background: #2980B9; box-shadow: 0 6px 0 #1A5276, 0 10px 15px rgba(0,0,0,0.15); }
+        .btn-info:hover { box-shadow: 0 4px 0 #1A5276, 0 6px 10px rgba(0,0,0,0.15); }
+        .btn-info:active { box-shadow: 0 0 0 #1A5276, 0 2px 5px rgba(0,0,0,0.1); }
+        
+        .btn-warning { background: var(--accent); box-shadow: 0 6px 0 #B9770E, 0 10px 15px rgba(0,0,0,0.15); }
+        .btn-warning:hover { box-shadow: 0 4px 0 #B9770E, 0 6px 10px rgba(0,0,0,0.15); }
+        .btn-warning:active { box-shadow: 0 0 0 #B9770E, 0 2px 5px rgba(0,0,0,0.1); }
+
+        .btn-ghost {
+            background: #FFF9E6; color: var(--accent); border: 2px solid #FDEBD0;
+            box-shadow: 0 4px 0 #FDEBD0; margin-top: 5px; margin-bottom: 15px; border-radius: 12px;
+        }
+        .btn-ghost:hover { transform: translateY(2px); box-shadow: 0 2px 0 #FDEBD0; }
+        .btn-ghost:active { transform: translateY(4px); box-shadow: 0 0 0 #FDEBD0; }
+
+        .btn-small { padding: 10px; border-radius: 10px; font-weight: 500; font-size: 14px; border: none; cursor: pointer; transition: all 0.1s ease; font-family: 'Kanit', sans-serif; text-align: center; }
+        .btn-small-primary { background: var(--primary); color: white; box-shadow: 0 4px 0 var(--primary-dark); margin-bottom: 4px; }
+        .btn-small-primary:active { transform: translateY(4px); box-shadow: 0 0 0 var(--primary-dark); margin-bottom: 0;}
+        .btn-small-outline { background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border); box-shadow: 0 4px 0 var(--border); margin-bottom: 4px; }
+        .btn-small-outline:active { transform: translateY(4px); box-shadow: 0 0 0 var(--border); margin-bottom: 0;}
         
         .page { display: none; animation: fadeIn 0.4s ease; } .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -211,7 +236,7 @@
                 </div>
                 
                 <!-- ย้ายปุ่มแก้ไขมาไว้ด้านบน -->
-                <button id="btn-enable-edit" type="button" onclick="enableProfileEdit()" style="display:none; background: #FFF9E6; color: var(--accent); border: 1px solid #FDEBD0; margin-top: 5px; margin-bottom: 15px; box-shadow: none; border-radius: 12px; font-size: 15px;">✏️ ปลดล็อกเพื่อแก้ไขข้อมูล</button>
+                <button id="btn-enable-edit" type="button" class="btn-main btn-ghost" onclick="enableProfileEdit()" style="display:none;">✏️ ปลดล็อกเพื่อแก้ไขข้อมูล</button>
 
                 <div class="form-grid col-3">
                     <div style="grid-column: span 1;"><label>คำนำหน้า:</label><select id="reg-prefix"><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="นางสาว">นางสาว</option></select></div>
@@ -254,7 +279,7 @@
                     </div>
                 </div>
 
-                <button id="btn-register" onclick="submitRegistration()">บันทึกข้อมูลส่วนตัว</button>
+                <button id="btn-register" class="btn-main" onclick="submitRegistration()">บันทึกข้อมูลส่วนตัว</button>
             </div>
 
             <!-- หน้าต่าง: แปลงของฉัน -->
@@ -262,11 +287,17 @@
                 <div class="status-box" style="background: #FFF9E6; border-color: var(--accent); color: var(--accent);">
                     <i>💡</i> วาดแปลงเก็บไว้ เพื่อความสะดวกรวดเร็วในการแจ้งขาย
                 </div>
+                
+                <!-- แผนที่รวมแปลง -->
+                <div id="all-plots-map" class="map-container" style="height: 250px; margin-top: 15px; margin-bottom: 20px; display: none; border: 2px solid var(--primary); border-radius: var(--radius-md);"></div>
+
+                <button type="button" class="btn-main btn-info" onclick="openAddPlotModal(-1)">+ วาดเพิ่มแปลงอ้อย</button>
+                
                 <div id="saved-plots-container" style="margin-top: 15px; margin-bottom: 15px;">
                     <div class="empty-state" style="padding: 20px 0;">ยังไม่มีแปลงที่บันทึกไว้</div>
                 </div>
-                <button type="button" onclick="openAddPlotModal(-1)" style="background: var(--info); box-shadow: 0 4px 15px rgba(41, 128, 185, 0.25); margin-top: 0; padding: 14px; font-size: 15px;">+ วาดเพิ่มแปลงอ้อย</button>
-                <button type="button" onclick="submitRegistration()" style="margin-top: 15px;">💾 บันทึกการเปลี่ยนแปลง</button>
+                
+                <button type="button" class="btn-main" onclick="submitRegistration()">💾 บันทึกการเปลี่ยนแปลง</button>
             </div>
             
         </div>
@@ -284,7 +315,7 @@
             <label>📍 1. ค้นหาสถานที่อ้างอิงใกล้แปลง:</label>
             <div style="display: flex; gap: 8px;">
                 <input type="text" id="search-place" placeholder="พิมพ์ชื่อ วัด, โรงเรียน, หมู่บ้าน" style="margin-top:0;">
-                <button onclick="searchPlace()" style="margin-top:0; width: auto; padding: 0 20px; background: var(--info); box-shadow: none; font-size: 14px;">ค้นหา</button>
+                <button onclick="searchPlace()" class="btn-small btn-small-primary" style="margin-top:0; width: auto; padding: 0 20px; font-size: 14px; margin-bottom:0;">ค้นหา</button>
             </div>
             
             <label style="margin-top:20px;">🗺️ 2. ตรวจสอบ/วาดกรอบแปลงอ้อยของคุณ:</label>
@@ -316,7 +347,7 @@
             <input type="file" id="field-photo-input" accept="image/*" multiple onchange="previewMultiplePhotos(event)" style="padding: 10px;">
             <div id="photo-preview-container" class="photo-gallery"></div>
 
-            <button id="submit-btn" onclick="submitCaneData()" disabled>ประกาศหาคิวรถม้วน</button>
+            <button id="submit-btn" class="btn-main" onclick="submitCaneData()" disabled>ประกาศหาคิวรถม้วน</button>
         </div>
 
         <!-- ================= 3. หน้าการขายของฉัน (ชาวไร่) ================= -->
@@ -337,7 +368,7 @@
             </div>
             
             <!-- ย้ายปุ่มแก้ไขมาไว้ด้านบน -->
-            <button id="btn-enable-buyer-edit" type="button" onclick="enableBuyerProfileEdit()" style="display:none; background: #FFF9E6; color: var(--accent); border: 1px solid #FDEBD0; margin-top: 5px; margin-bottom: 15px; box-shadow: none; border-radius: 12px; font-size: 15px;">✏️ ปลดล็อกเพื่อแก้ไขข้อมูล</button>
+            <button id="btn-enable-buyer-edit" type="button" class="btn-main btn-ghost" onclick="enableBuyerProfileEdit()" style="display:none;">✏️ ปลดล็อกเพื่อแก้ไขข้อมูล</button>
 
             <div class="form-grid col-3">
                 <div style="grid-column: span 1;"><label>คำนำหน้า:</label><select id="buyer-prefix"><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="บริษัท">บริษัท</option></select></div>
@@ -377,7 +408,7 @@
                 <div class="full-width"><label>ข้อมูลเครื่องจักร (เช่น ทะเบียนรถ):</label><textarea id="buyer-vehicle" rows="2"></textarea></div>
             </div>
             
-            <button id="btn-buyer-register" onclick="submitBuyerRegistration()">บันทึกข้อมูล</button>
+            <button id="btn-buyer-register" class="btn-main" onclick="submitBuyerRegistration()">บันทึกข้อมูล</button>
         </div>
 
         <!-- ================= 5. หน้าควบคุมของผู้รับซื้อ ================= -->
@@ -466,6 +497,8 @@
             } else {
                 document.getElementById('btn-tab-plots').classList.add('active');
                 document.getElementById('tab-plots').style.display = 'block';
+                // บังคับรีเฟรชขนาดแผนที่รวมเมื่อเปิดแท็บ
+                setTimeout(() => { if(allPlotsMapObj) allPlotsMapObj.invalidateSize(); }, 100);
             }
         }
 
@@ -487,12 +520,14 @@
             toggleProfileInputs(false, 'reg');
             document.getElementById('btn-enable-edit').style.display = 'none';
             document.getElementById('btn-register').style.display = 'block';
+            document.getElementById("reg-status-box").innerHTML = "<i>✏️</i> กำลังอยู่ในโหมดแก้ไขข้อมูล";
         }
 
         function enableBuyerProfileEdit() {
             toggleProfileInputs(false, 'buyer');
             document.getElementById('btn-enable-buyer-edit').style.display = 'none';
             document.getElementById('btn-buyer-register').style.display = 'block';
+            document.getElementById("buyer-reg-status-box").innerHTML = "<i>✏️</i> กำลังอยู่ในโหมดแก้ไขข้อมูล";
         }
 
         // โหลดข้อมูลจังหวัด
@@ -625,11 +660,67 @@
             return null;
         }
 
+        // ================= แผนที่รวมแปลงทั้งหมด (All Plots Map) =================
+        let allPlotsMapObj = null;
+        let allPlotsLayer = null;
+
+        function renderAllPlotsMap() {
+            const container = document.getElementById('all-plots-map');
+            if (userSavedPlots.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+            container.style.display = 'block';
+
+            if (!allPlotsMapObj) {
+                allPlotsMapObj = L.map('all-plots-map').setView([currentLat, currentLng], 14);
+                L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(allPlotsMapObj);
+                allPlotsLayer = L.featureGroup().addTo(allPlotsMapObj);
+            }
+
+            allPlotsLayer.clearLayers();
+
+            userSavedPlots.forEach(plot => {
+                try {
+                    let coords = JSON.parse(plot.polygon);
+                    let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
+                    let polygon = L.polygon(flippedCoords, { color: THEME_PRIMARY, fillOpacity: 0.5, weight: 2 });
+                    polygon.bindPopup(`<div style="font-family:Kanit;"><b>${plot.name}</b><br>พื้นที่: ${plot.area} ไร่</div>`);
+                    allPlotsLayer.addLayer(polygon);
+                } catch(e) {}
+            });
+
+            if (allPlotsLayer.getLayers().length > 0) {
+                allPlotsMapObj.fitBounds(allPlotsLayer.getBounds(), { padding: [20, 20] });
+            }
+            setTimeout(() => { allPlotsMapObj.invalidateSize(); }, 300);
+        }
+
         // ================= ระบบจัดการแปลงอ้อย (Saved Plots) =================
         function renderSavedPlotsList() {
             const container = document.getElementById('saved-plots-container');
             const selectDropdown = document.getElementById('select-saved-plot');
             
+            // ตรวจสอบและอัปเดตช่อง "ข้อมูลการปลูกอ้อย (ไร่)" ตามผลรวมพื้นที่ในแปลงอัตโนมัติ
+            let totalArea = userSavedPlots.reduce((sum, plot) => sum + parseFloat(plot.area), 0);
+            let farmInfoSelect = document.getElementById("reg-farminfo");
+            let currentSelect = farmInfoSelect.value;
+            let expectedValue = "";
+            
+            if(totalArea >= 100) expectedValue = "100 ไร่ขึ้นไป";
+            else if(totalArea >= 50) expectedValue = "50-100 ไร่";
+            else if(totalArea >= 21) expectedValue = "21-50 ไร่";
+            else if(totalArea > 0) expectedValue = "1-20 ไร่";
+
+            let levels = {"":0, "1-20 ไร่":1, "21-50 ไร่":2, "50-100 ไร่":3, "100 ไร่ขึ้นไป":4};
+            // ปรับอัปเกรดให้ถ้าพิกัดวาดเกินที่เคยกรอกไว้
+            if(expectedValue !== "" && levels[expectedValue] > levels[currentSelect]) {
+                farmInfoSelect.value = expectedValue;
+                Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, icon: 'info', title: 'อัปเดตขนาดพื้นที่ปลูกอ้อยตามแปลงที่วาดแล้ว' });
+            }
+
+            renderAllPlotsMap(); // อัปเดตแผนที่รวม
+
             if (userSavedPlots.length === 0) {
                 container.innerHTML = '<div class="empty-state" style="padding: 20px 0;">ยังไม่มีแปลงที่บันทึกไว้</div>';
                 if(selectDropdown) selectDropdown.innerHTML = '<option value="">-- ไม่เลือก (ต้องการวาดพิกัดใหม่) --</option>';
@@ -650,8 +741,8 @@
                         <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">🚜 ${pCond} <br> 🛣️ ${pAcc}</div>
                     </div>
                     <div style="display:flex; flex-direction: column; gap: 6px;">
-                        <button type="button" onclick="openAddPlotModal(${index})" style="background:var(--info); color:white; border:none; border-radius:8px; padding:8px 14px; font-size:13px; width:auto; margin:0; box-shadow: none;">แก้ไข</button>
-                        <button type="button" onclick="removeSavedPlot(${index})" style="background:#FDEBD0; color:var(--danger); border:none; border-radius:8px; padding:8px 14px; font-size:13px; width:auto; margin:0; box-shadow: none;">ลบ</button>
+                        <button type="button" onclick="openAddPlotModal(${index})" class="btn-small btn-small-outline" style="background:#EAF2F8; color:var(--info); border:none; border-radius:8px; padding:8px 14px; font-size:13px; width:auto; margin:0; box-shadow:none;">แก้ไข</button>
+                        <button type="button" onclick="removeSavedPlot(${index})" class="btn-small btn-small-outline" style="background:#FDEDEC; color:var(--danger); border:none; border-radius:8px; padding:8px 14px; font-size:13px; width:auto; margin:0; box-shadow:none;">ลบ</button>
                     </div>
                 </div>`;
                 optionsHtml += `<option value="${index}">${plot.name} (${plot.area} ไร่)</option>`;
@@ -680,33 +771,27 @@
         }
 
         function openAddPlotModal(editIndex = -1) {
-            // ถ้าระบุ Index แปลว่ากำลังแก้ไขแผนที่ ให้แสดง Modal เลย ไม่ต้องเสียเวลาโหลด GPS ใหม่
-            if (editIndex >= 0 && userSavedPlots[editIndex].center && userSavedPlots[editIndex].center.length === 2) {
-                currentLat = userSavedPlots[editIndex].center[0];
-                currentLng = userSavedPlots[editIndex].center[1];
-                showAddPlotSwal(editIndex);
+            Swal.fire({ title: 'กำลังโหลดแผนที่...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+            
+            // บังคับหา GPS ให้เสร็จก่อนเปิดแผนที่
+            if (navigator.geolocation && (editIndex < 0 || !userSavedPlots[editIndex].center)) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => { 
+                        currentLat = pos.coords.latitude; 
+                        currentLng = pos.coords.longitude; 
+                        Swal.close();
+                        showAddPlotSwal(editIndex);
+                    }, 
+                    (err) => { 
+                        console.log("GPS error", err);
+                        Swal.close();
+                        showAddPlotSwal(editIndex); 
+                    }, 
+                    { enableHighAccuracy: true, timeout: 6000, maximumAge: 0 }
+                );
             } else {
-                // ถ้าเป็นการสร้างใหม่ ให้บังคับค้นหา GPS ก่อน แล้วค่อยเด้งแผนที่
-                Swal.fire({ title: 'กำลังค้นหาตำแหน่งของคุณ...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (pos) => { 
-                            currentLat = pos.coords.latitude; 
-                            currentLng = pos.coords.longitude; 
-                            Swal.close();
-                            showAddPlotSwal(-1);
-                        }, 
-                        (err) => { 
-                            console.log("GPS error", err);
-                            Swal.close();
-                            showAddPlotSwal(-1); // แม้หาไม่เจอก็ให้เปิดแผนที่ในพิกัดสำรอง
-                        }, 
-                        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-                    );
-                } else {
-                    Swal.close();
-                    showAddPlotSwal(-1);
-                }
+                Swal.close();
+                showAddPlotSwal(editIndex);
             }
         }
 
@@ -757,12 +842,15 @@
                         if(plotToEdit.access) document.getElementById('plot-access').value = plotToEdit.access;
                     }
 
-                    modalMap = L.map('modal-map').setView([currentLat, currentLng], 16);
+                    let startLat = plotToEdit && tempCenter.length == 2 ? tempCenter[0] : currentLat;
+                    let startLng = plotToEdit && tempCenter.length == 2 ? tempCenter[1] : currentLng;
+
+                    modalMap = L.map('modal-map').setView([startLat, startLng], 16);
                     L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(modalMap);
                     modalMap.pm.addControls({ position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, dragMode: false, cutPolygon: false, removalMode: true });
 
                     if (!plotToEdit) {
-                        modalLocMarker = L.marker([currentLat, currentLng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>").openPopup();
+                        modalLocMarker = L.marker([startLat, startLng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>").openPopup();
                     }
 
                     if (plotToEdit && plotToEdit.polygon) {
@@ -913,7 +1001,6 @@
                     if (mode === 'register') { 
                         document.getElementById("header-text").innerText = "ลงทะเบียนชาวไร่"; 
                         document.getElementById("register-page").classList.add("active");
-                        // ดึงพิกัดซุ่มไว้รอเลยเผื่อเข้าแท็บวาดแปลง
                         if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(p => { currentLat = p.coords.latitude; currentLng = p.coords.longitude; }, e => {}, {maximumAge:0}); }
                         await checkUserForRegister(); 
                     } 
@@ -953,24 +1040,28 @@
                     isEditMode = true; let d = result.data; document.getElementById("profile-info").innerText = "คุณ " + d.firstName + " " + d.lastName;
                     document.getElementById("reg-prefix").value = d.prefix; document.getElementById("reg-firstname").value = d.firstName; document.getElementById("reg-lastname").value = d.lastName;
                     
-                    // แก้ไขบั๊กวันที่ร่นถอยหลัง (Timezone +7)
+                    // แก้ไขบั๊กวันที่ (ชดเชยเวลา Timezone +7)
                     if(d.dob) { 
                         let dobDate = new Date(d.dob); 
                         dobDate.setHours(dobDate.getHours() + 7); 
                         document.getElementById("reg-dob").value = dobDate.toISOString().split('T')[0]; 
                     }
 
+                    // แก้ไขบั๊กเบอร์โทรศัพท์เลข 0 หาย
+                    let fPhone = d.phone ? d.phone.toString() : "";
+                    if(fPhone.startsWith("'")) fPhone = fPhone.substring(1);
+                    if((fPhone.length === 8 || fPhone.length === 9) && !fPhone.startsWith("0")) fPhone = "0" + fPhone;
+                    document.getElementById("reg-phone").value = fPhone;
+
                     document.getElementById("reg-no").value = d.addressNo; document.getElementById("reg-moo").value = d.moo; 
                     setAddressDropdowns("reg", d.prov, d.dist, d.subDist, d.zip);
-                    document.getElementById("reg-phone").value = d.phone; document.getElementById("reg-farminfo").value = d.farmInfo;
+                    document.getElementById("reg-farminfo").value = d.farmInfo;
                     
                     if(d.savedPlots) { try { userSavedPlots = JSON.parse(d.savedPlots); renderSavedPlotsList(); } catch(e){} }
                     
-                    // ปิดการแก้ไขชั่วคราว (Read Only)
                     toggleProfileInputs(true, 'reg');
                     document.getElementById('btn-enable-edit').style.display = 'block';
                     document.getElementById('btn-register').style.display = 'none';
-
                     document.getElementById("reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว กดปลดล็อกหากต้องการเปลี่ยนข้อมูลครับ"; 
                 } else { document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; }
             } catch (error) { console.error(error); }
@@ -979,12 +1070,24 @@
         async function submitRegistration() {
             if(document.getElementById('tab-personal').style.display !== 'none' && !validateForm('tab-personal')) return;
             
-            const payload = { action: isEditMode ? "updateUser" : "register", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("reg-prefix").value, firstName: document.getElementById("reg-firstname").value, lastName: document.getElementById("reg-lastname").value, dob: document.getElementById("reg-dob").value, addressNo: document.getElementById("reg-no").value, moo: document.getElementById("reg-moo").value, subDist: document.getElementById("reg-subdist").value, dist: document.getElementById("reg-dist").value, prov: document.getElementById("reg-prov").value, zip: document.getElementById("reg-zip").value, phone: document.getElementById("reg-phone").value, farmInfo: document.getElementById("reg-farminfo").value, savedPlots: JSON.stringify(userSavedPlots) };
+            // ใส่ ' หน้าเบอร์โทรป้องกัน Google Sheets ลบเลข 0
+            let phoneInput = document.getElementById("reg-phone").value.trim();
+            let formattedPhone = phoneInput.startsWith("'") ? phoneInput : "'" + phoneInput;
+
+            const payload = { action: isEditMode ? "updateUser" : "register", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("reg-prefix").value, firstName: document.getElementById("reg-firstname").value, lastName: document.getElementById("reg-lastname").value, dob: document.getElementById("reg-dob").value, addressNo: document.getElementById("reg-no").value, moo: document.getElementById("reg-moo").value, subDist: document.getElementById("reg-subdist").value, dist: document.getElementById("reg-dist").value, prov: document.getElementById("reg-prov").value, zip: document.getElementById("reg-zip").value, phone: formattedPhone, farmInfo: document.getElementById("reg-farminfo").value, savedPlots: JSON.stringify(userSavedPlots) };
             
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
-                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: 'บันทึกข้อมูลเข้าสู่ระบบแล้ว', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); }); }
+                if (result.status === "success") { 
+                    Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: 'บันทึกข้อมูลเข้าสู่ระบบแล้ว', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY });
+                    // ไม่ออกจากหน้าต่างแล้ว เปลี่ยนสถานะให้เป็น Lock แทน
+                    isEditMode = true;
+                    toggleProfileInputs(true, 'reg');
+                    document.getElementById('btn-enable-edit').style.display = 'block';
+                    document.getElementById('btn-register').style.display = 'none';
+                    document.getElementById("reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว กดปลดล็อกหากต้องการเปลี่ยนข้อมูลครับ";
+                }
             } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); }
         }
 
@@ -1058,13 +1161,13 @@
                 
                 if (statusText === "รอชาวไร่ยืนยัน") {
                     cardHTML += `<div style="display:flex; gap:10px; margin-top:16px;">
-                        <button onclick="viewSaleIslandModal(${index}, 'farmer')" style="margin-top:0; flex:1; padding:10px; background-color:var(--surface); color:var(--text-muted); border:1px solid var(--border); border-radius:10px; font-weight:500; font-size:14px;">🔎 ดูรายละเอียด</button>
-                        <button onclick="viewOffers(${index})" style="margin-top:0; flex:1.5; padding:10px; background-color:var(--primary); color:white; border:none; border-radius:10px; font-weight:500; font-size:14px;">✔️ เลือกผู้ซื้อ</button>
+                        <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1;">🔎 ดูรายละเอียด</button>
+                        <button onclick="viewOffers(${index})" class="btn-small btn-small-primary" style="flex:1.5;">✔️ เลือกผู้ซื้อ</button>
                     </div>`;
                 } else if (statusText === "รอชาวไร่ตรวจสอบ") {
-                    cardHTML += `<button onclick="farmerVerifyCloseJob(${index})" style="margin-top:16px; width:100%; padding:12px; background-color:#8E44AD; color:white; border:none; border-radius:10px; font-weight:500; font-size:15px; cursor:pointer;">📝 ตรวจสอบบิลชั่งน้ำหนัก</button>`;
+                    cardHTML += `<button onclick="farmerVerifyCloseJob(${index})" class="btn-small btn-small-primary" style="margin-top:16px; width:100%; background:#8E44AD; box-shadow:0 4px 0 #5B2C6F;">📝 ตรวจสอบบิลชั่งน้ำหนัก</button>`;
                 } else {
-                    cardHTML += `<button onclick="viewSaleIslandModal(${index}, 'farmer')" style="margin-top:16px; width:100%; padding:10px; background-color:var(--surface); color:var(--primary); border:1px solid var(--border); border-radius:10px; font-weight:500; font-size:14px; cursor:pointer;">🔍 ดูรายละเอียดแปลง</button>`;
+                    cardHTML += `<button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="margin-top:16px; width:100%;">🔍 ดูรายละเอียดแปลง</button>`;
                 }
                 cardHTML += `</div>`;
                 if (badgeClass === "completed" || badgeClass === "canceled") { historyContainer.innerHTML += cardHTML; } else { currentContainer.innerHTML += cardHTML; }
@@ -1130,7 +1233,7 @@
                         <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border);">
                             <label style="margin-top:0;">💰 เสนอราคารับซื้อ (บาท/ตัน):</label>
                             <input type="number" id="island-bid-price" placeholder="เช่น 800" style="margin-bottom:12px;">
-                            <button onclick="submitIslandBid(${item.row})" style="margin-top:0; border-radius:12px; padding:14px; background:var(--primary);">ส่งข้อเสนอราคา</button>
+                            <button onclick="submitIslandBid(${item.row})" class="btn-main" style="margin-top:0; border-radius:12px; padding:14px;">ส่งข้อเสนอราคา</button>
                         </div>`;
                 }
             }
@@ -1184,7 +1287,7 @@
                     Swal.fire({ title: 'กำลังบันทึกบัญชี...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
                     try {
                         const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "farmerConfirmClose", row: item.row }) });
-                        const data = await res.json(); if (data.status === "success") { Swal.fire({title:'สำเร็จ!', text:'ปิดดีลเรียบร้อย ข้อมูลสะสมเข้าโปรไฟล์แล้วครับ', icon:'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { fetchSalesData(); }); }
+                        const data = await res.json(); if (data.status === "success") { Swal.fire({title:'สำเร็จ!', text:'ปิดดีลเรียบร้อย ข้อมูลสะสมเข้าโปรไฟล์แล้วครับ', icon:'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { location.reload(); }); }
                     } catch(e) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อได้', 'error'); }
                 }
             });
@@ -1201,7 +1304,7 @@
                             <div style="font-weight:500; font-size:15px; margin-bottom:4px;">คุณ ${offer.buyerName}</div>
                             <div style="margin-bottom:8px; font-size:13px;"><a href="tel:${offer.phone}" style="color:var(--primary); text-decoration:none;">📞 ${offer.phone}</a></div>
                             <div style="color:var(--accent); font-size:16px; font-weight:600; margin-bottom:12px;">ให้ราคา: ${offer.price} บาท/ตัน</div>
-                            <button onclick="confirmSaleOffer(${item.row}, '${offer.buyerName}', '${offer.phone}', '${offer.price}')" style="margin-top:0; width:100%; padding:10px; background-color:var(--primary); color:white; border:none; border-radius:8px; font-weight:500; cursor:pointer;">เลือกรายนี้</button>
+                            <button onclick="confirmSaleOffer(${item.row}, '${offer.buyerName}', '${offer.phone}', '${offer.price}')" class="btn-main" style="margin-top:0; padding:10px;">เลือกรายนี้</button>
                         </div>`;
                 });
             } else { offersHTML += `<div style="color:var(--text-muted); font-size:14px; text-align:center; padding:20px;">ยังไม่มีข้อเสนอ</div>`; }
@@ -1216,7 +1319,7 @@
                 try {
                     const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "confirmSale", row: rowId, chosenBuyerName: bName, chosenPhone: bPhone, chosenPrice: bPrice }) });
                     const result = await res.json();
-                    if (result.status === "success") { Swal.fire({title:'สำเร็จ!', text:'จองคิวรถม้วนเรียบร้อยแล้วครับ', icon:'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { fetchSalesData(); }); }
+                    if (result.status === "success") { Swal.fire({title:'สำเร็จ!', text:'จองคิวรถม้วนเรียบร้อยแล้วครับ', icon:'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { location.reload(); }); }
                 } catch (error) { Swal.fire('ล้มเหลว', 'เชื่อมต่อระบบไม่สำเร็จ', 'error'); }
             }
         }
@@ -1281,7 +1384,7 @@
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
                 hideLoader();
-                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'ประกาศคิวสำเร็จ!', text: 'ข้อมูลส่งถึงเครือข่ายรถม้วนแล้วครับ', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then((result) => { if(result.isConfirmed) { liff.closeWindow(); } }); }
+                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'ประกาศคิวสำเร็จ!', text: 'ข้อมูลส่งถึงเครือข่ายรถม้วนแล้วครับ', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then((result) => { location.reload(); }); }
             } catch (error) { hideLoader(); Swal.fire('ล้มเหลว', 'ไม่สามารถส่งข้อมูลได้', 'error'); btn.innerText = "ประกาศหาคิวรถม้วน"; btn.disabled = false; }
         }
 
@@ -1294,16 +1397,22 @@
                     isBuyerEditMode = true; let d = result.data; document.getElementById("profile-info").innerText = "คุณ " + d.fullName;
                     document.getElementById("buyer-prefix").value = d.prefix; document.getElementById("buyer-firstname").value = d.firstName; document.getElementById("buyer-lastname").value = d.lastName;
                     
-                    // แก้ไขบั๊กวันที่ร่นถอยหลัง (Timezone +7)
+                    // แก้ไขบั๊กวันที่ (ชดเชยเวลา Timezone +7)
                     if(d.dob) { 
                         let dobDate = new Date(d.dob); 
                         dobDate.setHours(dobDate.getHours() + 7); 
                         document.getElementById("buyer-dob").value = dobDate.toISOString().split('T')[0]; 
                     }
 
+                    // แก้ไขบั๊กเบอร์โทรศัพท์เลข 0 หาย
+                    let fPhone = d.phone ? d.phone.toString() : "";
+                    if(fPhone.startsWith("'")) fPhone = fPhone.substring(1);
+                    if((fPhone.length === 8 || fPhone.length === 9) && !fPhone.startsWith("0")) fPhone = "0" + fPhone;
+                    document.getElementById("buyer-phone").value = fPhone;
+
                     document.getElementById("buyer-no").value = d.addressNo; document.getElementById("buyer-moo").value = d.moo;
                     setAddressDropdowns("buyer", d.prov, d.dist, d.subDist, d.zip);
-                    document.getElementById("buyer-phone").value = d.phone; document.getElementById("buyer-vehicle").value = d.vehicleInfo;
+                    document.getElementById("buyer-vehicle").value = d.vehicleInfo;
                     
                     toggleProfileInputs(true, 'buyer');
                     document.getElementById('btn-enable-buyer-edit').style.display = 'block';
@@ -1316,12 +1425,23 @@
 
         async function submitBuyerRegistration() {
             if(!validateForm('register-buyer-page')) return;
-            const payload = { action: isBuyerEditMode ? "updateBuyer" : "registerBuyer", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("buyer-prefix").value, firstName: document.getElementById("buyer-firstname").value, lastName: document.getElementById("buyer-lastname").value, dob: document.getElementById("buyer-dob").value, addressNo: document.getElementById("buyer-no").value, moo: document.getElementById("buyer-moo").value, subDist: document.getElementById("buyer-subdist").value, dist: document.getElementById("buyer-dist").value, prov: document.getElementById("buyer-prov").value, zip: document.getElementById("buyer-zip").value, phone: document.getElementById("buyer-phone").value, vehicleInfo: document.getElementById("buyer-vehicle").value, fullName: document.getElementById("buyer-prefix").value + document.getElementById("buyer-firstname").value + " " + document.getElementById("buyer-lastname").value };
+            
+            let phoneInput = document.getElementById("buyer-phone").value.trim();
+            let formattedPhone = phoneInput.startsWith("'") ? phoneInput : "'" + phoneInput;
+
+            const payload = { action: isBuyerEditMode ? "updateBuyer" : "registerBuyer", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("buyer-prefix").value, firstName: document.getElementById("buyer-firstname").value, lastName: document.getElementById("buyer-lastname").value, dob: document.getElementById("buyer-dob").value, addressNo: document.getElementById("buyer-no").value, moo: document.getElementById("buyer-moo").value, subDist: document.getElementById("buyer-subdist").value, dist: document.getElementById("buyer-dist").value, prov: document.getElementById("buyer-prov").value, zip: document.getElementById("buyer-zip").value, phone: formattedPhone, vehicleInfo: document.getElementById("buyer-vehicle").value, fullName: document.getElementById("buyer-prefix").value + document.getElementById("buyer-firstname").value + " " + document.getElementById("buyer-lastname").value };
             
             Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
-                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: 'บันทึกข้อมูลแล้ว', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then(() => { liff.closeWindow(); }); }
+                if (result.status === "success") { 
+                    Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: 'บันทึกข้อมูลแล้ว', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }); 
+                    isBuyerEditMode = true;
+                    toggleProfileInputs(true, 'buyer');
+                    document.getElementById('btn-enable-buyer-edit').style.display = 'block';
+                    document.getElementById('btn-buyer-register').style.display = 'none';
+                    document.getElementById("buyer-reg-status-box").innerHTML = "<i>ℹ️</i> ระบบพบข้อมูลพาร์ทเนอร์แล้ว กดปลดล็อกหากต้องการแก้ข้อมูลครับ"; 
+                }
             } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); }
         }
 
@@ -1387,8 +1507,8 @@
                             <div class="sale-header"><span style="font-weight:600; color:var(--text-main);">คุณ ${item.farmerName}</span><span class="badge processing">กำลังดำเนินการ</span></div>
                             <div class="sale-detail"><div>เป้าหมาย: <span style="color:var(--info); font-weight:600;">${item.qty} ไร่</span></div><div>วันนัดหมาย: <span>${hDate}</span></div></div>
                             <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" style="flex:1; padding:10px; background-color:var(--surface); color:var(--info); border:1px solid var(--info); border-radius:10px; font-weight:500; font-size:14px;">📋 ข้อมูลแปลง</button>
-                                <button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" style="flex:1; padding:10px; background-color:var(--info); color:white; border:none; border-radius:10px; font-weight:500; font-size:14px;">📸 แจ้งปิดงาน</button>
+                                <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;">📋 ข้อมูลแปลง</button>
+                                <button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="flex:1;">📸 แจ้งปิดงาน</button>
                             </div>
                         </div>`;
                         drawMarkerOnMap(item, THEME_INFO, true);
@@ -1451,8 +1571,8 @@
                         ${offerStatus}
                     </div>
                     <div style="display:flex; gap:10px; margin-top:16px;">
-                        <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" style="flex:1; padding:10px; background-color:var(--bg-main); color:var(--text-main); border:none; border-radius:10px; font-weight:500; font-size:14px; box-shadow:none;">📋 ข้อมูลแปลง</button>
-                        <button onclick="acceptJob(${item.row})" style="flex:1; padding:10px; background-color:var(--primary); color:white; border:none; border-radius:10px; font-weight:500; font-size:14px; box-shadow:none;">💰 เสนอราคา</button>
+                        <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;">📋 ข้อมูลแปลง</button>
+                        <button onclick="acceptJob(${item.row})" class="btn-small btn-small-primary" style="flex:1;">💰 เสนอราคา</button>
                     </div>
                 </div>`;
         }
@@ -1469,7 +1589,7 @@
                         <div style="margin-bottom:4px;">📍 รัศมีห่างกัน: <b>ไม่เกิน ${maxDist} กม.</b></div><div>🗓️ กรอบวัน: <b>${d1} - ${d2}</b></div>
                         <div style="font-size:16px; margin-top:8px; font-weight:600; color:var(--text-main);">📦 รวมพื้นที่: <b style="color:var(--accent);">${cData.totalRai} ไร่</b></div>
                     </div>
-                    <button onclick="acceptClusterJob('${cData.id}')" style="width:100%; padding:14px; margin-bottom:16px; background-color:var(--accent); color:white; border:none; border-radius:12px; font-weight:500; font-size:15px; box-shadow:none;">🤝 เสนอซื้อเหมากลุ่ม</button>`;
+                    <button onclick="acceptClusterJob('${cData.id}')" class="btn-main btn-warning" style="margin-bottom:16px;">🤝 เสนอซื้อเหมากลุ่ม</button>`;
             
             cData.items.forEach(item => {
                 drawMarkerOnMap(item, THEME_ACCENT, false); let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
@@ -1479,8 +1599,8 @@
                         <div class="sale-header" style="margin-bottom:8px; padding-bottom:8px;"><span style="font-weight:600; font-size:14px;">คุณ ${item.farmerName}</span><span style="color:var(--accent); font-weight:600; font-size:14px;">${item.qty} ไร่</span></div>
                         <div class="sale-detail" style="font-size:13px;">พร้อมม้วน: <span>${hDate}</span>${offerStatus}</div>
                         <div style="display:flex; gap:8px; margin-top:12px;">
-                            <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" style="flex:1; padding:8px; background-color:var(--bg-main); color:var(--text-main); border:none; border-radius:8px; font-weight:500; font-size:13px; box-shadow:none;">📋 ข้อมูลแปลง</button>
-                            <button onclick="acceptJob(${item.row})" style="flex:1; padding:8px; background-color:var(--primary); color:white; border:none; border-radius:8px; font-weight:500; font-size:13px; box-shadow:none;">💰 เสนอราคา</button>
+                            <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;">📋 ข้อมูลแปลง</button>
+                            <button onclick="acceptJob(${item.row})" class="btn-small btn-small-primary" style="flex:1;">💰 เสนอราคา</button>
                         </div>
                     </div>`;
             });
@@ -1491,8 +1611,8 @@
             let customIcon = L.divIcon({ className: 'custom-div-icon', html: `<div style='background-color:${colorHex}; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);'></div>` });
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
             let popupContent = `<div style="font-family:'Kanit'; text-align:center;"><b style="font-size:15px; color:var(--text-main);">คุณ ${item.farmerName}</b><br><span style="font-size:13px; color:${colorHex}; font-weight:500;">${item.qty} ไร่</span><span style="font-size:12px; color:var(--text-muted);"> | ${hDate}</span><hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">`;
-            if(!isActive) { popupContent += `<button onclick="viewSaleIslandModal(${item.row}, 'buyer')" style="width:100%; padding:10px; background-color:var(--bg-main); color:var(--text-main); border:none; border-radius:8px; font-weight:500; font-size:13px;">ดูรายละเอียด</button>`; } 
-            else { popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" style="width:100%; padding:10px; background-color:var(--info); color:white; border:none; border-radius:8px; font-weight:500; font-size:13px;">แจ้งปิดงาน</button>`; }
+            if(!isActive) { popupContent += `<button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="width:100%;">ดูรายละเอียด</button>`; } 
+            else { popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="width:100%;">แจ้งปิดงาน</button>`; }
             popupContent += `</div>`;
             
             let marker = L.marker([item.lat, item.lon], { icon: customIcon }).bindPopup(popupContent);
