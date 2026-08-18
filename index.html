@@ -576,6 +576,18 @@
                     
                     modalMap.pm.addControls({ position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, dragMode: false, cutPolygon: false, removalMode: true });
                     
+                    // เพิ่มระบบดึง GPS ณ วินาทีที่เปิดหน้าต่างวาดแปลง
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition((pos) => {
+                            let lat = pos.coords.latitude;
+                            let lng = pos.coords.longitude;
+                            modalMap.setView([lat, lng], 16);
+                            L.marker([lat, lng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>").openPopup();
+                        }, (err) => {
+                            console.log("GPS modal error");
+                        }, { enableHighAccuracy: true, timeout: 10000 });
+                    }
+
                     modalMap.on('pm:create', function(e) {
                         if(modalDrawnPolygon) modalDrawnPolygon.remove();
                         modalDrawnPolygon = e.layer;
@@ -615,14 +627,20 @@
 
         function loadSavedPlotToMap() {
             const index = document.getElementById('select-saved-plot').value;
+            
+            // กรณีผู้ใช้เลือก "-- ไม่เลือก (ต้องการวาดพิกัดใหม่) --"
             if(index === "") {
                 if(drawnPolygon) { drawnPolygon.remove(); drawnPolygon = null; }
                 polygonGeoJSON = "";
                 document.getElementById("quantity").value = "";
                 document.getElementById("gps-status").innerHTML = "<i>👆</i> แตะไอคอนห้าเหลี่ยมเพื่อเริ่มวาด";
+                
+                // สั่งให้ดึง GPS ปัจจุบันใหม่ และเด้งแผนที่กลับมายังจุดที่ยืนอยู่
+                getLocation();
                 return;
             }
             
+            // กรณีผู้ใช้เลือก "แปลงที่เคยลงทะเบียนไว้"
             const plot = userSavedPlots[index];
             if(!plot) return;
             
