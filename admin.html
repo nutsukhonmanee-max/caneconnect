@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - CaneConnect</title>
     
+    <!-- เพิ่ม Favicon (โลโก้บนแท็บเบราว์เซอร์) -->
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -25,7 +28,6 @@
         /* Login Overlay */
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--secondary); z-index: 999999; display: flex; align-items: center; justify-content: center; flex-direction: column; }
         .login-box { background: var(--surface); padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: fadeIn 0.5s ease; }
-        .login-box i { font-size: 50px; color: var(--primary); margin-bottom: 20px; }
         .login-box h2 { color: var(--secondary); margin-bottom: 10px; font-weight: 700; }
         .login-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
 
@@ -122,10 +124,10 @@
 </head>
 <body>
 
-    <!-- ระบบป้องกัน Login หน้าแอดมิน -->
+    <!-- ระบบป้องกัน Login หน้าแอดมิน (ใส่โลโก้) -->
     <div id="login-overlay">
         <div class="login-box">
-            <i class="fa-solid fa-leaf"></i>
+            <img src="logo.jpg" alt="CaneConnect Logo" style="width: 100px; height: 100px; border-radius: 20px; object-fit: cover; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
             <h2>CaneConnect Admin</h2>
             <p>กรุณาใส่รหัสผ่านเพื่อเข้าสู่ระบบหลังบ้าน</p>
             <input type="password" id="admin-password" class="swal-input" placeholder="••••" style="margin-bottom: 20px; text-align: center; font-size: 20px; letter-spacing: 4px;" onkeypress="if(event.key === 'Enter') checkLogin()">
@@ -136,7 +138,11 @@
     <div class="loader-overlay" id="loader"><div class="spinner"></div><h3 style="color: var(--primary-dark); font-family: 'Kanit';">กำลังประมวลผล...</h3></div>
 
     <nav class="sidebar">
-        <div class="sidebar-header"><i class="fa-solid fa-leaf"></i> <span>CaneConnect</span></div>
+        <!-- ใส่โลโก้บน Sidebar -->
+        <div class="sidebar-header">
+            <img src="logo.jpg" alt="Logo" style="width: 35px; height: 35px; border-radius: 8px; object-fit: cover;"> 
+            <span>CaneConnect</span>
+        </div>
         <div class="sidebar-menu">
             <div class="menu-item active" onclick="switchTab('dashboard', 'ภาพรวมระบบและสถิติ')"><i class="fa-solid fa-chart-pie"></i> ภาพรวมและสถิติ</div>
             <div class="menu-item" onclick="switchTab('map', 'แผนที่ภาพรวมระดับประเทศ')"><i class="fa-solid fa-map-location-dot"></i> แผนที่ภาพรวม</div>
@@ -405,7 +411,7 @@
             });
         }
 
-        // ================= Farmers (เพิ่มปุ่มสถิติและประวัติการขาย) =================
+        // ================= Farmers =================
         function updateVillageFilter() {
             let select = document.getElementById('filter-village');
             let uniques = new Set();
@@ -439,7 +445,7 @@
             document.getElementById('table-farmers').innerHTML = fHtml || '<tr><td colspan="6" style="text-align: center;">ไม่มีข้อมูลในหมวดนี้</td></tr>';
         }
 
-        // ================= Buyers (เพิ่มปุ่มดูรายละเอียดประวัติการรับซื้อ) =================
+        // ================= Buyers =================
         function renderBuyersTable() {
             let bHtml = '';
             globalData.buyers.forEach((b, index) => {
@@ -459,7 +465,7 @@
             document.getElementById('table-buyers').innerHTML = bHtml || '<tr><td colspan="5" style="text-align: center;">ไม่มีข้อมูล</td></tr>';
         }
 
-        // ================= Jobs (เพิ่มระบบ Filter) =================
+        // ================= Jobs =================
         function renderJobsTable() {
             let sortType = document.getElementById('sort-jobs').value;
             let filterStatus = document.getElementById('filter-job-status').value;
@@ -619,7 +625,6 @@
                     sumIncome += (w * extractPrice(j.price));
                 }
                 
-                // แก้บั๊ก Invalid Date: ตัดเอาแค่ส่วนวันที่
                 let dateStr = j.date ? j.date.toString().split(',')[0].split(' ')[0] : "-";
                 let qtyStr = isComplete ? `${j.actualWeight} ตัน` : `${j.qty} ไร่`;
                 let buyerStr = (j.buyer && j.buyer !== '-' && j.buyer !== 'undefined') ? j.buyer : "-";
@@ -762,7 +767,6 @@
                     sumExpense += (w * extractPrice(j.price));
                 }
                 
-                // แก้บั๊ก Invalid Date: ตัดเอาแค่ส่วนวันที่
                 let dateStr = j.date ? j.date.toString().split(',')[0].split(' ')[0] : "-";
                 let qtyStr = isComplete ? `${j.actualWeight} ตัน` : `${j.qty} ไร่`;
 
@@ -826,7 +830,6 @@
         function viewJobDetails(index) {
             let j = globalData.jobs[index];
             
-            // ตัดเอาแค่ส่วนวันที่ เพื่อป้องกัน Invalid Date
             let reqDateStr = j.date ? j.date.toString().split(',')[0].split(' ')[0] : "-";
             let harvDateStr = j.harvestDate ? j.harvestDate.toString().split(',')[0].split(' ')[0] : "-";
             let buyerName = (j.buyer && j.buyer !== "undefined" && j.buyer !== "-") ? j.buyer : "<span style='color:gray;'>ยังไม่มีผู้รับงาน</span>";
@@ -871,7 +874,7 @@
                             <div class="title-sub">CaneConnect Platform</div>
                         </div>
                         <div class="section">
-                            <div class="row"><span>รหัสงาน:</span> <span>${j.id}</span></div>
+                            <div class="row"><span>รหัสงาน:</span> <span>${j.id || "C-"+j.row}</span></div>
                             <div class="row"><span>ชาวไร่ (ผู้ขาย):</span> <span>${j.farmer}</span></div>
                             <div class="row"><span>รถม้วน (ผู้รับซื้อ):</span> <span>${buyerName}</span></div>
                         </div>
@@ -882,7 +885,7 @@
                         <div class="total-section">
                             <div class="total-row">
                                 <span>ยอดเงินรวมสุทธิ:</span> 
-                                <span style="color:var(--primary-dark);">${totalAmountStr} บาท</span>
+                                <span style="color:var(--danger);">${totalAmountStr} บาท</span>
                             </div>
                         </div>
                     </div>`;
@@ -894,7 +897,7 @@
                         <div style="background:#f4f9f9; padding:10px; border-radius:8px; margin-top:8px; font-size:14px; border:1px solid var(--info);">
                             <div style="margin-bottom:4px;"><b>พื้นที่เก็บเกี่ยวจริง:</b> ${actualQ} ไร่</div>
                             <div style="margin-bottom:4px;"><b>น้ำหนักสุทธิ:</b> <span style="color:var(--primary-dark); font-weight:600;">${actualW} ตัน</span></div>
-                            <div><b>ยอดเงินรวม:</b> <span style="color:var(--accent); font-weight:600;">${totalAmountStr} บาท</span></div>
+                            <div><b>ยอดเงินรวม:</b> <span style="color:var(--danger); font-weight:600;">${totalAmountStr} บาท</span></div>
                         </div>
                         <b style="display:block; margin-top:10px;">📸 บิลชั่งน้ำหนัก:</b>
                         ${imgHTML}
