@@ -802,24 +802,33 @@
         function openAddPlotModal(editIndex = -1) {
             Swal.fire({ title: 'กำลังโหลดแผนที่...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
             
-            if (navigator.geolocation && (editIndex < 0 || !userSavedPlots[editIndex].center)) {
+            // เช็คให้ชัวร์ว่าข้อมูลเดิมมีค่า Center ครบถ้วนหรือไม่ ป้องกัน Error
+            let hasCenter = false;
+            if (editIndex >= 0 && userSavedPlots[editIndex] && userSavedPlots[editIndex].center) {
+                if (userSavedPlots[editIndex].center.length === 2) {
+                    hasCenter = true;
+                }
+            }
+
+            if (navigator.geolocation && (editIndex < 0 || !hasCenter)) {
                 navigator.geolocation.getCurrentPosition(
                     (pos) => { 
                         currentLat = pos.coords.latitude; 
                         currentLng = pos.coords.longitude; 
                         Swal.close();
-                        showAddPlotSwal(editIndex);
+                        // ใส่ setTimeout หน่วงเวลาเล็กน้อยให้ Popup ตัวเก่าปิดสนิทก่อน
+                        setTimeout(() => showAddPlotSwal(editIndex), 150);
                     }, 
                     (err) => { 
                         console.log("GPS error", err);
                         Swal.close();
-                        showAddPlotSwal(editIndex); 
+                        setTimeout(() => showAddPlotSwal(editIndex), 150); 
                     }, 
                     { enableHighAccuracy: true, timeout: 6000, maximumAge: 0 }
                 );
             } else {
                 Swal.close();
-                showAddPlotSwal(editIndex);
+                setTimeout(() => showAddPlotSwal(editIndex), 150);
             }
         }
 
@@ -827,7 +836,9 @@
             let plotToEdit = editIndex >= 0 ? userSavedPlots[editIndex] : null;
             let tempPolygonGeoJSON = plotToEdit ? plotToEdit.polygon : ""; 
             let tempArea = plotToEdit ? plotToEdit.area : 0; 
-            let tempCenter = plotToEdit ? plotToEdit.center : [];
+            
+            // ดักจับ Error กรณีไม่มี Center ในฐานข้อมูล
+            let tempCenter = plotToEdit && plotToEdit.center ? plotToEdit.center : [];
             let modalMap = null; let modalDrawnPolygon = null; let modalLocMarker = null;
 
             Swal.fire({
@@ -839,39 +850,48 @@
                         
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
                             <select id="plot-condition" class="swal2-input" style="width: 100%; box-sizing: border-box; margin: 0; font-family: 'Kanit'; padding: 8px; font-size: 13px;">
-                                <option value="แปลงสะอาด (ไม่มีตอ/หิน)">แปลงสะอาด (ไม่มีตอ/หิน)</option>
+                                <option value="ไม่มีตอเก่า/หิน (แปลงสะอาด)">แปลงสะอาด (ไม่มีตอ/หิน)</option>
                                 <option value="มีตอเก่า">มีตอเก่า</option>
                                 <option value="มีหินปะปน">มีหินปะปน</option>
-                                <option value="มีทั้งตอและหิน">มีทั้งตอและหิน</option>
+                                <option value="มีทั้งตอเก่าและหิน">มีทั้งตอและหิน</option>
                             </select>
                             <select id="plot-access" class="swal2-input" style="width: 100%; box-sizing: border-box; margin: 0; font-family: 'Kanit'; padding: 8px; font-size: 13px;">
                                 <option value="รถบรรทุก 10 ล้อ เข้าได้สะดวก">รถ 10 ล้อ เข้าได้</option>
                                 <option value="รถ 6 ล้อ เข้าได้">รถ 6 ล้อ เข้าได้</option>
-                                <option value="รถกระบะ/รถไถเล็กเท่านั้น">รถกระบะ/รถไถ เล็ก</option>
-                                <option value="ทางแคบ ต้องดูหน้างาน">ทางแคบ ต้องดูหน้างาน</option>
+                                <option value="รถกระบะ / รถไถ เล็กเท่านั้น">รถกระบะ/รถไถ เล็ก</option>
+                                <option value="ทางแคบ/ลำบาก ต้องดูหน้างาน">ทางแคบ ต้องดูหน้างาน</option>
                             </select>
                         </div>
 
                         <div style="font-size: 14px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px;">✏️ แตะไอคอนห้าเหลี่ยม เพื่อวาดขอบเขต</div>
                         <div id="modal-map" style="height: 40vh; min-height: 250px; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);"></div>
                         
-                        <div id="modal-area-text" style="margin-top:12px; color:var(--primary-dark); font-weight:600; text-align:center; font-size: 18px; background: var(--primary-light); padding: 8px; border-radius: 12px; border: 1px dashed var(--primary);">พื้นที่รวม: ${tempArea} ไร่</div>
+                        <div id="modal-area-text" style="margin-top:12px; color:var(--primary-dark); font-weight:600; text-align:center; font-size: 18px; background: var(--primary-light); padding: 8px; border-radius: 12px; border: 1px dashed var(--primary);">พื้นที่รวม: <span style="font-size:24px;">${tempArea}</span> ไร่</div>
                     </div>
                 `,
                 showCancelButton: true,
                 confirmButtonText: 'บันทึกแปลง',
                 cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: THEME_PRIMARY,
+                confirmButtonColor: '#6DB33F',
                 cancelButtonColor: '#BFC9C5',
                 didOpen: () => {
                     if (plotToEdit) {
                         document.getElementById('plot-name').value = plotToEdit.name;
-                        if(plotToEdit.condition) document.getElementById('plot-condition').value = plotToEdit.condition;
-                        if(plotToEdit.access) document.getElementById('plot-access').value = plotToEdit.access;
+                        
+                        // ป้องกัน Error กรณีตัวเลือกไม่ตรงกัน
+                        if(plotToEdit.condition) {
+                            let cSel = document.getElementById('plot-condition');
+                            if (Array.from(cSel.options).some(opt => opt.value === plotToEdit.condition)) { cSel.value = plotToEdit.condition; }
+                        }
+                        if(plotToEdit.access) {
+                            let aSel = document.getElementById('plot-access');
+                            if (Array.from(aSel.options).some(opt => opt.value === plotToEdit.access)) { aSel.value = plotToEdit.access; }
+                        }
                     }
 
-                    let startLat = plotToEdit && tempCenter.length == 2 ? tempCenter[0] : currentLat;
-                    let startLng = plotToEdit && tempCenter.length == 2 ? tempCenter[1] : currentLng;
+                    // ดึงพิกัดให้ปลอดภัยที่สุด
+                    let startLat = plotToEdit && tempCenter.length === 2 ? tempCenter[0] : currentLat;
+                    let startLng = plotToEdit && tempCenter.length === 2 ? tempCenter[1] : currentLng;
 
                     modalMap = L.map('modal-map').setView([startLat, startLng], 16);
                     L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(modalMap);
@@ -885,7 +905,7 @@
                         try {
                             let coords = JSON.parse(plotToEdit.polygon);
                             let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
-                            modalDrawnPolygon = L.polygon(flippedCoords, { color: THEME_PRIMARY }).addTo(modalMap);
+                            modalDrawnPolygon = L.polygon(flippedCoords, { color: '#6DB33F' }).addTo(modalMap);
                             modalMap.fitBounds(modalDrawnPolygon.getBounds(), { padding: [15, 15] });
 
                             modalDrawnPolygon.on('pm:edit', function() {
@@ -926,7 +946,7 @@
                     
                     modalMap.on('pm:remove', function(e) {
                         modalDrawnPolygon = null; tempPolygonGeoJSON = ""; tempArea = 0; tempCenter = [];
-                        document.getElementById('modal-area-text').innerHTML = `พื้นที่รวม: 0.00 ไร่`;
+                        document.getElementById('modal-area-text').innerHTML = `พื้นที่รวม: <span style="font-size:24px;">0.00</span> ไร่`;
                     });
 
                     setTimeout(() => { modalMap.invalidateSize(); }, 300);
