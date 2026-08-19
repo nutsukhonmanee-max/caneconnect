@@ -570,14 +570,15 @@
             if (overviewLayer.getLayers().length > 0) { overviewMapObj.fitBounds(overviewLayer.getBounds(), { padding: [30, 30] }); }
         }
 
-        // ================= View Detailed Farmer + History =================
+        // ================= View Detailed Farmer + History (อิงตาม ID) =================
         function viewFarmerDetails(index) {
             let f = globalData.farmers[index];
             let plots = [];
             try { if(f.savedPlotsRaw) plots = JSON.parse(f.savedPlotsRaw); } catch(e){}
 
-            // ดึงประวัติการขายของชาวไร่คนนี้
-            let fJobs = globalData.jobs.filter(j => j.farmer === f.name);
+            // ดึงประวัติการขายของชาวไร่คนนี้ (ตรวจสอบด้วย LINE ID โดยตรง แม่นยำ 100%)
+            let fJobs = globalData.jobs.filter(j => j.farmerLineId === f.lineId);
+
             let completedCount = 0, sumTon = 0, sumIncome = 0;
             let historyHTML = "";
 
@@ -694,12 +695,19 @@
             });
         }
 
-        // ================= View Buyer History (ประวัติผู้รับซื้อ) =================
+        // ================= View Buyer History (ประวัติผู้รับซื้อ อิงตามเบอร์โทร) =================
         function viewBuyerDetails(index) {
             let b = globalData.buyers[index];
             
-            // ดึงงานที่รับซื้อโดยพาร์ทเนอร์คนนี้
-            let bJobs = globalData.jobs.filter(j => j.buyer === b.name);
+            // ดึงประวัติการรับซื้อของรถม้วนคนนี้ (ตรวจสอบด้วยเบอร์โทรศัพท์ แม่นยำ 100%)
+            let bJobs = globalData.jobs.filter(j => {
+                if(!j.buyerPhone || j.buyerPhone === "-") return false;
+                // ตัดเครื่องหมาย ' และช่องว่างออกก่อนเปรียบเทียบ
+                let jPhone = j.buyerPhone.toString().replace(/'/g, "").replace(/\s/g, "");
+                let bPhone = b.phone.toString().replace(/'/g, "").replace(/\s/g, "");
+                return jPhone === bPhone;
+            });
+
             let completedCount = 0, sumTon = 0, sumExpense = 0;
             let historyHTML = "";
 
