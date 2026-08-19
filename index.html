@@ -189,6 +189,16 @@
         
         .leaflet-popup-content-wrapper { border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
         .leaflet-popup-content { margin: 14px; font-family: 'Kanit'; font-size: 14px;}
+        
+        /* Bill / Receipt UI */
+        .receipt-box { border: 2px dashed var(--primary); padding: 16px; margin-top: 15px; background: #FAFCFB; border-radius: 12px; font-family: 'Kanit'; }
+        .receipt-box .title { text-align: center; margin-bottom: 12px; border-bottom: 1px dashed #ccc; padding-bottom: 10px; }
+        .receipt-box .title-main { font-size: 16px; font-weight: 600; color: var(--primary-dark); }
+        .receipt-box .title-sub { font-size: 12px; color: var(--text-muted); }
+        .receipt-box .section { font-size: 13px; line-height: 1.8; color: var(--text-main); margin-bottom: 12px; }
+        .receipt-box .row { display: flex; justify-content: space-between; }
+        .receipt-box .row span:last-child { font-weight: 500; }
+        .receipt-box .total-section { border-top: 1px dashed #ccc; padding-top: 10px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -485,7 +495,6 @@
                             <option value="all">รายการเปิดอยู่ทั้งหมด</option>
                             <option value="รอคิวรถ">เฉพาะงานว่าง (รอคิวรถ)</option>
                             <option value="รอชาวไร่ยืนยัน">รอชาวไร่พิจารณาราคา</option>
-                            <option value="กำลังดำเนินการ">งานที่ฉันกำลังดำเนินการ</option>
                         </select>
                     </div>
                     <div>
@@ -513,6 +522,10 @@
             
             <div id="buyer-active-jobs-container"></div>
             <div id="buyer-list-container"></div>
+            
+            <!-- เพิ่มส่วนประวัติการรับซื้อสำหรับรถม้วน -->
+            <div class="section-title buyer-section-title" style="margin-top: 40px;">📦 ประวัติการรับซื้อ (เสร็จสิ้น)</div>
+            <div id="buyer-history-container"></div>
         </div>
     </div>
 
@@ -566,6 +579,13 @@
             document.getElementById('image-viewer').style.display = 'flex'; 
         }
         function closeImageViewer() { document.getElementById('image-viewer').style.display = 'none'; }
+        
+        // แปลงตัวเลขราคา
+        function extractPrice(str) {
+            if(!str) return 0;
+            let match = str.toString().match(/\d+(\.\d+)?/);
+            return match ? parseFloat(match[0]) : 0;
+        }
 
         // ================= ระบบแท็บเมนู =================
         function switchRegTab(tabName) {
@@ -1420,8 +1440,7 @@
                 if (badgeClass === "completed") { 
                     let rai = parseFloat(item.actualQty) || 0; 
                     let ton = parseFloat(item.actualWeight) || 0; 
-                    let priceMatch = item.price ? item.price.toString().match(/\d+/g) : null; 
-                    let pricePerTon = priceMatch ? parseFloat(priceMatch.join('')) : 0; 
+                    let pricePerTon = extractPrice(item.price);
                     sumRai += rai; 
                     sumTon += ton; 
                     sumIncome += (ton * pricePerTon); 
@@ -1448,7 +1467,15 @@
                             <div>ผู้รับซื้อ: <span>${buyerNameDisplay}</span></div>
                             <div>ราคาที่ตกลง: <span style="color:var(--primary);">${item.price}</span></div>`; 
                     if(badgeClass === "verify" || badgeClass === "completed") { 
-                        cardHTML += `<div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); font-size:13px; color:var(--text-muted);">🌾 ไร่จริง: <b style="color:var(--text-main);">${item.actualQty} ไร่</b> | ⚖️ น้ำหนักจริง: <b style="color:var(--text-main);">${item.actualWeight} ตัน</b></div>`; 
+                        let p = extractPrice(item.price);
+                        let w = parseFloat(item.actualWeight) || 0;
+                        let total = (p * w).toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                        
+                        cardHTML += `
+                        <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); font-size:13px; color:var(--text-muted);">
+                            🌾 ไร่จริง: <b style="color:var(--text-main);">${item.actualQty} ไร่</b> | ⚖️ น้ำหนักจริง: <b style="color:var(--text-main);">${item.actualWeight} ตัน</b><br>
+                            💰 ยอดรับรวม: <b style="color:var(--danger); font-size:14px;">${total} บาท</b>
+                        </div>`; 
                     } 
                 } 
                 cardHTML += `</div>`;
@@ -1460,9 +1487,13 @@
                             <button onclick="viewOffers(${index})" class="btn-small btn-small-primary" style="flex:1.5;">✔️ เลือกผู้ซื้อ</button>
                         </div>`; 
                 } else if (statusText === "รอชาวไร่ตรวจสอบ") { 
-                    cardHTML += `<button onclick="farmerVerifyCloseJob(${index})" class="btn-small btn-small-primary" style="margin-top:16px; width:100%; background:#8E44AD; box-shadow:0 4px 0 #5B2C6F;">📝 ตรวจสอบบิลชั่งน้ำหนัก</button>`; 
+                    cardHTML += `
+                        <div style="display:flex; gap:10px; margin-top:16px;">
+                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1; margin-bottom:0;">🧾 ดูบิลจำลอง</button>
+                            <button onclick="farmerVerifyCloseJob(${index})" class="btn-small btn-small-primary" style="flex:1.5; background:#8E44AD; box-shadow:0 4px 0 #5B2C6F; margin-bottom:0;">📝 ปิดบัญชี</button>
+                        </div>`;
                 } else { 
-                    cardHTML += `<button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="margin-top:16px; width:100%;">🔍 ดูรายละเอียดแปลง</button>`; 
+                    cardHTML += `<button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="margin-top:16px; width:100%;">${badgeClass === "completed" ? '🧾 ดูใบเสร็จรับเงิน' : '🔍 ดูรายละเอียดแปลง'}</button>`; 
                 } 
                 cardHTML += `</div>`;
                 
@@ -1500,6 +1531,7 @@
             dashboardContainer.style.display = "block";
         }
 
+        // ================= หน้าต่างรายละเอียดงาน + บิลจำลอง =================
         function viewSaleIslandModal(index, role) {
             let item = role === 'farmer' ? globalSalesData[index] : rawBuyerData.find(p => p.row === index); 
             if(!item) return; 
@@ -1518,13 +1550,51 @@
             }
             
             let extraInfo = ""; let actionHTML = "";
-            
             let buyerNameModal = (item.buyer && item.buyer !== "undefined" && item.buyer !== "-") ? item.buyer : "-";
+
+            // === คำนวณยอดเงินและสร้างบิลจำลอง ===
+            let isComplete = (item.status === 'เสร็จสิ้น' || item.status === 'รอชาวไร่ตรวจสอบ');
+            let actualW = item.actualWeight || "-";
+            let actualQ = item.actualQty || item.quantity || item.qty || "-";
+            let pricePerTon = extractPrice(item.price);
+            let totalAmount = 0;
+            let totalAmountStr = "-";
+            
+            if (actualW !== "-" && pricePerTon > 0) {
+                totalAmount = parseFloat(actualW) * pricePerTon;
+                totalAmountStr = totalAmount.toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            }
+            
+            let sellerName = role === 'farmer' ? document.getElementById("profile-info").innerText.replace("คุณ ", "") : item.farmerName;
+            let finalBuyerName = role === 'farmer' ? buyerNameModal : buyerNameContext;
+            
+            let billHTML = "";
+            if (isComplete) {
+                billHTML = `
+                <div class="receipt-box">
+                    <div class="title">
+                        <div class="title-main">🧾 สรุปยอดใบเสร็จรับเงิน (บิลจำลอง)</div>
+                        <div class="title-sub">CaneConnect Platform</div>
+                    </div>
+                    <div class="section">
+                        <div class="row"><span>รหัสอ้างอิง:</span> <span>${item.id || "C-" + item.row}</span></div>
+                        <div class="row"><span>ผู้ขาย (ชาวไร่):</span> <span>${sellerName}</span></div>
+                        <div class="row"><span>ผู้ซื้อ (รถม้วน):</span> <span>${finalBuyerName}</span></div>
+                    </div>
+                    <div class="section" style="border-top:none;">
+                        <div class="row"><span>ราคาที่ตกลง:</span> <span>${pricePerTon.toLocaleString('th-TH')} บาท/ตัน</span></div>
+                        <div class="row"><span>น้ำหนักสุทธิ:</span> <span>${actualW} ตัน</span></div>
+                    </div>
+                    <div class="total-section">
+                        <span>ยอดรวมสุทธิ:</span> 
+                        <span style="color: var(--danger);">${totalAmountStr} บาท</span>
+                    </div>
+                </div>`;
+            }
 
             if (role === 'farmer') { 
                 let phoneLink = item.buyerPhone && item.buyerPhone !== "-" ? `<a href="tel:${item.buyerPhone}" style="color:var(--primary); font-weight:500; text-decoration:none;">📞 ${item.buyerPhone}</a>` : "-"; 
                 
-                // [ส่วนที่อัปเดตใหม่] โชว์รายชื่อคนรับซื้อใน Popup ของชาวไร่ด้วย
                 let buyerSectionHTML = "";
                 if (item.status === 'รอชาวไร่ยืนยัน' && item.offers && item.offers.length > 0) {
                     let offersList = `<div style="margin-top:12px; background:var(--surface); padding:12px; border-radius:8px; border:1px solid var(--warning);">
@@ -1554,7 +1624,7 @@
                         <div style="font-size:16px; font-weight:600; color:var(--primary); margin-bottom:8px;">👨‍🌾 คุณ ${item.farmerName}</div>
                         <div><b>เบอร์โทรศัพท์:</b> <a href="tel:${item.farmerPhone}" style="color:var(--primary); text-decoration:none; font-weight:500;">📞 ${item.farmerPhone}</a></div>
                     </div>`; 
-                if (item.status !== "กำลังดำเนินการ") { 
+                if (item.status === "รอชาวไร่ยืนยัน" || item.status === "รอคิวรถ") { 
                     actionHTML = `
                         <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border);">
                             <label style="margin-top:0;">💰 เสนอราคารับซื้อ (บาท/ตัน):</label>
@@ -1570,7 +1640,7 @@
                         <div style="font-size:18px; font-weight:600; margin-bottom:16px;">ข้อมูลแปลงอ้อย</div>
                         ${extraInfo}
                         <div class="island-info-box">
-                            <div style="margin-bottom:4px;"><b>พื้นที่:</b> <span style="color:var(--primary); font-weight:500;">${item.quantity || item.qty} ไร่</span></div>
+                            <div style="margin-bottom:4px;"><b>พื้นที่:</b> <span style="color:var(--primary); font-weight:500;">${actualQ} ไร่</span></div>
                             <div style="margin-bottom:4px;"><b>วันพร้อมม้วน:</b> ${hDate}</div>
                             <div style="margin-bottom:4px;"><b>เงื่อนไขแปลง:</b> <span style="color:var(--accent); font-weight:500;">${item.access || "ไม่ระบุ"}</span></div>
                         </div>
@@ -1578,6 +1648,12 @@
                         <div id="swal-map" class="swal-map-container"></div>
                         <div style="font-weight:500; margin-bottom:8px;">📸 สภาพหน้างาน:</div>
                         ${photoGalleryHTML}
+                        
+                        ${isComplete ? `<div style="font-weight:500; margin-top:16px; margin-bottom:8px;">📋 บิลชั่งน้ำหนัก:</div>` + 
+                            (item.closeProof && item.closeProof.length > 10 ? `<img src="${item.closeProof}" onclick="openImageViewer('${item.closeProof}')" style="width:100%; border-radius:12px; border:1px solid var(--border); cursor:zoom-in;">` : `<div style="background:var(--bg-main); padding:12px; text-align:center; border-radius:8px; font-size:13px; color:var(--text-muted);">ไม่มีรูปบิลชั่ง</div>`) 
+                        : ""}
+                        
+                        ${billHTML}
                         ${actionHTML}
                     </div>`, 
                 showConfirmButton: false, showCancelButton: false, showCloseButton: true, 
@@ -1622,11 +1698,10 @@
 
         function farmerVerifyCloseJob(index) {
             let item = globalSalesData[index]; 
-            let priceMatch = item.price ? item.price.toString().match(/\d+/g) : null; 
-            let pricePerTon = priceMatch ? parseFloat(priceMatch.join('')) : 0; 
-            let totalIncome = (item.actualWeight * pricePerTon).toLocaleString('th-TH'); 
+            let pricePerTon = extractPrice(item.price); 
+            let totalIncome = (item.actualWeight * pricePerTon).toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2}); 
             
-            let imgHTML = item.closeProof && item.closeProof.length > 50 ? 
+            let imgHTML = item.closeProof && item.closeProof.length > 10 ? 
                 `<img src="${item.closeProof}" onclick="openImageViewer('${item.closeProof}')" style="width:100%; border-radius:12px; margin-top:10px; border:1px solid var(--border); cursor:zoom-in;">` : 
                 `<div style="padding:20px; background:var(--bg-main); text-align:center; border-radius:12px; margin-top:10px; color:var(--text-muted);">ไม่พบหลักฐาน</div>`;
             
@@ -1660,6 +1735,7 @@
             });
         }
 
+        // ================= หน้าต่างเลือกผู้ซื้อ =================
         function viewOffers(index) {
             let item = globalSalesData[index]; 
             let offersHTML = `<div style="text-align:left; font-family:'Kanit';">`; 
@@ -1854,37 +1930,25 @@
             buyerPolygonLayer.clearLayers(); 
             document.getElementById('buyer-list-container').innerHTML = ''; 
             document.getElementById('buyer-active-jobs-container').innerHTML = ''; 
+            document.getElementById('buyer-history-container').innerHTML = '';
             buyerMarkers = {}; 
             clusterDataMap = {}; 
             
             const listContainer = document.getElementById("buyer-list-container"); 
             const activeContainer = document.getElementById("buyer-active-jobs-container");
+            const historyContainer = document.getElementById("buyer-history-container");
             
-            if(rawBuyerData.length === 0) { listContainer.innerHTML = "<div class='empty-state'>ไม่มีรายการประมูลในขณะนี้</div>"; return; }
+            if(rawBuyerData.length === 0) { 
+                listContainer.innerHTML = "<div class='empty-state'>ไม่มีรายการประมูลในขณะนี้</div>"; 
+                historyContainer.innerHTML = "<div class='empty-state'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>";
+                return; 
+            }
             
-            let filteredData = rawBuyerData.filter(item => { 
-                if (filterStatus === "all") return true; 
-                return item.status === filterStatus; 
-            }); 
+            let activeJobs = rawBuyerData.filter(p => p.status === "กำลังดำเนินการ" || p.status === "รอชาวไร่ตรวจสอบ");
+            let historyJobs = rawBuyerData.filter(p => p.status === "เสร็จสิ้น" || p.status === "ยกเลิก");
+            let availableJobs = rawBuyerData.filter(p => p.status === "รอคิวรถ" || p.status === "รอชาวไร่ยืนยัน");
             
-            if(filteredData.length === 0) { listContainer.innerHTML = "<div class='empty-state'>ไม่พบรายการที่ตรงกับเงื่อนไข</div>"; return; }
-            
-            if (sortBy === "date-new") { filteredData.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)); } 
-            else if (sortBy === "date-old") { filteredData.sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp)); } 
-            else if (sortBy === "harvest-near") { filteredData.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate)); }
-            
-            let premiumSingles = []; 
-            let unassigned = []; 
-            let dynamicClusters = []; 
-            let activeJobs = [];
-            
-            filteredData.forEach(p => { 
-                p.assigned = false; 
-                if(p.status === "กำลังดำเนินการ") { activeJobs.push(p); } 
-                else if (p.qty >= 100) { p.assigned = true; premiumSingles.push(p); } 
-                else { unassigned.push(p); } 
-            });
-            
+            // --- จัดการงานที่กำลังดำเนินการ (Active Jobs) ---
             if(activeJobs.length > 0) { 
                 activeContainer.innerHTML = `<div class="section-title buyer-section-title" style="margin-top: 5px; color:var(--info);">🚚 งานที่กำลังดำเนินการ</div>`; 
                 activeJobs.forEach(item => { 
@@ -1893,7 +1957,7 @@
                         <div class="sale-card" style="border-left: 5px solid var(--info); background:#F4F9F9;">
                             <div class="sale-header">
                                 <span style="font-weight:600; color:var(--text-main);">คุณ ${item.farmerName}</span>
-                                <span class="badge processing">กำลังดำเนินการ</span>
+                                <span class="badge processing">${item.status === 'รอชาวไร่ตรวจสอบ' ? 'รอฝั่งชาวไร่ปิดงาน' : item.status}</span>
                             </div>
                             <div class="sale-detail">
                                 <div>เป้าหมาย: <span style="color:var(--info); font-weight:600;">${item.qty} ไร่</span></div>
@@ -1901,12 +1965,61 @@
                             </div>
                             <div style="display:flex; gap:10px; margin-top:16px;">
                                 <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;">📋 ข้อมูลแปลง</button>
-                                <button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="flex:1;">📸 แจ้งปิดงาน</button>
+                                ${item.status === 'กำลังดำเนินการ' ? `<button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="flex:1;">📸 แจ้งปิดงาน</button>` : ''}
                             </div>
                         </div>`; 
                     drawMarkerOnMap(item, THEME_INFO, true); 
                 }); 
             }
+
+            // --- จัดการประวัติการรับซื้อ (History Jobs) ---
+            if(historyJobs.length > 0) {
+                historyJobs.forEach(item => {
+                    let actualQ = item.actualQty || "-";
+                    let actualW = item.actualWeight || "-";
+                    let pTon = extractPrice(item.price);
+                    let totalStr = (actualW !== "-" && pTon > 0) ? (parseFloat(actualW) * pTon).toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : "-";
+                    
+                    historyContainer.innerHTML += `
+                    <div class="sale-card" style="border-left: 5px solid var(--primary); opacity: 0.9;">
+                        <div class="sale-header">
+                            <span style="font-weight:600; color:var(--text-main);">คุณ ${item.farmerName}</span>
+                            <span class="badge completed">${item.status}</span>
+                        </div>
+                        <div class="sale-detail">
+                            <div>พื้นที่: <span style="font-weight:600;">${actualQ} ไร่</span> | น้ำหนัก: <span style="font-weight:600;">${actualW} ตัน</span></div>
+                            <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);">
+                                💰 ยอดจ่าย: <b style="color:var(--danger); font-size:14px;">${totalStr} บาท</b>
+                            </div>
+                        </div>
+                        <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="width:100%; margin-top:16px;">🧾 ดูใบเสร็จ / บิลชั่ง</button>
+                    </div>`;
+                });
+            } else {
+                historyContainer.innerHTML = "<div class='empty-state'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>";
+            }
+
+            // --- จัดการงานที่เปิดให้ประมูล (Available Jobs) ---
+            let filteredAvailable = availableJobs.filter(item => { 
+                if (filterStatus === "all") return true; 
+                return item.status === filterStatus; 
+            }); 
+            
+            if(filteredAvailable.length === 0) { listContainer.innerHTML = "<div class='empty-state'>ไม่พบรายการที่ตรงกับเงื่อนไข</div>"; return; }
+            
+            if (sortBy === "date-new") { filteredAvailable.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)); } 
+            else if (sortBy === "date-old") { filteredAvailable.sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp)); } 
+            else if (sortBy === "harvest-near") { filteredAvailable.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate)); }
+            
+            let premiumSingles = []; 
+            let unassigned = []; 
+            let dynamicClusters = []; 
+            
+            filteredAvailable.forEach(p => { 
+                p.assigned = false; 
+                if (p.qty >= 100) { p.assigned = true; premiumSingles.push(p); } 
+                else { unassigned.push(p); } 
+            });
             
             let clusterCounter = 1;
             for (let i = 0; i < unassigned.length; i++) {
@@ -1958,8 +2071,7 @@
                 }
             } else { 
                 listContainer.innerHTML += `<div class="section-title buyer-section-title">📋 รายการเรียงตามเวลา</div>`; 
-                filteredData.forEach(item => { 
-                    if (item.status === "กำลังดำเนินการ") return; 
+                filteredAvailable.forEach(item => { 
                     let markerColor = THEME_MUTED; 
                     if (item.qty >= 100) markerColor = THEME_PRIMARY; 
                     else if (premiumSingles.indexOf(item) === -1 && singles.indexOf(item) === -1) markerColor = THEME_ACCENT; 
