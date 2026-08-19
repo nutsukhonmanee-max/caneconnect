@@ -29,6 +29,13 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Kanit', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
+        /* Login Overlay */
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--secondary); z-index: 999999; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        .login-box { background: var(--surface); padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: fadeIn 0.5s ease; }
+        .login-box i { font-size: 50px; color: var(--primary); margin-bottom: 20px; }
+        .login-box h2 { color: var(--secondary); margin-bottom: 10px; font-weight: 700; }
+        .login-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
+
         /* Sidebar */
         .sidebar { width: 260px; background-color: var(--secondary); color: #ecf0f1; display: flex; flex-direction: column; z-index: 20;}
         .sidebar-header { padding: 24px 20px; font-size: 22px; font-weight: 700; color: var(--primary); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 12px;}
@@ -81,6 +88,9 @@
         .btn-view { background: var(--info); } .btn-view:hover { background: #2980B9; }
         .btn-delete { background: var(--danger); } .btn-delete:hover { background: #C0392B; }
 
+        .btn-login { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-family: 'Kanit'; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-login:hover { background: var(--primary-dark); }
+
         /* Loader */
         .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(4px);}
         .spinner { width: 50px; height: 50px; border: 5px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
@@ -90,7 +100,7 @@
         #overview-map { width: 100%; height: 600px; border-radius: 0 0 var(--radius) var(--radius); z-index: 1; }
         .map-legend { background: white; padding: 10px 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); font-size: 13px; line-height: 1.8; position: absolute; bottom: 20px; right: 20px; z-index: 999; border: 1px solid var(--border);}
         
-        /* Swals */
+        /* Swals & Utilities */
         .leaflet-popup-content-wrapper { border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
         .leaflet-popup-content { margin: 14px; font-family: 'Kanit'; font-size: 14px;}
         .swal-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
@@ -103,6 +113,17 @@
 </head>
 <body>
 
+    <!-- ระบบป้องกัน Login หน้าแอดมิน -->
+    <div id="login-overlay">
+        <div class="login-box">
+            <i class="fa-solid fa-leaf"></i>
+            <h2>CaneConnect Admin</h2>
+            <p>กรุณาใส่รหัสผ่านเพื่อเข้าสู่ระบบหลังบ้าน</p>
+            <input type="password" id="admin-password" class="swal-input" placeholder="••••" style="margin-bottom: 20px; text-align: center; font-size: 20px; letter-spacing: 4px;" onkeypress="if(event.key === 'Enter') checkLogin()">
+            <button onclick="checkLogin()" class="btn-login">เข้าสู่ระบบ</button>
+        </div>
+    </div>
+
     <div class="loader-overlay" id="loader"><div class="spinner"></div><h3 style="color: var(--primary-dark); font-family: 'Kanit';">กำลังประมวลผล...</h3></div>
 
     <nav class="sidebar">
@@ -113,6 +134,9 @@
             <div class="menu-item" onclick="switchTab('farmers', 'ระบบจัดการข้อมูลชาวไร่')"><i class="fa-solid fa-users"></i> ข้อมูลชาวไร่</div>
             <div class="menu-item" onclick="switchTab('buyers', 'ระบบจัดการพาร์ทเนอร์รถม้วน')"><i class="fa-solid fa-truck-moving"></i> ข้อมูลผู้รับซื้อ</div>
             <div class="menu-item" onclick="switchTab('jobs', 'กระดานรายการแจ้งขายใบอ้อย')"><i class="fa-solid fa-clipboard-list"></i> รายการแจ้งขาย</div>
+            <div style="margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+                <div class="menu-item" onclick="logoutAdmin()" style="color: #E74C3C;"><i class="fa-solid fa-sign-out-alt"></i> ออกจากระบบ</div>
+            </div>
         </div>
     </nav>
 
@@ -205,10 +229,22 @@
                 </div>
             </div>
 
-            <!-- 5. Jobs Tab -->
+            <!-- 5. Jobs Tab (เพิ่มระบบ Sort แล้ว) -->
             <div id="tab-jobs" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-header"><div class="panel-title">ประวัติและคิวแจ้งขายใบอ้อย</div></div>
+                    <div class="panel-header">
+                        <div class="panel-title">ประวัติและคิวแจ้งขายใบอ้อย</div>
+                        <div>
+                            <span style="font-size:13px; color:var(--text-muted); margin-right:8px;">เรียงลำดับ:</span>
+                            <select id="sort-jobs" class="filter-select" onchange="renderJobsTable()">
+                                <option value="date-desc">วันที่แจ้ง (ใหม่สุด -> เก่าสุด)</option>
+                                <option value="date-asc">วันที่แจ้ง (เก่าสุด -> ใหม่สุด)</option>
+                                <option value="harvest-asc">วันนัดเก็บเกี่ยว (ใกล้สุด)</option>
+                                <option value="qty-desc">ปริมาณประเมิน (มาก -> น้อย)</option>
+                                <option value="qty-asc">ปริมาณประเมิน (น้อย -> มาก)</option>
+                            </select>
+                        </div>
+                    </div>
                     <div style="overflow-x: auto;">
                         <table>
                             <thead><tr><th>รหัสงาน</th><th>ผู้แจ้ง</th><th>ปริมาณ</th><th>วันเวลาที่แจ้ง</th><th>วันที่นัดเก็บเกี่ยว</th><th>สถานะ</th><th>ผู้รับงาน</th><th>จัดการ</th></tr></thead>
@@ -232,8 +268,45 @@
         let chartStatusObj = null; 
         let chartVillageObj = null;
 
+        // ================= ระบบ Login =================
+        function checkLogin() {
+            let pwd = document.getElementById("admin-password").value;
+            // ตั้งค่ารหัสผ่านเข้าหน้าแอดมินตรงนี้ครับ (ปัจจุบันตั้งไว้ที่ 1234)
+            if(pwd === "1234") { 
+                sessionStorage.setItem("adminLoggedIn", "true");
+                document.getElementById("login-overlay").style.display = "none";
+                refreshData(); 
+            } else {
+                Swal.fire('รหัสผ่านผิด', 'ไม่อนุญาตให้เข้าสู่ระบบ', 'error');
+            }
+        }
+        
+        function logoutAdmin() {
+            sessionStorage.removeItem("adminLoggedIn");
+            location.reload();
+        }
+
+        // ================= Utilities =================
         function showLoader() { document.getElementById('loader').style.display = 'flex'; }
         function hideLoader() { document.getElementById('loader').style.display = 'none'; }
+
+        // ฟังก์ชันแปลงวันที่ของ Google Sheets เป็นตัวเลขเพื่อเอาไว้ใช้จัดเรียง (Sorting)
+        function getEpoch(dateString) {
+            if(!dateString || typeof dateString !== 'string') return 0;
+            let dObj = new Date(dateString);
+            if(!isNaN(dObj.getTime())) return dObj.getTime();
+            
+            // กรณีเป็น Format ไทย DD/MM/YYYY
+            let parts = dateString.split(/[\sT]+/)[0].split(/[-/]/);
+            if(parts.length >= 3) {
+                let d = parseInt(parts[0], 10);
+                let m = parseInt(parts[1], 10) - 1;
+                let y = parseInt(parts[2], 10);
+                if(y > 2500) y -= 543; // แปลง พ.ศ. เป็น ค.ศ.
+                return new Date(y, m, d).getTime();
+            }
+            return 0;
+        }
 
         function switchTab(tabId, title) {
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
@@ -260,10 +333,8 @@
                     document.getElementById('stat-jobs').innerText = globalData.jobs.filter(j => j.status !== 'เสร็จสิ้น' && j.status !== 'ยกเลิก').length;
                     document.getElementById('stat-tons').innerText = globalData.totalTons.toLocaleString('th-TH');
 
-                    // Filter Select
                     updateVillageFilter();
                     
-                    // Render UI
                     renderFarmersTable();
                     renderBuyersTable();
                     renderJobsTable();
@@ -313,7 +384,7 @@
             });
         }
 
-        // ================= Farmers (ข้อมูลชาวไร่) =================
+        // ================= Farmers =================
         function updateVillageFilter() {
             let select = document.getElementById('filter-village');
             let uniques = new Set();
@@ -347,7 +418,7 @@
             document.getElementById('table-farmers').innerHTML = fHtml || '<tr><td colspan="6" style="text-align: center;">ไม่มีข้อมูลในหมวดนี้</td></tr>';
         }
 
-        // ================= Buyers (ข้อมูลผู้รับซื้อ) =================
+        // ================= Buyers =================
         function renderBuyersTable() {
             let bHtml = '';
             globalData.buyers.forEach((b, index) => {
@@ -366,10 +437,26 @@
             document.getElementById('table-buyers').innerHTML = bHtml || '<tr><td colspan="5" style="text-align: center;">ไม่มีข้อมูล</td></tr>';
         }
 
-        // ================= Jobs (คิวงาน) =================
+        // ================= Jobs (ระบบ จัดเรียง + แก้บั๊กวันที่/ผู้ซื้อ) =================
         function renderJobsTable() {
+            let sortType = document.getElementById('sort-jobs').value;
+            let jobsCopy = [...globalData.jobs];
+            
+            // Logic การจัดเรียง (Sorting)
+            jobsCopy.sort((a, b) => {
+                if(sortType === 'date-desc') return getEpoch(b.date) - getEpoch(a.date);
+                if(sortType === 'date-asc') return getEpoch(a.date) - getEpoch(b.date);
+                if(sortType === 'harvest-asc') return getEpoch(a.harvestDate) - getEpoch(b.harvestDate);
+                if(sortType === 'qty-desc') return parseFloat(b.qty) - parseFloat(a.qty);
+                if(sortType === 'qty-asc') return parseFloat(a.qty) - parseFloat(b.qty);
+                return 0;
+            });
+
             let jHtml = '';
-            globalData.jobs.forEach((j, index) => {
+            jobsCopy.forEach((j) => {
+                // หา Index เดิม เพื่อให้ปุ่มอ้างอิงข้อมูลได้ถูกต้องเวลาแก้ไข
+                let originalIndex = globalData.jobs.indexOf(j);
+
                 let badge = 'bg-warning';
                 if(j.status === 'รอชาวไร่ยืนยัน') badge = 'bg-warning';
                 else if(j.status === 'กำลังดำเนินการ') badge = 'bg-info';
@@ -377,24 +464,25 @@
                 else if(j.status === 'เสร็จสิ้น') badge = 'bg-success';
                 else if(j.status === 'ยกเลิก') badge = 'bg-danger';
 
-                let rDateObj = new Date(j.date);
-                let reqDate = isNaN(rDateObj) ? "-" : `${rDateObj.toLocaleDateString('th-TH', {day:'2-digit', month:'short', year:'2-digit'})} <span style="color:#aaa; font-size:11px;">(${rDateObj.getHours().toString().padStart(2,'0')}:${rDateObj.getMinutes().toString().padStart(2,'0')}น.)</span>`;
+                // ดึงค่าวันที่มาจากชีตโดยตรงเพื่อป้องกัน Invalid Date
+                let reqDateStr = j.date ? j.date : "-";
+                let harvDateStr = j.harvestDate ? j.harvestDate : "-";
                 
-                let hDateObj = new Date(j.harvestDate);
-                let harvDate = isNaN(hDateObj) ? "-" : hDateObj.toLocaleDateString('th-TH', {day:'2-digit', month:'short', year:'numeric'});
+                // แก้บั๊กขึ้น "undefined" หากไม่มีชื่อผู้ซื้อ
+                let buyerName = (j.buyer && j.buyer !== "undefined" && j.buyer !== "-") ? j.buyer : "<span style='color:#aaa;'>ยังไม่มีรถรับงาน</span>";
 
                 jHtml += `
                 <tr>
                     <td><b style="color:var(--secondary); font-size:12px;">${j.id}</b></td>
                     <td>${j.farmer}</td>
                     <td><b style="color:var(--primary);">${j.qty} ไร่</b></td>
-                    <td style="font-size:13px;">${reqDate}</td>
-                    <td style="font-size:13px; color:var(--primary-dark); font-weight:500;">${harvDate}</td>
+                    <td style="font-size:13px; color:var(--text-muted);">${reqDateStr}</td>
+                    <td style="font-size:13px; color:var(--primary-dark); font-weight:500;">${harvDateStr}</td>
                     <td><span class="badge ${badge}">${j.status}</span></td>
-                    <td style="font-size:13px;">${j.buyer || "-"}</td>
+                    <td style="font-size:13px;">${buyerName}</td>
                     <td>
-                        <button class="btn-action btn-view" onclick="viewJobDetails(${index})" title="ดูรายละเอียดงาน"><i class="fa-solid fa-eye"></i></button>
-                        <button class="btn-action btn-edit" onclick="editJob(${index})" title="อัปเดตสถานะงาน"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-action btn-view" onclick="viewJobDetails(${originalIndex})" title="ดูรายละเอียดงาน"><i class="fa-solid fa-eye"></i></button>
+                        <button class="btn-action btn-edit" onclick="editJob(${originalIndex})" title="อัปเดตสถานะงาน"><i class="fa-solid fa-pen"></i></button>
                         <button class="btn-action btn-delete" onclick="deleteData('CaneData_Raw', '${j.id}', 'งานของ ${j.farmer}', ${j.row})" title="ลบงาน"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>`;
@@ -402,7 +490,7 @@
             document.getElementById('table-jobs').innerHTML = jHtml || '<tr><td colspan="8" style="text-align: center;">ไม่มีข้อมูล</td></tr>';
         }
 
-        // ================= Maps =================
+        // ================= Maps & Modals =================
         function renderOverviewMap() {
             if (!overviewMapObj) {
                 overviewMapObj = L.map('overview-map').setView([17.295, 101.782], 6);
@@ -463,7 +551,7 @@
             if (overviewLayer.getLayers().length > 0) { overviewMapObj.fitBounds(overviewLayer.getBounds(), { padding: [30, 30] }); }
         }
 
-        // ================= Modal ดูข้อมูลแปลงละเอียด =================
+        // ================= View Detailed Farmer Plot =================
         function viewFarmerDetails(index) {
             let f = globalData.farmers[index];
             let plots = [];
@@ -526,14 +614,14 @@
             });
         }
 
-        // ================= Modal ดูข้อมูลงานแจ้งขาย =================
+        // ================= View Job Details =================
         function viewJobDetails(index) {
             let j = globalData.jobs[index];
-            let rDate = new Date(j.date); 
-            let hDate = new Date(j.harvestDate);
             
-            let d1 = isNaN(rDate) ? "-" : `${rDate.toLocaleDateString('th-TH')} เวลา ${rDate.getHours()}:${rDate.getMinutes().toString().padStart(2,'0')}น.`;
-            let d2 = isNaN(hDate) ? "-" : hDate.toLocaleDateString('th-TH');
+            // อ่านค่าจากที่ดึงมาโดยตรง
+            let reqDateStr = j.date ? j.date : "-";
+            let harvDateStr = j.harvestDate ? j.harvestDate : "-";
+            let buyerName = (j.buyer && j.buyer !== "undefined" && j.buyer !== "-") ? j.buyer : "<span style='color:gray;'>ยังไม่มีผู้รับงาน</span>";
 
             let photoHTML = "";
             if(j.photos && j.photos !== "[]" && j.photos !== "") {
@@ -541,9 +629,7 @@
                     let imgs = JSON.parse(j.photos);
                     if(imgs.length > 0) {
                         photoHTML = `<div style="display:flex; gap:10px; overflow-x:auto; margin-top:10px; padding-bottom:10px;">`;
-                        imgs.forEach(src => { 
-                            photoHTML += `<img src="${src}" style="height:100px; border-radius:8px; border:1px solid #ccc; cursor:zoom-in;" onclick="Swal.fire({imageUrl: '${src}', imageWidth: '100%'})">`; 
-                        });
+                        imgs.forEach(src => { photoHTML += `<img src="${src}" style="height:100px; border-radius:8px; border:1px solid #ccc; cursor:zoom-in;" onclick="Swal.fire({imageUrl: '${src}', imageWidth: '100%'})">`; });
                         photoHTML += `</div>`;
                     }
                 } catch(e){}
@@ -559,11 +645,11 @@
                             <b>ผู้แจ้ง:</b> ${j.farmer}<br>
                             <b>พื้นที่แจ้งขาย:</b> <span style="color:var(--warning); font-weight:600;">${j.qty} ไร่</span><br>
                             <b>สถานะ:</b> <span style="color:var(--info); font-weight:600;">${j.status}</span><br>
-                            <b>วันที่แจ้งเข้าเครือข่าย:</b> ${d1}<br>
-                            <b>วันที่นัดเก็บเกี่ยว (พร้อมม้วน):</b> <span style="color:var(--primary-dark); font-weight:600;">${d2}</span><br>
+                            <b>วันที่แจ้งเข้าเครือข่าย:</b> ${reqDateStr}<br>
+                            <b>วันที่นัดเก็บเกี่ยว (พร้อมม้วน):</b> <span style="color:var(--primary-dark); font-weight:600;">${harvDateStr}</span><br>
                             <b>เงื่อนไขแปลง/ทางเข้า:</b> ${j.access || '-'}<br>
                             <hr style="margin:8px 0; border:0; border-top:1px dashed #ccc;">
-                            <b>พาร์ทเนอร์ผู้รับซื้อ:</b> ${j.buyer || '<span style="color:gray;">ยังไม่มีผู้เสนอราคารับงาน</span>'}<br>
+                            <b>พาร์ทเนอร์ผู้รับซื้อ:</b> ${buyerName}<br>
                             <b>ราคาที่ตกลง:</b> ${j.price || '-'}
                         </div>
                         
@@ -701,7 +787,16 @@
             });
         }
 
-        window.onload = refreshData;
+        // ================= เริ่มการทำงานเมื่อโหลดหน้าเว็บ =================
+        window.onload = () => {
+            // เช็คว่าเคย Login ค้างไว้ใน Session หรือไม่
+            if(sessionStorage.getItem("adminLoggedIn") === "true") {
+                document.getElementById("login-overlay").style.display = "none";
+                refreshData();
+            } else {
+                document.getElementById("login-overlay").style.display = "flex";
+            }
+        };
 
     </script>
 </body>
