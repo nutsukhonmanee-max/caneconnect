@@ -191,8 +191,6 @@
             margin-right: 5px; transition: 0.2s; color: white;
         }
         .btn-view { background: var(--info); } .btn-view:hover { background: #2980B9; }
-        .btn-edit { background: var(--warning); } .btn-edit:hover { background: #D68910; }
-        .btn-delete { background: var(--danger); } .btn-delete:hover { background: #C0392B; }
 
         /* Loader */
         .loader-overlay {
@@ -215,7 +213,7 @@
     <!-- Loading Screen -->
     <div class="loader-overlay" id="loader">
         <div class="spinner"></div>
-        <h3 style="color: var(--primary-dark); font-family: 'Kanit';">กำลังโหลดข้อมูล...</h3>
+        <h3 style="color: var(--primary-dark); font-family: 'Kanit';">กำลังโหลดข้อมูลจากฐานข้อมูล...</h3>
     </div>
 
     <!-- Sidebar -->
@@ -251,7 +249,7 @@
             <div class="admin-profile">
                 <span>ผู้ดูแลระบบ</span>
                 <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Admin">
-                <button style="border:none; background:none; cursor:pointer; color:var(--danger); font-size: 18px; margin-left: 15px;" onclick="refreshData()" title="รีเฟรชข้อมูล">
+                <button style="border:none; background:none; cursor:pointer; color:var(--primary); font-size: 18px; margin-left: 15px;" onclick="refreshData()" title="รีเฟรชข้อมูล">
                     <i class="fa-solid fa-sync-alt"></i>
                 </button>
             </div>
@@ -298,7 +296,6 @@
                                 </tr>
                             </thead>
                             <tbody id="table-dash-recent">
-                                <!-- แสดงรายการงาน 5 งานล่าสุดที่นี่ -->
                                 <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">กำลังโหลดข้อมูล...</td></tr>
                             </tbody>
                         </table>
@@ -311,10 +308,6 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div class="panel-title">รายชื่อชาวไร่ในระบบ</div>
-                        <div class="panel-actions">
-                            <input type="text" placeholder="ค้นหาชื่อ..." style="width: 250px; padding: 8px 12px; margin-right: 10px;">
-                            <button><i class="fa-solid fa-search"></i> ค้นหา</button>
-                        </div>
                     </div>
                     <div style="overflow-x: auto;">
                         <table>
@@ -329,7 +322,7 @@
                                 </tr>
                             </thead>
                             <tbody id="table-farmers">
-                                <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">ไม่มีข้อมูล</td></tr>
+                                <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">กำลังโหลดข้อมูล...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -355,7 +348,7 @@
                                 </tr>
                             </thead>
                             <tbody id="table-buyers">
-                                <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">ไม่มีข้อมูล</td></tr>
+                                <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">กำลังโหลดข้อมูล...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -367,30 +360,22 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div class="panel-title">รายการแจ้งพิกัดและประวัติการขาย</div>
-                        <div class="panel-actions">
-                            <select style="width: auto; padding: 8px 12px; display: inline-block;">
-                                <option value="all">สถานะทั้งหมด</option>
-                                <option value="รอคิวรถ">รอคิวรถ</option>
-                                <option value="กำลังดำเนินการ">กำลังดำเนินการ</option>
-                                <option value="เสร็จสิ้น">เสร็จสิ้น</option>
-                            </select>
-                        </div>
                     </div>
                     <div style="overflow-x: auto;">
                         <table>
                             <thead>
                                 <tr>
                                     <th>รหัสงาน</th>
+                                    <th>วันที่แจ้ง</th>
                                     <th>ผู้แจ้ง (ชาวไร่)</th>
                                     <th>ปริมาณ (ไร่)</th>
                                     <th>สถานะ</th>
                                     <th>ผู้รับงาน</th>
                                     <th>ราคาที่ตกลง</th>
-                                    <th>จัดการ</th>
                                 </tr>
                             </thead>
                             <tbody id="table-jobs">
-                                <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">ไม่มีข้อมูล</td></tr>
+                                <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">กำลังโหลดข้อมูล...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -405,7 +390,7 @@
                     </div>
                     <div style="padding: 24px; max-width: 600px;">
                         <label>Web App URL (Google Apps Script):</label>
-                        <input type="text" id="admin-gas-url" value="" placeholder="https://script.google.com/macros/s/...">
+                        <input type="text" id="admin-gas-url" value="" readonly style="background: #F8FAF9; color: var(--text-muted);">
                         
                         <label style="margin-top: 20px;">การแจ้งเตือน:</label>
                         <select>
@@ -424,7 +409,7 @@
     </main>
 
     <script>
-        // ================= URL ของ Google Apps Script ของคุณ =================
+        // ================= URL ของ Google Apps Script =================
         const GAS_URL = "https://script.google.com/macros/s/AKfycbwKNL6jqjvtpuBxDzgqBIQiKLjA7_2QupvMAK9tcod5SlBbcs7iIbswlglT76xI5xOwng/exec";
         document.getElementById('admin-gas-url').value = GAS_URL;
 
@@ -443,131 +428,122 @@
         function showLoader() { document.getElementById('loader').style.display = 'flex'; }
         function hideLoader() { document.getElementById('loader').style.display = 'none'; }
 
-        // ================= ข้อมูลตัวอย่าง (Mock Data) ไปก่อนเพื่อให้เห็นภาพ =================
-        // ในอนาคตคุณสามารถเขียนฟังก์ชันดึงค่าจาก GAS_URL ด้วย action: "getAdminData" ได้
-        let mockFarmers = [
-            { id: "U001", name: "นาย สมชาย ใจดี", phone: "0812345678", prov: "เลย", plots: 2 },
-            { id: "U002", name: "นางสาว อ้อยหวาน สานฝัน", phone: "0898765432", prov: "ขอนแก่น", plots: 1 }
-        ];
-
-        let mockBuyers = [
-            { id: "B001", name: "บริษัท รถม้วนอุดร จำกัด", phone: "042111222", location: "อ.เมือง จ.อุดรธานี", vehicle: "รถ 10 ล้อ 5 คัน" },
-            { id: "B002", name: "นาย ประยุทธ์ รถไถรับจ้าง", phone: "0855554444", location: "อ.เชียงคาน จ.เลย", vehicle: "รถไถ 2 คัน" }
-        ];
-
-        let mockJobs = [
-            { id: "JOB-101", farmer: "นาย สมชาย ใจดี", qty: 45, status: "รอคิวรถ", buyer: "-", price: "-" },
-            { id: "JOB-102", farmer: "นางสาว อ้อยหวาน สานฝัน", qty: 15, status: "กำลังดำเนินการ", buyer: "บริษัท รถม้วนอุดร จำกัด", price: "800 บาท/ตัน" },
-            { id: "JOB-103", farmer: "นาย สมชาย ใจดี", qty: 120, status: "เสร็จสิ้น", buyer: "นาย ประยุทธ์ รถไถรับจ้าง", price: "750 บาท/ตัน" }
-        ];
-
-        // ฟังก์ชันจำลองการโหลดข้อมูลและวาดตาราง
-        function refreshData() {
+        // ================= ฟังก์ชันดึงข้อมูลจาก Google Apps Script ของจริง =================
+        async function refreshData() {
             showLoader();
-            
-            // จำลองการโหลดอินเทอร์เน็ต 1 วินาที
-            setTimeout(() => {
+            try {
+                // เรียก API getAdminData ที่เราเขียนไว้ใน Code.gs
+                const res = await fetch(GAS_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getAdminData' })
+                });
                 
-                // อัปเดตตัวเลขหน้าแรก
-                document.getElementById('stat-farmers').innerText = mockFarmers.length;
-                document.getElementById('stat-buyers').innerText = mockBuyers.length;
-                document.getElementById('stat-jobs').innerText = mockJobs.filter(j => j.status !== 'เสร็จสิ้น').length;
-                document.getElementById('stat-tons').innerText = "1,450"; // สมมติ
+                const result = await res.json();
 
-                // วาดตารางหน้า Dashboard
-                let dashHtml = '';
-                mockJobs.slice(0,5).forEach(j => {
-                    let badge = j.status === 'รอคิวรถ' ? 'bg-warning' : (j.status === 'กำลังดำเนินการ' ? 'bg-info' : 'bg-success');
-                    dashHtml += `<tr>
-                        <td>19 ส.ค. 2026</td>
-                        <td>${j.farmer}</td>
-                        <td><b style="color:var(--primary);">${j.qty} ไร่</b></td>
-                        <td>25 ส.ค. 2026</td>
-                        <td><span class="badge ${badge}">${j.status}</span></td>
-                    </tr>`;
-                });
-                document.getElementById('table-dash-recent').innerHTML = dashHtml;
+                if (result.status === "success") {
+                    let data = result.data;
+                    
+                    // 1. อัปเดตตัวเลขการ์ดหน้าแรก
+                    document.getElementById('stat-farmers').innerText = data.farmers.length;
+                    document.getElementById('stat-buyers').innerText = data.buyers.length;
+                    document.getElementById('stat-jobs').innerText = data.jobs.filter(j => j.status !== 'เสร็จสิ้น').length;
+                    document.getElementById('stat-tons').innerText = data.totalTons.toLocaleString('th-TH');
 
-                // วาดตารางชาวไร่
-                let fHtml = '';
-                mockFarmers.forEach((f, i) => {
-                    fHtml += `<tr>
-                        <td>${f.id}</td><td>${f.name}</td><td>${f.phone}</td><td>${f.prov}</td>
-                        <td>${f.plots} แปลง</td>
-                        <td>
-                            <button class="btn-action btn-view" onclick="viewDetail('farmer')" title="ดูข้อมูล"><i class="fa-solid fa-eye"></i></button>
-                            <button class="btn-action btn-edit" title="แก้ไข"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn-action btn-delete" onclick="deleteData('ชาวไร่', '${f.name}')" title="ลบ"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>`;
-                });
-                document.getElementById('table-farmers').innerHTML = fHtml;
+                    // 2. วาดตารางหน้า Dashboard (งาน 5 งานล่าสุดที่เปิดอยู่)
+                    let dashHtml = '';
+                    let recentJobs = data.jobs.filter(j => j.status !== 'เสร็จสิ้น').slice(0, 5);
+                    if (recentJobs.length === 0) { 
+                        dashHtml = '<tr><td colspan="5" style="text-align: center;">ไม่มีงานที่กำลังเปิดอยู่</td></tr>'; 
+                    } else {
+                        recentJobs.forEach(j => {
+                            let badge = j.status === 'รอคิวรถ' ? 'bg-warning' : (j.status === 'กำลังดำเนินการ' ? 'bg-info' : 'bg-success');
+                            let reqDate = new Date(j.date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+                            let hDate = new Date(j.harvestDate).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+                            dashHtml += `<tr>
+                                <td>${reqDate}</td>
+                                <td>${j.farmer}</td>
+                                <td><b style="color:var(--primary);">${j.qty} ไร่</b></td>
+                                <td>${hDate}</td>
+                                <td><span class="badge ${badge}">${j.status}</span></td>
+                            </tr>`;
+                        });
+                    }
+                    document.getElementById('table-dash-recent').innerHTML = dashHtml;
 
-                // วาดตารางผู้รับซื้อ
-                let bHtml = '';
-                mockBuyers.forEach((b, i) => {
-                    bHtml += `<tr>
-                        <td>${b.id}</td><td>${b.name}</td><td>${b.phone}</td><td>${b.location}</td>
-                        <td style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${b.vehicle}</td>
-                        <td>
-                            <button class="btn-action btn-view" onclick="viewDetail('buyer')" title="ดูข้อมูล"><i class="fa-solid fa-eye"></i></button>
-                            <button class="btn-action btn-edit" title="แก้ไข"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn-action btn-delete" onclick="deleteData('ผู้รับซื้อ', '${b.name}')" title="ลบ"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>`;
-                });
-                document.getElementById('table-buyers').innerHTML = bHtml;
+                    // 3. วาดตารางชาวไร่
+                    let fHtml = '';
+                    if (data.farmers.length === 0) { 
+                        fHtml = '<tr><td colspan="6" style="text-align: center;">ไม่มีข้อมูล</td></tr>'; 
+                    } else {
+                        data.farmers.forEach(f => {
+                            fHtml += `<tr>
+                                <td>${f.id}</td><td>${f.name}</td><td>${f.phone}</td><td>${f.prov}</td>
+                                <td><b style="color:var(--primary);">${f.plots}</b> แปลง</td>
+                                <td>
+                                    <button class="btn-action btn-view" onclick="viewDetail()" title="ดูข้อมูล"><i class="fa-solid fa-eye"></i></button>
+                                </td>
+                            </tr>`;
+                        });
+                    }
+                    document.getElementById('table-farmers').innerHTML = fHtml;
 
-                // วาดตารางงาน
-                let jHtml = '';
-                mockJobs.forEach((j, i) => {
-                    let badge = j.status === 'รอคิวรถ' ? 'bg-warning' : (j.status === 'กำลังดำเนินการ' ? 'bg-info' : 'bg-success');
-                    jHtml += `<tr>
-                        <td><b>${j.id}</b></td><td>${j.farmer}</td>
-                        <td><b style="color:var(--primary);">${j.qty}</b></td>
-                        <td><span class="badge ${badge}">${j.status}</span></td>
-                        <td>${j.buyer}</td><td style="color:var(--accent); font-weight:600;">${j.price}</td>
-                        <td>
-                            <button class="btn-action btn-view" onclick="viewDetail('job')" title="ดูรายละเอียดงาน"><i class="fa-solid fa-file-alt"></i></button>
-                            <button class="btn-action btn-delete" onclick="deleteData('คิวงาน', '${j.id}')" title="ยกเลิกงาน"><i class="fa-solid fa-times"></i></button>
-                        </td>
-                    </tr>`;
-                });
-                document.getElementById('table-jobs').innerHTML = jHtml;
+                    // 4. วาดตารางผู้รับซื้อ
+                    let bHtml = '';
+                    if (data.buyers.length === 0) { 
+                        bHtml = '<tr><td colspan="6" style="text-align: center;">ไม่มีข้อมูล</td></tr>'; 
+                    } else {
+                        data.buyers.forEach(b => {
+                            bHtml += `<tr>
+                                <td>${b.id}</td><td>${b.name}</td><td>${b.phone}</td><td>${b.location}</td>
+                                <td style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${b.vehicle}</td>
+                                <td>
+                                    <button class="btn-action btn-view" onclick="viewDetail()" title="ดูข้อมูล"><i class="fa-solid fa-eye"></i></button>
+                                </td>
+                            </tr>`;
+                        });
+                    }
+                    document.getElementById('table-buyers').innerHTML = bHtml;
 
-                hideLoader();
-            }, 800);
+                    // 5. วาดตารางคิวงาน
+                    let jHtml = '';
+                    if (data.jobs.length === 0) { 
+                        jHtml = '<tr><td colspan="7" style="text-align: center;">ไม่มีข้อมูล</td></tr>'; 
+                    } else {
+                        data.jobs.forEach(j => {
+                            let badge = j.status === 'รอคิวรถ' ? 'bg-warning' : (j.status === 'กำลังดำเนินการ' ? 'bg-info' : 'bg-success');
+                            let reqDate = new Date(j.date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+                            jHtml += `<tr>
+                                <td><b>${j.id}</b></td>
+                                <td style="font-size: 13px; color: var(--text-muted);">${reqDate}</td>
+                                <td>${j.farmer}</td>
+                                <td><b style="color:var(--primary);">${j.qty}</b></td>
+                                <td><span class="badge ${badge}">${j.status}</span></td>
+                                <td>${j.buyer || "-"}</td><td style="color:var(--accent); font-weight:600;">${j.price || "-"}</td>
+                            </tr>`;
+                        });
+                    }
+                    document.getElementById('table-jobs').innerHTML = jHtml;
+                } else {
+                    Swal.fire('ข้อผิดพลาด', 'รูปแบบข้อมูลที่ดึงมาไม่ถูกต้อง', 'error');
+                }
+            } catch(e) {
+                console.error(e);
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาลองรีเฟรชอีกครั้ง', 'error');
+            }
+            hideLoader();
         }
 
-        // แจ้งเตือนดูข้อมูล
-        function viewDetail(type) {
+        // ฟังก์ชันจำลองปุ่มดูรายละเอียด (สำหรับอนาคต)
+        function viewDetail() {
             Swal.fire({
                 title: 'รายละเอียด',
-                html: '<div style="font-family:Kanit;">ระบบกำลังอยู่ในช่วงพัฒนา...<br>ในอนาคตจะแสดงป๊อปอัปดึงข้อมูลจาก Google Sheets ของคนนี้มาแสดงทั้งหมดครับ</div>',
+                html: '<div style="font-family:Kanit;">ระบบกำลังอยู่ในช่วงพัฒนา...<br>ในอนาคตคุณสามารถกดเพื่อดูประวัติของคนนี้ได้ครับ</div>',
                 icon: 'info',
                 confirmButtonColor: '#6DB33F'
             });
         }
 
-        // แจ้งเตือนลบข้อมูล
-        function deleteData(type, name) {
-            Swal.fire({
-                title: 'ยืนยันการลบ?',
-                text: `คุณต้องการลบข้อมูล ${type}: ${name} ออกจากระบบใช่หรือไม่? ข้อมูลนี้จะหายไปจาก Google Sheets ด้วย`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#E74C3C',
-                cancelButtonColor: '#BFC9C5',
-                confirmButtonText: 'ใช่, ลบทิ้ง',
-                cancelButtonText: 'ยกเลิก'
-            }).then((result) => {
-                if(result.isConfirmed) {
-                    Swal.fire({ title: 'ลบสำเร็จ!', text: 'ข้อมูลถูกลบเรียบร้อยแล้ว', icon: 'success', confirmButtonColor: '#6DB33F' });
-                }
-            });
-        }
-
-        // โหลดข้อมูลเมื่อเปิดหน้าเว็บครั้งแรก
+        // สั่งโหลดข้อมูลเมื่อเปิดหน้าเว็บครั้งแรก
         window.onload = refreshData;
 
     </script>
