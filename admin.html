@@ -396,7 +396,7 @@
             });
         }
 
-        // ================= Farmers (เพิ่มปุ่มสถิติและประวัติการขาย) =================
+        // ================= Farmers =================
         function updateVillageFilter() {
             let select = document.getElementById('filter-village');
             let uniques = new Set();
@@ -430,7 +430,7 @@
             document.getElementById('table-farmers').innerHTML = fHtml || '<tr><td colspan="6" style="text-align: center;">ไม่มีข้อมูลในหมวดนี้</td></tr>';
         }
 
-        // ================= Buyers (เพิ่มปุ่มดูรายละเอียดประวัติการรับซื้อ) =================
+        // ================= Buyers =================
         function renderBuyersTable() {
             let bHtml = '';
             globalData.buyers.forEach((b, index) => {
@@ -570,19 +570,20 @@
             if (overviewLayer.getLayers().length > 0) { overviewMapObj.fitBounds(overviewLayer.getBounds(), { padding: [30, 30] }); }
         }
 
-        // ================= View Detailed Farmer + History (อิงตาม ID) =================
+        // ================= View Detailed Farmer + History =================
         function viewFarmerDetails(index) {
             let f = globalData.farmers[index];
             let plots = [];
             try { if(f.savedPlotsRaw) plots = JSON.parse(f.savedPlotsRaw); } catch(e){}
 
-            // ดึงประวัติการขายของชาวไร่คนนี้ (ตรวจสอบด้วย LINE ID โดยตรง แม่นยำ 100%)
+            // ดึงประวัติการขายของชาวไร่คนนี้
             let fJobs = globalData.jobs.filter(j => j.farmerLineId === f.lineId);
 
             let completedCount = 0, sumTon = 0, sumIncome = 0;
             let historyHTML = "";
 
             fJobs.forEach(j => {
+                let originalIndex = globalData.jobs.indexOf(j);
                 let isComplete = (j.status === 'เสร็จสิ้น');
                 let badge = isComplete ? 'bg-success' : 'bg-info';
                 if(j.status === 'ยกเลิก') badge = 'bg-danger';
@@ -595,7 +596,8 @@
                     sumIncome += (w * extractPrice(j.price));
                 }
                 
-                let dateStr = j.date ? new Date(j.date).toLocaleDateString('th-TH') : "-";
+                // แก้บั๊ก Invalid Date: ตัดเอาแค่ส่วนวันที่ (เช่น "19/8/2026")
+                let dateStr = j.date ? j.date.toString().split(',')[0].split(' ')[0] : "-";
                 let qtyStr = isComplete ? `${j.actualWeight} ตัน` : `${j.qty} ไร่`;
                 let buyerStr = (j.buyer && j.buyer !== '-' && j.buyer !== 'undefined') ? j.buyer : "-";
 
@@ -604,12 +606,13 @@
                     <td>${dateStr}</td>
                     <td><span style="color:var(--primary-dark); font-weight:500;">${qtyStr}</span></td>
                     <td><span class="badge ${badge}">${j.status}</span></td>
-                    <td>${buyerStr}</td>
+                    <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;" title="${buyerStr}">${buyerStr}</td>
+                    <td><button onclick="viewJobDetails(${originalIndex})" class="btn-action btn-view" style="width:26px; height:26px; font-size:11px; margin:0;" title="ดูงานนี้"><i class="fa-solid fa-eye"></i></button></td>
                 </tr>`;
             });
             
             if(fJobs.length === 0) {
-                historyHTML = `<tr><td colspan="4" style="text-align:center; color:gray;">ยังไม่มีประวัติการแจ้งขาย</td></tr>`;
+                historyHTML = `<tr><td colspan="5" style="text-align:center; color:gray;">ยังไม่มีประวัติการแจ้งขาย</td></tr>`;
             }
 
             let plotListHTML = "";
@@ -664,7 +667,7 @@
                                 <b>📜 ประวัติการแจ้งขาย (${fJobs.length} รายการ):</b>
                                 <div style="max-height:390px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; margin-top:8px;">
                                     <table class="swal-table">
-                                        <thead><tr><th>วันที่</th><th>ปริมาณ</th><th>สถานะ</th><th>ผู้รับซื้อ</th></tr></thead>
+                                        <thead><tr><th>วันที่</th><th>ปริมาณ</th><th>สถานะ</th><th>ผู้รับซื้อ</th><th>จัดการ</th></tr></thead>
                                         <tbody>${historyHTML}</tbody>
                                     </table>
                                 </div>
@@ -695,14 +698,13 @@
             });
         }
 
-        // ================= View Buyer History (ประวัติผู้รับซื้อ อิงตามเบอร์โทร) =================
+        // ================= View Buyer History (ประวัติผู้รับซื้อ) =================
         function viewBuyerDetails(index) {
             let b = globalData.buyers[index];
             
-            // ดึงประวัติการรับซื้อของรถม้วนคนนี้ (ตรวจสอบด้วยเบอร์โทรศัพท์ แม่นยำ 100%)
+            // ดึงประวัติการรับซื้อของรถม้วนคนนี้
             let bJobs = globalData.jobs.filter(j => {
                 if(!j.buyerPhone || j.buyerPhone === "-") return false;
-                // ตัดเครื่องหมาย ' และช่องว่างออกก่อนเปรียบเทียบ
                 let jPhone = j.buyerPhone.toString().replace(/'/g, "").replace(/\s/g, "");
                 let bPhone = b.phone.toString().replace(/'/g, "").replace(/\s/g, "");
                 return jPhone === bPhone;
@@ -712,6 +714,7 @@
             let historyHTML = "";
 
             bJobs.forEach(j => {
+                let originalIndex = globalData.jobs.indexOf(j);
                 let isComplete = (j.status === 'เสร็จสิ้น');
                 let badge = isComplete ? 'bg-success' : 'bg-info';
                 
@@ -722,20 +725,22 @@
                     sumExpense += (w * extractPrice(j.price));
                 }
                 
-                let dateStr = j.date ? new Date(j.date).toLocaleDateString('th-TH') : "-";
+                // แก้บั๊ก Invalid Date: ตัดเอาแค่ส่วนวันที่
+                let dateStr = j.date ? j.date.toString().split(',')[0].split(' ')[0] : "-";
                 let qtyStr = isComplete ? `${j.actualWeight} ตัน` : `${j.qty} ไร่`;
 
                 historyHTML += `
                 <tr>
                     <td>${dateStr}</td>
-                    <td>${j.farmer}</td>
+                    <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;" title="${j.farmer}">${j.farmer}</td>
                     <td><span class="badge ${badge}">${j.status}</span></td>
                     <td><span style="color:var(--primary-dark); font-weight:500;">${qtyStr}</span></td>
+                    <td><button onclick="viewJobDetails(${originalIndex})" class="btn-action btn-view" style="width:26px; height:26px; font-size:11px; margin:0;" title="ดูงานนี้"><i class="fa-solid fa-eye"></i></button></td>
                 </tr>`;
             });
             
             if(bJobs.length === 0) {
-                historyHTML = `<tr><td colspan="4" style="text-align:center; color:gray;">ยังไม่มีประวัติการรับซื้อ</td></tr>`;
+                historyHTML = `<tr><td colspan="5" style="text-align:center; color:gray;">ยังไม่มีประวัติการรับซื้อ</td></tr>`;
             }
 
             Swal.fire({
@@ -769,7 +774,7 @@
                             <b style="font-size:16px;">📜 ประวัติการรับซื้อใบอ้อย (${bJobs.length} รายการ):</b>
                             <div style="max-height:300px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; margin-top:8px;">
                                 <table class="swal-table">
-                                    <thead><tr><th>วันที่แจ้ง</th><th>รับซื้อจาก (ชาวไร่)</th><th>สถานะงาน</th><th>ปริมาณ</th></tr></thead>
+                                    <thead><tr><th>วันที่แจ้ง</th><th>รับซื้อจาก (ชาวไร่)</th><th>สถานะงาน</th><th>ปริมาณ</th><th>จัดการ</th></tr></thead>
                                     <tbody>${historyHTML}</tbody>
                                 </table>
                             </div>
@@ -784,7 +789,7 @@
         function viewJobDetails(index) {
             let j = globalData.jobs[index];
             
-            let reqDateStr = j.date ? j.date : "-";
+            let reqDateStr = j.date ? j.date.toString().split(',')[0] : "-";
             let harvDateStr = j.harvestDate ? j.harvestDate : "-";
             let buyerName = (j.buyer && j.buyer !== "undefined" && j.buyer !== "-") ? j.buyer : "<span style='color:gray;'>ยังไม่มีผู้รับงาน</span>";
 
@@ -835,9 +840,8 @@
 
             Swal.fire({
                 title: 'ข้อมูลการแจ้งขายใบอ้อย',
-                width: '850px', /* ขยายให้กว้างขึ้น */
+                width: '850px',
                 html: `
-                    <!-- ใช้ Layout แบบแบ่ง 2 ซ้ายขวา เพื่อลดการเลื่อนจอลงแนวตั้ง -->
                     <div style="display:flex; flex-wrap:wrap; gap:20px; text-align:left; font-family:'Kanit';">
                         
                         <!-- ฝั่งซ้าย: รายละเอียดข้อความ -->
