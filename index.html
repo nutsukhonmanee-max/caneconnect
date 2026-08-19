@@ -186,6 +186,10 @@
         
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .dash-card { background: var(--surface); padding: 18px; border-radius: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; box-shadow: var(--shadow-soft);}
+        
+        /* Custom Leaflet Popup */
+        .leaflet-popup-content-wrapper { border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+        .leaflet-popup-content { margin: 14px; }
     </style>
 </head>
 <body>
@@ -280,16 +284,19 @@
 
             <!-- หน้าต่าง: แปลงของฉัน -->
             <div id="tab-plots" style="display:none;">
-                <div class="status-box" style="background: #FFF9E6; border-color: var(--accent); color: var(--accent);">
+                <div class="status-box" style="background: #FFF9E6; border-color: var(--accent); color: var(--accent); margin-bottom: 15px;">
                     <i>💡</i> วาดแปลงเก็บไว้ เพื่อความสะดวกรวดเร็วในการแจ้งขาย
                 </div>
+
+                <button type="button" class="btn-main btn-info" onclick="openAddPlotModal(-1)" style="margin-top: 0;">+ วาดเพิ่มแปลงอ้อย</button>
                 
                 <!-- แผนที่รวมแปลงทั้งหมด -->
-                <div id="all-plots-map" class="map-container" style="height: 250px; margin-top: 15px; margin-bottom: 20px; display: none; border: 2px solid var(--primary); border-radius: var(--radius-md);"></div>
-
-                <button type="button" class="btn-main btn-info" onclick="openAddPlotModal(-1)">+ วาดเพิ่มแปลงอ้อย</button>
+                <div id="all-plots-wrapper" style="display:none; margin-top: 25px;">
+                    <label style="color: var(--primary-dark); font-weight: 600; margin-bottom: 8px;">🗺️ แผนที่รวมแปลงทั้งหมดของคุณ:</label>
+                    <div id="all-plots-map" class="map-container" style="height: 280px; margin-top: 0; border: 2px solid var(--primary); border-radius: var(--radius-md);"></div>
+                </div>
                 
-                <div id="saved-plots-container" style="margin-top: 15px; margin-bottom: 15px;">
+                <div id="saved-plots-container" style="margin-top: 20px; margin-bottom: 15px;">
                     <div class="empty-state" style="padding: 20px 0;">ยังไม่มีแปลงที่บันทึกไว้</div>
                 </div>
                 
@@ -492,8 +499,11 @@
             } else {
                 document.getElementById('btn-tab-plots').classList.add('active');
                 document.getElementById('tab-plots').style.display = 'block';
-                // เมื่อเปิดแท็บนี้ ค่อยเรนเดอร์และซูมแผนที่รวมเพื่อป้องกัน Leaflet Error
-                setTimeout(() => { renderAllPlotsMap(); }, 150);
+                // เรนเดอร์แผนที่รวมแปลงเมื่อเปิดแท็บนี้
+                setTimeout(() => { 
+                    renderAllPlotsMap(); 
+                    if(allPlotsMapObj) allPlotsMapObj.invalidateSize();
+                }, 150);
             }
         }
 
@@ -655,20 +665,22 @@
             return null;
         }
 
-        // ================= แผนที่รวมแปลงทั้งหมด (All Plots Map) =================
+        // ================= แผนที่รวมแปลงทั้งหมด (All Plots Map) พร้อม Popup รายละเอียด =================
         let allPlotsMapObj = null;
         let allPlotsLayer = null;
 
         function renderAllPlotsMap() {
+            const wrapper = document.getElementById('all-plots-wrapper');
             const container = document.getElementById('all-plots-map');
-            // ป้องกัน Error จาก Leaflet ถ้าแท็บถูกซ่อนอยู่และมีความกว้าง 0
-            if (!container || container.offsetWidth === 0) return; 
+            
+            // เช็คว่าแท็บเปิดอยู่ไหม ถ้าถูกซ่อนอยู่จะไม่วาด (ป้องกัน Leaflet Error)
+            if (!container || document.getElementById('tab-plots').style.display === 'none') return; 
 
             if (userSavedPlots.length === 0) {
-                container.style.display = 'none';
+                wrapper.style.display = 'none';
                 return;
             }
-            container.style.display = 'block';
+            wrapper.style.display = 'block';
 
             if (!allPlotsMapObj) {
                 allPlotsMapObj = L.map('all-plots-map').setView([currentLat, currentLng], 14);
@@ -678,12 +690,26 @@
 
             allPlotsLayer.clearLayers();
 
-            userSavedPlots.forEach(plot => {
+            userSavedPlots.forEach((plot, index) => {
                 try {
                     let coords = JSON.parse(plot.polygon);
                     let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
                     let polygon = L.polygon(flippedCoords, { color: THEME_PRIMARY, fillOpacity: 0.5, weight: 2 });
-                    polygon.bindPopup(`<div style="font-family:Kanit;"><b>${plot.name}</b><br>พื้นที่: ${plot.area} ไร่</div>`);
+                    
+                    let pCond = plot.condition || "ไม่ระบุสภาพ";
+                    let pAcc = plot.access || "ไม่ระบุทางเข้า";
+                    
+                    // สร้าง Popup ที่มีรายละเอียดครบถ้วน และปุ่มแก้ไข
+                    let popupHtml = `
+                    <div style="font-family:Kanit; min-width: 180px;">
+                        <div style="font-size:16px; font-weight:600; color:var(--primary-dark); margin-bottom:8px; border-bottom:1px solid #eee; padding-bottom:4px;">${plot.name}</div>
+                        <div style="font-size:13px; margin-bottom:4px;"><b>พื้นที่:</b> ${plot.area} ไร่</div>
+                        <div style="font-size:13px; margin-bottom:4px; color:var(--text-muted);">🚜 ${pCond}</div>
+                        <div style="font-size:13px; margin-bottom:12px; color:var(--text-muted);">🛣️ ${pAcc}</div>
+                        <button onclick="openAddPlotModal(${index})" class="btn-small btn-small-primary" style="width:100%; padding:8px; font-size:13px; box-shadow:none;">✏️ แก้ไขแปลงนี้</button>
+                    </div>`;
+                    
+                    polygon.bindPopup(popupHtml);
                     allPlotsLayer.addLayer(polygon);
                 } catch(e) {}
             });
@@ -691,7 +717,7 @@
             setTimeout(() => { 
                 allPlotsMapObj.invalidateSize(); 
                 if (allPlotsLayer.getLayers().length > 0) {
-                    // จำกัดระดับการซูมสูงสุดเพื่อไม่ให้เข้าไปใกล้จนเกินไปเมื่อมีแปลงเดียว
+                    // จัดการให้ซูมพอดีขอบแปลงทั้งหมด ไม่ซูมลึกเกินไป
                     allPlotsMapObj.fitBounds(allPlotsLayer.getBounds(), { padding: [40, 40], maxZoom: 15 });
                 }
             }, 300);
