@@ -101,7 +101,13 @@
         .swal-label { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; display: block; }
         .swal-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Kanit'; font-size: 14px; box-sizing: border-box; }
         .swal-input:focus { border-color: var(--primary); outline: none; }
-        .filter-select { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); font-family: 'Kanit'; font-size: 14px; outline: none; }
+        .filter-select { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); font-family: 'Kanit'; font-size: 13px; outline: none; }
+        
+        /* Modal Internal Tables */
+        .swal-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        .swal-table th { background: #f4f9f9; padding: 10px; font-size: 13px; color: var(--secondary); border-bottom: 2px solid var(--border); white-space: nowrap;}
+        .swal-table td { padding: 10px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle;}
+        .swal-table tr:hover { background-color: #FAFCFB; }
     </style>
 </head>
 <body>
@@ -222,20 +228,32 @@
                 </div>
             </div>
 
-            <!-- 5. Jobs Tab -->
+            <!-- 5. Jobs Tab (มี Filter สถานะเพิ่มขึ้นมา) -->
             <div id="tab-jobs" class="tab-pane">
                 <div class="panel">
                     <div class="panel-header">
                         <div class="panel-title">ประวัติและคิวแจ้งขายใบอ้อย</div>
-                        <div>
-                            <span style="font-size:13px; color:var(--text-muted); margin-right:8px;">เรียงลำดับ:</span>
-                            <select id="sort-jobs" class="filter-select" onchange="renderJobsTable()">
-                                <option value="date-desc">วันที่แจ้ง (ใหม่สุด -> เก่าสุด)</option>
-                                <option value="date-asc">วันที่แจ้ง (เก่าสุด -> ใหม่สุด)</option>
-                                <option value="harvest-asc">วันนัดเก็บเกี่ยว (ใกล้สุด)</option>
-                                <option value="qty-desc">ปริมาณประเมิน (มาก -> น้อย)</option>
-                                <option value="qty-asc">ปริมาณประเมิน (น้อย -> มาก)</option>
-                            </select>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <div>
+                                <select id="filter-job-status" class="filter-select" onchange="renderJobsTable()">
+                                    <option value="all">📌 สถานะทั้งหมด</option>
+                                    <option value="รอคิวรถ">รอคิวรถ (งานว่าง)</option>
+                                    <option value="รอชาวไร่ยืนยัน">รอชาวไร่ยืนยัน</option>
+                                    <option value="กำลังดำเนินการ">กำลังดำเนินการ</option>
+                                    <option value="รอชาวไร่ตรวจสอบ">รอชาวไร่ตรวจสอบ</option>
+                                    <option value="เสร็จสิ้น">เสร็จสิ้น</option>
+                                    <option value="ยกเลิก">ยกเลิก</option>
+                                </select>
+                            </div>
+                            <div>
+                                <select id="sort-jobs" class="filter-select" onchange="renderJobsTable()">
+                                    <option value="date-desc">เรียง: แจ้งใหม่สุด -> เก่าสุด</option>
+                                    <option value="date-asc">เรียง: แจ้งเก่าสุด -> ใหม่สุด</option>
+                                    <option value="harvest-asc">เรียง: นัดตัดใกล้สุด</option>
+                                    <option value="qty-desc">เรียง: ปริมาณ มาก -> น้อย</option>
+                                    <option value="qty-asc">เรียง: ปริมาณ น้อย -> มาก</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div style="overflow-x: auto;">
@@ -296,6 +314,13 @@
                 return new Date(y, m, d).getTime();
             }
             return 0;
+        }
+
+        // ตัวช่วยสกัดตัวเลขราคาจาก String (เช่น "800 บาท/ตัน" -> 800)
+        function extractPrice(str) {
+            if(!str) return 0;
+            let match = str.toString().match(/\d+(\.\d+)?/);
+            return match ? parseFloat(match[0]) : 0;
         }
 
         function switchTab(tabId, title) {
@@ -371,7 +396,7 @@
             });
         }
 
-        // ================= Farmers =================
+        // ================= Farmers (เพิ่มปุ่มสถิติและประวัติการขาย) =================
         function updateVillageFilter() {
             let select = document.getElementById('filter-village');
             let uniques = new Set();
@@ -396,8 +421,8 @@
                     <td>${f.phone}</td>
                     <td><b style="color:var(--primary);">${f.plots}</b></td>
                     <td>
-                        <button class="btn-action btn-view" onclick="viewFarmerDetails(${index})" title="ดูแผนที่แปลงแบบละเอียด"><i class="fa-solid fa-eye"></i></button>
-                        <button class="btn-action btn-edit" onclick="editFarmer(${index})" title="แก้ไขข้อมูล"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-action btn-view" onclick="viewFarmerDetails(${index})" title="ดูแผนที่แปลงและประวัติการขาย"><i class="fa-solid fa-eye"></i></button>
+                        <button class="btn-action btn-edit" onclick="editFarmer(${index})" title="แก้ไขข้อมูลส่วนตัว"><i class="fa-solid fa-pen"></i></button>
                         <button class="btn-action btn-delete" onclick="deleteData('Users_Profile', '${f.id}', '${f.name}', ${f.row})" title="ลบข้อมูล"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>`;
@@ -405,7 +430,7 @@
             document.getElementById('table-farmers').innerHTML = fHtml || '<tr><td colspan="6" style="text-align: center;">ไม่มีข้อมูลในหมวดนี้</td></tr>';
         }
 
-        // ================= Buyers =================
+        // ================= Buyers (เพิ่มปุ่มดูรายละเอียดประวัติการรับซื้อ) =================
         function renderBuyersTable() {
             let bHtml = '';
             globalData.buyers.forEach((b, index) => {
@@ -416,7 +441,8 @@
                     <td>${b.phone}</td>
                     <td style="font-size:13px; color:var(--text-muted);">${b.location}</td>
                     <td>
-                        <button class="btn-action btn-edit" onclick="editBuyer(${index})" title="แก้ไขข้อมูล"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-action btn-view" onclick="viewBuyerDetails(${index})" title="ดูประวัติการรับซื้อ"><i class="fa-solid fa-eye"></i></button>
+                        <button class="btn-action btn-edit" onclick="editBuyer(${index})" title="แก้ไขข้อมูลพาร์ทเนอร์"><i class="fa-solid fa-pen"></i></button>
                         <button class="btn-action btn-delete" onclick="deleteData('Buyers_Profile', '${b.id}', '${b.name}', ${b.row})" title="ลบข้อมูล"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>`;
@@ -424,11 +450,18 @@
             document.getElementById('table-buyers').innerHTML = bHtml || '<tr><td colspan="5" style="text-align: center;">ไม่มีข้อมูล</td></tr>';
         }
 
-        // ================= Jobs =================
+        // ================= Jobs (เพิ่มระบบ Filter) =================
         function renderJobsTable() {
             let sortType = document.getElementById('sort-jobs').value;
-            let jobsCopy = [...globalData.jobs];
+            let filterStatus = document.getElementById('filter-job-status').value;
             
+            // 1. กรองสถานะก่อน
+            let jobsCopy = globalData.jobs.filter(j => {
+                if (filterStatus === 'all') return true;
+                return j.status === filterStatus;
+            });
+            
+            // 2. จัดเรียง
             jobsCopy.sort((a, b) => {
                 if(sortType === 'date-desc') return getEpoch(b.date) - getEpoch(a.date);
                 if(sortType === 'date-asc') return getEpoch(a.date) - getEpoch(b.date);
@@ -476,7 +509,7 @@
                     </td>
                 </tr>`;
             });
-            document.getElementById('table-jobs').innerHTML = jHtml || '<tr><td colspan="8" style="text-align: center;">ไม่มีข้อมูล</td></tr>';
+            document.getElementById('table-jobs').innerHTML = jHtml || '<tr><td colspan="8" style="text-align: center; padding: 20px;">ไม่มีข้อมูลที่ตรงกับตัวกรอง</td></tr>';
         }
 
         // ================= Maps & Modals =================
@@ -490,7 +523,6 @@
             
             let filter = document.getElementById('map-filter').value;
 
-            // 1. แปลงที่ลงทะเบียน (เขียว)
             if (filter === 'all' || filter === 'registered') {
                 globalData.farmers.forEach(f => {
                     if (f.savedPlotsRaw && f.savedPlotsRaw !== "[]") {
@@ -505,7 +537,6 @@
                                         <hr style="margin:5px 0; border:0; border-top:1px solid #eee;">
                                         <b>ชื่อแปลง:</b> ${p.name}<br>
                                         <b>พื้นที่:</b> ${p.area} ไร่<br>
-                                        <b>สภาพ:</b> ${p.condition || 'ไม่ระบุ'}<br>
                                     </div>
                                 `);
                                 overviewLayer.addLayer(poly);
@@ -515,7 +546,6 @@
                 });
             }
 
-            // 2. แปลงที่ประกาศขาย (ส้ม)
             if (filter === 'all' || filter === 'selling') {
                 globalData.jobs.forEach(j => {
                     if (j.status !== 'เสร็จสิ้น' && j.status !== 'ยกเลิก' && j.polygon) {
@@ -540,15 +570,50 @@
             if (overviewLayer.getLayers().length > 0) { overviewMapObj.fitBounds(overviewLayer.getBounds(), { padding: [30, 30] }); }
         }
 
-        // ================= View Detailed Farmer Plot =================
+        // ================= View Detailed Farmer + History =================
         function viewFarmerDetails(index) {
             let f = globalData.farmers[index];
             let plots = [];
             try { if(f.savedPlotsRaw) plots = JSON.parse(f.savedPlotsRaw); } catch(e){}
 
+            // ดึงประวัติการขายของชาวไร่คนนี้
+            let fJobs = globalData.jobs.filter(j => j.farmer === f.name);
+            let completedCount = 0, sumTon = 0, sumIncome = 0;
+            let historyHTML = "";
+
+            fJobs.forEach(j => {
+                let isComplete = (j.status === 'เสร็จสิ้น');
+                let badge = isComplete ? 'bg-success' : 'bg-info';
+                if(j.status === 'ยกเลิก') badge = 'bg-danger';
+                if(j.status === 'รอชาวไร่ยืนยัน') badge = 'bg-warning';
+                
+                if(isComplete) {
+                    completedCount++;
+                    let w = parseFloat(j.actualWeight) || 0;
+                    sumTon += w;
+                    sumIncome += (w * extractPrice(j.price));
+                }
+                
+                let dateStr = j.date ? new Date(j.date).toLocaleDateString('th-TH') : "-";
+                let qtyStr = isComplete ? `${j.actualWeight} ตัน` : `${j.qty} ไร่`;
+                let buyerStr = (j.buyer && j.buyer !== '-' && j.buyer !== 'undefined') ? j.buyer : "-";
+
+                historyHTML += `
+                <tr>
+                    <td>${dateStr}</td>
+                    <td><span style="color:var(--primary-dark); font-weight:500;">${qtyStr}</span></td>
+                    <td><span class="badge ${badge}">${j.status}</span></td>
+                    <td>${buyerStr}</td>
+                </tr>`;
+            });
+            
+            if(fJobs.length === 0) {
+                historyHTML = `<tr><td colspan="4" style="text-align:center; color:gray;">ยังไม่มีประวัติการแจ้งขาย</td></tr>`;
+            }
+
             let plotListHTML = "";
             if(plots.length === 0) {
-                plotListHTML = "<div style='color:red; font-size:13px;'>ยังไม่มีการวาดแปลงบันทึกไว้</div>";
+                plotListHTML = "<div style='color:red; font-size:13px; text-align:center; padding: 20px;'>ยังไม่มีการวาดแปลงบันทึกไว้</div>";
             } else {
                 plots.forEach(p => {
                     plotListHTML += `
@@ -561,21 +626,47 @@
             }
 
             Swal.fire({
-                title: 'รายละเอียดแปลงเกษตรกร',
-                width: '750px',
+                title: 'ข้อมูลและประวัติชาวไร่',
+                width: '900px',
                 html: `
                     <div style="text-align:left; font-family:'Kanit';">
                         <div style="font-size:15px; margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid var(--border);">
-                            <b style="font-size:18px;">คุณ ${f.name}</b> <span style="color:gray; font-size:13px;">(ID: ${f.id})</span><br>
+                            <b style="font-size:18px; color:var(--primary-dark);">คุณ ${f.name}</b> <span style="color:gray; font-size:13px;">(ID: ${f.id})</span><br>
                             📞 ${f.phone} | 📍 ม.${f.moo} ต.${f.subDist} อ.${f.dist} จ.${f.prov}
                         </div>
-                        <div style="display:flex; gap:15px; flex-wrap:wrap;">
-                            <div style="flex:1; min-width:250px;">
-                                <b style="font-size:15px; color:var(--primary-dark);">รายการแปลงทั้งหมด (${plots.length}):</b>
-                                <div style="max-height:300px; overflow-y:auto; margin-top:8px; padding-right:5px;">${plotListHTML}</div>
+                        
+                        <!-- Stats Grid -->
+                        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:15px;">
+                            <div style="background:#EAF2F8; padding:10px; border-radius:8px; text-align:center; border:1px solid #D6EAF8;">
+                                <div style="font-size:12px; color:var(--info);">ยอดขายสำเร็จ</div>
+                                <div style="font-size:20px; font-weight:600; color:var(--secondary);">${completedCount} <span style="font-size:12px;">งาน</span></div>
                             </div>
-                            <div style="flex:1.5; min-width:300px;">
-                                <div id="modal-farmer-map" style="width:100%; height:300px; border-radius:12px; border:1px solid var(--border);"></div>
+                            <div style="background:#F0F8EC; padding:10px; border-radius:8px; text-align:center; border:1px solid #D5F5E3;">
+                                <div style="font-size:12px; color:var(--primary-dark);">ปริมาณส่งมอบรวม</div>
+                                <div style="font-size:20px; font-weight:600; color:var(--secondary);">${sumTon.toLocaleString('th-TH',{maximumFractionDigits:1})} <span style="font-size:12px;">ตัน</span></div>
+                            </div>
+                            <div style="background:#FEF5E7; padding:10px; border-radius:8px; text-align:center; border:1px solid #FDEBD0;">
+                                <div style="font-size:12px; color:var(--warning);">รายได้สะสมโดยประมาณ</div>
+                                <div style="font-size:20px; font-weight:600; color:var(--secondary);">${sumIncome.toLocaleString('th-TH',{maximumFractionDigits:0})} <span style="font-size:12px;">บาท</span></div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:15px;">
+                            <!-- Left: Map & Plots -->
+                            <div style="flex:1; min-width:320px;">
+                                <b>📍 แผนที่แปลงอ้อย (${plots.length} แปลง):</b>
+                                <div id="modal-farmer-map" style="width:100%; height:200px; border-radius:12px; border:1px solid var(--border); margin:8px 0;"></div>
+                                <div style="max-height:180px; overflow-y:auto; padding-right:5px;">${plotListHTML}</div>
+                            </div>
+                            <!-- Right: History Table -->
+                            <div style="flex:1.2; min-width:350px;">
+                                <b>📜 ประวัติการแจ้งขาย (${fJobs.length} รายการ):</b>
+                                <div style="max-height:390px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; margin-top:8px;">
+                                    <table class="swal-table">
+                                        <thead><tr><th>วันที่</th><th>ปริมาณ</th><th>สถานะ</th><th>ผู้รับซื้อ</th></tr></thead>
+                                        <tbody>${historyHTML}</tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -603,7 +694,85 @@
             });
         }
 
-        // ================= View Job Details (อัปเดตให้แอดมินเห็นรูปหน้างาน และ รูปบิลชั่ง) =================
+        // ================= View Buyer History (ประวัติผู้รับซื้อ) =================
+        function viewBuyerDetails(index) {
+            let b = globalData.buyers[index];
+            
+            // ดึงงานที่รับซื้อโดยพาร์ทเนอร์คนนี้
+            let bJobs = globalData.jobs.filter(j => j.buyer === b.name);
+            let completedCount = 0, sumTon = 0, sumExpense = 0;
+            let historyHTML = "";
+
+            bJobs.forEach(j => {
+                let isComplete = (j.status === 'เสร็จสิ้น');
+                let badge = isComplete ? 'bg-success' : 'bg-info';
+                
+                if(isComplete) {
+                    completedCount++;
+                    let w = parseFloat(j.actualWeight) || 0;
+                    sumTon += w;
+                    sumExpense += (w * extractPrice(j.price));
+                }
+                
+                let dateStr = j.date ? new Date(j.date).toLocaleDateString('th-TH') : "-";
+                let qtyStr = isComplete ? `${j.actualWeight} ตัน` : `${j.qty} ไร่`;
+
+                historyHTML += `
+                <tr>
+                    <td>${dateStr}</td>
+                    <td>${j.farmer}</td>
+                    <td><span class="badge ${badge}">${j.status}</span></td>
+                    <td><span style="color:var(--primary-dark); font-weight:500;">${qtyStr}</span></td>
+                </tr>`;
+            });
+            
+            if(bJobs.length === 0) {
+                historyHTML = `<tr><td colspan="4" style="text-align:center; color:gray;">ยังไม่มีประวัติการรับซื้อ</td></tr>`;
+            }
+
+            Swal.fire({
+                title: 'ข้อมูลและประวัติพาร์ทเนอร์รับซื้อ',
+                width: '800px',
+                html: `
+                    <div style="text-align:left; font-family:'Kanit';">
+                        <div style="font-size:15px; margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid var(--border);">
+                            <b style="font-size:18px; color:var(--warning);">คุณ ${b.name}</b> <span style="color:gray; font-size:13px;">(ID: ${b.id})</span><br>
+                            📞 ${b.phone} | 📍 ${b.location}<br>
+                            🚜 <b>ข้อมูลรถ:</b> <span style="color:var(--text-muted);">${b.vehicle || '-'}</span>
+                        </div>
+                        
+                        <!-- Stats Grid -->
+                        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:15px;">
+                            <div style="background:#EAF2F8; padding:10px; border-radius:8px; text-align:center; border:1px solid #D6EAF8;">
+                                <div style="font-size:12px; color:var(--info);">รับงานเสร็จสิ้น</div>
+                                <div style="font-size:20px; font-weight:600; color:var(--secondary);">${completedCount} <span style="font-size:12px;">งาน</span></div>
+                            </div>
+                            <div style="background:#F0F8EC; padding:10px; border-radius:8px; text-align:center; border:1px solid #D5F5E3;">
+                                <div style="font-size:12px; color:var(--primary-dark);">ปริมาณรับซื้อรวม</div>
+                                <div style="font-size:20px; font-weight:600; color:var(--secondary);">${sumTon.toLocaleString('th-TH',{maximumFractionDigits:1})} <span style="font-size:12px;">ตัน</span></div>
+                            </div>
+                            <div style="background:#FDEDEC; padding:10px; border-radius:8px; text-align:center; border:1px solid #FADBD8;">
+                                <div style="font-size:12px; color:var(--danger);">จ่ายชาวไร่โดยประมาณ</div>
+                                <div style="font-size:20px; font-weight:600; color:var(--secondary);">${sumExpense.toLocaleString('th-TH',{maximumFractionDigits:0})} <span style="font-size:12px;">บาท</span></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <b style="font-size:16px;">📜 ประวัติการรับซื้อใบอ้อย (${bJobs.length} รายการ):</b>
+                            <div style="max-height:300px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; margin-top:8px;">
+                                <table class="swal-table">
+                                    <thead><tr><th>วันที่แจ้ง</th><th>รับซื้อจาก (ชาวไร่)</th><th>สถานะงาน</th><th>ปริมาณ</th></tr></thead>
+                                    <tbody>${historyHTML}</tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                showCloseButton: true, showConfirmButton: false
+            });
+        }
+
+        // ================= View Job Details (กว้างขึ้น แบ่ง 2 คอลัมน์ ไม่ต้องเลื่อนจอเยอะ) =================
         function viewJobDetails(index) {
             let j = globalData.jobs[index];
             
@@ -611,36 +780,34 @@
             let harvDateStr = j.harvestDate ? j.harvestDate : "-";
             let buyerName = (j.buyer && j.buyer !== "undefined" && j.buyer !== "-") ? j.buyer : "<span style='color:gray;'>ยังไม่มีผู้รับงาน</span>";
 
-            // 1. ดึงภาพหน้างานตอนประกาศขาย (จาก Google Drive Array)
             let photoHTML = "";
             if(j.photos && j.photos !== "[]" && j.photos !== "") {
                 try {
                     let imgs = JSON.parse(j.photos);
                     if(imgs.length > 0) {
-                        photoHTML = `<div style="display:flex; gap:10px; overflow-x:auto; margin-top:10px; padding-bottom:10px;">`;
+                        photoHTML = `<div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:10px;">`;
                         imgs.forEach(src => { photoHTML += `<img src="${src}" style="height:120px; width:120px; object-fit:cover; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="Swal.fire({imageUrl: '${src}', imageWidth: '100%'})">`; });
                         photoHTML += `</div>`;
                     }
                 } catch(e){}
             }
 
-            // 2. ดึงภาพบิลชั่งน้ำหนักตอนจบงาน (ถ้างานอยู่ในสถานะรอตรวจสอบ หรือเสร็จสิ้น)
             let closeProofHTML = "";
             if(j.status === 'รอชาวไร่ตรวจสอบ' || j.status === 'เสร็จสิ้น') {
                 let actualQ = j.actualQty || "-";
                 let actualW = j.actualWeight || "-";
                 let imgHTML = (j.closeProof && j.closeProof.length > 10) ? 
-                    `<img src="${j.closeProof}" style="max-height:200px; max-width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in; margin-top:10px;" onclick="Swal.fire({imageUrl: '${j.closeProof}', imageWidth: '100%'})">` : 
+                    `<img src="${j.closeProof}" style="max-height:180px; max-width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in; margin-top:8px;" onclick="Swal.fire({imageUrl: '${j.closeProof}', imageWidth: '100%'})">` : 
                     `<div style="color:gray; font-size:13px; margin-top:5px; background:var(--bg-body); padding:10px; border-radius:8px;">ไม่พบรูปภาพบิลชั่ง</div>`;
                     
                 closeProofHTML = `
                     <div style="margin-top:15px; padding-top:15px; border-top: 1px dashed var(--border);">
-                        <b>🚚 ข้อมูลตอนปิดงาน (รับซื้อเสร็จสิ้น):</b>
+                        <b style="color:var(--primary-dark);">🚚 ข้อมูลรับซื้อเสร็จสิ้น:</b>
                         <div style="background:#f4f9f9; padding:10px; border-radius:8px; margin-top:8px; font-size:14px; border:1px solid var(--info);">
                             <b>พื้นที่เก็บเกี่ยวจริง:</b> ${actualQ} ไร่<br>
                             <b>น้ำหนักสุทธิ:</b> <span style="color:var(--primary-dark); font-weight:600;">${actualW} ตัน</span>
                         </div>
-                        <b style="display:block; margin-top:10px;">📸 รูปถ่ายบิลชั่งน้ำหนัก:</b>
+                        <b style="display:block; margin-top:10px;">📸 บิลชั่งน้ำหนัก:</b>
                         ${imgHTML}
                     </div>
                 `;
@@ -648,44 +815,52 @@
 
             let offersListHTML = "";
             if (j.status === 'รอชาวไร่ยืนยัน' && j.offers && j.offers.length > 0) {
-                offersListHTML = `<div style="margin-top:10px; background:#fff; padding:12px; border-radius:8px; border:1px solid #f39c12;">
+                offersListHTML = `<div style="margin-top:15px; background:#fff; padding:12px; border-radius:8px; border:1px solid #f39c12;">
                     <b style="color:var(--accent);">📋 รายชื่อผู้เสนอราคา (${j.offers.length} ราย):</b>
                     <ul style="margin:5px 0 0 0; padding-left:20px; font-size:14px;">`;
                 j.offers.forEach(o => {
-                    let name = (o.buyerName && o.buyerName !== "undefined") ? o.buyerName : "พาร์ทเนอร์ไม่ทราบชื่อ";
-                    offersListHTML += `<li>คุณ ${name} <span style="color:var(--primary); font-weight:600;">(${o.price} บาท/ตัน)</span> - 📞 <a href="tel:${o.phone}">${o.phone}</a></li>`;
+                    let name = (o.buyerName && o.buyerName !== "undefined") ? o.buyerName : "ไม่ทราบชื่อ";
+                    offersListHTML += `<li style="margin-bottom:4px;">${name} <span style="color:var(--primary); font-weight:600;">(${o.price} บ./ตัน)</span><br>📞 <a href="tel:${o.phone}" style="text-decoration:none;">${o.phone}</a></li>`;
                 });
                 offersListHTML += `</ul></div>`;
             }
 
             Swal.fire({
                 title: 'ข้อมูลการแจ้งขายใบอ้อย',
-                width: '600px',
+                width: '850px', /* ขยายให้กว้างขึ้น */
                 html: `
-                    <div style="text-align:left; font-family:'Kanit';">
-                        <div style="background:#f4f9f9; padding:15px; border-radius:12px; border:1px solid #e1e8e3; margin-bottom:15px; font-size:14px; line-height:1.6;">
-                            <b>Job ID:</b> <span style="color:var(--primary);">${j.id}</span><br>
-                            <b>ผู้แจ้ง:</b> ${j.farmer}<br>
-                            <b>พื้นที่แจ้งขาย:</b> <span style="color:var(--warning); font-weight:600;">${j.qty} ไร่</span><br>
-                            <b>สถานะ:</b> <span style="color:var(--info); font-weight:600;">${j.status}</span><br>
-                            <b>วันที่แจ้งเข้าเครือข่าย:</b> ${reqDateStr}<br>
-                            <b>วันที่นัดเก็บเกี่ยว (พร้อมม้วน):</b> <span style="color:var(--primary-dark); font-weight:600;">${harvDateStr}</span><br>
-                            <b>เงื่อนไขแปลง/ทางเข้า:</b> ${j.access || '-'}<br>
-                            <hr style="margin:8px 0; border:0; border-top:1px dashed #ccc;">
-                            <b>พาร์ทเนอร์ผู้รับซื้อ:</b> ${buyerName}<br>
-                            <b>ราคาที่ตกลง:</b> ${j.price || '-'}
+                    <!-- ใช้ Layout แบบแบ่ง 2 ซ้ายขวา เพื่อลดการเลื่อนจอลงแนวตั้ง -->
+                    <div style="display:flex; flex-wrap:wrap; gap:20px; text-align:left; font-family:'Kanit';">
+                        
+                        <!-- ฝั่งซ้าย: รายละเอียดข้อความ -->
+                        <div style="flex:1; min-width:300px;">
+                            <div style="background:#f4f9f9; padding:15px; border-radius:12px; border:1px solid #e1e8e3; font-size:14px; line-height:1.6;">
+                                <b>Job ID:</b> <span style="color:var(--primary);">${j.id}</span><br>
+                                <b>ผู้แจ้ง:</b> ${j.farmer}<br>
+                                <b>พื้นที่แจ้งขาย:</b> <span style="color:var(--warning); font-weight:600;">${j.qty} ไร่</span><br>
+                                <b>สถานะ:</b> <span style="color:var(--info); font-weight:600;">${j.status}</span><br>
+                                <b>วันที่แจ้งคิว:</b> ${reqDateStr}<br>
+                                <b>วันที่พร้อมม้วน:</b> <span style="color:var(--primary-dark); font-weight:600;">${harvDateStr}</span><br>
+                                <b>เงื่อนไขแปลง:</b> ${j.access || '-'}<br>
+                                <hr style="margin:8px 0; border:0; border-top:1px dashed #ccc;">
+                                <b>พาร์ทเนอร์ผู้รับซื้อ:</b> ${buyerName}<br>
+                                <b>ราคาที่ตกลง:</b> ${j.price || '-'}
+                            </div>
                             ${offersListHTML}
+                            ${closeProofHTML}
                         </div>
                         
-                        <b>🗺️ พิกัดแผนที่:</b>
-                        <div id="modal-job-map" style="width:100%; height:200px; border-radius:12px; border:1px solid var(--border); margin-top:5px;"></div>
-                        
-                        <div style="margin-top:15px;">
+                        <!-- ฝั่งขวา: แผนที่ และ รูปถ่าย -->
+                        <div style="flex:1; min-width:300px;">
+                            <b>🗺️ พิกัดแผนที่:</b>
+                            <div id="modal-job-map" style="width:100%; height:200px; border-radius:12px; border:1px solid var(--border); margin-top:5px; margin-bottom:15px;"></div>
+                            
                             <b>📸 รูปถ่ายสภาพหน้างาน:</b>
-                            ${photoHTML ? photoHTML : '<div style="color:gray; font-size:13px; margin-top:5px; background:var(--bg-body); padding:10px; border-radius:8px;">ไม่มีรูปภาพประกอบ</div>'}
+                            <div style="margin-top:5px;">
+                                ${photoHTML ? photoHTML : '<div style="color:gray; font-size:13px; background:var(--bg-body); padding:10px; border-radius:8px;">ไม่มีรูปภาพประกอบ</div>'}
+                            </div>
                         </div>
-                        
-                        ${closeProofHTML}
+
                     </div>
                 `,
                 showCloseButton: true, showConfirmButton: false,
@@ -710,7 +885,7 @@
             });
         }
 
-        // ================= CRUD =================
+        // ================= CRUD (แก้ไข และ ลบ) =================
         function editFarmer(index) {
             let f = globalData.farmers[index];
             let fDob = f.dob ? (new Date(f.dob).getTime() ? new Date(f.dob).toISOString().split('T')[0] : "") : "";
@@ -813,10 +988,16 @@
             });
         }
 
+        // ================= เริ่มการทำงานเมื่อโหลดเว็บ =================
         window.onload = () => {
-            if(sessionStorage.getItem("adminLoggedIn") === "true") { document.getElementById("login-overlay").style.display = "none"; refreshData(); } 
-            else { document.getElementById("login-overlay").style.display = "flex"; }
+            if(sessionStorage.getItem("adminLoggedIn") === "true") {
+                document.getElementById("login-overlay").style.display = "none";
+                refreshData();
+            } else {
+                document.getElementById("login-overlay").style.display = "flex";
+            }
         };
+
     </script>
 </body>
 </html>
