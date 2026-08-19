@@ -228,7 +228,7 @@
                 </div>
             </div>
 
-            <!-- 5. Jobs Tab (มี Filter สถานะเพิ่มขึ้นมา) -->
+            <!-- 5. Jobs Tab -->
             <div id="tab-jobs" class="tab-pane">
                 <div class="panel">
                     <div class="panel-header">
@@ -316,7 +316,6 @@
             return 0;
         }
 
-        // ตัวช่วยสกัดตัวเลขราคาจาก String (เช่น "800 บาท/ตัน" -> 800)
         function extractPrice(str) {
             if(!str) return 0;
             let match = str.toString().match(/\d+(\.\d+)?/);
@@ -396,7 +395,7 @@
             });
         }
 
-        // ================= Farmers =================
+        // ================= Farmers (เพิ่มปุ่มสถิติและประวัติการขาย) =================
         function updateVillageFilter() {
             let select = document.getElementById('filter-village');
             let uniques = new Set();
@@ -430,7 +429,7 @@
             document.getElementById('table-farmers').innerHTML = fHtml || '<tr><td colspan="6" style="text-align: center;">ไม่มีข้อมูลในหมวดนี้</td></tr>';
         }
 
-        // ================= Buyers =================
+        // ================= Buyers (เพิ่มปุ่มดูรายละเอียดประวัติการรับซื้อ) =================
         function renderBuyersTable() {
             let bHtml = '';
             globalData.buyers.forEach((b, index) => {
@@ -482,8 +481,8 @@
                 else if(j.status === 'เสร็จสิ้น') badge = 'bg-success';
                 else if(j.status === 'ยกเลิก') badge = 'bg-danger';
 
-                let reqDateStr = j.date ? j.date : "-";
-                let harvDateStr = j.harvestDate ? j.harvestDate : "-";
+                let reqDateStr = j.date ? j.date.toString().split(',')[0].split(' ')[0] : "-";
+                let harvDateStr = j.harvestDate ? j.harvestDate.toString().split(',')[0].split(' ')[0] : "-";
                 
                 let buyerDisplay = "";
                 if (j.status === 'รอชาวไร่ยืนยัน' && j.offers && j.offers.length > 0) {
@@ -570,14 +569,28 @@
             if (overviewLayer.getLayers().length > 0) { overviewMapObj.fitBounds(overviewLayer.getBounds(), { padding: [30, 30] }); }
         }
 
-        // ================= View Detailed Farmer + History =================
+        // ================= View Detailed Farmer + History (อิงตาม ID และ ชื่อ) =================
         function viewFarmerDetails(index) {
             let f = globalData.farmers[index];
             let plots = [];
             try { if(f.savedPlotsRaw) plots = JSON.parse(f.savedPlotsRaw); } catch(e){}
 
-            // ดึงประวัติการขายของชาวไร่คนนี้
-            let fJobs = globalData.jobs.filter(j => j.farmerLineId === f.lineId);
+            // ดึงประวัติการขายของชาวไร่คนนี้ (ค้นหา 2 ชั้น: เช็ค LINE ID ก่อน, ถ้าไม่มีเช็คจากชื่อแบบตัดช่องว่างทิ้ง)
+            let fJobs = globalData.jobs.filter(j => {
+                let match = false;
+                if(j.farmerLineId && j.farmerLineId === f.lineId) {
+                    match = true;
+                }
+                if(!match && j.farmer && j.farmer !== "-") {
+                    let jName = j.farmer.toString().replace(/\s/g, "");
+                    let fName = f.name.toString().replace(/\s/g, "");
+                    let fFirstName = f.firstName.toString().replace(/\s/g, "");
+                    if(jName === fName || jName.includes(fFirstName) || fName.includes(jName)) {
+                        match = true;
+                    }
+                }
+                return match;
+            });
 
             let completedCount = 0, sumTon = 0, sumIncome = 0;
             let historyHTML = "";
@@ -596,7 +609,7 @@
                     sumIncome += (w * extractPrice(j.price));
                 }
                 
-                // แก้บั๊ก Invalid Date: ตัดเอาแค่ส่วนวันที่ (เช่น "19/8/2026")
+                // แก้บั๊ก Invalid Date: ตัดเอาแค่ส่วนวันที่
                 let dateStr = j.date ? j.date.toString().split(',')[0].split(' ')[0] : "-";
                 let qtyStr = isComplete ? `${j.actualWeight} ตัน` : `${j.qty} ไร่`;
                 let buyerStr = (j.buyer && j.buyer !== '-' && j.buyer !== 'undefined') ? j.buyer : "-";
@@ -607,7 +620,7 @@
                     <td><span style="color:var(--primary-dark); font-weight:500;">${qtyStr}</span></td>
                     <td><span class="badge ${badge}">${j.status}</span></td>
                     <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;" title="${buyerStr}">${buyerStr}</td>
-                    <td><button onclick="viewJobDetails(${originalIndex})" class="btn-action btn-view" style="width:26px; height:26px; font-size:11px; margin:0;" title="ดูงานนี้"><i class="fa-solid fa-eye"></i></button></td>
+                    <td><button onclick="viewJobDetails(${originalIndex})" class="btn-action btn-view" style="width:26px; height:26px; font-size:11px; margin:0;" title="ดูงานนี้แบบละเอียด"><i class="fa-solid fa-eye"></i></button></td>
                 </tr>`;
             });
             
@@ -667,7 +680,7 @@
                                 <b>📜 ประวัติการแจ้งขาย (${fJobs.length} รายการ):</b>
                                 <div style="max-height:390px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; margin-top:8px;">
                                     <table class="swal-table">
-                                        <thead><tr><th>วันที่</th><th>ปริมาณ</th><th>สถานะ</th><th>ผู้รับซื้อ</th><th>จัดการ</th></tr></thead>
+                                        <thead><tr><th>วันที่</th><th>ปริมาณ</th><th>สถานะ</th><th>ผู้รับซื้อ</th><th>ดู</th></tr></thead>
                                         <tbody>${historyHTML}</tbody>
                                     </table>
                                 </div>
@@ -698,16 +711,30 @@
             });
         }
 
-        // ================= View Buyer History (ประวัติผู้รับซื้อ) =================
+        // ================= View Buyer History (ประวัติผู้รับซื้อ อิงตามเบอร์โทร + ชื่อ) =================
         function viewBuyerDetails(index) {
             let b = globalData.buyers[index];
             
-            // ดึงประวัติการรับซื้อของรถม้วนคนนี้
+            // ดึงประวัติการรับซื้อของรถม้วนคนนี้ (ค้นหา 2 ชั้น: เช็คเบอร์โทรศัพท์ก่อน, ถ้าไม่มีเช็คจากชื่อแบบตัดช่องว่างทิ้ง)
             let bJobs = globalData.jobs.filter(j => {
-                if(!j.buyerPhone || j.buyerPhone === "-") return false;
-                let jPhone = j.buyerPhone.toString().replace(/'/g, "").replace(/\s/g, "");
-                let bPhone = b.phone.toString().replace(/'/g, "").replace(/\s/g, "");
-                return jPhone === bPhone;
+                let match = false;
+                
+                if(j.buyerPhone && j.buyerPhone !== "-") {
+                    let jPhone = j.buyerPhone.toString().replace(/['\s-]/g, "");
+                    let bPhone = b.phone.toString().replace(/['\s-]/g, "");
+                    if(jPhone === bPhone) match = true;
+                }
+                
+                if(!match && j.buyer && j.buyer !== "-") {
+                    let jBuyer = j.buyer.toString().replace(/\s/g, "");
+                    let bName = b.name.toString().replace(/\s/g, "");
+                    let bFirstName = b.firstName.toString().replace(/\s/g, "");
+                    if(jBuyer === bName || jBuyer.includes(bFirstName) || bName.includes(jBuyer)) {
+                        match = true;
+                    }
+                }
+                
+                return match;
             });
 
             let completedCount = 0, sumTon = 0, sumExpense = 0;
@@ -735,7 +762,7 @@
                     <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;" title="${j.farmer}">${j.farmer}</td>
                     <td><span class="badge ${badge}">${j.status}</span></td>
                     <td><span style="color:var(--primary-dark); font-weight:500;">${qtyStr}</span></td>
-                    <td><button onclick="viewJobDetails(${originalIndex})" class="btn-action btn-view" style="width:26px; height:26px; font-size:11px; margin:0;" title="ดูงานนี้"><i class="fa-solid fa-eye"></i></button></td>
+                    <td><button onclick="viewJobDetails(${originalIndex})" class="btn-action btn-view" style="width:26px; height:26px; font-size:11px; margin:0;" title="ดูงานนี้แบบละเอียด"><i class="fa-solid fa-eye"></i></button></td>
                 </tr>`;
             });
             
@@ -774,7 +801,7 @@
                             <b style="font-size:16px;">📜 ประวัติการรับซื้อใบอ้อย (${bJobs.length} รายการ):</b>
                             <div style="max-height:300px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; margin-top:8px;">
                                 <table class="swal-table">
-                                    <thead><tr><th>วันที่แจ้ง</th><th>รับซื้อจาก (ชาวไร่)</th><th>สถานะงาน</th><th>ปริมาณ</th><th>จัดการ</th></tr></thead>
+                                    <thead><tr><th>วันที่แจ้ง</th><th>รับซื้อจาก (ชาวไร่)</th><th>สถานะงาน</th><th>ปริมาณ</th><th>ดู</th></tr></thead>
                                     <tbody>${historyHTML}</tbody>
                                 </table>
                             </div>
@@ -789,8 +816,9 @@
         function viewJobDetails(index) {
             let j = globalData.jobs[index];
             
-            let reqDateStr = j.date ? j.date.toString().split(',')[0] : "-";
-            let harvDateStr = j.harvestDate ? j.harvestDate : "-";
+            // แก้บั๊ก Invalid Date: ตัดเอาแค่ส่วนวันที่
+            let reqDateStr = j.date ? j.date.toString().split(',')[0].split(' ')[0] : "-";
+            let harvDateStr = j.harvestDate ? j.harvestDate.toString().split(',')[0].split(' ')[0] : "-";
             let buyerName = (j.buyer && j.buyer !== "undefined" && j.buyer !== "-") ? j.buyer : "<span style='color:gray;'>ยังไม่มีผู้รับงาน</span>";
 
             let photoHTML = "";
