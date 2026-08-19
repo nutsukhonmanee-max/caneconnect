@@ -5,18 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - CaneConnect</title>
     
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <!-- Leaflet CSS & JS (แผนที่) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <!-- Chart.js (กราฟสถิติ) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -229,7 +222,7 @@
                 </div>
             </div>
 
-            <!-- 5. Jobs Tab (เพิ่มระบบ Sort แล้ว) -->
+            <!-- 5. Jobs Tab -->
             <div id="tab-jobs" class="tab-pane">
                 <div class="panel">
                     <div class="panel-header">
@@ -247,7 +240,7 @@
                     </div>
                     <div style="overflow-x: auto;">
                         <table>
-                            <thead><tr><th>รหัสงาน</th><th>ผู้แจ้ง</th><th>ปริมาณ</th><th>วันเวลาที่แจ้ง</th><th>วันที่นัดเก็บเกี่ยว</th><th>สถานะ</th><th>ผู้รับงาน</th><th>จัดการ</th></tr></thead>
+                            <thead><tr><th>รหัสงาน</th><th>ผู้แจ้ง</th><th>ปริมาณ</th><th>วันเวลาที่แจ้ง</th><th>วันที่นัดเก็บเกี่ยว</th><th>สถานะ</th><th>ผู้รับงาน/ผู้เสนอ</th><th>จัดการ</th></tr></thead>
                             <tbody id="table-jobs"><tr><td colspan="8" style="text-align: center;">กำลังโหลดข้อมูล...</td></tr></tbody>
                         </table>
                     </div>
@@ -271,7 +264,6 @@
         // ================= ระบบ Login =================
         function checkLogin() {
             let pwd = document.getElementById("admin-password").value;
-            // ตั้งค่ารหัสผ่านเข้าหน้าแอดมินตรงนี้ครับ (ปัจจุบันตั้งไว้ที่ 1234)
             if(pwd === "1234") { 
                 sessionStorage.setItem("adminLoggedIn", "true");
                 document.getElementById("login-overlay").style.display = "none";
@@ -290,19 +282,17 @@
         function showLoader() { document.getElementById('loader').style.display = 'flex'; }
         function hideLoader() { document.getElementById('loader').style.display = 'none'; }
 
-        // ฟังก์ชันแปลงวันที่ของ Google Sheets เป็นตัวเลขเพื่อเอาไว้ใช้จัดเรียง (Sorting)
         function getEpoch(dateString) {
             if(!dateString || typeof dateString !== 'string') return 0;
             let dObj = new Date(dateString);
             if(!isNaN(dObj.getTime())) return dObj.getTime();
             
-            // กรณีเป็น Format ไทย DD/MM/YYYY
             let parts = dateString.split(/[\sT]+/)[0].split(/[-/]/);
             if(parts.length >= 3) {
                 let d = parseInt(parts[0], 10);
                 let m = parseInt(parts[1], 10) - 1;
                 let y = parseInt(parts[2], 10);
-                if(y > 2500) y -= 543; // แปลง พ.ศ. เป็น ค.ศ.
+                if(y > 2500) y -= 543;
                 return new Date(y, m, d).getTime();
             }
             return 0;
@@ -327,7 +317,6 @@
                 if (result.status === "success") {
                     globalData = result.data;
                     
-                    // Stats
                     document.getElementById('stat-farmers').innerText = globalData.farmers.length;
                     document.getElementById('stat-buyers').innerText = globalData.buyers.length;
                     document.getElementById('stat-jobs').innerText = globalData.jobs.filter(j => j.status !== 'เสร็จสิ้น' && j.status !== 'ยกเลิก').length;
@@ -345,12 +334,11 @@
             hideLoader();
         }
 
-        // ================= Charts (กราฟ) =================
+        // ================= Charts =================
         function renderCharts() {
             if(chartStatusObj) chartStatusObj.destroy();
             if(chartVillageObj) chartVillageObj.destroy();
 
-            // 1. Chart Status
             let statuses = {};
             globalData.jobs.forEach(j => { statuses[j.status] = (statuses[j.status] || 0) + 1; });
             let ctx1 = document.getElementById('statusChart').getContext('2d');
@@ -366,13 +354,12 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
             });
 
-            // 2. Chart Village
             let villages = {};
             globalData.farmers.forEach(f => { 
                 let vName = `หมู่ ${f.moo} ต.${f.subDist}`;
                 if(f.subDist) { villages[vName] = (villages[vName] || 0) + 1; }
             });
-            let sortedV = Object.entries(villages).sort((a,b)=>b[1]-a[1]).slice(0, 7); // Top 7
+            let sortedV = Object.entries(villages).sort((a,b)=>b[1]-a[1]).slice(0, 7);
             let ctx2 = document.getElementById('villageChart').getContext('2d');
             chartVillageObj = new Chart(ctx2, {
                 type: 'bar',
@@ -437,12 +424,11 @@
             document.getElementById('table-buyers').innerHTML = bHtml || '<tr><td colspan="5" style="text-align: center;">ไม่มีข้อมูล</td></tr>';
         }
 
-        // ================= Jobs (ระบบ จัดเรียง + แก้บั๊กวันที่/ผู้ซื้อ) =================
+        // ================= Jobs (อัปเดตให้โชว์ผู้เสนอราคา) =================
         function renderJobsTable() {
             let sortType = document.getElementById('sort-jobs').value;
             let jobsCopy = [...globalData.jobs];
             
-            // Logic การจัดเรียง (Sorting)
             jobsCopy.sort((a, b) => {
                 if(sortType === 'date-desc') return getEpoch(b.date) - getEpoch(a.date);
                 if(sortType === 'date-asc') return getEpoch(a.date) - getEpoch(b.date);
@@ -454,7 +440,6 @@
 
             let jHtml = '';
             jobsCopy.forEach((j) => {
-                // หา Index เดิม เพื่อให้ปุ่มอ้างอิงข้อมูลได้ถูกต้องเวลาแก้ไข
                 let originalIndex = globalData.jobs.indexOf(j);
 
                 let badge = 'bg-warning';
@@ -464,12 +449,17 @@
                 else if(j.status === 'เสร็จสิ้น') badge = 'bg-success';
                 else if(j.status === 'ยกเลิก') badge = 'bg-danger';
 
-                // ดึงค่าวันที่มาจากชีตโดยตรงเพื่อป้องกัน Invalid Date
                 let reqDateStr = j.date ? j.date : "-";
                 let harvDateStr = j.harvestDate ? j.harvestDate : "-";
                 
-                // แก้บั๊กขึ้น "undefined" หากไม่มีชื่อผู้ซื้อ
-                let buyerName = (j.buyer && j.buyer !== "undefined" && j.buyer !== "-") ? j.buyer : "<span style='color:#aaa;'>ยังไม่มีรถรับงาน</span>";
+                // ตรวจสอบข้อมูลผู้ซื้อ หรือ โชว์ผู้เสนอราคากรณีรอชาวไร่ยืนยัน
+                let buyerDisplay = "";
+                if (j.status === 'รอชาวไร่ยืนยัน' && j.offers && j.offers.length > 0) {
+                    let offerNames = j.offers.map(o => (o.buyerName && o.buyerName !== "undefined") ? o.buyerName : "พาร์ทเนอร์").join(', ');
+                    buyerDisplay = `<span style='color:var(--accent); font-weight:600; font-size:13px;'>เสนอซื้อ: ${offerNames}</span>`;
+                } else {
+                    buyerDisplay = (j.buyer && j.buyer !== "undefined" && j.buyer !== "-") ? j.buyer : "<span style='color:#aaa;'>ยังไม่มีรถรับงาน</span>";
+                }
 
                 jHtml += `
                 <tr>
@@ -479,7 +469,7 @@
                     <td style="font-size:13px; color:var(--text-muted);">${reqDateStr}</td>
                     <td style="font-size:13px; color:var(--primary-dark); font-weight:500;">${harvDateStr}</td>
                     <td><span class="badge ${badge}">${j.status}</span></td>
-                    <td style="font-size:13px;">${buyerName}</td>
+                    <td style="font-size:13px;">${buyerDisplay}</td>
                     <td>
                         <button class="btn-action btn-view" onclick="viewJobDetails(${originalIndex})" title="ดูรายละเอียดงาน"><i class="fa-solid fa-eye"></i></button>
                         <button class="btn-action btn-edit" onclick="editJob(${originalIndex})" title="อัปเดตสถานะงาน"><i class="fa-solid fa-pen"></i></button>
@@ -614,11 +604,10 @@
             });
         }
 
-        // ================= View Job Details =================
+        // ================= View Job Details (อัปเดตให้โชว์รายชื่อผู้เสนอซื้อ) =================
         function viewJobDetails(index) {
             let j = globalData.jobs[index];
             
-            // อ่านค่าจากที่ดึงมาโดยตรง
             let reqDateStr = j.date ? j.date : "-";
             let harvDateStr = j.harvestDate ? j.harvestDate : "-";
             let buyerName = (j.buyer && j.buyer !== "undefined" && j.buyer !== "-") ? j.buyer : "<span style='color:gray;'>ยังไม่มีผู้รับงาน</span>";
@@ -633,6 +622,19 @@
                         photoHTML += `</div>`;
                     }
                 } catch(e){}
+            }
+
+            // ถ้ามีคนเสนอราคา ให้ลิสต์รายชื่อออกมาด้วย
+            let offersListHTML = "";
+            if (j.status === 'รอชาวไร่ยืนยัน' && j.offers && j.offers.length > 0) {
+                offersListHTML = `<div style="margin-top:10px; background:#fff; padding:12px; border-radius:8px; border:1px solid #f39c12;">
+                    <b style="color:var(--accent);">📋 รายชื่อผู้เสนอราคา (${j.offers.length} ราย):</b>
+                    <ul style="margin:5px 0 0 0; padding-left:20px; font-size:14px;">`;
+                j.offers.forEach(o => {
+                    let name = (o.buyerName && o.buyerName !== "undefined") ? o.buyerName : "พาร์ทเนอร์ไม่ทราบชื่อ";
+                    offersListHTML += `<li>คุณ ${name} <span style="color:var(--primary); font-weight:600;">(${o.price} บาท/ตัน)</span> - 📞 <a href="tel:${o.phone}">${o.phone}</a></li>`;
+                });
+                offersListHTML += `</ul></div>`;
             }
 
             Swal.fire({
@@ -651,6 +653,7 @@
                             <hr style="margin:8px 0; border:0; border-top:1px dashed #ccc;">
                             <b>พาร์ทเนอร์ผู้รับซื้อ:</b> ${buyerName}<br>
                             <b>ราคาที่ตกลง:</b> ${j.price || '-'}
+                            ${offersListHTML}
                         </div>
                         
                         <b>🗺️ พิกัดแผนที่:</b>
@@ -787,7 +790,7 @@
             });
         }
 
-        // ================= เริ่มการทำงานเมื่อโหลดหน้าเว็บ =================
+        // ================= เริ่มการทำงานเมื่อโหลดเว็บ =================
         window.onload = () => {
             // เช็คว่าเคย Login ค้างไว้ใน Session หรือไม่
             if(sessionStorage.getItem("adminLoggedIn") === "true") {
