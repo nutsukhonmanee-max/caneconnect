@@ -511,7 +511,6 @@
             
             <div class="section-title buyer-section-title">📋 กระดานประมูลคิวงาน</div>
             
-            <!-- List งานที่รับแล้ว และยังไม่ได้รับ -->
             <div id="buyer-active-jobs-container"></div>
             <div id="buyer-list-container"></div>
         </div>
@@ -521,7 +520,7 @@
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     
     <script>
-        // สีประจำแอป (สอดคล้องกับ CSS)
+        // สีประจำแอป
         const THEME_PRIMARY = '#6DB33F'; 
         const THEME_ACCENT = '#F39C12'; 
         const THEME_INFO = '#2980B9'; 
@@ -568,7 +567,7 @@
         }
         function closeImageViewer() { document.getElementById('image-viewer').style.display = 'none'; }
 
-        // ================= ระบบแท็บเมนู (หน้าลงทะเบียน) =================
+        // ================= ระบบแท็บเมนู =================
         function switchRegTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('tab-personal').style.display = 'none';
@@ -580,7 +579,6 @@
             } else {
                 document.getElementById('btn-tab-plots').classList.add('active');
                 document.getElementById('tab-plots').style.display = 'block';
-                // อัปเดตแผนที่รวมแปลง
                 setTimeout(() => { 
                     renderAllPlotsMap(); 
                     if(allPlotsMapObj) allPlotsMapObj.invalidateSize(); 
@@ -614,7 +612,7 @@
             document.getElementById("buyer-reg-status-box").innerHTML = "<i>✏️</i> กำลังอยู่ในโหมดแก้ไขข้อมูล"; 
         }
 
-        // ================= ระบบที่อยู่ (จังหวัด อำเภอ ตำบล) =================
+        // ================= ระบบที่อยู่ =================
         async function loadThaiData() {
             try {
                 const res = await fetch('https://raw.githubusercontent.com/kongvut/thai-province-data/master/api/v1/province_with_amphure_tambon.json');
@@ -1372,7 +1370,7 @@
             }
         }
 
-        // ================= กระดานประวัติการขาย (ชาวไร่) - อัปเดตโชว์ชื่อผู้เสนอ =================
+        // ================= กระดานประวัติการขาย (ชาวไร่) =================
         async function fetchSalesData() {
             try { 
                 const res = await fetch(GAS_WEB_APP_URL, { 
@@ -1442,7 +1440,6 @@
                             <div>ปริมาณประเมิน: <span style="color:var(--primary);">${item.quantity} ไร่</span></div>
                             <div>วันพร้อมเข้าม้วน: <span>${hDate}</span></div>`;
                             
-                // [ส่วนที่อัปเดตใหม่] โชว์รายชื่อผู้เสนอราคาทันที
                 if (badgeClass === "waiting" && item.offers && item.offers.length > 0) { 
                     let offerNames = item.offers.map(o => (o.buyerName && o.buyerName !== "undefined") ? o.buyerName : "พาร์ทเนอร์ไม่ทราบชื่อ").join(', ');
                     cardHTML += `<div style="color:var(--accent); font-weight:600; margin-top:6px; font-size:13px; line-height:1.6;">💡 มีผู้เสนอราคา: ${offerNames}</div>`; 
@@ -1526,12 +1523,30 @@
 
             if (role === 'farmer') { 
                 let phoneLink = item.buyerPhone && item.buyerPhone !== "-" ? `<a href="tel:${item.buyerPhone}" style="color:var(--primary); font-weight:500; text-decoration:none;">📞 ${item.buyerPhone}</a>` : "-"; 
+                
+                // [ส่วนที่อัปเดตใหม่] โชว์รายชื่อคนรับซื้อใน Popup ของชาวไร่ด้วย
+                let buyerSectionHTML = "";
+                if (item.status === 'รอชาวไร่ยืนยัน' && item.offers && item.offers.length > 0) {
+                    let offersList = `<div style="margin-top:12px; background:var(--surface); padding:12px; border-radius:8px; border:1px solid var(--warning);">
+                        <b style="color:var(--accent);">📋 รายชื่อผู้เสนอราคา (${item.offers.length} ราย):</b>
+                        <ul style="margin:5px 0 0 0; padding-left:20px; font-size:13px; color:var(--text-main);">`;
+                    item.offers.forEach(o => {
+                        let name = (o.buyerName && o.buyerName !== "undefined") ? o.buyerName : "พาร์ทเนอร์ไม่ทราบชื่อ";
+                        offersList += `<li style="margin-bottom:4px;">${name} <span style="color:var(--primary); font-weight:600;">(${o.price} บาท/ตัน)</span> <br>📞 <a href="tel:${o.phone}" style="color:var(--info); text-decoration:none;">${o.phone}</a></li>`;
+                    });
+                    offersList += `</ul></div>`;
+                    buyerSectionHTML = offersList;
+                } else {
+                    buyerSectionHTML = `
+                        <div style="margin-top:8px;"><b>ผู้รับซื้อ:</b> ${buyerNameModal}</div>
+                        <div style="margin-top:4px;"><b>ติดต่อรถม้วน:</b> ${phoneLink}</div>
+                        <div style="margin-top:4px;"><b>ราคาที่ตกลง:</b> <span style="color:var(--primary);">${item.price || "-"}</span></div>`;
+                }
+                
                 extraInfo = `
                     <div class="island-info-box">
                         <b>สถานะ:</b> <span style="color:var(--info); font-weight:500;">${item.status === "Pending" ? "รอรถรับงาน" : item.status}</span><br>
-                        <div style="margin-top:8px;"><b>ผู้รับซื้อ:</b> ${buyerNameModal}</div>
-                        <div style="margin-top:4px;"><b>ติดต่อรถม้วน:</b> ${phoneLink}</div>
-                        <div style="margin-top:4px;"><b>ราคาที่ตกลง:</b> <span style="color:var(--primary);">${item.price || "-"}</span></div>
+                        ${buyerSectionHTML}
                     </div>`; 
             } else { 
                 extraInfo = `
@@ -1645,7 +1660,6 @@
             });
         }
 
-        // ================= หน้าต่างเลือกผู้ซื้อ (อัปเดตระบบดักจับ undefined เก่า) =================
         function viewOffers(index) {
             let item = globalSalesData[index]; 
             let offersHTML = `<div style="text-align:left; font-family:'Kanit';">`; 
