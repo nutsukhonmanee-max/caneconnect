@@ -108,6 +108,16 @@
         .swal-table th { background: #f4f9f9; padding: 10px; font-size: 13px; color: var(--secondary); border-bottom: 2px solid var(--border); white-space: nowrap;}
         .swal-table td { padding: 10px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle;}
         .swal-table tr:hover { background-color: #FAFCFB; }
+        
+        /* Bill UI */
+        .receipt-box { border: 2px dashed #BFC9C5; padding: 15px; margin-top: 15px; background: #FFFFFF; border-radius: 8px; font-family: 'Kanit'; }
+        .receipt-box .title { text-align: center; margin-bottom: 10px; }
+        .receipt-box .title-main { font-size: 16px; font-weight: 600; color: var(--secondary); }
+        .receipt-box .title-sub { font-size: 12px; color: var(--text-muted); }
+        .receipt-box .section { border-top: 1px dashed #BFC9C5; border-bottom: 1px dashed #BFC9C5; padding: 10px 0; margin-bottom: 10px; font-size: 13px; }
+        .receipt-box .row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .receipt-box .total-section { border-top: 1px dashed #BFC9C5; padding-top: 10px; }
+        .receipt-box .total-row { display: flex; justify-content: space-between; font-size: 16px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -569,7 +579,7 @@
             if (overviewLayer.getLayers().length > 0) { overviewMapObj.fitBounds(overviewLayer.getBounds(), { padding: [30, 30] }); }
         }
 
-        // ================= View Detailed Farmer + History (อิงตาม ID และ ชื่อ) =================
+        // ================= View Detailed Farmer + History =================
         function viewFarmerDetails(index) {
             let f = globalData.farmers[index];
             let plots = [];
@@ -711,7 +721,7 @@
             });
         }
 
-        // ================= View Buyer History (ประวัติผู้รับซื้อ อิงตามเบอร์โทร + ชื่อ) =================
+        // ================= View Buyer History =================
         function viewBuyerDetails(index) {
             let b = globalData.buyers[index];
             
@@ -812,11 +822,11 @@
             });
         }
 
-        // ================= View Job Details (กว้างขึ้น แบ่ง 2 คอลัมน์ ไม่ต้องเลื่อนจอเยอะ) =================
+        // ================= View Job Details (เพิ่มบิลจำลอง และยอดเงินรวม) =================
         function viewJobDetails(index) {
             let j = globalData.jobs[index];
             
-            // แก้บั๊ก Invalid Date: ตัดเอาแค่ส่วนวันที่
+            // ตัดเอาแค่ส่วนวันที่ เพื่อป้องกัน Invalid Date
             let reqDateStr = j.date ? j.date.toString().split(',')[0].split(' ')[0] : "-";
             let harvDateStr = j.harvestDate ? j.harvestDate.toString().split(',')[0].split(' ')[0] : "-";
             let buyerName = (j.buyer && j.buyer !== "undefined" && j.buyer !== "-") ? j.buyer : "<span style='color:gray;'>ยังไม่มีผู้รับงาน</span>";
@@ -837,19 +847,58 @@
             if(j.status === 'รอชาวไร่ตรวจสอบ' || j.status === 'เสร็จสิ้น') {
                 let actualQ = j.actualQty || "-";
                 let actualW = j.actualWeight || "-";
+                
+                // --- คำนวณยอดเงินรวม ---
+                let pricePerTon = extractPrice(j.price);
+                let totalAmount = 0;
+                let totalAmountStr = "-";
+                if (actualW !== "-" && pricePerTon > 0) {
+                    totalAmount = parseFloat(actualW) * pricePerTon;
+                    totalAmountStr = totalAmount.toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                }
+
                 let imgHTML = (j.closeProof && j.closeProof.length > 10) ? 
                     `<img src="${j.closeProof}" style="max-height:180px; max-width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in; margin-top:8px;" onclick="Swal.fire({imageUrl: '${j.closeProof}', imageWidth: '100%'})">` : 
                     `<div style="color:gray; font-size:13px; margin-top:5px; background:var(--bg-body); padding:10px; border-radius:8px;">ไม่พบรูปภาพบิลชั่ง</div>`;
+                    
+                // --- สร้างดีไซน์บิลจำลอง (Receipt) ---
+                let billHTML = "";
+                if(j.status === 'เสร็จสิ้น') {
+                    billHTML = `
+                    <div class="receipt-box">
+                        <div class="title">
+                            <div class="title-main">🧾 สรุปยอดใบเสร็จรับเงิน (บิลจำลอง)</div>
+                            <div class="title-sub">CaneConnect Platform</div>
+                        </div>
+                        <div class="section">
+                            <div class="row"><span>รหัสงาน:</span> <span>${j.id}</span></div>
+                            <div class="row"><span>ชาวไร่ (ผู้ขาย):</span> <span>${j.farmer}</span></div>
+                            <div class="row"><span>รถม้วน (ผู้รับซื้อ):</span> <span>${buyerName}</span></div>
+                        </div>
+                        <div style="padding-bottom: 10px; font-size: 13px;">
+                            <div class="row"><span>น้ำหนักสุทธิ:</span> <span>${actualW} ตัน</span></div>
+                            <div class="row"><span>ราคาที่ตกลง:</span> <span>${pricePerTon.toLocaleString('th-TH')} บาท/ตัน</span></div>
+                        </div>
+                        <div class="total-section">
+                            <div class="total-row">
+                                <span>ยอดเงินรวมสุทธิ:</span> 
+                                <span style="color:var(--primary-dark);">${totalAmountStr} บาท</span>
+                            </div>
+                        </div>
+                    </div>`;
+                }
                     
                 closeProofHTML = `
                     <div style="margin-top:15px; padding-top:15px; border-top: 1px dashed var(--border);">
                         <b style="color:var(--primary-dark);">🚚 ข้อมูลรับซื้อเสร็จสิ้น:</b>
                         <div style="background:#f4f9f9; padding:10px; border-radius:8px; margin-top:8px; font-size:14px; border:1px solid var(--info);">
-                            <b>พื้นที่เก็บเกี่ยวจริง:</b> ${actualQ} ไร่<br>
-                            <b>น้ำหนักสุทธิ:</b> <span style="color:var(--primary-dark); font-weight:600;">${actualW} ตัน</span>
+                            <div style="margin-bottom:4px;"><b>พื้นที่เก็บเกี่ยวจริง:</b> ${actualQ} ไร่</div>
+                            <div style="margin-bottom:4px;"><b>น้ำหนักสุทธิ:</b> <span style="color:var(--primary-dark); font-weight:600;">${actualW} ตัน</span></div>
+                            <div><b>ยอดเงินรวม:</b> <span style="color:var(--accent); font-weight:600;">${totalAmountStr} บาท</span></div>
                         </div>
                         <b style="display:block; margin-top:10px;">📸 บิลชั่งน้ำหนัก:</b>
                         ${imgHTML}
+                        ${billHTML}
                     </div>
                 `;
             }
