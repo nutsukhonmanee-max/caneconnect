@@ -87,7 +87,7 @@
         .btn-login:hover { background: var(--primary-dark); }
 
         /* Loader */
-        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(4px);}
+        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.8); z-index: 9999999; display: none; align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(4px);}
         .spinner { width: 50px; height: 50px; border: 5px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -113,18 +113,18 @@
         
         /* Bill UI */
         .receipt-box { border: 2px dashed #BFC9C5; padding: 15px; margin-top: 15px; background: #FFFFFF; border-radius: 8px; font-family: 'Kanit'; }
-        .receipt-box .title { text-align: center; margin-bottom: 10px; }
+        .receipt-box .title { text-align: center; margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 10px; }
         .receipt-box .title-main { font-size: 16px; font-weight: 600; color: var(--secondary); }
         .receipt-box .title-sub { font-size: 12px; color: var(--text-muted); }
-        .receipt-box .section { border-top: 1px dashed #BFC9C5; border-bottom: 1px dashed #BFC9C5; padding: 10px 0; margin-bottom: 10px; font-size: 13px; }
-        .receipt-box .row { display: flex; justify-content: space-between; margin-bottom: 4px; }
-        .receipt-box .total-section { border-top: 1px dashed #BFC9C5; padding-top: 10px; }
-        .receipt-box .total-row { display: flex; justify-content: space-between; font-size: 16px; font-weight: 600; }
+        .receipt-box .section { font-size: 13px; line-height: 1.8; color: var(--text-main); margin-bottom: 12px; }
+        .receipt-box .row { display: flex; justify-content: space-between; }
+        .receipt-box .row span:last-child { font-weight: 500; }
+        .receipt-box .total-section { border-top: 1px dashed #ccc; padding-top: 10px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-    <!-- ระบบป้องกัน Login หน้าแอดมิน (ใส่โลโก้) -->
+    <!-- ระบบป้องกัน Login หน้าแอดมิน -->
     <div id="login-overlay">
         <div class="login-box">
             <img src="logo.jpg" alt="CaneConnect Logo" style="width: 100px; height: 100px; border-radius: 20px; object-fit: cover; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
@@ -288,12 +288,61 @@
         // ================= URL Apps Script =================
         const GAS_URL = "https://script.google.com/macros/s/AKfycbwKNL6jqjvtpuBxDzgqBIQiKLjA7_2QupvMAK9tcod5SlBbcs7iIbswlglT76xI5xOwng/exec";
         
+        // ================= GISTDA API KEY =================
+        const GISTDA_API_KEY = "MbaOpalwOpbzfNEp1ROcTdcEYh77JJMtrfdpDsIqYtNfMPQ4dpgb8pwVQUJHG9lE"; 
+        
         let globalData = { farmers: [], buyers: [], jobs: [] };
         
         let overviewMapObj = null; 
         let overviewLayer = null;
         let chartStatusObj = null; 
         let chartVillageObj = null;
+
+        // ================= ฟังก์ชันดึงและวาดแปลงดาวเทียม GISTDA =================
+        async function loadGistdaPolygonOverlay(farmerGeoJsonString, mapObject) {
+            if (!GISTDA_API_KEY || !farmerGeoJsonString) return;
+
+            try {
+                let coords = JSON.parse(farmerGeoJsonString);
+                let geojsonPayload = {
+                    "type": "Polygon",
+                    "coordinates": coords
+                };
+
+                const url = `https://api-gateway.gistda.or.th/api/2.0/resources/gi-service/v2.2/agriculture/sugarcane-weekly-40m?api_key=${GISTDA_API_KEY}`;
+                
+                const response = await fetch(url, {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(geojsonPayload) 
+                });
+
+                const dataList = await response.json();
+
+                if (dataList && Array.isArray(dataList)) {
+                    dataList.forEach(item => {
+                        if (item.geom) {
+                            L.geoJSON(item.geom, {
+                                style: {
+                                    color: '#3498DB', 
+                                    weight: 3,
+                                    fillOpacity: 0.3,
+                                    dashArray: '5, 5' 
+                                }
+                            }).bindPopup(`
+                                <div style="font-family:'Kanit';">
+                                    <b style="color:#2980B9;">🛰️ ประเมินโดยดาวเทียม GISTDA</b><br>
+                                    <b>ขนาดพื้นที่:</b> ${item.area ? parseFloat(item.area).toFixed(2) : '-'} ไร่<br>
+                                    <span style="font-size:12px; color:gray;">อัปเดต: ${item.update || '-'}</span>
+                                </div>
+                            `).addTo(mapObject);
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("GISTDA API Error:", error);
+            }
+        }
 
         // ================= ระบบ Login =================
         function checkLogin() {
@@ -332,6 +381,7 @@
             return 0;
         }
 
+        // ตัวช่วยสกัดตัวเลขราคาจาก String (เช่น "800 บาท/ตัน" -> 800)
         function extractPrice(str) {
             if(!str) return 0;
             let match = str.toString().match(/\d+(\.\d+)?/);
@@ -715,6 +765,9 @@
                             let poly = L.polygon(coords, { color: '#6DB33F', fillOpacity: 0.5 });
                             poly.bindPopup(`<b>${p.name}</b><br>${p.area} ไร่`);
                             fg.addLayer(poly);
+                            
+                            // โหลดดาวเทียม GISTDA ซ้อนทับลงไป
+                            loadGistdaPolygonOverlay(p.polygon, map);
                         } catch(e){}
                     });
                     
@@ -826,7 +879,7 @@
             });
         }
 
-        // ================= View Job Details (เพิ่มบิลจำลอง และยอดเงินรวม) =================
+        // ================= View Job Details =================
         function viewJobDetails(index) {
             let j = globalData.jobs[index];
             
@@ -851,7 +904,6 @@
                 let actualQ = j.actualQty || "-";
                 let actualW = j.actualWeight || "-";
                 
-                // --- คำนวณยอดเงินรวม ---
                 let pricePerTon = extractPrice(j.price);
                 let totalAmount = 0;
                 let totalAmountStr = "-";
@@ -864,7 +916,6 @@
                     `<img src="${j.closeProof}" style="max-height:180px; max-width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in; margin-top:8px;" onclick="Swal.fire({imageUrl: '${j.closeProof}', imageWidth: '100%'})">` : 
                     `<div style="color:gray; font-size:13px; margin-top:5px; background:var(--bg-body); padding:10px; border-radius:8px;">ไม่พบรูปภาพบิลชั่ง</div>`;
                     
-                // --- สร้างดีไซน์บิลจำลอง (Receipt) ---
                 let billHTML = "";
                 if(j.status === 'เสร็จสิ้น') {
                     billHTML = `
@@ -962,9 +1013,13 @@
                     
                     if(j.polygon) {
                         try {
-                            let coords = JSON.parse(j.polygon)[0].map(c => [c[1], c[0]]);
-                            let poly = L.polygon(coords, { color: '#F39C12', fillOpacity: 0.5 }).addTo(map);
+                            let coords = JSON.parse(j.polygon);
+                            let flippedCoords = coords[0].map(p => [p[1], p[0]]);
+                            let poly = L.polygon(flippedCoords, { color: '#F39C12', fillOpacity: 0.5 }).addTo(map);
                             setTimeout(() => { map.invalidateSize(); map.fitBounds(poly.getBounds()); }, 200);
+                            
+                            // โหลดดาวเทียม GISTDA ซ้อนทับลงไป
+                            loadGistdaPolygonOverlay(j.polygon, map);
                         } catch(e){ 
                             L.marker([j.lat, j.lon]).addTo(map); 
                             setTimeout(() => { map.invalidateSize(); }, 200); 
