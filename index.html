@@ -26,18 +26,18 @@
             --primary: #6DB33F; 
             --primary-light: #F0F8EC; 
             --primary-dark: #4A8C28; 
-            --primary-gradient: linear-gradient(135deg, #6DB33F 0%, #4A8C28 100%);
+            --primary-gradient: linear-gradient(135deg, #6DB33F 0%, #4A8C28 100%); 
             --bg-main: #F7F9F8; 
             --surface: #FFFFFF; 
             --text-main: #2C3E50; 
             --text-muted: #7F8C8D; 
-            --border: #E1E8E3;
+            --border: #E1E8E3; 
             --accent: #F39C12; 
             --danger: #E74C3C; 
             --info: #2980B9; 
             --radius-lg: 20px; 
             --radius-md: 14px; 
-            --shadow-soft: 0 10px 30px rgba(44, 62, 80, 0.05);
+            --shadow-soft: 0 10px 30px rgba(44, 62, 80, 0.05); 
         }
         
         body { 
@@ -60,10 +60,11 @@
         .header { 
             background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); 
             padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; 
-            box-shadow: 0 2px 15px rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 1000; 
         }
         
         .header h1 { margin: 0; font-size: 22px; font-weight: 600; color: var(--primary-dark); letter-spacing: 0.5px; }
+        
         .speech-bubble { 
             background: var(--primary-light); color: var(--primary-dark); 
             border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 600; 
@@ -589,13 +590,19 @@
         let thaiData = [];
 
         // Utilities
-        function showLoader() { document.getElementById("loading-screen").style.display = "flex"; }
-        function hideLoader() { document.getElementById("loading-screen").style.display = "none"; }
+        function showLoader() { 
+            document.getElementById("loading-screen").style.display = "flex"; 
+        }
+        function hideLoader() { 
+            document.getElementById("loading-screen").style.display = "none"; 
+        }
         function openImageViewer(src) { 
             document.getElementById('image-viewer-img').src = src; 
             document.getElementById('image-viewer').style.display = 'flex'; 
         }
-        function closeImageViewer() { document.getElementById('image-viewer').style.display = 'none'; }
+        function closeImageViewer() { 
+            document.getElementById('image-viewer').style.display = 'none'; 
+        }
         
         function extractPrice(str) {
             if(!str) return 0;
@@ -603,7 +610,7 @@
             return match ? parseFloat(match[0]) : 0;
         }
 
-        // ================= ฟังก์ชันดึงและวาดแปลงดาวเทียม GISTDA (แก้ไขผ่าน GAS Proxy) =================
+        // ================= ฟังก์ชันดึงและวาดแปลงดาวเทียม GISTDA (แก้ไขผ่าน GAS Proxy แล้ว) =================
         async function loadGistdaPolygonOverlay(farmerGeoJsonString, mapObject) {
             if (!farmerGeoJsonString) return;
 
@@ -618,10 +625,27 @@
 
                 const result = await response.json();
 
-                if (result.status === "success" && result.data && Array.isArray(result.data)) {
-                    result.data.forEach(item => {
-                        if (item.geom) {
-                            L.geoJSON(item.geom, {
+                if (result.status === "success") {
+                    // แกะกล่องข้อมูลจาก GISTDA (รองรับหลายรูปแบบการตอบกลับ)
+                    let dataArr = [];
+                    if (Array.isArray(result.data)) {
+                        dataArr = result.data;
+                    } else if (result.data && result.data.features) {
+                        dataArr = result.data.features;
+                    } else if (result.data) {
+                        dataArr = [result.data];
+                    }
+
+                    dataArr.forEach(item => {
+                        let geometry = item.geom || item.geometry || item;
+                        
+                        // ถ้าระบบส่งกลับมาเป็น String ให้แปลงกลับเป็น Object ก่อน
+                        if (typeof geometry === 'string') {
+                            try { geometry = JSON.parse(geometry); } catch(e){}
+                        }
+                        
+                        if (geometry && geometry.type) {
+                            L.geoJSON(geometry, {
                                 style: {
                                     color: '#3498DB', 
                                     weight: 3,
@@ -868,7 +892,13 @@
                     requiredFields[i].focus({preventScroll: true});
                     let label = requiredFields[i].previousElementSibling; 
                     let fieldName = label ? label.innerText.replace(':', '').replace('*', '').trim() : 'ช่องนี้';
-                    Swal.fire({ icon: 'warning', title: 'ข้อมูลไม่ครบถ้วน', text: `กรุณากรอกข้อมูลใน "${fieldName}" ให้ครบถ้วนครับ`, confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY });
+                    Swal.fire({ 
+                        icon: 'warning', 
+                        title: 'ข้อมูลไม่ครบถ้วน', 
+                        text: `กรุณากรอกข้อมูลใน "${fieldName}" ให้ครบถ้วนครับ`, 
+                        confirmButtonText: 'ตกลง', 
+                        confirmButtonColor: THEME_PRIMARY 
+                    });
                     return false;
                 }
             } 
@@ -1087,9 +1117,7 @@
                         
                         <div style="position:relative;">
                             <div id="modal-map" style="height: 40vh; min-height: 250px; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);"></div>
-                            <div id="gistda-loading-indicator" style="display:none; position:absolute; top:10px; right:10px; z-index:9999; background:rgba(255,255,255,0.9); padding:5px 10px; border-radius:20px; font-size:12px; color:#2980B9; border:1px solid #3498DB; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
-                                <i class="fa-solid fa-satellite-dish fa-fade"></i> ดึงข้อมูลดาวเทียม...
-                            </div>
+                            <div id="gistda-loading-indicator" style="display:none; position:absolute; top:10px; right:10px; z-index:9999; background:rgba(255,255,255,0.95); padding:6px 12px; border-radius:20px; font-size:13px; font-weight:500; color:#2980B9; border:1px solid #3498DB; box-shadow:0 2px 8px rgba(0,0,0,0.15);"></div>
                         </div>
                         
                         <div id="modal-area-text" style="margin-top:12px; color:var(--primary-dark); font-weight:600; text-align:center; font-size: 18px; background: var(--primary-light); padding: 8px; border-radius: 12px; border: 1px dashed var(--primary);">พื้นที่รวม: <span style="font-size:24px;">${tempArea}</span> ไร่</div>
@@ -1131,8 +1159,16 @@
 
                     // ฟังก์ชันดึง GISTDA ตามขอบเขตหน้าจอ
                     async function loadGistdaInBounds() {
-                        if (modalMap.getZoom() < 14) return; // ต้องซูมใกล้ๆ ป้องกันโหลดหนักเกินไป
+                        let indicator = document.getElementById('gistda-loading-indicator');
+                        if (modalMap.getZoom() < 14) {
+                            indicator.innerHTML = '<span style="color:#E67E22;">⚠️ ซูมเข้าใกล้ๆ เพื่อดึงแปลง</span>';
+                            indicator.style.display = 'block';
+                            return; 
+                        }
                         
+                        indicator.innerHTML = '<i class="fa-solid fa-satellite-dish fa-fade"></i> ค้นหาดาวเทียม...';
+                        indicator.style.display = 'block';
+
                         let bounds = modalMap.getBounds();
                         let geojsonPoly = {
                             coordinates: [[
@@ -1143,8 +1179,6 @@
                                 [bounds.getSouthWest().lng, bounds.getSouthWest().lat]
                             ]]
                         };
-                        
-                        document.getElementById('gistda-loading-indicator').style.display = 'block';
 
                         try {
                             const response = await fetch(GAS_WEB_APP_URL, {
@@ -1158,21 +1192,40 @@
                             
                             gistdaLayer.clearLayers();
                             
-                            if (result.status === "success" && result.data && Array.isArray(result.data)) {
-                                result.data.forEach(item => {
-                                    if (item.geom) {
-                                        let poly = L.geoJSON(item.geom, {
+                            if (result.status === "success") {
+                                // แกะกล่องข้อมูล (ครอบคลุมทุกกรณี)
+                                let dataArr = [];
+                                if (Array.isArray(result.data)) {
+                                    dataArr = result.data;
+                                } else if (result.data && result.data.features) {
+                                    dataArr = result.data.features;
+                                } else if (result.data) {
+                                    dataArr = [result.data];
+                                }
+
+                                let drawnCount = 0;
+
+                                dataArr.forEach(item => {
+                                    let geometry = item.geom || item.geometry || item;
+                                    
+                                    // ถ้าเป็น String ให้แปลงกลับเป็น Object
+                                    if (typeof geometry === 'string') {
+                                        try { geometry = JSON.parse(geometry); } catch(e){}
+                                    }
+                                    
+                                    if (geometry && geometry.type) {
+                                        let poly = L.geoJSON(geometry, {
                                             style: { color: '#3498DB', weight: 2, fillOpacity: 0.2, dashArray: '5,5' }
                                         });
                                         
-                                        poly.bindTooltip("แปลงดาวเทียม (GISTDA)<br>👉 คลิกเพื่อดึงรูปทรงมาเป็นของคุณ", {sticky: true});
+                                        poly.bindTooltip("แปลงดาวเทียม (GISTDA)<br>👉 คลิกเพื่อคัดลอกรูปทรง", {sticky: true});
                                         
                                         // เมื่อคลิกที่แปลง GISTDA ระบบจะคัดลอกมาเป็นแปลงที่วาดทันที
                                         poly.on('click', function() {
                                             if(modalDrawnPolygon) modalDrawnPolygon.remove();
                                             
                                             // สลับแกนพิกัดกลับมาเป็นของ Leaflet [Lat, Lng]
-                                            let flippedCoords = item.geom.coordinates[0].map(p => [p[1], p[0]]);
+                                            let flippedCoords = geometry.coordinates[0].map(p => [p[1], p[0]]);
                                             
                                             modalDrawnPolygon = L.polygon(flippedCoords, { color: '#6DB33F' }).addTo(modalMap);
                                             calcModalArea();
@@ -1191,12 +1244,25 @@
                                         });
                                         
                                         gistdaLayer.addLayer(poly);
+                                        drawnCount++;
                                     }
                                 });
+
+                                if (drawnCount > 0) {
+                                    indicator.innerHTML = `<span style="color:#27AE60;">✅ พบอ้อย ${drawnCount} แปลง</span>`;
+                                    setTimeout(() => { indicator.style.display = 'none'; }, 4000);
+                                } else {
+                                    indicator.innerHTML = '<span style="color:#7F8C8D;">❌ ไม่พบอ้อยบริเวณนี้</span>';
+                                    console.log("GISTDA Raw JSON (No geom found):", result.data); // ดูค่าใน Console
+                                }
+                            } else {
+                                indicator.innerHTML = `<span style="color:#E74C3C;">⚠️ API Error ${result.message}</span>`;
+                                console.error("GISTDA Debug Error:", result.details);
                             }
-                        } catch(e) {}
-                        
-                        document.getElementById('gistda-loading-indicator').style.display = 'none';
+                        } catch(e) { 
+                            console.error("Fetch API Error:", e);
+                            indicator.innerHTML = '<span style="color:#E74C3C;">⚠️ โหลดข้อมูลไม่สำเร็จ</span>';
+                        }
                     }
 
                     // เมื่อหยุดเลื่อนแผนที่ ให้รอ 0.8 วิ แล้วดึงข้อมูลจาก GISTDA (ระบบ Debounce)
@@ -1484,6 +1550,7 @@
                     
                     let pdpaBox = document.getElementById('pdpa-box-farmer');
                     if(pdpaBox) pdpaBox.style.display = 'none';
+                    
                     hideLoader();
                 } else { 
                     hideLoader();
@@ -1780,7 +1847,7 @@
             dashboardContainer.style.display = "block";
         }
 
-        // ================= หน้าต่างรายละเอียดงาน + บิลจำลอง =================
+        // ================= หน้าต่างรายละเอียดงาน + บิลจำลอง + ดาวเทียม GISTDA =================
         function viewSaleIslandModal(index, role) {
             let item = role === 'farmer' ? globalSalesData[index] : rawBuyerData.find(p => p.row === index); 
             if(!item) return; 
@@ -1801,7 +1868,6 @@
             let extraInfo = ""; let actionHTML = "";
             let buyerNameModal = (item.buyer && item.buyer !== "undefined" && item.buyer !== "-") ? item.buyer : "-";
 
-            // === คำนวณยอดเงินและสร้างบิลจำลอง ===
             let isComplete = (item.status === 'เสร็จสิ้น' || item.status === 'รอชาวไร่ตรวจสอบ');
             let actualW = item.actualWeight || "-";
             let actualQ = item.actualQty || item.quantity || item.qty || "-";
@@ -1889,7 +1955,7 @@
                         <div style="font-size:18px; font-weight:600; margin-bottom:16px;">ข้อมูลแปลงอ้อย</div>
                         ${extraInfo}
                         <div class="island-info-box">
-                            <div style="margin-bottom:4px;"><b>พื้นที่:</b> <span style="color:var(--primary); font-weight:500;">${actualQ} ไร่</span></div>
+                            <div style="margin-bottom:4px;"><b>พื้นที่แจ้งขาย:</b> <span style="color:var(--primary); font-weight:500;">${actualQ} ไร่</span></div>
                             <div style="margin-bottom:4px;"><b>วันพร้อมม้วน:</b> ${hDate}</div>
                             <div style="margin-bottom:4px;"><b>เงื่อนไขแปลง:</b> <span style="color:var(--accent); font-weight:500;">${item.access || "ไม่ระบุ"}</span></div>
                         </div>
@@ -2286,6 +2352,7 @@
                     </div>`;
                 });
 
+                // Dashboard สำหรับรถม้วน
                 historyContainer.innerHTML += `
                     <div style="background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); margin-bottom: 20px;">
                         <div style="font-size: 16px; font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; display: flex; align-items: center; color: var(--warning);">
