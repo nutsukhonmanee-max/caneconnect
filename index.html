@@ -158,7 +158,8 @@
         .photo-gallery { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 12px; margin-top: 10px; padding-bottom: 10px; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory;}
         .photo-gallery img { width: 100px; height: 100px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border); flex-shrink: 0; scroll-snap-align: start; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
         
-        /* SweetAlert Customization */
+        /* SweetAlert Customization (บังคับให้อยู่หน้าสุดเสมอ) */
+        .swal2-container { z-index: 1000000 !important; }
         .swal2-popup { border-radius: 20px !important; padding: 20px !important; font-family: 'Kanit', sans-serif !important; box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;}
         .swal2-close { color: var(--danger) !important; background: #FDEDEC !important; border-radius: 50% !important; width: 38px !important; height: 38px !important; font-size: 24px !important; position: absolute !important; top: 12px !important; right: 12px !important; transition: all 0.2s ease !important; box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2) !important; }
         .swal2-close:hover { background: var(--danger) !important; color: white !important; }
@@ -625,8 +626,9 @@
             });
         }
 
-        // Pop-up บังคับผู้ใช้เก่าให้ยอมรับ PDPA (จะเด้งแค่ครั้งเดียว)
+        // Pop-up บังคับผู้ใช้เก่าให้ยอมรับ PDPA (จะเด้งแค่ครั้งเดียวและซ่อนหน้าโหลดก่อนเพื่อไม่ให้บัง)
         async function requirePDPA(role) {
+            hideLoader(); // ซ่อนหน้าโหลดหลักก่อนโชว์ Pop-up สำคัญมาก!
             return new Promise((resolve) => {
                 Swal.fire({
                     title: 'ข้อตกลงและเงื่อนไข (PDPA)',
@@ -657,7 +659,7 @@
                     }
                 }).then(async (result) => {
                     if (result.isConfirmed) {
-                        showLoader();
+                        showLoader(); // โชว์หน้าโหลดอีกครั้งตอนส่งข้อมูล
                         try {
                             await fetch(GAS_WEB_APP_URL, {
                                 method: 'POST',
@@ -668,7 +670,6 @@
                                 })
                             });
                         } catch(e) {}
-                        hideLoader();
                         resolve();
                     }
                 });
@@ -1289,6 +1290,7 @@
                         await checkBuyerForAction(); 
                     } 
                     else { 
+                        hideLoader();
                         document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; 
                         document.getElementById("header-text").innerText = "ยินดีต้อนรับ"; 
                         Swal.fire('ข้อแนะนำ', 'กรุณาเข้าใช้งานผ่านเมนูใน LINE ครับ', 'info'); 
@@ -1297,9 +1299,9 @@
                     liff.login(); 
                 }
             } catch (err) { 
+                hideLoader();
                 document.getElementById("profile-info").innerText = "ไม่สามารถเชื่อมต่อ LINE ได้"; 
             } 
-            hideLoader();
         }
 
         // ================= API ของ ชาวไร่ =================
@@ -1312,6 +1314,8 @@
                 const result = await res.json();
                 
                 if (result.status === "found") {
+                    if (!result.data.pdpa) { await requirePDPA('farmer'); } // บังคับ PDPA สำหรับคนเก่า
+                    
                     isEditMode = true; 
                     let d = result.data; 
                     document.getElementById("profile-info").innerText = "คุณ " + d.firstName + " " + d.lastName;
@@ -1347,12 +1351,15 @@
                     
                     let pdpaBox = document.getElementById('pdpa-box-farmer');
                     if(pdpaBox) pdpaBox.style.display = 'none';
-                    
-                    if (!result.data.pdpa) { await requirePDPA('farmer'); } // บังคับ PDPA สำหรับคนเก่า
+                    hideLoader();
                 } else { 
+                    hideLoader();
                     document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; 
                 }
-            } catch (error) { console.error(error); }
+            } catch (error) { 
+                hideLoader();
+                console.error(error); 
+            }
         }
 
         async function submitRegistration() {
@@ -1423,11 +1430,14 @@
                             try { userSavedPlots = JSON.parse(result.data.savedPlots); renderSavedPlotsList(); } catch(e){} 
                         }
                         document.getElementById("main-page").classList.add("active"); 
+                        hideLoader();
                     } else if (targetAction === 'sales') { 
                         document.getElementById("sales-page").classList.add("active"); 
-                        await fetchSalesData(); 
+                        await fetchSalesData(); // function internally drops loader if needed, or finishes setup
+                        hideLoader();
                     }
                 } else { 
+                    hideLoader();
                     document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; 
                     Swal.fire({ 
                         icon: 'warning', 
@@ -1438,6 +1448,7 @@
                     }).then(() => { liff.closeWindow(); }); 
                 }
             } catch (error) { 
+                hideLoader();
                 Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้', 'error'); 
             }
         }
@@ -1898,6 +1909,8 @@
                 const result = await res.json();
                 
                 if (result.status === "found") {
+                    if (!result.data.pdpa) { await requirePDPA('buyer'); } // บังคับ PDPA สำหรับคนเก่า
+                    
                     isBuyerEditMode = true; 
                     let d = result.data; 
                     document.getElementById("profile-info").innerText = "คุณ " + d.fullName; 
@@ -1929,11 +1942,15 @@
                     let pdpaBox = document.getElementById('pdpa-box-buyer');
                     if(pdpaBox) pdpaBox.style.display = 'none';
 
-                    if (!result.data.pdpa) { await requirePDPA('buyer'); } // บังคับ PDPA สำหรับคนเก่า
+                    hideLoader();
                 } else { 
+                    hideLoader();
                     document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; 
                 }
-            } catch (error) { console.error(error); }
+            } catch (error) { 
+                hideLoader();
+                console.error(error); 
+            }
         }
 
         async function submitBuyerRegistration() {
@@ -1999,7 +2016,9 @@
                     document.getElementById("profile-info").innerText = "คุณ " + result.data.fullName; 
                     document.getElementById("buyer-page").classList.add("active"); 
                     await fetchBuyerRawData(); 
+                    hideLoader();
                 } else { 
+                    hideLoader();
                     document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; 
                     Swal.fire({ 
                         icon: 'error', title: 'โปรดลงทะเบียน', 
@@ -2007,7 +2026,10 @@
                         confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY 
                     }).then(() => { liff.closeWindow(); }); 
                 } 
-            } catch (error) { Swal.fire('ข้อผิดพลาด', 'ระบบขัดข้อง', 'error'); }
+            } catch (error) { 
+                hideLoader();
+                Swal.fire('ข้อผิดพลาด', 'ระบบขัดข้อง', 'error'); 
+            }
         }
 
         async function fetchBuyerRawData() {
