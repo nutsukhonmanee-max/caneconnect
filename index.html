@@ -7,6 +7,7 @@
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -330,7 +331,7 @@
             <!-- Tab: Saved Plots -->
             <div id="tab-plots" style="display:none;">
                 <div class="status-box" style="background: #FFF9E6; border-color: var(--accent); color: var(--accent); margin-bottom: 15px;">
-                    <i>💡</i> วาดแปลงเก็บไว้ เพื่อความสะดวกรวดเร็วในการแจ้งขาย
+                    <i>💡</i> เลื่อนแผนที่ไปยังพื้นที่ของท่าน ระบบจะดึงเส้นขอบแปลงอ้อยจากดาวเทียมมาให้คลิกเลือกได้ทันที!
                 </div>
                 
                 <button type="button" class="btn-main btn-info" onclick="openAddPlotModal(-1)" style="margin-top: 0;">
@@ -358,7 +359,7 @@
                     <option value="">-- กรุณาเลือกแปลงอ้อย --</option>
                 </select>
                 <div style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">
-                    * หากไม่มีแปลงให้เลือก กรุณาไปวาดแปลงที่เมนู "ข้อมูลส่วนตัว > แปลงของฉัน" ก่อนครับ
+                    * หากไม่มีแปลงให้เลือก กรุณาไปเพิ่มที่เมนู "ข้อมูลส่วนตัว > แปลงของฉัน" ก่อนครับ
                 </div>
             </div>
 
@@ -558,9 +559,6 @@
         const LIFF_ID = "2010423459-prdYAD4u"; 
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwKNL6jqjvtpuBxDzgqBIQiKLjA7_2QupvMAK9tcod5SlBbcs7iIbswlglT76xI5xOwng/exec";
         
-        // ================= GISTDA API KEY =================
-        const GISTDA_API_KEY = "MbaOpalwOpbzfNEp1ROcTdcEYh77JJMtrfdpDsIqYtNfMPQ4dpgb8pwVQUJHG9lE"; 
-        
         let userProfile = null; 
         let currentLat = 17.295; 
         let currentLng = 101.782; 
@@ -605,29 +603,23 @@
             return match ? parseFloat(match[0]) : 0;
         }
 
-        // ================= ฟังก์ชันดึงและวาดแปลงดาวเทียม GISTDA =================
+        // ================= ฟังก์ชันดึงและวาดแปลงดาวเทียม GISTDA (แก้ไขผ่าน GAS Proxy) =================
         async function loadGistdaPolygonOverlay(farmerGeoJsonString, mapObject) {
-            if (!GISTDA_API_KEY || !farmerGeoJsonString) return;
+            if (!farmerGeoJsonString) return;
 
             try {
-                let coords = JSON.parse(farmerGeoJsonString);
-                let geojsonPayload = {
-                    "type": "Polygon",
-                    "coordinates": coords
-                };
-
-                const url = `https://api-gateway.gistda.or.th/api/2.0/resources/gi-service/v2.2/agriculture/sugarcane-weekly-40m?api_key=${GISTDA_API_KEY}`;
-                
-                const response = await fetch(url, {
+                const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(geojsonPayload) 
+                    body: JSON.stringify({
+                        action: 'verifyGistda',
+                        polygon: farmerGeoJsonString
+                    }) 
                 });
 
-                const dataList = await response.json();
+                const result = await response.json();
 
-                if (dataList && Array.isArray(dataList)) {
-                    dataList.forEach(item => {
+                if (result.status === "success" && result.data && Array.isArray(result.data)) {
+                    result.data.forEach(item => {
                         if (item.geom) {
                             L.geoJSON(item.geom, {
                                 style: {
@@ -647,7 +639,7 @@
                     });
                 }
             } catch (error) {
-                console.error("GISTDA API Error:", error);
+                console.error("GISTDA Verify Error:", error);
             }
         }
 
@@ -719,7 +711,6 @@
                                 })
                             });
                         } catch(e) {}
-                        hideLoader();
                         resolve();
                     }
                 });
@@ -1032,7 +1023,7 @@
             });
         }
 
-        // ================= วาด/แก้ไขแปลงอ้อย =================
+        // ================= วาด/แก้ไขแปลงอ้อย (อัปเกรดดึง GISTDA อัตโนมัติ) =================
         function openAddPlotModal(editIndex = -1) {
             Swal.fire({ title: 'กำลังโหลดแผนที่...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
             
@@ -1069,12 +1060,11 @@
             let tempCenter = plotToEdit && plotToEdit.center ? plotToEdit.center : [];
             let modalMap = null; 
             let modalDrawnPolygon = null; 
-            let modalLocMarker = null;
 
             Swal.fire({
                 html: `
                     <div style="text-align: left; font-family: 'Kanit'; padding: 0;">
-                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--primary-dark);">📍 ${plotToEdit ? 'แก้ไขแปลงอ้อย' : 'วาดแปลงอ้อยใหม่'}</div>
+                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--primary-dark);">📍 ${plotToEdit ? 'แก้ไขแปลงอ้อย' : 'สร้างแปลงอ้อยอัตโนมัติ'}</div>
                         
                         <input type="text" id="plot-name" class="swal2-input" placeholder="ตั้งชื่อแปลง (เช่น แปลงหน้าบ้าน)" style="width: 100%; box-sizing: border-box; margin: 0 0 10px 0; font-family: 'Kanit'; padding: 10px; font-size: 14px;">
                         
@@ -1093,8 +1083,14 @@
                             </select>
                         </div>
                         
-                        <div style="font-size: 14px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px;">✏️ แตะไอคอนห้าเหลี่ยม เพื่อวาดขอบเขต</div>
-                        <div id="modal-map" style="height: 40vh; min-height: 250px; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);"></div>
+                        <div style="font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px;">💡 เลื่อนแผนที่ไปยังไร่ของคุณ ระบบจะดึงเส้นขอบจากดาวเทียมมาให้คลิกเลือกได้เลย!</div>
+                        
+                        <div style="position:relative;">
+                            <div id="modal-map" style="height: 40vh; min-height: 250px; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);"></div>
+                            <div id="gistda-loading-indicator" style="display:none; position:absolute; top:10px; right:10px; z-index:9999; background:rgba(255,255,255,0.9); padding:5px 10px; border-radius:20px; font-size:12px; color:#2980B9; border:1px solid #3498DB; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+                                <i class="fa-solid fa-satellite-dish fa-fade"></i> ดึงข้อมูลดาวเทียม...
+                            </div>
+                        </div>
                         
                         <div id="modal-area-text" style="margin-top:12px; color:var(--primary-dark); font-weight:600; text-align:center; font-size: 18px; background: var(--primary-light); padding: 8px; border-radius: 12px; border: 1px dashed var(--primary);">พื้นที่รวม: <span style="font-size:24px;">${tempArea}</span> ไร่</div>
                     </div>
@@ -1120,16 +1116,102 @@
                     let startLat = plotToEdit && tempCenter.length === 2 ? tempCenter[0] : currentLat; 
                     let startLng = plotToEdit && tempCenter.length === 2 ? tempCenter[1] : currentLng;
                     
-                    modalMap = L.map('modal-map').setView([startLat, startLng], 16);
+                    modalMap = L.map('modal-map').setView([startLat, startLng], 15);
                     L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(modalMap);
+                    
                     modalMap.pm.addControls({ 
                         position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, 
                         drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, 
                         dragMode: false, cutPolygon: false, removalMode: true 
                     });
 
+                    // สร้าง LayerGroup เพื่อเก็บแปลงที่ดึงมาจาก GISTDA
+                    let gistdaLayer = L.featureGroup().addTo(modalMap);
+                    let gistdaTimeout;
+
+                    // ฟังก์ชันดึง GISTDA ตามขอบเขตหน้าจอ
+                    async function loadGistdaInBounds() {
+                        if (modalMap.getZoom() < 14) return; // ต้องซูมใกล้ๆ ป้องกันโหลดหนักเกินไป
+                        
+                        let bounds = modalMap.getBounds();
+                        let geojsonPoly = {
+                            coordinates: [[
+                                [bounds.getSouthWest().lng, bounds.getSouthWest().lat],
+                                [bounds.getNorthWest().lng, bounds.getNorthWest().lat],
+                                [bounds.getNorthEast().lng, bounds.getNorthEast().lat],
+                                [bounds.getSouthEast().lng, bounds.getSouthEast().lat],
+                                [bounds.getSouthWest().lng, bounds.getSouthWest().lat]
+                            ]]
+                        };
+                        
+                        document.getElementById('gistda-loading-indicator').style.display = 'block';
+
+                        try {
+                            const response = await fetch(GAS_WEB_APP_URL, {
+                                method: 'POST',
+                                body: JSON.stringify({ 
+                                    action: 'verifyGistda', 
+                                    polygon: JSON.stringify(geojsonPoly.coordinates) 
+                                })
+                            });
+                            const result = await response.json();
+                            
+                            gistdaLayer.clearLayers();
+                            
+                            if (result.status === "success" && result.data && Array.isArray(result.data)) {
+                                result.data.forEach(item => {
+                                    if (item.geom) {
+                                        let poly = L.geoJSON(item.geom, {
+                                            style: { color: '#3498DB', weight: 2, fillOpacity: 0.2, dashArray: '5,5' }
+                                        });
+                                        
+                                        poly.bindTooltip("แปลงดาวเทียม (GISTDA)<br>👉 คลิกเพื่อดึงรูปทรงมาเป็นของคุณ", {sticky: true});
+                                        
+                                        // เมื่อคลิกที่แปลง GISTDA ระบบจะคัดลอกมาเป็นแปลงที่วาดทันที
+                                        poly.on('click', function() {
+                                            if(modalDrawnPolygon) modalDrawnPolygon.remove();
+                                            
+                                            // สลับแกนพิกัดกลับมาเป็นของ Leaflet [Lat, Lng]
+                                            let flippedCoords = item.geom.coordinates[0].map(p => [p[1], p[0]]);
+                                            
+                                            modalDrawnPolygon = L.polygon(flippedCoords, { color: '#6DB33F' }).addTo(modalMap);
+                                            calcModalArea();
+                                            
+                                            modalDrawnPolygon.on('pm:edit', function() { calcModalArea(); });
+
+                                            Swal.fire({
+                                                toast: true,
+                                                position: 'top-end',
+                                                icon: 'success',
+                                                title: 'ดึงข้อมูลดาวเทียมสำเร็จ!',
+                                                text: 'ท่านสามารถลากจุดเพื่อปรับแต่งรูปร่างเพิ่มเติมได้',
+                                                showConfirmButton: false,
+                                                timer: 3000
+                                            });
+                                        });
+                                        
+                                        gistdaLayer.addLayer(poly);
+                                    }
+                                });
+                            }
+                        } catch(e) {}
+                        
+                        document.getElementById('gistda-loading-indicator').style.display = 'none';
+                    }
+
+                    // เมื่อหยุดเลื่อนแผนที่ ให้รอ 0.8 วิ แล้วดึงข้อมูลจาก GISTDA (ระบบ Debounce)
+                    modalMap.on('moveend', function() {
+                        clearTimeout(gistdaTimeout);
+                        gistdaTimeout = setTimeout(() => {
+                            loadGistdaInBounds();
+                        }, 800);
+                    });
+                    
+                    // โหลดครั้งแรกที่เปิดแผนที่ขึ้นมา
+                    setTimeout(() => { loadGistdaInBounds(); }, 1000);
+
                     if (!plotToEdit) { 
-                        modalLocMarker = L.marker([startLat, startLng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>").openPopup(); 
+                        L.marker([startLat, startLng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>").openPopup(); 
                     }
                     
                     if (plotToEdit && plotToEdit.polygon) {
@@ -1141,10 +1223,10 @@
                             
                             modalDrawnPolygon.on('pm:edit', function() { 
                                 let overlapEdit = checkPolygonOverlap(modalDrawnPolygon.toGeoJSON(), editIndex); 
-                                if(overlapEdit) { Swal.fire('ระวังพิกัดทับซ้อน', `การแก้ไขนี้กินพื้นที่แปลง "${overlapEdit}"`, 'warning'); } 
+                                if(overlapEdit) { Swal.fire({toast:true, position:'top-end', icon:'warning', title:`ทับซ้อนกับแปลง "${overlapEdit}"`, showConfirmButton:false, timer:3000}); } 
                                 calcModalArea(); 
                             });
-                        } catch(e) { console.error("Error drawing existing polygon", e); }
+                        } catch(e) {}
                     }
 
                     function calcModalArea() {
@@ -1160,7 +1242,7 @@
                     modalMap.on('pm:create', function(e) {
                         let isOverlap = checkPolygonOverlap(e.layer.toGeoJSON(), editIndex);
                         if(isOverlap) { 
-                            Swal.fire('พิกัดทับซ้อน!', `พื้นที่นี้ทับซ้อนกับแปลง "${isOverlap}" ที่บันทึกไว้แล้ว กรุณาวาดใหม่ครับ`, 'warning'); 
+                            Swal.fire({toast:true, position:'top-end', icon:'warning', title:`ทับซ้อนกับแปลง "${isOverlap}"`, showConfirmButton:false, timer:3000}); 
                             e.layer.remove(); 
                             return; 
                         }
@@ -1170,8 +1252,6 @@
                         calcModalArea();
                         
                         modalDrawnPolygon.on('pm:edit', function() { 
-                            let overlapEdit = checkPolygonOverlap(modalDrawnPolygon.toGeoJSON(), editIndex); 
-                            if(overlapEdit) { Swal.fire('ระวังพิกัดทับซ้อน', `การแก้ไขนี้กินพื้นที่แปลง "${overlapEdit}"`, 'warning'); } 
                             calcModalArea(); 
                         });
                     });
@@ -1189,7 +1269,7 @@
                     const pAcc = document.getElementById('plot-access').value;
                     
                     if (!pName) { Swal.showValidationMessage('กรุณาตั้งชื่อแปลง'); return false; }
-                    if (!tempPolygonGeoJSON) { Swal.showValidationMessage('กรุณาวาดแปลงบนแผนที่'); return false; }
+                    if (!tempPolygonGeoJSON) { Swal.showValidationMessage('กรุณาวาด หรือ คลิกเลือกแปลงบนแผนที่'); return false; }
                     
                     return { name: pName, polygon: tempPolygonGeoJSON, area: tempArea, center: tempCenter, condition: pCond, access: pAcc };
                 }
@@ -1700,7 +1780,7 @@
             dashboardContainer.style.display = "block";
         }
 
-        // ================= หน้าต่างรายละเอียดงาน + บิลจำลอง + ดาวเทียม GISTDA =================
+        // ================= หน้าต่างรายละเอียดงาน + บิลจำลอง =================
         function viewSaleIslandModal(index, role) {
             let item = role === 'farmer' ? globalSalesData[index] : rawBuyerData.find(p => p.row === index); 
             if(!item) return; 
@@ -1721,6 +1801,7 @@
             let extraInfo = ""; let actionHTML = "";
             let buyerNameModal = (item.buyer && item.buyer !== "undefined" && item.buyer !== "-") ? item.buyer : "-";
 
+            // === คำนวณยอดเงินและสร้างบิลจำลอง ===
             let isComplete = (item.status === 'เสร็จสิ้น' || item.status === 'รอชาวไร่ตรวจสอบ');
             let actualW = item.actualWeight || "-";
             let actualQ = item.actualQty || item.quantity || item.qty || "-";
@@ -1808,7 +1889,7 @@
                         <div style="font-size:18px; font-weight:600; margin-bottom:16px;">ข้อมูลแปลงอ้อย</div>
                         ${extraInfo}
                         <div class="island-info-box">
-                            <div style="margin-bottom:4px;"><b>พื้นที่แจ้งขาย:</b> <span style="color:var(--primary); font-weight:500;">${actualQ} ไร่</span></div>
+                            <div style="margin-bottom:4px;"><b>พื้นที่:</b> <span style="color:var(--primary); font-weight:500;">${actualQ} ไร่</span></div>
                             <div style="margin-bottom:4px;"><b>วันพร้อมม้วน:</b> ${hDate}</div>
                             <div style="margin-bottom:4px;"><b>เงื่อนไขแปลง:</b> <span style="color:var(--accent); font-weight:500;">${item.access || "ไม่ระบุ"}</span></div>
                         </div>
