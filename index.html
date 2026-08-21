@@ -558,6 +558,9 @@
         const LIFF_ID = "2010423459-prdYAD4u"; 
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwKNL6jqjvtpuBxDzgqBIQiKLjA7_2QupvMAK9tcod5SlBbcs7iIbswlglT76xI5xOwng/exec";
         
+        // ================= GISTDA API KEY =================
+        const GISTDA_API_KEY = "MbaOpalwOpbzfNEp1ROcTdcEYh77JJMtrfdpDsIqYtNfMPQ4dpgb8pwVQUJHG9lE"; 
+        
         let userProfile = null; 
         let currentLat = 17.295; 
         let currentLng = 101.782; 
@@ -602,6 +605,52 @@
             return match ? parseFloat(match[0]) : 0;
         }
 
+        // ================= ฟังก์ชันดึงและวาดแปลงดาวเทียม GISTDA =================
+        async function loadGistdaPolygonOverlay(farmerGeoJsonString, mapObject) {
+            if (!GISTDA_API_KEY || !farmerGeoJsonString) return;
+
+            try {
+                let coords = JSON.parse(farmerGeoJsonString);
+                let geojsonPayload = {
+                    "type": "Polygon",
+                    "coordinates": coords
+                };
+
+                const url = `https://api-gateway.gistda.or.th/api/2.0/resources/gi-service/v2.2/agriculture/sugarcane-weekly-40m?api_key=${GISTDA_API_KEY}`;
+                
+                const response = await fetch(url, {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(geojsonPayload) 
+                });
+
+                const dataList = await response.json();
+
+                if (dataList && Array.isArray(dataList)) {
+                    dataList.forEach(item => {
+                        if (item.geom) {
+                            L.geoJSON(item.geom, {
+                                style: {
+                                    color: '#3498DB', 
+                                    weight: 3,
+                                    fillOpacity: 0.3,
+                                    dashArray: '5, 5' 
+                                }
+                            }).bindPopup(`
+                                <div style="font-family:'Kanit';">
+                                    <b style="color:#2980B9;">🛰️ ประเมินโดยดาวเทียม GISTDA</b><br>
+                                    <b>ขนาดพื้นที่:</b> ${item.area ? parseFloat(item.area).toFixed(2) : '-'} ไร่<br>
+                                    <span style="font-size:12px; color:gray;">อัปเดต: ${item.update || '-'}</span>
+                                </div>
+                            `).addTo(mapObject);
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("GISTDA API Error:", error);
+            }
+        }
+
         // ================= นโยบาย PDPA =================
         function showPDPA() {
             Swal.fire({
@@ -628,7 +677,7 @@
 
         // Pop-up บังคับผู้ใช้เก่าให้ยอมรับ PDPA (จะเด้งแค่ครั้งเดียวและซ่อนหน้าโหลดก่อนเพื่อไม่ให้บัง)
         async function requirePDPA(role) {
-            hideLoader(); // ซ่อนหน้าโหลดหลักก่อนโชว์ Pop-up สำคัญมาก!
+            hideLoader(); 
             return new Promise((resolve) => {
                 Swal.fire({
                     title: 'ข้อตกลงและเงื่อนไข (PDPA)',
@@ -659,7 +708,7 @@
                     }
                 }).then(async (result) => {
                     if (result.isConfirmed) {
-                        showLoader(); // โชว์หน้าโหลดอีกครั้งตอนส่งข้อมูล
+                        showLoader(); 
                         try {
                             await fetch(GAS_WEB_APP_URL, {
                                 method: 'POST',
@@ -670,6 +719,7 @@
                                 })
                             });
                         } catch(e) {}
+                        hideLoader();
                         resolve();
                     }
                 });
@@ -1198,6 +1248,9 @@
                 let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
                 let poly = L.polygon(flippedCoords, { color: THEME_PRIMARY, fillOpacity: 0.4 }).addTo(previewMapObj);
                 previewMapObj.fitBounds(poly.getBounds(), { padding: [10, 10] });
+                
+                // ดึงข้อมูลดาวเทียมจาก GISTDA มาแสดงซ้อนทับทันทีที่เลือกแปลง
+                loadGistdaPolygonOverlay(plot.polygon, previewMapObj);
             } catch(e) { console.error("Error drawing saved plot", e); }
 
             setTimeout(() => { previewMapObj.invalidateSize(); }, 200);
@@ -1314,7 +1367,7 @@
                 const result = await res.json();
                 
                 if (result.status === "found") {
-                    if (!result.data.pdpa) { await requirePDPA('farmer'); } // บังคับ PDPA สำหรับคนเก่า
+                    if (!result.data.pdpa) { await requirePDPA('farmer'); } 
                     
                     isEditMode = true; 
                     let d = result.data; 
@@ -1421,7 +1474,7 @@
                 const result = await res.json();
                 
                 if (result.status === "found") {
-                    if (!result.data.pdpa) { await requirePDPA('farmer'); } // บังคับ PDPA สำหรับคนเก่า
+                    if (!result.data.pdpa) { await requirePDPA('farmer'); } 
                     
                     document.getElementById("profile-info").innerText = "คุณ " + result.data.firstName + " " + result.data.lastName;
                     
@@ -1433,7 +1486,7 @@
                         hideLoader();
                     } else if (targetAction === 'sales') { 
                         document.getElementById("sales-page").classList.add("active"); 
-                        await fetchSalesData(); // function internally drops loader if needed, or finishes setup
+                        await fetchSalesData(); 
                         hideLoader();
                     }
                 } else { 
@@ -1647,7 +1700,7 @@
             dashboardContainer.style.display = "block";
         }
 
-        // ================= หน้าต่างรายละเอียดงาน + บิลจำลอง =================
+        // ================= หน้าต่างรายละเอียดงาน + บิลจำลอง + ดาวเทียม GISTDA =================
         function viewSaleIslandModal(index, role) {
             let item = role === 'farmer' ? globalSalesData[index] : rawBuyerData.find(p => p.row === index); 
             if(!item) return; 
@@ -1668,7 +1721,6 @@
             let extraInfo = ""; let actionHTML = "";
             let buyerNameModal = (item.buyer && item.buyer !== "undefined" && item.buyer !== "-") ? item.buyer : "-";
 
-            // === คำนวณยอดเงินและสร้างบิลจำลอง ===
             let isComplete = (item.status === 'เสร็จสิ้น' || item.status === 'รอชาวไร่ตรวจสอบ');
             let actualW = item.actualWeight || "-";
             let actualQ = item.actualQty || item.quantity || item.qty || "-";
@@ -1756,7 +1808,7 @@
                         <div style="font-size:18px; font-weight:600; margin-bottom:16px;">ข้อมูลแปลงอ้อย</div>
                         ${extraInfo}
                         <div class="island-info-box">
-                            <div style="margin-bottom:4px;"><b>พื้นที่:</b> <span style="color:var(--primary); font-weight:500;">${actualQ} ไร่</span></div>
+                            <div style="margin-bottom:4px;"><b>พื้นที่แจ้งขาย:</b> <span style="color:var(--primary); font-weight:500;">${actualQ} ไร่</span></div>
                             <div style="margin-bottom:4px;"><b>วันพร้อมม้วน:</b> ${hDate}</div>
                             <div style="margin-bottom:4px;"><b>เงื่อนไขแปลง:</b> <span style="color:var(--accent); font-weight:500;">${item.access || "ไม่ระบุ"}</span></div>
                         </div>
@@ -1782,6 +1834,9 @@
                             let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
                             let polygon = L.polygon(flippedCoords, { color: THEME_PRIMARY, fillOpacity: 0.4 }).addTo(sMap); 
                             sMap.fitBounds(polygon.getBounds(), { padding: [10, 10] }); 
+                            
+                            // โหลดดาวเทียม GISTDA ซ้อนทับลงไป
+                            loadGistdaPolygonOverlay(item.polygon, sMap);
                         } catch(e) {} 
                     } else { 
                         L.marker([item.lat, item.lon]).addTo(sMap); 
@@ -1909,7 +1964,7 @@
                 const result = await res.json();
                 
                 if (result.status === "found") {
-                    if (!result.data.pdpa) { await requirePDPA('buyer'); } // บังคับ PDPA สำหรับคนเก่า
+                    if (!result.data.pdpa) { await requirePDPA('buyer'); } 
                     
                     isBuyerEditMode = true; 
                     let d = result.data; 
@@ -2009,7 +2064,7 @@
                 const result = await res.json(); 
                 
                 if (result.status === "found") { 
-                    if (!result.data.pdpa) { await requirePDPA('buyer'); } // บังคับ PDPA สำหรับคนเก่า
+                    if (!result.data.pdpa) { await requirePDPA('buyer'); } 
                     
                     buyerNameContext = result.data.fullName; 
                     buyerPhoneContext = result.data.phone; 
@@ -2150,7 +2205,6 @@
                     </div>`;
                 });
 
-                // Dashboard สำหรับรถม้วน
                 historyContainer.innerHTML += `
                     <div style="background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); margin-bottom: 20px;">
                         <div style="font-size: 16px; font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; display: flex; align-items: center; color: var(--warning);">
