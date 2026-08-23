@@ -101,6 +101,8 @@
         .dash-card .label { font-size: 13px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500;}
         .dash-card .value { font-size: 24px; font-weight: 600; color: var(--primary-dark); }
         
+        .empty-state { text-align: center; color: var(--text-muted); font-size: 15px; padding: 50px 0; background: var(--surface); border-radius: var(--radius-md); border: 1px dashed var(--border);}
+        
         #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         
         .swal2-popup { font-family: 'Kanit', sans-serif !important; border-radius: 20px !important; }
@@ -113,6 +115,12 @@
     <div id="loading-screen">
         <i class="fa-solid fa-truck-fast fa-beat-fade" style="font-size: 40px; color: var(--primary); margin-bottom: 15px;"></i>
         <h3 style="color:var(--primary-dark); margin:0;">กำลังเตรียมระบบ...</h3>
+    </div>
+
+    <!-- Image Viewer Overlay -->
+    <div id="image-viewer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20,25,22,0.95); z-index: 100000; justify-content: center; align-items: center; flex-direction: column;">
+        <span onclick="closeImageViewer()" style="position: absolute; top: 30px; right: 30px; color: white; font-size: 32px; cursor: pointer; width: 44px; height: 44px; text-align: center; line-height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; border: 1px solid rgba(255,255,255,0.2);">&times;</span>
+        <img id="image-viewer-img" src="" style="max-width: 90%; max-height: 80%; border-radius: 16px; object-fit: contain;">
     </div>
 
     <!-- Sidebar Layout -->
@@ -215,13 +223,24 @@
                         <option value="รอชาวไร่ยืนยัน">รอชาวไร่พิจารณา</option>
                     </select>
                 </div>
+                <div class="filter-item">
+                    <label>จัดเรียงตาม:</label>
+                    <select id="sort-by" onchange="updateClusterLogic()">
+                        <option value="priority">แนะนำความคุ้มค่า</option>
+                        <option value="date-new">อัปเดตล่าสุด</option>
+                        <option value="date-old">เก่าสุด</option>
+                        <option value="harvest-near">พร้อมม้วนเร็วสุด</option>
+                    </select>
+                </div>
             </div>
 
             <!-- Map -->
             <div id="buyer-map" class="map-container"></div>
             
-            <div class="section-title" style="margin-top: 30px;">กระดานประมูลงาน (รอดำเนินการ)</div>
+            <div class="section-title" style="margin-top: 30px; display:none;" id="title-active-jobs">กระดานประมูลงาน (รอดำเนินการ)</div>
             <div id="buyer-active-jobs-container" class="jobs-grid"></div>
+            
+            <div class="section-title" style="margin-top: 30px;" id="title-list-jobs">รายการแจ้งคิวอ้อย</div>
             <div id="buyer-list-container" class="jobs-grid"></div>
         </div>
 
@@ -264,6 +283,12 @@
         // Utilities
         function showLoader() { document.getElementById("loading-screen").style.display = "flex"; }
         function hideLoader() { document.getElementById("loading-screen").style.display = "none"; }
+        function openImageViewer(src) { 
+            document.getElementById('image-viewer-img').src = src; 
+            document.getElementById('image-viewer').style.display = 'flex'; 
+        }
+        function closeImageViewer() { document.getElementById('image-viewer').style.display = 'none'; }
+        
         function extractPrice(str) {
             if(!str) return 0;
             let match = str.toString().match(/\d+(\.\d+)?/);
@@ -539,6 +564,30 @@
             } catch (error) { console.error("Load map error", error); }
         }
 
+        // ================= ดึงฟังก์ชัน GISTDA มาไว้สำหรับ Pop-up =================
+        async function loadGistdaPolygonOverlay(farmerGeoJsonString, mapObject) {
+            if (!farmerGeoJsonString) return;
+            try {
+                const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'verifyGistda', polygon: farmerGeoJsonString }) });
+                const result = await response.json();
+                if (result.status === "success") {
+                    let dataArr = Array.isArray(result.data) ? result.data : (result.data && result.data.features ? result.data.features : [result.data]);
+                    dataArr.forEach(item => {
+                        let geometry = item.geom || item.geometry || item;
+                        if (typeof geometry === 'string') try { geometry = JSON.parse(geometry); } catch(e){}
+                        if (geometry && geometry.type) {
+                            L.geoJSON(geometry, { style: { color: '#3498DB', weight: 3, fillOpacity: 0.3, dashArray: '5, 5' } }).bindPopup(`
+                                <div style="font-family:'Kanit'; text-align:center;">
+                                    <b style="color:#2980B9;">ประเมินโดย GISTDA</b><br>
+                                    <b>ขนาดพื้นที่:</b> ${item.area ? parseFloat(item.area).toFixed(2) : '-'} ไร่
+                                </div>
+                            `).addTo(mapObject);
+                        }
+                    });
+                }
+            } catch (error) { console.error(error); }
+        }
+
         function getDistanceJS(lat1, lon1, lat2, lon2) { 
             var R = 6371; var dLat = (lat2-lat1)*(Math.PI/180); var dLon = (lon2-lon1)*(Math.PI/180); 
             var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*(Math.PI/180))*Math.cos(lat2*(Math.PI/180))*Math.sin(dLon/2)*Math.sin(dLon/2); 
@@ -560,13 +609,15 @@
             const listContainer = document.getElementById("buyer-list-container"); 
             const activeContainer = document.getElementById("buyer-active-jobs-container");
             const historyContainer = document.getElementById("buyer-history-container");
+            const titleActiveJobs = document.getElementById("title-active-jobs");
             
             listContainer.innerHTML = ''; activeContainer.innerHTML = ''; historyContainer.innerHTML = '';
+            titleActiveJobs.style.display = 'none';
             buyerMarkers = {}; clusterDataMap = {}; 
             
             if(rawBuyerData.length === 0) { 
-                listContainer.innerHTML = "<div class='empty-state' style='grid-column: 1/-1;'>ไม่มีรายการประมูลในขณะนี้</div>"; 
-                historyContainer.innerHTML = "<div class='empty-state' style='grid-column: 1/-1;'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>";
+                listContainer.innerHTML = "<div class='empty-state full-width'>ไม่มีรายการประมูลในขณะนี้</div>"; 
+                historyContainer.innerHTML = "<div class='empty-state full-width'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>";
                 return; 
             }
             
@@ -576,8 +627,10 @@
             
             // Render Active Jobs
             if(activeJobs.length > 0) { 
+                titleActiveJobs.style.display = 'block';
                 activeJobs.forEach(item => { 
                     let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
+                    let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
                     activeContainer.innerHTML += `
                         <div class="sale-card" style="border-left: 5px solid var(--info); background:#F4F9F9;">
                             <div class="sale-header">
@@ -585,12 +638,12 @@
                                 <span class="badge processing">${item.status === 'รอชาวไร่ตรวจสอบ' ? 'รอฝั่งชาวไร่ปิดงาน' : item.status}</span>
                             </div>
                             <div class="sale-detail">
-                                <div>เป้าหมาย: <span style="color:var(--info); font-weight:600;">${item.qty} ไร่</span></div>
+                                <div>เป้าหมาย: <span style="color:var(--info); font-weight:600;">${actualQ} ไร่</span></div>
                                 <div>วันนัดหมาย: <span>${hDate}</span></div>
                             </div>
                             <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1;"> ข้อมูลแปลง</button>
-                                ${item.status === 'กำลังดำเนินการ' ? `<button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" class="btn-main" style="flex:1;"> แจ้งปิดงาน</button>` : ''}
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1;">ข้อมูลแปลง</button>
+                                ${item.status === 'กำลังดำเนินการ' ? `<button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1;">แจ้งปิดงาน</button>` : ''}
                             </div>
                         </div>`; 
                     drawMarkerOnMap(item, THEME_INFO, true); 
@@ -628,19 +681,19 @@
                             <div>พื้นที่: <span style="font-weight:600;">${actualQ} ไร่</span> | น้ำหนัก: <span style="font-weight:600;">${actualW} ตัน</span></div>
                             <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);">ยอดจ่าย: <b style="color:var(--danger);">${totalStr} บาท</b></div>
                         </div>
-                        <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; margin-top:16px;"> ดูบิลชั่ง</button>
+                        <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; margin-top:16px;">ดูบิลชั่ง / ใบเสร็จ</button>
                     </div>`;
                 });
 
                 historyContainer.innerHTML += `
-                    <div class="dash-grid">
+                    <div class="dash-grid full-width">
                         <div class="dash-card"><div class="label">รับงานสำเร็จ</div><div class="value">${completedCount} <span style="font-size:14px; font-weight:400; color:var(--text-muted);">งาน</span></div></div>
                         <div class="dash-card"><div class="label">ปริมาณรับซื้อรวม</div><div class="value" style="color:var(--primary);">${sumTon.toLocaleString('th-TH')} <span style="font-size:14px; font-weight:400; color:var(--text-muted);">ตัน</span></div></div>
                         <div class="dash-card" style="grid-column: span 2;"><div class="label">ยอดจ่ายชาวไร่สะสม</div><div class="value" style="color:var(--danger);">${sumExpense.toLocaleString('th-TH')} <span style="font-size:14px; font-weight:400; color:var(--text-muted);">บาท</span></div></div>
                     </div>`;
                 historyContainer.innerHTML += historyHTMLList;
             } else {
-                historyContainer.innerHTML = "<div class='empty-state' style='grid-column: 1/-1;'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>";
+                historyContainer.innerHTML = "<div class='empty-state full-width'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>";
             }
 
             // Apply Filters on Available Jobs
@@ -654,31 +707,47 @@
                 return true; 
             }); 
             
-            if(filteredAvailable.length === 0) { listContainer.innerHTML = "<div class='empty-state' style='grid-column: 1/-1;'>ไม่พบรายการที่ตรงกับเงื่อนไข</div>"; return; }
+            if(filteredAvailable.length === 0) { listContainer.innerHTML = "<div class='empty-state full-width'>ไม่พบรายการที่ตรงกับเงื่อนไข</div>"; return; }
             
+            // Sorting Logic
             if (sortBy === "date-new") { filteredAvailable.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)); } 
             else if (sortBy === "date-old") { filteredAvailable.sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp)); } 
             else if (sortBy === "harvest-near") { filteredAvailable.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate)); }
             
-            // Build Clusters
-            let unassigned = []; let dynamicClusters = []; 
+            // Build Clusters and Separation
+            let premiumSingles = []; 
+            let unassigned = []; 
+            let dynamicClusters = []; 
+            
             filteredAvailable.forEach(p => { 
                 p.assigned = false; 
-                if (p.qty >= 100) { p.assigned = true; listContainer.innerHTML += renderSingleCardHTML(p, THEME_PRIMARY); drawMarkerOnMap(p, THEME_PRIMARY, false); } 
+                let actualQ = (p.actualQty && p.actualQty !== "-") ? p.actualQty : (p.quantity || p.qty || 0);
+                if (parseFloat(actualQ) >= 100) { 
+                    p.assigned = true; 
+                    premiumSingles.push(p); 
+                } 
                 else { unassigned.push(p); } 
             });
             
             let clusterCounter = 1;
             for (let i = 0; i < unassigned.length; i++) {
                 if (unassigned[i].assigned) continue; 
-                let basePlot = unassigned[i]; let tempCluster = [basePlot]; let tempTotalQty = basePlot.qty; 
+                let basePlot = unassigned[i]; 
+                let tempCluster = [basePlot]; 
+                let tempTotalQty = parseFloat((basePlot.actualQty && basePlot.actualQty !== "-") ? basePlot.actualQty : (basePlot.quantity || basePlot.qty || 0)); 
                 
                 for (let j = i + 1; j < unassigned.length; j++) { 
                     if (unassigned[j].assigned) continue; 
                     let targetPlot = unassigned[j]; 
+                    let targetQ = parseFloat((targetPlot.actualQty && targetPlot.actualQty !== "-") ? targetPlot.actualQty : (targetPlot.quantity || targetPlot.qty || 0));
+                    
                     let dist = getDistanceJS(basePlot.lat, basePlot.lon, targetPlot.lat, targetPlot.lon); 
                     let daysDiff = Math.abs(new Date(basePlot.harvestDate).getTime() - new Date(targetPlot.harvestDate).getTime()) / (1000*3600*24); 
-                    if (dist <= maxDist && daysDiff <= maxDays) { tempCluster.push(targetPlot); tempTotalQty += targetPlot.qty; } 
+                    
+                    if (dist <= maxDist && daysDiff <= maxDays) { 
+                        tempCluster.push(targetPlot); 
+                        tempTotalQty += targetQ; 
+                    } 
                 }
                 
                 if (tempTotalQty >= 100) { 
@@ -687,11 +756,32 @@
                 }
             }
             
+            let singles = unassigned.filter(p => !p.assigned);
+            
+            // Rendering the list
             if (sortBy === "priority") {
-                dynamicClusters.forEach(cData => { listContainer.innerHTML += renderClusterGroupHTML(cData, maxDist, maxDays); }); 
-                unassigned.filter(p => !p.assigned).forEach(item => { listContainer.innerHTML += renderSingleCardHTML(item, THEME_MUTED); drawMarkerOnMap(item, THEME_MUTED, false); }); 
+                if (premiumSingles.length > 0) {
+                    listContainer.innerHTML += `<div class="section-title buyer-section-title full-width" style="color:var(--primary); margin-top:0;">แปลงเดี่ยวสุดคุ้ม (เกิน 100 ไร่)</div>`;
+                    premiumSingles.forEach(item => { listContainer.innerHTML += renderSingleCardHTML(item, THEME_PRIMARY); drawMarkerOnMap(item, THEME_PRIMARY, false); });
+                }
+                if (dynamicClusters.length > 0) {
+                    listContainer.innerHTML += `<div class="section-title buyer-section-title full-width" style="color:var(--accent); margin-top:10px;">กลุ่มแปลงคุ้มทุน</div>`;
+                    dynamicClusters.forEach(cData => { listContainer.innerHTML += renderClusterGroupHTML(cData, maxDist, maxDays); });
+                }
+                if (singles.length > 0) {
+                    listContainer.innerHTML += `<div class="section-title buyer-section-title full-width" style="color:var(--text-muted); margin-top:10px;">แปลงย่อย (ยังไม่เข้าเกณฑ์)</div>`;
+                    singles.forEach(item => { listContainer.innerHTML += renderSingleCardHTML(item, THEME_MUTED); drawMarkerOnMap(item, THEME_MUTED, false); });
+                }
             } else {
-                unassigned.forEach(item => { listContainer.innerHTML += renderSingleCardHTML(item, item.assigned ? THEME_ACCENT : THEME_MUTED); drawMarkerOnMap(item, item.assigned ? THEME_ACCENT : THEME_MUTED, false); });
+                filteredAvailable.forEach(item => { 
+                    let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || 0);
+                    let markerColor = THEME_MUTED; 
+                    if (parseFloat(actualQ) >= 100) markerColor = THEME_PRIMARY; 
+                    else if (item.assigned) markerColor = THEME_ACCENT; 
+                    
+                    listContainer.innerHTML += renderSingleCardHTML(item, markerColor); 
+                    drawMarkerOnMap(item, markerColor, false); 
+                });
             }
             
             buyerPolygonLayer.addTo(buyerMapObj); 
@@ -700,8 +790,9 @@
 
         function renderSingleCardHTML(item, colorHex) {
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
-            let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:500; margin-top:8px;"> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
-            let priorityBadge = item.qty >= 100 ? `<span class="badge" style="background:#E8F5E9; color:#2E7D32;"> คุ้มทุน</span>` : "";
+            let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:500; margin-top:8px;">มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
+            let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
+            let priorityBadge = parseFloat(actualQ) >= 100 ? `<span class="badge" style="background:#E8F5E9; color:#2E7D32;">คุ้มทุน</span>` : "";
             
             return `
                 <div class="sale-card" style="border-left: 5px solid ${colorHex};">
@@ -710,14 +801,14 @@
                         <span class="badge ${item.status === "Pending" ? "pending" : "waiting"}">${item.status === "Pending" ? "ว่าง" : item.status}</span>
                     </div>
                     <div class="sale-detail">
-                        <div>ปริมาณพื้นที่: <span style="font-size:16px; color:${colorHex}; font-weight:600;">${item.qty} ไร่</span></div>
+                        <div>ปริมาณพื้นที่: <span style="font-size:16px; color:${colorHex}; font-weight:600;">${actualQ} ไร่</span></div>
                         <div>พร้อมม้วน: <span>${hDate}</span></div>
                         <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">เงื่อนไข: ${item.access}</div>
                         ${offerStatus}
                     </div>
                     <div style="display:flex; gap:10px; margin-top:16px;">
-                        <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1;"> ข้อมูลแปลง</button>
-                        <button onclick="acceptJob(${item.row}, ${item.qty})" class="btn-main" style="flex:1;"> เสนอราคา</button>
+                        <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1;">ข้อมูลแปลง</button>
+                        <button onclick="acceptJob(${item.row}, ${actualQ})" class="btn-main" style="flex:1;">เสนอราคา</button>
                     </div>
                 </div>`;
         }
@@ -728,45 +819,53 @@
             let maxDateStr = Math.max(...cData.items.map(i => new Date(i.harvestDate).getTime())); 
             
             let clusterHTML = `
-                <div class="cluster-group" style="border-color:var(--accent);">
-                    <div class="cluster-title" style="color:var(--accent);"><i></i> โซนรวบรวม ${cData.id.substring(0,9)}</div>
-                    <div style="font-size:13px; color:var(--text-muted); margin-bottom:14px; background:var(--bg-main); padding:12px; border-radius:12px;">
-                        <div style="margin-bottom:4px;"> รัศมีห่างกัน: <b>ไม่เกิน ${maxDist} กม.</b></div>
-                        <div> กรอบวัน: <b>${new Date(minDateStr).toLocaleDateString('th-TH')} - ${new Date(maxDateStr).toLocaleDateString('th-TH')}</b></div>
-                        <div style="font-size:16px; margin-top:8px; font-weight:600;"> รวมพื้นที่: <b style="color:var(--accent);">${cData.totalRai} ไร่</b></div>
+                <div class="cluster-group full-width" style="border-color:var(--accent);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:15px;">
+                        <div>
+                            <div class="cluster-title" style="color:var(--accent); margin-bottom:5px;"><i></i> โซนรวบรวม ${cData.id.substring(0,9)}</div>
+                            <div style="font-size:13px; color:var(--text-muted);">
+                                รัศมี: <b>ไม่เกิน ${maxDist} กม.</b> | กรอบวัน: <b>${new Date(minDateStr).toLocaleDateString('th-TH')} - ${new Date(maxDateStr).toLocaleDateString('th-TH')}</b>
+                            </div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:18px; font-weight:600;">รวม: <b style="color:var(--accent);">${cData.totalRai} ไร่</b></div>
+                            <button onclick="acceptClusterJob('${cData.id}', ${cData.totalRai})" class="btn-small btn-warning" style="margin-top:5px; padding:8px 15px; color:#fff;">เสนอซื้อเหมากลุ่ม</button>
+                        </div>
                     </div>
-                    <button onclick="acceptClusterJob('${cData.id}', ${cData.totalRai})" class="btn-main btn-warning" style="margin-bottom:16px;"> เสนอซื้อเหมากลุ่ม</button>`;
+                    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:15px; border-top:1px dashed var(--border); padding-top:15px;">`;
             
             cData.items.forEach(item => { 
                 drawMarkerOnMap(item, THEME_ACCENT, false); 
-                let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:11px; font-weight:500; margin-top:4px;"> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
+                let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:11px; font-weight:500; margin-top:4px;">มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
+                let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
                 clusterHTML += `
-                    <div class="sale-card" style="border-left: 3px solid var(--accent); margin-bottom:12px; padding:15px; box-shadow:none;">
-                        <div class="sale-header" style="margin-bottom:8px; padding-bottom:8px;">
-                            <span style="font-weight:600; font-size:14px;">คุณ ${item.farmerName}</span>
-                            <span style="color:var(--accent); font-weight:600; font-size:14px;">${item.qty} ไร่</span>
-                        </div>
-                        <div class="sale-detail" style="font-size:13px;">พร้อมม้วน: <span>${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span>${offerStatus}</div>
-                        <div style="display:flex; gap:8px; margin-top:12px;">
-                            <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; padding:8px; font-size:13px;"> ข้อมูลแปลง</button>
-                            <button onclick="acceptJob(${item.row}, ${item.qty})" class="btn-main" style="flex:1; padding:8px; font-size:13px;"> เสนอราคา</button>
-                        </div>
-                    </div>`; 
+                        <div class="sale-card" style="border-left: 3px solid var(--accent); margin:0; padding:15px; box-shadow:none;">
+                            <div class="sale-header" style="margin-bottom:8px; padding-bottom:8px;">
+                                <span style="font-weight:600; font-size:14px;">คุณ ${item.farmerName}</span>
+                                <span style="color:var(--accent); font-weight:600; font-size:14px;">${actualQ} ไร่</span>
+                            </div>
+                            <div class="sale-detail" style="font-size:13px;">พร้อมม้วน: <span>${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span>${offerStatus}</div>
+                            <div style="display:flex; gap:8px; margin-top:12px;">
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-small btn-outline" style="flex:1; padding:6px; font-size:12px;">ข้อมูลแปลง</button>
+                                <button onclick="acceptJob(${item.row}, ${actualQ})" class="btn-small btn-main" style="flex:1; padding:6px; font-size:12px; margin:0;">เสนอราคา</button>
+                            </div>
+                        </div>`; 
             });
-            clusterHTML += `</div>`; 
+            clusterHTML += `</div></div>`; 
             return clusterHTML;
         }
 
         function drawMarkerOnMap(item, colorHex, isActive) {
             let customIcon = L.divIcon({ className: 'custom-div-icon', html: `<div style='background-color:${colorHex}; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);'></div>` }); 
+            let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
             let popupContent = `
                 <div style="font-family:'Kanit'; text-align:center; min-width:180px;">
                     <b style="font-size:16px; color:var(--text-main);">คุณ ${item.farmerName}</b><br>
-                    <span style="font-size:14px; color:${colorHex}; font-weight:500;">${item.qty} ไร่</span><span style="font-size:12px; color:var(--text-muted);"> | ${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span>
+                    <span style="font-size:14px; color:${colorHex}; font-weight:500;">${actualQ} ไร่</span><span style="font-size:12px; color:var(--text-muted);"> | ${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span>
                     <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">`;
             
             if(!isActive) { popupContent += `<button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; padding:8px;">ดูรายละเอียด</button>`; } 
-            else { popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" class="btn-main" style="width:100%; padding:8px;">แจ้งปิดงาน</button>`; } 
+            else { popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="width:100%; padding:8px;">แจ้งปิดงาน</button>`; } 
             popupContent += `</div>`; 
             
             let marker = L.marker([item.lat, item.lon], { icon: customIcon }).bindPopup(popupContent); 
