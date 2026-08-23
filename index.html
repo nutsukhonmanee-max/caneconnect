@@ -1643,6 +1643,12 @@
                 return; 
             }
             
+            // --- [ส่วนที่แก้ไข] ดึงพิกัดกึ่งกลางจากแปลงที่เลือก แทนพิกัดเครื่อง ---
+            const selectedPlot = userSavedPlots[index];
+            const plotLat = selectedPlot.center[0];
+            const plotLng = selectedPlot.center[1];
+            // ------------------------------------------------------
+            
             const qty = document.getElementById("quantity").value; 
             const hDate = document.getElementById("harvest-date").value; 
             const hMethod = document.getElementById("harvest-method").value;
@@ -1657,8 +1663,8 @@
                 action: "report_harvest", 
                 userId: userProfile.userId, 
                 userName: document.getElementById("profile-info").innerText.replace("คุณ ", ""), 
-                latitude: currentLat, 
-                longitude: currentLng, 
+                latitude: plotLat,   // เปลี่ยนจาก currentLat เป็น plotLat
+                longitude: plotLng,  // เปลี่ยนจาก currentLng เป็น plotLng
                 quantity: Number(qty), 
                 harvestDate: hDate, 
                 polygon: polygonGeoJSON, 
