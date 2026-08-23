@@ -334,7 +334,7 @@
                 <div class="form-grid" style="margin-top: 15px;">
                     <div>
                         <label> พื้นที่ประเมิน (ไร่):</label>
-                        <input type="number" id="quantity" readonly style="background:#F4F6F5;">
+                        <input type="number" id="quantity" readonly style="background:#F4F6F5; color:var(--primary-dark); font-weight:600;">
                     </div>
                     <div>
                         <label> วันที่ตัดเสร็จ:</label>
@@ -1613,6 +1613,7 @@
                         document.getElementById("main-page").classList.add("active"); 
                         hideLoader();
                     } else if (targetAction === 'sales') { 
+                        document.getElementById("header-text").innerText = "ประวัติการขาย"; 
                         document.getElementById("sales-page").classList.add("active"); 
                         await fetchSalesData(); 
                         hideLoader();
@@ -1643,11 +1644,9 @@
                 return; 
             }
             
-            // --- [ส่วนที่แก้ไข] ดึงพิกัดกึ่งกลางจากแปลงที่เลือก แทนพิกัดเครื่อง ---
             const selectedPlot = userSavedPlots[index];
             const plotLat = selectedPlot.center[0];
             const plotLng = selectedPlot.center[1];
-            // ------------------------------------------------------
             
             const qty = document.getElementById("quantity").value; 
             const hDate = document.getElementById("harvest-date").value; 
@@ -1663,8 +1662,8 @@
                 action: "report_harvest", 
                 userId: userProfile.userId, 
                 userName: document.getElementById("profile-info").innerText.replace("คุณ ", ""), 
-                latitude: plotLat,   // เปลี่ยนจาก currentLat เป็น plotLat
-                longitude: plotLng,  // เปลี่ยนจาก currentLng เป็น plotLng
+                latitude: plotLat, 
+                longitude: plotLng, 
                 quantity: Number(qty), 
                 harvestDate: hDate, 
                 polygon: polygonGeoJSON, 
@@ -1682,15 +1681,32 @@
                         icon: 'success', 
                         title: 'ประกาศคิวสำเร็จ!', 
                         text: 'ข้อมูลส่งถึงเครือข่ายรถม้วนแล้วครับ', 
-                        confirmButtonText: 'ตกลง', 
+                        showCancelButton: true,
+                        confirmButtonText: 'ไปหน้าการขายของฉัน',
+                        cancelButtonText: 'ปิดหน้าต่าง',
                         confirmButtonColor: THEME_PRIMARY 
-                    }).then((result) => { location.reload(); }); 
+                    }).then((resultConfirm) => { 
+                        if(resultConfirm.isConfirmed) {
+                            // สลับไปหน้าประวัติการขายทันที
+                            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                            showLoader();
+                            checkUserForAction('sales');
+                            // ทำการเคลียร์ฟอร์มหน้าแจ้งขาย
+                            document.getElementById('select-saved-plot').value = "";
+                            document.getElementById('preview-map-wrapper').style.display = 'none';
+                            document.getElementById('photo-preview-container').innerHTML = '';
+                            btn.disabled = true;
+                        } else {
+                            location.reload(); 
+                        }
+                    }); 
                 }
             } catch (error) { 
                 hideLoader(); 
                 Swal.fire('ล้มเหลว', 'ไม่สามารถส่งข้อมูลได้', 'error'); 
+            } finally {
                 btn.innerText = "ประกาศหาคิวรถม้วน"; 
-                btn.disabled = false; 
+                if(document.getElementById('select-saved-plot').value !== "") btn.disabled = false;
             }
         }
 
@@ -1742,12 +1758,12 @@
                 if (statusText.includes("ยกเลิก")) badgeClass = "canceled";
                 
                 if (badgeClass === "completed") { 
-                    let rai = parseFloat(item.actualQty) || 0; 
+                    let rai = parseFloat(item.actualQty) || parseFloat(item.quantity) || 0; 
                     let ton = parseFloat(item.actualWeight) || 0; 
-                    let pricePerTon = extractPrice(item.price);
+                    let pricePerRai = extractPrice(item.price);
                     sumRai += rai; 
                     sumTon += ton; 
-                    sumIncome += (ton * pricePerTon); 
+                    sumIncome += (rai * pricePerRai); 
                     sumPM25 += (ton * 3.0); 
                 }
                 
@@ -1772,8 +1788,8 @@
                             <div>ราคาที่ตกลง: <span style="color:var(--primary);">${item.price}</span></div>`; 
                     if(badgeClass === "verify" || badgeClass === "completed") { 
                         let p = extractPrice(item.price);
-                        let w = parseFloat(item.actualWeight) || 0;
-                        let total = (p * w).toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                        let r = parseFloat(item.actualQty) || parseFloat(item.quantity) || 0;
+                        let total = (p * r).toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                         
                         cardHTML += `
                         <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); font-size:13px; color:var(--text-muted);">
@@ -1859,12 +1875,12 @@
             let isComplete = (item.status === 'เสร็จสิ้น' || item.status === 'รอชาวไร่ตรวจสอบ');
             let actualW = item.actualWeight || "-";
             let actualQ = item.actualQty || item.quantity || item.qty || "-";
-            let pricePerTon = extractPrice(item.price);
+            let pricePerRai = extractPrice(item.price);
             let totalAmount = 0;
             let totalAmountStr = "-";
             
-            if (actualW !== "-" && pricePerTon > 0) {
-                totalAmount = parseFloat(actualW) * pricePerTon;
+            if (actualQ !== "-" && pricePerRai > 0) {
+                totalAmount = parseFloat(actualQ) * pricePerRai;
                 totalAmountStr = totalAmount.toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             }
             
@@ -1885,7 +1901,8 @@
                         <div class="row"><span>ผู้ซื้อ (รถม้วน):</span> <span>${finalBuyerName}</span></div>
                     </div>
                     <div class="section" style="border-top:none;">
-                        <div class="row"><span>ราคาที่ตกลง:</span> <span>${pricePerTon.toLocaleString('th-TH')} บาท/ตัน</span></div>
+                        <div class="row"><span>ราคาที่ตกลง:</span> <span>${pricePerRai.toLocaleString('th-TH')} บาท/ไร่</span></div>
+                        <div class="row"><span>พื้นที่จริงสุทธิ:</span> <span>${actualQ} ไร่</span></div>
                         <div class="row"><span>น้ำหนักสุทธิ:</span> <span>${actualW} ตัน</span></div>
                     </div>
                     <div class="total-section">
@@ -1905,7 +1922,7 @@
                         <ul style="margin:5px 0 0 0; padding-left:20px; font-size:13px; color:var(--text-main);">`;
                     item.offers.forEach(o => {
                         let name = (o.buyerName && o.buyerName !== "undefined") ? o.buyerName : "พาร์ทเนอร์ไม่ทราบชื่อ";
-                        offersList += `<li style="margin-bottom:4px;">${name} <span style="color:var(--primary); font-weight:600;">(${o.price} บาท/ตัน)</span> <br> <a href="tel:${o.phone}" style="color:var(--info); text-decoration:none;">${o.phone}</a></li>`;
+                        offersList += `<li style="margin-bottom:4px;">${name} <span style="color:var(--primary); font-weight:600;">(${o.price} บาท/ไร่)</span> <br> <a href="tel:${o.phone}" style="color:var(--info); text-decoration:none;">${o.phone}</a></li>`;
                     });
                     offersList += `</ul></div>`;
                     buyerSectionHTML = offersList;
@@ -1930,7 +1947,8 @@
                 if (item.status === "รอชาวไร่ยืนยัน" || item.status === "รอคิวรถ") { 
                     actionHTML = `
                         <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border);">
-                            <label style="margin-top:0;"> เสนอราคารับซื้อ (บาท/ตัน):</label>
+                            <div style="margin-bottom:8px; font-size: 14px; font-weight: 500; color: var(--info);">พื้นที่: ${actualQ} ไร่</div>
+                            <label style="margin-top:0;"> เสนอราคารับซื้อ (บาท/ไร่):</label>
                             <input type="number" id="island-bid-price" placeholder="เช่น 800" style="margin-bottom:12px;">
                             <button onclick="submitIslandBid(${item.row})" class="btn-main" style="margin-top:0; border-radius:12px; padding:14px;">ส่งข้อเสนอราคา</button>
                         </div>`; 
@@ -2007,8 +2025,9 @@
 
         function farmerVerifyCloseJob(index) {
             let item = globalSalesData[index]; 
-            let pricePerTon = extractPrice(item.price); 
-            let totalIncome = (item.actualWeight * pricePerTon).toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2}); 
+            let pricePerRai = extractPrice(item.price); 
+            let actualQ = parseFloat(item.actualQty) || parseFloat(item.quantity) || 0;
+            let totalIncome = (actualQ * pricePerRai).toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2}); 
             
             let imgHTML = item.closeProof && item.closeProof.length > 10 ? 
                 `<img src="${item.closeProof}" onclick="openImageViewer('${item.closeProof}')" style="width:100%; border-radius:12px; margin-top:10px; border:1px solid var(--border); cursor:zoom-in;">` : 
@@ -2057,7 +2076,7 @@
                         <div style="border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:12px; background:var(--bg-main);">
                             <div style="font-weight:500; font-size:15px; margin-bottom:4px;">คุณ ${bName}</div>
                             <div style="margin-bottom:8px; font-size:13px;"><a href="tel:${offer.phone}" style="color:var(--primary); text-decoration:none;"> ${offer.phone}</a></div>
-                            <div style="color:var(--accent); font-size:16px; font-weight:600; margin-bottom:12px;">ให้ราคา: ${offer.price} บาท/ตัน</div>
+                            <div style="color:var(--accent); font-size:16px; font-weight:600; margin-bottom:12px;">ให้ราคา: ${offer.price} บาท/ไร่</div>
                             <button onclick="confirmSaleOffer(${item.row}, '${bName}', '${offer.phone}', '${offer.price}')" class="btn-main" style="margin-top:0; padding:10px;">เลือกรายนี้</button>
                         </div>`; 
                 }); 
@@ -2070,7 +2089,7 @@
 
         async function confirmSaleOffer(rowId, bName, bPhone, bPrice) {
             const confirmAlert = await Swal.fire({ 
-                html: `<div style="font-family:'Kanit';">คุณตกลงขายใบอ้อยให้ <b>${bName}</b><br>ในราคา <b style="color:var(--primary);">${bPrice} บ./ตัน</b> ใช่หรือไม่?</div>`, 
+                html: `<div style="font-family:'Kanit';">คุณตกลงขายใบอ้อยให้ <b>${bName}</b><br>ในราคา <b style="color:var(--primary);">${bPrice} บ./ไร่</b> ใช่หรือไม่?</div>`, 
                 showCancelButton: true, confirmButtonColor: THEME_PRIMARY, confirmButtonText: 'ตกลง', cancelButtonText: 'ยกเลิก', cancelButtonColor: '#BFC9C5' 
             });
             
@@ -2311,17 +2330,17 @@
                 let historyHTMLList = "";
                 
                 historyJobs.forEach(item => {
-                    let actualQ = item.actualQty || "-";
+                    let actualQ = item.actualQty || item.quantity || item.qty || "-";
                     let actualW = item.actualWeight || "-";
-                    let pTon = extractPrice(item.price);
+                    let pRai = extractPrice(item.price);
                     let totalStr = "-";
                     
                     if (item.status === "เสร็จสิ้น") {
                         completedCount++;
-                        if (actualW !== "-" && pTon > 0) {
-                            let total = parseFloat(actualW) * pTon;
+                        if (actualQ !== "-" && pRai > 0) {
+                            let total = parseFloat(actualQ) * pRai;
                             sumRai += parseFloat(actualQ) || 0;
-                            sumTon += parseFloat(actualW);
+                            sumTon += parseFloat(actualW) || 0;
                             sumExpense += total;
                             totalStr = total.toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                         }
@@ -2476,7 +2495,7 @@
                     </div>
                     <div style="display:flex; gap:10px; margin-top:16px;">
                         <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;"> ข้อมูลแปลง</button>
-                        <button onclick="acceptJob(${item.row})" class="btn-small btn-small-primary" style="flex:1;"> เสนอราคา</button>
+                        <button onclick="acceptJob(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="flex:1;"> เสนอราคา</button>
                     </div>
                 </div>`;
         }
@@ -2498,7 +2517,7 @@
                         <div> กรอบวัน: <b>${d1} - ${d2}</b></div>
                         <div style="font-size:16px; margin-top:8px; font-weight:600; color:var(--text-main);"> รวมพื้นที่: <b style="color:var(--accent);">${cData.totalRai} ไร่</b></div>
                     </div>
-                    <button onclick="acceptClusterJob('${cData.id}')" class="btn-main btn-warning" style="margin-bottom:16px;"> เสนอซื้อเหมากลุ่ม</button>`;
+                    <button onclick="acceptClusterJob('${cData.id}', ${cData.totalRai})" class="btn-main btn-warning" style="margin-bottom:16px;"> เสนอซื้อเหมากลุ่ม</button>`;
             
             cData.items.forEach(item => { 
                 drawMarkerOnMap(item, THEME_ACCENT, false); 
@@ -2515,7 +2534,7 @@
                         </div>
                         <div style="display:flex; gap:8px; margin-top:12px;">
                             <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;"> ข้อมูลแปลง</button>
-                            <button onclick="acceptJob(${item.row})" class="btn-small btn-small-primary" style="flex:1;"> เสนอราคา</button>
+                            <button onclick="acceptJob(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="flex:1;"> เสนอราคา</button>
                         </div>
                     </div>`; 
             });
@@ -2563,12 +2582,17 @@
             setTimeout(() => { if(buyerMarkers[row]) { buyerMarkers[row].openPopup(); } }, 1500); 
         }
 
-        async function acceptClusterJob(cId) {
+        async function acceptClusterJob(cId, totalRai) {
             let rowIds = clusterDataMap[cId]; 
             if(!rowIds || rowIds.length === 0) return; 
             
             const { value: priceInput } = await Swal.fire({ 
-                html: `<div style="font-family:'Kanit'; font-size:18px; font-weight:600; margin-bottom:16px;">เสนอราคายกคลัสเตอร์</div><input id="swal-input1" class="swal2-input" type="number" placeholder="ระบุราคาเหมา (บาท/ตัน)" style="font-family:'Kanit';">`, 
+                html: `
+                    <div style="font-family:'Kanit';">
+                        <div style="font-size:18px; font-weight:600; margin-bottom:8px;">เสนอราคายกคลัสเตอร์</div>
+                        <div style="font-size:14px; font-weight:500; color:var(--info); margin-bottom:16px;">รวมพื้นที่: ${totalRai} ไร่</div>
+                        <input id="swal-input1" class="swal2-input" type="number" placeholder="ระบุราคาเหมา (บาท/ไร่)" style="font-family:'Kanit'; margin-top:0;">
+                    </div>`, 
                 focusConfirm: false, showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY, cancelButtonColor: '#BFC9C5', 
                 preConfirm: () => { return document.getElementById('swal-input1').value } 
             });
@@ -2640,9 +2664,14 @@
             }
         }
 
-        async function acceptJob(rowId) {
+        async function acceptJob(rowId, qty) {
             const { value: priceInput } = await Swal.fire({ 
-                html: `<div style="font-family:'Kanit'; font-size:18px; font-weight:600; margin-bottom:16px;">เสนอราคารับซื้อ</div><input id="swal-input2" class="swal2-input" type="number" placeholder="ระบุราคา (บาท/ตัน)" style="font-family:'Kanit';">`, 
+                html: `
+                    <div style="font-family:'Kanit';">
+                        <div style="font-size:18px; font-weight:600; margin-bottom:8px;">เสนอราคารับซื้อ</div>
+                        <div style="font-size:14px; font-weight:500; color:var(--info); margin-bottom:16px;">พื้นที่แปลง: ${qty} ไร่</div>
+                        <input id="swal-input2" class="swal2-input" type="number" placeholder="ระบุราคา (บาท/ไร่)" style="font-family:'Kanit'; margin-top:0;">
+                    </div>`, 
                 focusConfirm: false, showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY, cancelButtonColor: '#BFC9C5', 
                 preConfirm: () => { return document.getElementById('swal-input2').value } 
             });
