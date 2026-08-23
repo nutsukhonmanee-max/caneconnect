@@ -472,18 +472,30 @@
                 </div>
                 <input type="range" class="slider-input" id="slider-days" min="1" max="14" value="5" step="1" oninput="updateClusterLogic()">
                 
-                <div class="form-grid" style="margin-top: 18px; border-top: 1px solid var(--border); padding-top: 15px;">
+                <div style="font-weight:600; font-size:14px; margin-top:15px; color:var(--text-main); border-top: 1px solid var(--border); padding-top: 12px;"> ค้นหาตามช่วงวันที่พร้อมม้วน</div>
+                <div class="form-grid" style="margin-top: 8px;">
                     <div>
-                        <label style="margin-top:0;"> กรองข้อมูล:</label>
-                        <select id="filter-status" onchange="updateClusterLogic()" style="padding:10px; margin-top:4px;">
+                        <label style="margin-top:0; font-size:12px;">ตั้งแต่วันที่:</label>
+                        <input type="date" id="filter-date-start" onchange="updateClusterLogic()" style="padding:10px; font-size:13px;">
+                    </div>
+                    <div>
+                        <label style="margin-top:0; font-size:12px;">ถึงวันที่:</label>
+                        <input type="date" id="filter-date-end" onchange="updateClusterLogic()" style="padding:10px; font-size:13px;">
+                    </div>
+                </div>
+
+                <div class="form-grid" style="margin-top: 15px;">
+                    <div>
+                        <label style="margin-top:0; font-size:12px;"> กรองข้อมูล:</label>
+                        <select id="filter-status" onchange="updateClusterLogic()" style="padding:10px; font-size:13px;">
                             <option value="all">รายการเปิดอยู่ทั้งหมด</option>
                             <option value="รอคิวรถ">เฉพาะงานว่าง (รอคิวรถ)</option>
                             <option value="รอชาวไร่ยืนยัน">รอชาวไร่พิจารณาราคา</option>
                         </select>
                     </div>
                     <div>
-                        <label style="margin-top:0;"> จัดเรียง:</label>
-                        <select id="sort-by" onchange="updateClusterLogic()" style="padding:10px; margin-top:4px;">
+                        <label style="margin-top:0; font-size:12px;"> จัดเรียง:</label>
+                        <select id="sort-by" onchange="updateClusterLogic()" style="padding:10px; font-size:13px;">
                             <option value="priority"> แนะนำความคุ้มค่า</option>
                             <option value="date-new"> อัปเดตล่าสุด</option>
                             <option value="date-old"> เก่าสุด</option>
@@ -531,6 +543,7 @@
         let userProfile = null; 
         let currentLat = 17.295; 
         let currentLng = 101.782; 
+        let currentUserMarker = null;
         
         let previewMapObj = null; 
         let drawnPolygon = null; 
@@ -570,6 +583,22 @@
             if(!str) return 0;
             let match = str.toString().match(/\d+(\.\d+)?/);
             return match ? parseFloat(match[0]) : 0;
+        }
+
+        // ================= อัปเดตตำแหน่งปัจจุบัน =================
+        function updateUserLocationOnMap() {
+            let userIcon = L.divIcon({ 
+                className: 'user-loc-icon', 
+                html: `<div style='background-color:#3498DB; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5);'></div>` 
+            });
+            
+            if (buyerMapObj) {
+                if (currentUserMarker) {
+                    currentUserMarker.setLatLng([currentLat, currentLng]);
+                } else {
+                    currentUserMarker = L.marker([currentLat, currentLng], { icon: userIcon, zIndexOffset: 1000 }).addTo(buyerMapObj).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งปัจจุบันของคุณ</div>");
+                }
+            }
         }
 
         // ================= ฟังก์ชันดึงและวาดแปลงดาวเทียม GISTDA =================
@@ -1012,7 +1041,7 @@
             });
         }
 
-        // ================= วาด/แก้ไขแปลงอ้อย (อัปเกรดดึง GISTDA อัตโนมัติ แก้ไขแล้ว) =================
+        // ================= วาด/แก้ไขแปลงอ้อย =================
         function openAddPlotModal(editIndex = -1) {
             Swal.fire({ title: 'กำลังโหลดแผนที่...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
             
@@ -1026,6 +1055,7 @@
                     (pos) => { 
                         currentLat = pos.coords.latitude; 
                         currentLng = pos.coords.longitude; 
+                        updateUserLocationOnMap();
                         Swal.close(); 
                         setTimeout(() => showAddPlotSwal(editIndex), 150); 
                     }, 
@@ -1151,7 +1181,7 @@
                             gistdaLayer.clearLayers();
                             
                             if (result.status === "success") {
-                                // แกะกล่องข้อมูล (ครอบคลุมทุกกรณี)
+                                // แกะกล่องข้อมูล
                                 let dataArr = [];
                                 if (Array.isArray(result.data)) {
                                     dataArr = result.data;
@@ -1166,7 +1196,6 @@
                                 dataArr.forEach(item => {
                                     let geometry = item.geom || item.geometry || item;
                                     
-                                    // ถ้าเป็น String ให้แปลงกลับเป็น Object
                                     if (typeof geometry === 'string') {
                                         try { geometry = JSON.parse(geometry); } catch(e){}
                                     }
@@ -1176,7 +1205,6 @@
                                             style: { color: '#3498DB', weight: 2, fillOpacity: 0.2, dashArray: '5,5' }
                                         });
                                         
-                                        // สร้างเนื้อหา Popup แบบมีปุ่มกดและบอกพื้นที่
                                         let popupContent = document.createElement('div');
                                         popupContent.style.fontFamily = 'Kanit';
                                         popupContent.style.textAlign = 'center';
@@ -1195,7 +1223,6 @@
                                             modalMap.closePopup();
                                             if(modalDrawnPolygon) modalDrawnPolygon.remove();
                                             
-                                            // เลาะเอาพิกัดวงนอกสุดมาวาด (รองรับทั้ง Polygon และ MultiPolygon)
                                             let ring = [];
                                             if (geometry.type === 'Polygon') {
                                                 ring = geometry.coordinates[0];
@@ -1211,13 +1238,8 @@
                                                 modalDrawnPolygon.on('pm:edit', function() { calcModalArea(); });
                                                 
                                                 Swal.fire({
-                                                    toast: true,
-                                                    position: 'top-end',
-                                                    icon: 'success',
-                                                    title: 'ดึงข้อมูลสำเร็จ!',
-                                                    text: 'ลากจุดเพื่อปรับรูปทรง หรือกดบันทึกได้เลย',
-                                                    showConfirmButton: false,
-                                                    timer: 3000
+                                                    toast: true, position: 'top-end', icon: 'success', title: 'ดึงข้อมูลสำเร็จ!',
+                                                    text: 'ลากจุดเพื่อปรับรูปทรง หรือกดบันทึกได้เลย', showConfirmButton: false, timer: 3000
                                                 });
                                             } else {
                                                 Swal.fire({toast:true, position:'top-end', icon:'error', title:'ดึงพิกัดล้มเหลว', showConfirmButton:false, timer:2000});
@@ -1241,12 +1263,10 @@
                                 console.error("GISTDA Debug Error:", result.details);
                             }
                         } catch(e) { 
-                            console.error("Fetch API Error:", e);
                             indicator.innerHTML = '<span style="color:#E74C3C;"> โหลดข้อมูลไม่สำเร็จ</span>';
                         }
                     }
 
-                    // เมื่อหยุดเลื่อนแผนที่ ให้รอ 0.8 วิ แล้วดึงข้อมูลจาก GISTDA (ระบบ Debounce)
                     modalMap.on('moveend', function() {
                         clearTimeout(gistdaTimeout);
                         gistdaTimeout = setTimeout(() => {
@@ -1254,11 +1274,10 @@
                         }, 800);
                     });
                     
-                    // โหลดครั้งแรกที่เปิดแผนที่ขึ้นมา
                     setTimeout(() => { loadGistdaInBounds(); }, 1000);
 
                     if (!plotToEdit) { 
-                        L.marker([startLat, startLng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'> ตำแหน่งของคุณ</div>").openPopup(); 
+                        L.marker([startLat, startLng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>").openPopup(); 
                     }
                     
                     if (plotToEdit && plotToEdit.polygon) {
@@ -1440,16 +1459,22 @@
                     const urlParams = new URLSearchParams(window.location.search); 
                     const mode = urlParams.get('mode');
 
+                    // ดึงพิกัดล่าสุดคอยไว้ตลอด
+                    if (navigator.geolocation) { 
+                        navigator.geolocation.watchPosition(
+                            p => { 
+                                currentLat = p.coords.latitude; 
+                                currentLng = p.coords.longitude; 
+                                updateUserLocationOnMap();
+                            }, 
+                            e => {}, 
+                            {enableHighAccuracy: true}
+                        ); 
+                    }
+
                     if (mode === 'register') { 
                         document.getElementById("header-text").innerText = "ลงทะเบียนชาวไร่"; 
                         document.getElementById("register-page").classList.add("active");
-                        if (navigator.geolocation) { 
-                            navigator.geolocation.getCurrentPosition(
-                                p => { currentLat = p.coords.latitude; currentLng = p.coords.longitude; }, 
-                                e => {}, 
-                                {maximumAge:0}
-                            ); 
-                        }
                         await checkUserForRegister(); 
                     } 
                     else if (mode === 'report') { 
@@ -1687,11 +1712,9 @@
                         confirmButtonColor: THEME_PRIMARY 
                     }).then((resultConfirm) => { 
                         if(resultConfirm.isConfirmed) {
-                            // สลับไปหน้าประวัติการขายทันที
                             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                             showLoader();
                             checkUserForAction('sales');
-                            // ทำการเคลียร์ฟอร์มหน้าแจ้งขาย
                             document.getElementById('select-saved-plot').value = "";
                             document.getElementById('preview-map-wrapper').style.display = 'none';
                             document.getElementById('photo-preview-container').innerHTML = '';
@@ -1874,7 +1897,7 @@
 
             let isComplete = (item.status === 'เสร็จสิ้น' || item.status === 'รอชาวไร่ตรวจสอบ');
             let actualW = item.actualWeight || "-";
-            let actualQ = item.actualQty || item.quantity || item.qty || "-";
+            let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
             let pricePerRai = extractPrice(item.price);
             let totalAmount = 0;
             let totalAmountStr = "-";
@@ -2248,6 +2271,7 @@
             if(!buyerMapObj) { 
                 var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }); 
                 buyerMapObj = L.map('buyer-map', { center: [currentLat, currentLng], zoom: 10, layers: [googleHybrid] }); 
+                updateUserLocationOnMap();
             }
             try { 
                 const res = await fetch(GAS_WEB_APP_URL, { 
@@ -2275,6 +2299,9 @@
             let maxDays = parseInt(document.getElementById("slider-days").value); 
             let filterStatus = document.getElementById("filter-status").value; 
             let sortBy = document.getElementById("sort-by").value;
+            
+            let dStart = document.getElementById("filter-date-start").value;
+            let dEnd = document.getElementById("filter-date-end").value;
             
             document.getElementById("val-dist").innerText = maxDist + " กม."; 
             document.getElementById("val-days").innerText = maxDays + " วัน"; 
@@ -2330,7 +2357,7 @@
                 let historyHTMLList = "";
                 
                 historyJobs.forEach(item => {
-                    let actualQ = item.actualQty || item.quantity || item.qty || "-";
+                    let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
                     let actualW = item.actualWeight || "-";
                     let pRai = extractPrice(item.price);
                     let totalStr = "-";
@@ -2392,8 +2419,24 @@
 
             // --- จัดการงานที่เปิดให้ประมูล (Available Jobs) ---
             let filteredAvailable = availableJobs.filter(item => { 
-                if (filterStatus === "all") return true; 
-                return item.status === filterStatus; 
+                if (filterStatus !== "all" && item.status !== filterStatus) return false; 
+                
+                if (dStart || dEnd) {
+                    let hTime = new Date(item.harvestDate);
+                    hTime.setHours(0,0,0,0);
+                    
+                    if (dStart) {
+                        let sTime = new Date(dStart);
+                        sTime.setHours(0,0,0,0);
+                        if (hTime < sTime) return false;
+                    }
+                    if (dEnd) {
+                        let eTime = new Date(dEnd);
+                        eTime.setHours(0,0,0,0);
+                        if (hTime > eTime) return false;
+                    }
+                }
+                return true; 
             }); 
             
             if(filteredAvailable.length === 0) { listContainer.innerHTML = "<div class='empty-state'>ไม่พบรายการที่ตรงกับเงื่อนไข</div>"; return; }
