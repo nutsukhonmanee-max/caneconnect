@@ -165,8 +165,8 @@
     <!-- Loading Screen -->
     <div id="loading-screen">
         <div class="anim-container">
-            <div class="anim-truck" id="loader-truck">🚜</div>
-            <div class="anim-cane">🌾</div>
+            <div class="anim-truck" id="loader-truck"></div>
+            <div class="anim-cane"></div>
         </div>
         <h3 style="color:var(--primary-dark); font-weight:600; font-size:18px; margin:0;" id="loader-text">กำลังโหลดข้อมูล...</h3>
     </div>
@@ -193,17 +193,17 @@
         <!-- ================= 1. หน้าลงทะเบียนชาวไร่ ================= -->
         <div id="register-page" class="page">
             <div class="tab-nav">
-                <button id="btn-tab-personal" class="tab-btn active" onclick="switchRegTab('personal')">👤 ข้อมูลส่วนตัว</button>
-                <button id="btn-tab-plots" class="tab-btn" onclick="switchRegTab('plots')">📍 แปลงของฉัน</button>
+                <button id="btn-tab-personal" class="tab-btn active" onclick="switchRegTab('personal')"> ข้อมูลส่วนตัว</button>
+                <button id="btn-tab-plots" class="tab-btn" onclick="switchRegTab('plots')"> แปลงของฉัน</button>
             </div>
 
             <!-- Tab: Personal Info -->
             <div id="tab-personal">
                 <div class="status-box" id="reg-status-box" style="margin-bottom: 10px;">
-                    <i>📝</i> ยินดีต้อนรับ กรุณากรอกข้อมูลส่วนตัว
+                    <i></i> ยินดีต้อนรับ กรุณากรอกข้อมูลส่วนตัว
                 </div>
                 <button id="btn-enable-edit" type="button" class="btn-main btn-ghost" onclick="enableProfileEdit()" style="display:none;">
-                    ✏️ ปลดล็อกเพื่อแก้ไขข้อมูล
+                     ปลดล็อกเพื่อแก้ไขข้อมูล
                 </button>
                 
                 <div class="form-grid col-3">
@@ -291,7 +291,7 @@
             <!-- Tab: Saved Plots -->
             <div id="tab-plots" style="display:none;">
                 <div class="status-box" style="background: #FFF9E6; border-color: var(--accent); color: var(--accent); margin-bottom: 15px;">
-                    <i>💡</i> เลื่อนแผนที่ไปยังพื้นที่ของท่าน ระบบจะดึงเส้นขอบแปลงอ้อยจากดาวเทียมมาให้คลิกเลือกได้ทันที!
+                    <i></i> เลื่อนแผนที่ไปยังพื้นที่ของท่าน ระบบจะดึงเส้นขอบแปลงอ้อยจากดาวเทียมมาให้คลิกเลือกได้ทันที!
                 </div>
                 
                 <button type="button" class="btn-main btn-info" onclick="openAddPlotModal(-1)" style="margin-top: 0;">
@@ -299,7 +299,7 @@
                 </button>
                 
                 <div id="all-plots-wrapper" style="display:none; margin-top: 25px;">
-                    <label style="color: var(--primary-dark); font-weight: 600; margin-bottom: 8px;">🗺️ แผนที่รวมแปลงทั้งหมดของคุณ:</label>
+                    <label style="color: var(--primary-dark); font-weight: 600; margin-bottom: 8px;"> แผนที่รวมแปลงทั้งหมดของคุณ:</label>
                     <div id="all-plots-map" class="map-container" style="height: 280px; margin-top: 0; border: 2px solid var(--primary); border-radius: var(--radius-md);"></div>
                 </div>
                 
@@ -307,14 +307,14 @@
                     <div class="empty-state" style="padding: 20px 0;">ยังไม่มีแปลงที่บันทึกไว้</div>
                 </div>
                 
-                <button type="button" class="btn-main" onclick="submitRegistration()">💾 บันทึกการเปลี่ยนแปลง</button>
+                <button type="button" class="btn-main" onclick="submitRegistration()"> บันทึกการเปลี่ยนแปลง</button>
             </div>
         </div>
 
         <!-- ================= 2. หน้าแจ้งพิกัดอ้อย (เลือกแปลงที่วาดไว้แล้ว) ================= -->
         <div id="main-page" class="page">
             <div style="margin-bottom: 20px; padding: 18px; background: #FFF9E6; border-radius: var(--radius-md); border: 1px solid #FDEBD0; box-shadow: var(--shadow-soft);">
-                <label style="color: var(--accent); font-weight: 600; margin-top: 0; font-size: 16px;">⭐ เลือกแปลงที่ต้องการแจ้งขาย:</label>
+                <label style="color: var(--accent); font-weight: 600; margin-top: 0; font-size: 16px;"> เลือกแปลงที่ต้องการแจ้งขาย:</label>
                 <select id="select-saved-plot" onchange="loadSavedPlotToPreview()" style="border: 2px solid var(--accent); margin-top: 8px; font-weight: 500; height: 50px;">
                     <option value="">-- กรุณาเลือกแปลงอ้อย --</option>
                 </select>
@@ -326,24 +326,31 @@
             <!-- Preview Map (Read-Only) -->
             <div id="preview-map-wrapper" style="display: none;">
                 <div class="status-box" id="gps-status" style="margin-top:0; margin-bottom: 10px; background:var(--primary-light); border-color:var(--primary); color:var(--primary-dark);">
-                    <i>✅</i> โหลดข้อมูลแปลงสำเร็จ
+                    <i></i> โหลดข้อมูลแปลงสำเร็จ
                 </div>
                 
                 <div id="preview-map" class="map-container" style="height: 200px;"></div>
                 
                 <div class="form-grid" style="margin-top: 15px;">
                     <div>
-                        <label>🌱 พื้นที่ประเมิน (ไร่):</label>
+                        <label> พื้นที่ประเมิน (ไร่):</label>
                         <input type="number" id="quantity" readonly style="background:#F4F6F5;">
                     </div>
                     <div>
-                        <label>🗓️ วันที่ตัดเสร็จ:</label>
+                        <label> วันที่ตัดเสร็จ:</label>
                         <input type="date" id="harvest-date" required>
+                    </div>
+                    <div class="full-width">
+                        <label> รูปแบบการตัดอ้อย:</label>
+                        <select id="harvest-method" required>
+                            <option value="ตัดด้วยรถตัด">ตัดด้วยรถตัด</option>
+                            <option value="ตัดด้วยคน">ตัดด้วยคน</option>
+                        </select>
                     </div>
                 </div>
             </div>
 
-            <label style="margin-top:20px;">📸 ภาพหน้างาน (เลือกได้ 1-4 รูป):</label>
+            <label style="margin-top:20px;"> ภาพหน้างาน (เลือกได้ 1-4 รูป):</label>
             <input type="file" id="field-photo-input" accept="image/*" multiple onchange="previewMultiplePhotos(event)" style="padding: 10px;">
             <div id="photo-preview-container" class="photo-gallery"></div>
 
@@ -352,10 +359,10 @@
 
         <!-- ================= 3. หน้าการขายของฉัน (ชาวไร่) ================= -->
         <div id="sales-page" class="page">
-            <div class="section-title">📍 รายการรอรับงาน และ กำลังดำเนินการ</div>
+            <div class="section-title"> รายการรอรับงาน และ กำลังดำเนินการ</div>
             <div id="current-sales-container"></div>
             
-            <div class="section-title">📦 ประวัติการขาย (เสร็จสิ้น)</div>
+            <div class="section-title"> ประวัติการขาย (เสร็จสิ้น)</div>
             <div id="history-sales-container"></div>
             
             <div id="farmer-dashboard-container" style="display:none; margin-top: 40px; margin-bottom: 20px;"></div>
@@ -364,11 +371,11 @@
         <!-- ================= 4. หน้าลงทะเบียนผู้รับซื้อ ================= -->
         <div id="register-buyer-page" class="page">
             <div class="status-box" id="buyer-reg-status-box" style="margin-bottom: 10px;">
-                <i>🚜</i> ลงทะเบียนพาร์ทเนอร์รถม้วน
+                <i></i> ลงทะเบียนพาร์ทเนอร์รถม้วน
             </div>
             
             <button id="btn-enable-buyer-edit" type="button" class="btn-main btn-ghost" onclick="enableBuyerProfileEdit()" style="display:none;">
-                ✏️ ปลดล็อกเพื่อแก้ไขข้อมูล
+                 ปลดล็อกเพื่อแก้ไขข้อมูล
             </button>
             
             <div class="form-grid col-3">
@@ -451,7 +458,7 @@
         <div id="buyer-page" class="page">
             <!-- แผงควบคุม ค้นหางานแบบคลัสเตอร์ -->
             <div class="control-panel">
-                <div style="font-weight:600; font-size:16px; margin-bottom:12px; color:var(--primary-dark);">⚙️ ตั้งค่าความคุ้มทุนของรถคุณ</div>
+                <div style="font-weight:600; font-size:16px; margin-bottom:12px; color:var(--primary-dark);"> ตั้งค่าความคุ้มทุนของรถคุณ</div>
                 
                 <div class="control-row">
                     <span>ระยะรัศมีวิ่งงานสูงสุด</span>
@@ -467,7 +474,7 @@
                 
                 <div class="form-grid" style="margin-top: 18px; border-top: 1px solid var(--border); padding-top: 15px;">
                     <div>
-                        <label style="margin-top:0;">🔍 กรองข้อมูล:</label>
+                        <label style="margin-top:0;"> กรองข้อมูล:</label>
                         <select id="filter-status" onchange="updateClusterLogic()" style="padding:10px; margin-top:4px;">
                             <option value="all">รายการเปิดอยู่ทั้งหมด</option>
                             <option value="รอคิวรถ">เฉพาะงานว่าง (รอคิวรถ)</option>
@@ -475,12 +482,12 @@
                         </select>
                     </div>
                     <div>
-                        <label style="margin-top:0;">🔀 จัดเรียง:</label>
+                        <label style="margin-top:0;"> จัดเรียง:</label>
                         <select id="sort-by" onchange="updateClusterLogic()" style="padding:10px; margin-top:4px;">
-                            <option value="priority">🔥 แนะนำความคุ้มค่า</option>
-                            <option value="date-new">📅 อัปเดตล่าสุด</option>
-                            <option value="date-old">📅 เก่าสุด</option>
-                            <option value="harvest-near">🗓️ พร้อมม้วนเร็วสุด</option>
+                            <option value="priority"> แนะนำความคุ้มค่า</option>
+                            <option value="date-new"> อัปเดตล่าสุด</option>
+                            <option value="date-old"> เก่าสุด</option>
+                            <option value="harvest-near"> พร้อมม้วนเร็วสุด</option>
                         </select>
                     </div>
                 </div>
@@ -495,13 +502,13 @@
                 <span style="display:inline-block; width:10px; height:10px; background:var(--text-muted); border-radius:50%; margin-left:10px;"></span> งานย่อย
             </div>
             
-            <div class="section-title buyer-section-title">📋 กระดานประมูลคิวงาน</div>
+            <div class="section-title buyer-section-title"> กระดานประมูลคิวงาน</div>
             
             <div id="buyer-active-jobs-container"></div>
             <div id="buyer-list-container"></div>
             
             <!-- ส่วนประวัติการรับซื้อสำหรับรถม้วน -->
-            <div class="section-title buyer-section-title" style="margin-top: 40px;">📦 ประวัติการรับซื้อ (เสร็จสิ้น)</div>
+            <div class="section-title buyer-section-title" style="margin-top: 40px;"> ประวัติการรับซื้อ (เสร็จสิ้น)</div>
             <div id="buyer-history-container"></div>
         </div>
     </div>
@@ -565,7 +572,7 @@
             return match ? parseFloat(match[0]) : 0;
         }
 
-        // ================= ฟังก์ชันดึงและวาดแปลงดาวเทียม GISTDA (แก้ไขผ่าน GAS Proxy แล้ว) =================
+        // ================= ฟังก์ชันดึงและวาดแปลงดาวเทียม GISTDA =================
         async function loadGistdaPolygonOverlay(farmerGeoJsonString, mapObject) {
             if (!farmerGeoJsonString) return;
 
@@ -581,7 +588,6 @@
                 const result = await response.json();
 
                 if (result.status === "success") {
-                    // แกะกล่องข้อมูลจาก GISTDA (รองรับหลายรูปแบบการตอบกลับ)
                     let dataArr = [];
                     if (Array.isArray(result.data)) {
                         dataArr = result.data;
@@ -594,7 +600,6 @@
                     dataArr.forEach(item => {
                         let geometry = item.geom || item.geometry || item;
                         
-                        // ถ้าระบบส่งกลับมาเป็น String ให้แปลงกลับเป็น Object ก่อน
                         if (typeof geometry === 'string') {
                             try { geometry = JSON.parse(geometry); } catch(e){}
                         }
@@ -609,7 +614,7 @@
                                 }
                             }).bindPopup(`
                                 <div style="font-family:'Kanit'; text-align:center;">
-                                    <b style="color:#2980B9;">🛰️ ประเมินโดยดาวเทียม GISTDA</b><br>
+                                    <b style="color:#2980B9;"> ประเมินโดยดาวเทียม GISTDA</b><br>
                                     <b>ขนาดพื้นที่:</b> ${item.area ? parseFloat(item.area).toFixed(2) : '-'} ไร่<br>
                                     <span style="font-size:12px; color:gray;">อัปเดต: ${item.update || '-'}</span>
                                 </div>
@@ -646,7 +651,6 @@
             });
         }
 
-        // Pop-up บังคับผู้ใช้เก่าให้ยอมรับ PDPA (จะเด้งแค่ครั้งเดียวและซ่อนหน้าโหลดก่อนเพื่อไม่ให้บัง)
         async function requirePDPA(role) {
             hideLoader(); 
             return new Promise((resolve) => {
@@ -731,7 +735,7 @@
             toggleProfileInputs(false, 'reg'); 
             document.getElementById('btn-enable-edit').style.display = 'none'; 
             document.getElementById('btn-register').style.display = 'block'; 
-            document.getElementById("reg-status-box").innerHTML = "<i>✏️</i> กำลังอยู่ในโหมดแก้ไขข้อมูล"; 
+            document.getElementById("reg-status-box").innerHTML = "<i></i> กำลังอยู่ในโหมดแก้ไขข้อมูล"; 
             let pdpaBox = document.getElementById('pdpa-box-farmer');
             if(pdpaBox) pdpaBox.style.display = 'none';
         }
@@ -740,7 +744,7 @@
             toggleProfileInputs(false, 'buyer'); 
             document.getElementById('btn-enable-buyer-edit').style.display = 'none'; 
             document.getElementById('btn-buyer-register').style.display = 'block'; 
-            document.getElementById("buyer-reg-status-box").innerHTML = "<i>✏️</i> กำลังอยู่ในโหมดแก้ไขข้อมูล"; 
+            document.getElementById("buyer-reg-status-box").innerHTML = "<i></i> กำลังอยู่ในโหมดแก้ไขข้อมูล"; 
             let pdpaBox = document.getElementById('pdpa-box-buyer');
             if(pdpaBox) pdpaBox.style.display = 'none';
         }
@@ -914,9 +918,9 @@
                         <div style="font-family:Kanit; min-width: 180px;">
                             <div style="font-size:16px; font-weight:600; color:var(--primary-dark); margin-bottom:8px; border-bottom:1px solid #eee; padding-bottom:4px;">${plot.name}</div>
                             <div style="font-size:13px; margin-bottom:4px;"><b>พื้นที่:</b> ${plot.area} ไร่</div>
-                            <div style="font-size:13px; margin-bottom:4px; color:var(--text-muted);">🚜 ${pCond}</div>
-                            <div style="font-size:13px; margin-bottom:12px; color:var(--text-muted);">🛣️ ${pAcc}</div>
-                            <button onclick="openAddPlotModal(${index})" class="btn-small btn-small-primary" style="width:100%; padding:8px; font-size:13px; box-shadow:none;">✏️ แก้ไขแปลงนี้</button>
+                            <div style="font-size:13px; margin-bottom:4px; color:var(--text-muted);"> ${pCond}</div>
+                            <div style="font-size:13px; margin-bottom:12px; color:var(--text-muted);"> ${pAcc}</div>
+                            <button onclick="openAddPlotModal(${index})" class="btn-small btn-small-primary" style="width:100%; padding:8px; font-size:13px; box-shadow:none;"> แก้ไขแปลงนี้</button>
                         </div>
                     `);
                     allPlotsLayer.addLayer(polygon);
@@ -975,7 +979,7 @@
                         <div>
                             <div style="font-weight:600; color:var(--text-main); font-size:16px;">${plot.name}</div>
                             <div style="font-size:13px; color:var(--text-muted);">พื้นที่: <span style="color:var(--primary); font-weight:600;">${plot.area} ไร่</span></div>
-                            <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">🚜 ${pCond} <br> 🛣️ ${pAcc}</div>
+                            <div style="font-size:12px; color:var(--text-muted); margin-top:4px;"> ${pCond} <br>  ${pAcc}</div>
                         </div>
                         <div style="display:flex; flex-direction: column; gap: 6px;">
                             <button type="button" onclick="openAddPlotModal(${index})" class="btn-small btn-small-outline" style="background:#EAF2F8; color:var(--info); border:none; border-radius:8px; padding:8px 14px; font-size:13px; width:auto; margin:0; box-shadow:none;">แก้ไข</button>
@@ -1049,7 +1053,7 @@
             Swal.fire({
                 html: `
                     <div style="text-align: left; font-family: 'Kanit'; padding: 0;">
-                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--primary-dark);">📍 ${plotToEdit ? 'แก้ไขแปลงอ้อย' : 'สร้างแปลงอ้อยอัตโนมัติ'}</div>
+                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--primary-dark);"> ${plotToEdit ? 'แก้ไขแปลงอ้อย' : 'สร้างแปลงอ้อยอัตโนมัติ'}</div>
                         
                         <input type="text" id="plot-name" class="swal2-input" placeholder="ตั้งชื่อแปลง (เช่น แปลงหน้าบ้าน)" style="width: 100%; box-sizing: border-box; margin: 0 0 10px 0; font-family: 'Kanit'; padding: 10px; font-size: 14px;">
                         
@@ -1061,14 +1065,13 @@
                                 <option value="มีทั้งตอเก่าและหิน">มีทั้งตอและหิน</option>
                             </select>
                             <select id="plot-access" class="swal2-input" style="width: 100%; box-sizing: border-box; margin: 0; font-family: 'Kanit'; padding: 8px; font-size: 13px;">
+                                <option value="รถพ่วง/เทรลเลอร์ เข้าได้">รถพ่วง/เทรลเลอร์ เข้าได้</option>
                                 <option value="รถบรรทุก 10 ล้อ เข้าได้สะดวก">รถ 10 ล้อ เข้าได้</option>
                                 <option value="รถ 6 ล้อ เข้าได้">รถ 6 ล้อ เข้าได้</option>
-                                <option value="รถกระบะ / รถไถ เล็กเท่านั้น">รถกระบะ/รถไถ เล็ก</option>
-                                <option value="ทางแคบ/ลำบาก ต้องดูหน้างาน">ทางแคบ ต้องดูหน้างาน</option>
                             </select>
                         </div>
                         
-                        <div style="font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px;">💡 เลื่อนแผนที่ไปยังไร่ของคุณ ระบบจะดึงเส้นขอบจากดาวเทียมมาให้คลิกเลือกได้เลย!</div>
+                        <div style="font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px;"> เลื่อนแผนที่ไปยังไร่ของคุณ ระบบจะดึงเส้นขอบจากดาวเทียมมาให้คลิกเลือกได้เลย!</div>
                         
                         <div style="position:relative;">
                             <div id="modal-map" style="height: 40vh; min-height: 250px; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);"></div>
@@ -1116,7 +1119,7 @@
                     async function loadGistdaInBounds() {
                         let indicator = document.getElementById('gistda-loading-indicator');
                         if (modalMap.getZoom() < 14) {
-                            indicator.innerHTML = '<span style="color:#E67E22;">⚠️ ซูมเข้าใกล้ๆ เพื่อดึงแปลง</span>';
+                            indicator.innerHTML = '<span style="color:#E67E22;"> ซูมเข้าใกล้ๆ เพื่อดึงแปลง</span>';
                             indicator.style.display = 'block';
                             return; 
                         }
@@ -1182,9 +1185,9 @@
                                         let areaStr = item.area ? parseFloat(item.area).toFixed(2) : '-';
                                         
                                         popupContent.innerHTML = `
-                                            <b style="color:#2980B9; font-size:15px;">🛰️ ดาวเทียม GISTDA</b><br>
+                                            <b style="color:#2980B9; font-size:15px;"> ดาวเทียม GISTDA</b><br>
                                             <div style="margin:8px 0; font-size:14px;">ขนาดประเมิน: <b style="color:#E67E22;">${areaStr}</b> ไร่</div>
-                                            <button class="btn-small btn-small-primary" style="width:100%; box-shadow:none; font-size:13px; padding:8px;">✨ ดึงแปลงนี้มาแก้ไข</button>
+                                            <button class="btn-small btn-small-primary" style="width:100%; box-shadow:none; font-size:13px; padding:8px;"> ดึงแปลงนี้มาแก้ไข</button>
                                         `;
                                         
                                         let btn = popupContent.querySelector('button');
@@ -1228,18 +1231,18 @@
                                 });
 
                                 if (drawnCount > 0) {
-                                    indicator.innerHTML = `<span style="color:#27AE60;">✅ พบอ้อย ${drawnCount} แปลง</span>`;
+                                    indicator.innerHTML = `<span style="color:#27AE60;"> พบอ้อย ${drawnCount} แปลง</span>`;
                                     setTimeout(() => { indicator.style.display = 'none'; }, 4000);
                                 } else {
-                                    indicator.innerHTML = '<span style="color:#7F8C8D;">❌ ไม่พบอ้อยบริเวณนี้</span>';
+                                    indicator.innerHTML = '<span style="color:#7F8C8D;"> ไม่พบอ้อยบริเวณนี้</span>';
                                 }
                             } else {
-                                indicator.innerHTML = `<span style="color:#E74C3C;">⚠️ API Error</span>`;
+                                indicator.innerHTML = `<span style="color:#E74C3C;"> API Error</span>`;
                                 console.error("GISTDA Debug Error:", result.details);
                             }
                         } catch(e) { 
                             console.error("Fetch API Error:", e);
-                            indicator.innerHTML = '<span style="color:#E74C3C;">⚠️ โหลดข้อมูลไม่สำเร็จ</span>';
+                            indicator.innerHTML = '<span style="color:#E74C3C;"> โหลดข้อมูลไม่สำเร็จ</span>';
                         }
                     }
 
@@ -1255,7 +1258,7 @@
                     setTimeout(() => { loadGistdaInBounds(); }, 1000);
 
                     if (!plotToEdit) { 
-                        L.marker([startLat, startLng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>").openPopup(); 
+                        L.marker([startLat, startLng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'> ตำแหน่งของคุณ</div>").openPopup(); 
                     }
                     
                     if (plotToEdit && plotToEdit.polygon) {
@@ -1524,7 +1527,7 @@
                     toggleProfileInputs(true, 'reg'); 
                     document.getElementById('btn-enable-edit').style.display = 'block'; 
                     document.getElementById('btn-register').style.display = 'none'; 
-                    document.getElementById("reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว กดปลดล็อกหากต้องการเปลี่ยนข้อมูลครับ"; 
+                    document.getElementById("reg-status-box").innerHTML = "<i></i> คุณลงทะเบียนแล้ว กดปลดล็อกหากต้องการเปลี่ยนข้อมูลครับ"; 
                     
                     let pdpaBox = document.getElementById('pdpa-box-farmer');
                     if(pdpaBox) pdpaBox.style.display = 'none';
@@ -1581,7 +1584,7 @@
                     toggleProfileInputs(true, 'reg'); 
                     document.getElementById('btn-enable-edit').style.display = 'block'; 
                     document.getElementById('btn-register').style.display = 'none'; 
-                    document.getElementById("reg-status-box").innerHTML = "<i>ℹ️</i> คุณลงทะเบียนแล้ว กดปลดล็อกหากต้องการเปลี่ยนข้อมูลครับ";
+                    document.getElementById("reg-status-box").innerHTML = "<i></i> คุณลงทะเบียนแล้ว กดปลดล็อกหากต้องการเปลี่ยนข้อมูลครับ";
                     let pdpaBox = document.getElementById('pdpa-box-farmer');
                     if(pdpaBox) pdpaBox.style.display = 'none';
                 }
@@ -1642,7 +1645,8 @@
             
             const qty = document.getElementById("quantity").value; 
             const hDate = document.getElementById("harvest-date").value; 
-            const combinedAccess = `ทางเข้า: ${selectedPlotAccess} | สภาพแปลง: ${selectedPlotCondition}`;
+            const hMethod = document.getElementById("harvest-method").value;
+            const combinedAccess = `รูปแบบ: ${hMethod} | ทางเข้า: ${selectedPlotAccess} | สภาพแปลง: ${selectedPlotCondition}`;
             
             const btn = document.getElementById("submit-btn"); 
             btn.innerText = "กำลังอัปโหลด..."; 
@@ -1755,7 +1759,7 @@
                             
                 if (badgeClass === "waiting" && item.offers && item.offers.length > 0) { 
                     let offerNames = item.offers.map(o => (o.buyerName && o.buyerName !== "undefined") ? o.buyerName : "พาร์ทเนอร์ไม่ทราบชื่อ").join(', ');
-                    cardHTML += `<div style="color:var(--accent); font-weight:600; margin-top:6px; font-size:13px; line-height:1.6;">💡 มีผู้เสนอราคา: ${offerNames}</div>`; 
+                    cardHTML += `<div style="color:var(--accent); font-weight:600; margin-top:6px; font-size:13px; line-height:1.6;"> มีผู้เสนอราคา: ${offerNames}</div>`; 
                 } else if (badgeClass === "processing" || badgeClass === "verify" || badgeClass === "completed") { 
                     cardHTML += `
                             <div>ผู้รับซื้อ: <span>${buyerNameDisplay}</span></div>
@@ -1767,8 +1771,8 @@
                         
                         cardHTML += `
                         <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); font-size:13px; color:var(--text-muted);">
-                            🌾 ไร่จริง: <b style="color:var(--text-main);">${item.actualQty} ไร่</b> | ⚖️ น้ำหนักจริง: <b style="color:var(--text-main);">${item.actualWeight} ตัน</b><br>
-                            💰 ยอดรับรวม: <b style="color:var(--danger); font-size:14px;">${total} บาท</b>
+                             ไร่จริง: <b style="color:var(--text-main);">${item.actualQty} ไร่</b> |  น้ำหนักจริง: <b style="color:var(--text-main);">${item.actualWeight} ตัน</b><br>
+                             ยอดรับรวม: <b style="color:var(--danger); font-size:14px;">${total} บาท</b>
                         </div>`; 
                     } 
                 } 
@@ -1777,17 +1781,17 @@
                 if (statusText === "รอชาวไร่ยืนยัน") { 
                     cardHTML += `
                         <div style="display:flex; gap:10px; margin-top:16px;">
-                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1;">🔎 ดูรายละเอียด</button>
-                            <button onclick="viewOffers(${index})" class="btn-small btn-small-primary" style="flex:1.5;">✔️ เลือกผู้ซื้อ</button>
+                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1;"> ดูรายละเอียด</button>
+                            <button onclick="viewOffers(${index})" class="btn-small btn-small-primary" style="flex:1.5;"> เลือกผู้ซื้อ</button>
                         </div>`; 
                 } else if (statusText === "รอชาวไร่ตรวจสอบ") { 
                     cardHTML += `
                         <div style="display:flex; gap:10px; margin-top:16px;">
-                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1; margin-bottom:0;">🧾 ดูบิลจำลอง</button>
-                            <button onclick="farmerVerifyCloseJob(${index})" class="btn-small btn-small-primary" style="flex:1.5; background:#8E44AD; box-shadow:0 4px 0 #5B2C6F; margin-bottom:0;">📝 ปิดบัญชี</button>
+                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1; margin-bottom:0;"> ดูบิลจำลอง</button>
+                            <button onclick="farmerVerifyCloseJob(${index})" class="btn-small btn-small-primary" style="flex:1.5; background:#8E44AD; box-shadow:0 4px 0 #5B2C6F; margin-bottom:0;"> ปิดบัญชี</button>
                         </div>`;
                 } else { 
-                    cardHTML += `<button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="margin-top:16px; width:100%;">${badgeClass === "completed" ? '🧾 ดูใบเสร็จรับเงิน' : '🔍 ดูรายละเอียดแปลง'}</button>`; 
+                    cardHTML += `<button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="margin-top:16px; width:100%;">${badgeClass === "completed" ? ' ดูใบเสร็จรับเงิน' : ' ดูรายละเอียดแปลง'}</button>`; 
                 } 
                 cardHTML += `</div>`;
                 
@@ -1801,7 +1805,7 @@
             dashboardContainer.innerHTML = `
                 <div style="background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft);">
                     <div style="font-size: 16px; font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; display: flex; align-items: center; color: var(--primary);">
-                        <i style="margin-right: 8px; font-size: 20px;">🌿</i> สถิติความสำเร็จของคุณ
+                        <i style="margin-right: 8px; font-size: 20px;"></i> สถิติความสำเร็จของคุณ
                     </div>
                     <div class="dash-grid">
                         <div class="dash-card">
@@ -1866,7 +1870,7 @@
                 billHTML = `
                 <div class="receipt-box">
                     <div class="title">
-                        <div class="title-main">🧾 สรุปยอดใบเสร็จรับเงิน (บิลจำลอง)</div>
+                        <div class="title-main"> สรุปยอดใบเสร็จรับเงิน (บิลจำลอง)</div>
                         <div class="title-sub">CaneConnect Platform</div>
                     </div>
                     <div class="section">
@@ -1886,16 +1890,16 @@
             }
 
             if (role === 'farmer') { 
-                let phoneLink = item.buyerPhone && item.buyerPhone !== "-" ? `<a href="tel:${item.buyerPhone}" style="color:var(--primary); font-weight:500; text-decoration:none;">📞 ${item.buyerPhone}</a>` : "-"; 
+                let phoneLink = item.buyerPhone && item.buyerPhone !== "-" ? `<a href="tel:${item.buyerPhone}" style="color:var(--primary); font-weight:500; text-decoration:none;"> ${item.buyerPhone}</a>` : "-"; 
                 
                 let buyerSectionHTML = "";
                 if (item.status === 'รอชาวไร่ยืนยัน' && item.offers && item.offers.length > 0) {
                     let offersList = `<div style="margin-top:12px; background:var(--surface); padding:12px; border-radius:8px; border:1px solid var(--warning);">
-                        <b style="color:var(--accent);">📋 รายชื่อผู้เสนอราคา (${item.offers.length} ราย):</b>
+                        <b style="color:var(--accent);"> รายชื่อผู้เสนอราคา (${item.offers.length} ราย):</b>
                         <ul style="margin:5px 0 0 0; padding-left:20px; font-size:13px; color:var(--text-main);">`;
                     item.offers.forEach(o => {
                         let name = (o.buyerName && o.buyerName !== "undefined") ? o.buyerName : "พาร์ทเนอร์ไม่ทราบชื่อ";
-                        offersList += `<li style="margin-bottom:4px;">${name} <span style="color:var(--primary); font-weight:600;">(${o.price} บาท/ตัน)</span> <br>📞 <a href="tel:${o.phone}" style="color:var(--info); text-decoration:none;">${o.phone}</a></li>`;
+                        offersList += `<li style="margin-bottom:4px;">${name} <span style="color:var(--primary); font-weight:600;">(${o.price} บาท/ตัน)</span> <br> <a href="tel:${o.phone}" style="color:var(--info); text-decoration:none;">${o.phone}</a></li>`;
                     });
                     offersList += `</ul></div>`;
                     buyerSectionHTML = offersList;
@@ -1914,13 +1918,13 @@
             } else { 
                 extraInfo = `
                     <div class="island-info-box" style="border-color:var(--border); background:var(--surface);">
-                        <div style="font-size:16px; font-weight:600; color:var(--primary); margin-bottom:8px;">👨‍🌾 คุณ ${item.farmerName}</div>
-                        <div><b>เบอร์โทรศัพท์:</b> <a href="tel:${item.farmerPhone}" style="color:var(--primary); text-decoration:none; font-weight:500;">📞 ${item.farmerPhone}</a></div>
+                        <div style="font-size:16px; font-weight:600; color:var(--primary); margin-bottom:8px;"> คุณ ${item.farmerName}</div>
+                        <div><b>เบอร์โทรศัพท์:</b> <a href="tel:${item.farmerPhone}" style="color:var(--primary); text-decoration:none; font-weight:500;"> ${item.farmerPhone}</a></div>
                     </div>`; 
                 if (item.status === "รอชาวไร่ยืนยัน" || item.status === "รอคิวรถ") { 
                     actionHTML = `
                         <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border);">
-                            <label style="margin-top:0;">💰 เสนอราคารับซื้อ (บาท/ตัน):</label>
+                            <label style="margin-top:0;"> เสนอราคารับซื้อ (บาท/ตัน):</label>
                             <input type="number" id="island-bid-price" placeholder="เช่น 800" style="margin-bottom:12px;">
                             <button onclick="submitIslandBid(${item.row})" class="btn-main" style="margin-top:0; border-radius:12px; padding:14px;">ส่งข้อเสนอราคา</button>
                         </div>`; 
@@ -1935,14 +1939,17 @@
                         <div class="island-info-box">
                             <div style="margin-bottom:4px;"><b>พื้นที่แจ้งขาย:</b> <span style="color:var(--primary); font-weight:500;">${actualQ} ไร่</span></div>
                             <div style="margin-bottom:4px;"><b>วันพร้อมม้วน:</b> ${hDate}</div>
-                            <div style="margin-bottom:4px;"><b>เงื่อนไขแปลง:</b> <span style="color:var(--accent); font-weight:500;">${item.access || "ไม่ระบุ"}</span></div>
+                            <div style="margin-bottom:4px;"><b>ข้อมูลแปลง:</b> <span style="color:var(--accent); font-weight:500;">${item.access || "ไม่ระบุ"}</span></div>
                         </div>
-                        <div style="font-weight:500; margin-bottom:8px;">🗺️ แผนที่พิกัด:</div>
+                        <div style="font-weight:500; margin-bottom:8px;"> แผนที่พิกัด:</div>
                         <div id="swal-map" class="swal-map-container"></div>
-                        <div style="font-weight:500; margin-bottom:8px;">📸 สภาพหน้างาน:</div>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lon}" target="_blank" class="btn-main" style="background:#4285F4; box-shadow:0 4px 0 #2A56C6; text-decoration:none; display:flex; justify-content:center; align-items:center; margin-top:0; margin-bottom:16px; padding:10px;">
+                            <i class="fa-solid fa-map-location-dot" style="margin-right:8px;"></i> เปิด Google Maps นำทาง
+                        </a>
+                        <div style="font-weight:500; margin-bottom:8px;"> สภาพหน้างาน:</div>
                         ${photoGalleryHTML}
                         
-                        ${isComplete ? `<div style="font-weight:500; margin-top:16px; margin-bottom:8px;">📋 บิลชั่งน้ำหนัก:</div>` + 
+                        ${isComplete ? `<div style="font-weight:500; margin-top:16px; margin-bottom:8px;"> บิลชั่งน้ำหนัก:</div>` + 
                             (item.closeProof && item.closeProof.length > 10 ? `<img src="${item.closeProof}" onclick="openImageViewer('${item.closeProof}')" style="width:100%; border-radius:12px; border:1px solid var(--border); cursor:zoom-in;">` : `<div style="background:var(--bg-main); padding:12px; text-align:center; border-radius:8px; font-size:13px; color:var(--text-muted);">ไม่มีรูปบิลชั่ง</div>`) 
                         : ""}
                         
@@ -2011,7 +2018,7 @@
                             <div style="margin-bottom:6px;"><b>น้ำหนักสุทธิ:</b> <span style="color:var(--primary); font-weight:600;">${item.actualWeight} ตัน</span></div>
                             <div style="font-size:16px; margin-top:10px; padding-top:10px; border-top:1px dashed var(--border);"><b>รายรับ:</b> <span style="color:var(--accent); font-weight:600;">${totalIncome} บาท</span></div>
                         </div>
-                        <b>📸 ภาพถ่ายใบชั่ง (แตะเพื่อขยาย):</b>
+                        <b> ภาพถ่ายใบชั่ง (แตะเพื่อขยาย):</b>
                         ${imgHTML}
                         <div style="margin-top:16px; font-size:13px; color:var(--text-muted);">*การยืนยันจะเป็นการบันทึกเข้าระบบเพื่อสะสมแต้ม</div>
                     </div>`, 
@@ -2043,7 +2050,7 @@
                     offersHTML += `
                         <div style="border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:12px; background:var(--bg-main);">
                             <div style="font-weight:500; font-size:15px; margin-bottom:4px;">คุณ ${bName}</div>
-                            <div style="margin-bottom:8px; font-size:13px;"><a href="tel:${offer.phone}" style="color:var(--primary); text-decoration:none;">📞 ${offer.phone}</a></div>
+                            <div style="margin-bottom:8px; font-size:13px;"><a href="tel:${offer.phone}" style="color:var(--primary); text-decoration:none;"> ${offer.phone}</a></div>
                             <div style="color:var(--accent); font-size:16px; font-weight:600; margin-bottom:12px;">ให้ราคา: ${offer.price} บาท/ตัน</div>
                             <button onclick="confirmSaleOffer(${item.row}, '${bName}', '${offer.phone}', '${offer.price}')" class="btn-main" style="margin-top:0; padding:10px;">เลือกรายนี้</button>
                         </div>`; 
@@ -2117,7 +2124,7 @@
                     toggleProfileInputs(true, 'buyer'); 
                     document.getElementById('btn-enable-buyer-edit').style.display = 'block'; 
                     document.getElementById('btn-buyer-register').style.display = 'none'; 
-                    document.getElementById("buyer-reg-status-box").innerHTML = "<i>ℹ️</i> ระบบพบข้อมูลพาร์ทเนอร์แล้ว กดปลดล็อกหากต้องการแก้ข้อมูลครับ"; 
+                    document.getElementById("buyer-reg-status-box").innerHTML = "<i></i> ระบบพบข้อมูลพาร์ทเนอร์แล้ว กดปลดล็อกหากต้องการแก้ข้อมูลครับ"; 
                     
                     let pdpaBox = document.getElementById('pdpa-box-buyer');
                     if(pdpaBox) pdpaBox.style.display = 'none';
@@ -2173,7 +2180,7 @@
                     toggleProfileInputs(true, 'buyer'); 
                     document.getElementById('btn-enable-buyer-edit').style.display = 'block'; 
                     document.getElementById('btn-buyer-register').style.display = 'none'; 
-                    document.getElementById("buyer-reg-status-box").innerHTML = "<i>ℹ️</i> ระบบพบข้อมูลพาร์ทเนอร์แล้ว กดปลดล็อกหากต้องการแก้ข้อมูลครับ"; 
+                    document.getElementById("buyer-reg-status-box").innerHTML = "<i></i> ระบบพบข้อมูลพาร์ทเนอร์แล้ว กดปลดล็อกหากต้องการแก้ข้อมูลครับ"; 
                     let pdpaBox = document.getElementById('pdpa-box-buyer');
                     if(pdpaBox) pdpaBox.style.display = 'none';
                 } 
@@ -2270,7 +2277,7 @@
             
             // --- จัดการงานที่กำลังดำเนินการ (Active Jobs) ---
             if(activeJobs.length > 0) { 
-                activeContainer.innerHTML = `<div class="section-title buyer-section-title" style="margin-top: 5px; color:var(--info);">🚚 งานที่กำลังดำเนินการ</div>`; 
+                activeContainer.innerHTML = `<div class="section-title buyer-section-title" style="margin-top: 5px; color:var(--info);"> งานที่กำลังดำเนินการ</div>`; 
                 activeJobs.forEach(item => { 
                     let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
                     activeContainer.innerHTML += `
@@ -2284,8 +2291,8 @@
                                 <div>วันนัดหมาย: <span>${hDate}</span></div>
                             </div>
                             <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;">📋 ข้อมูลแปลง</button>
-                                ${item.status === 'กำลังดำเนินการ' ? `<button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="flex:1;">📸 แจ้งปิดงาน</button>` : ''}
+                                <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;"> ข้อมูลแปลง</button>
+                                ${item.status === 'กำลังดำเนินการ' ? `<button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="flex:1;"> แจ้งปิดงาน</button>` : ''}
                             </div>
                         </div>`; 
                     drawMarkerOnMap(item, THEME_INFO, true); 
@@ -2323,10 +2330,10 @@
                         <div class="sale-detail">
                             <div>พื้นที่: <span style="font-weight:600;">${actualQ} ไร่</span> | น้ำหนัก: <span style="font-weight:600;">${actualW} ตัน</span></div>
                             <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);">
-                                💰 ยอดจ่าย: <b style="color:var(--danger); font-size:14px;">${totalStr} บาท</b>
+                                 ยอดจ่าย: <b style="color:var(--danger); font-size:14px;">${totalStr} บาท</b>
                             </div>
                         </div>
-                        <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="width:100%; margin-top:16px;">🧾 ดูใบเสร็จ / บิลชั่ง</button>
+                        <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="width:100%; margin-top:16px;"> ดูใบเสร็จ / บิลชั่ง</button>
                     </div>`;
                 });
 
@@ -2334,7 +2341,7 @@
                 historyContainer.innerHTML += `
                     <div style="background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); margin-bottom: 20px;">
                         <div style="font-size: 16px; font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; display: flex; align-items: center; color: var(--warning);">
-                            <i style="margin-right: 8px; font-size: 20px;">🚚</i> สถิติการรับงานของคุณ
+                            <i style="margin-right: 8px; font-size: 20px;"></i> สถิติการรับงานของคุณ
                         </div>
                         <div class="dash-grid">
                             <div class="dash-card">
@@ -2411,25 +2418,25 @@
             
             if (sortBy === "priority") {
                 if (premiumSingles.length > 0) { 
-                    listContainer.innerHTML += `<div class="section-title buyer-section-title" style="color:var(--primary);">👑 แปลงเดี่ยวสุดคุ้ม (เกิน 100 ไร่)</div>`; 
+                    listContainer.innerHTML += `<div class="section-title buyer-section-title" style="color:var(--primary);"> แปลงเดี่ยวสุดคุ้ม (เกิน 100 ไร่)</div>`; 
                     premiumSingles.forEach(item => { 
                         listContainer.innerHTML += renderSingleCardHTML(item, THEME_PRIMARY); 
                         drawMarkerOnMap(item, THEME_PRIMARY, false); 
                     }); 
                 }
                 if (dynamicClusters.length > 0) { 
-                    listContainer.innerHTML += `<div class="section-title buyer-section-title" style="color:var(--accent);">🌟 กลุ่มแปลงคุ้มทุน</div>`; 
+                    listContainer.innerHTML += `<div class="section-title buyer-section-title" style="color:var(--accent);"> กลุ่มแปลงคุ้มทุน</div>`; 
                     dynamicClusters.forEach(cData => { listContainer.innerHTML += renderClusterGroupHTML(cData, maxDist, maxDays); }); 
                 }
                 if (singles.length > 0) { 
-                    listContainer.innerHTML += `<div class="section-title buyer-section-title" style="color:var(--text-muted);">📋 แปลงย่อย (ยังไม่เข้าเกณฑ์)</div>`; 
+                    listContainer.innerHTML += `<div class="section-title buyer-section-title" style="color:var(--text-muted);"> แปลงย่อย (ยังไม่เข้าเกณฑ์)</div>`; 
                     singles.forEach(item => { 
                         listContainer.innerHTML += renderSingleCardHTML(item, THEME_MUTED); 
                         drawMarkerOnMap(item, THEME_MUTED, false); 
                     }); 
                 }
             } else { 
-                listContainer.innerHTML += `<div class="section-title buyer-section-title">📋 รายการเรียงตามเวลา</div>`; 
+                listContainer.innerHTML += `<div class="section-title buyer-section-title"> รายการเรียงตามเวลา</div>`; 
                 filteredAvailable.forEach(item => { 
                     let markerColor = THEME_MUTED; 
                     if (item.qty >= 100) markerColor = THEME_PRIMARY; 
@@ -2446,8 +2453,8 @@
 
         function renderSingleCardHTML(item, colorHex) {
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
-            let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:500; margin-top:8px;">⚠️ มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
-            let priorityBadge = item.qty >= 100 ? `<span class="badge" style="background:#E8F5E9; color:#2E7D32;">🔥 คุ้มทุน</span>` : "";
+            let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:500; margin-top:8px;"> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
+            let priorityBadge = item.qty >= 100 ? `<span class="badge" style="background:#E8F5E9; color:#2E7D32;"> คุ้มทุน</span>` : "";
             
             return `
                 <div class="sale-card" style="border-left: 5px solid ${colorHex};">
@@ -2462,8 +2469,8 @@
                         ${offerStatus}
                     </div>
                     <div style="display:flex; gap:10px; margin-top:16px;">
-                        <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;">📋 ข้อมูลแปลง</button>
-                        <button onclick="acceptJob(${item.row})" class="btn-small btn-small-primary" style="flex:1;">💰 เสนอราคา</button>
+                        <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;"> ข้อมูลแปลง</button>
+                        <button onclick="acceptJob(${item.row})" class="btn-small btn-small-primary" style="flex:1;"> เสนอราคา</button>
                     </div>
                 </div>`;
         }
@@ -2479,18 +2486,18 @@
             
             let clusterHTML = `
                 <div class="cluster-group" style="border-color:var(--accent);">
-                    <div class="cluster-title" style="color:var(--accent);"><i>🚚</i> โซนรวบรวม ${cData.id.substring(0,9)}</div>
+                    <div class="cluster-title" style="color:var(--accent);"><i></i> โซนรวบรวม ${cData.id.substring(0,9)}</div>
                     <div style="font-size:13px; color:var(--text-muted); margin-bottom:14px; background:var(--bg-main); padding:12px; border-radius:12px;">
-                        <div style="margin-bottom:4px;">📍 รัศมีห่างกัน: <b>ไม่เกิน ${maxDist} กม.</b></div>
-                        <div>🗓️ กรอบวัน: <b>${d1} - ${d2}</b></div>
-                        <div style="font-size:16px; margin-top:8px; font-weight:600; color:var(--text-main);">📦 รวมพื้นที่: <b style="color:var(--accent);">${cData.totalRai} ไร่</b></div>
+                        <div style="margin-bottom:4px;"> รัศมีห่างกัน: <b>ไม่เกิน ${maxDist} กม.</b></div>
+                        <div> กรอบวัน: <b>${d1} - ${d2}</b></div>
+                        <div style="font-size:16px; margin-top:8px; font-weight:600; color:var(--text-main);"> รวมพื้นที่: <b style="color:var(--accent);">${cData.totalRai} ไร่</b></div>
                     </div>
-                    <button onclick="acceptClusterJob('${cData.id}')" class="btn-main btn-warning" style="margin-bottom:16px;">🤝 เสนอซื้อเหมากลุ่ม</button>`;
+                    <button onclick="acceptClusterJob('${cData.id}')" class="btn-main btn-warning" style="margin-bottom:16px;"> เสนอซื้อเหมากลุ่ม</button>`;
             
             cData.items.forEach(item => { 
                 drawMarkerOnMap(item, THEME_ACCENT, false); 
                 let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
-                let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:11px; font-weight:500; margin-top:4px;">⚠️ มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
+                let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:11px; font-weight:500; margin-top:4px;"> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
                 clusterHTML += `
                     <div class="sale-card" style="border-left: 3px solid var(--accent); margin-bottom:12px; box-shadow:none; background:var(--surface); border-radius:10px; padding:15px;">
                         <div class="sale-header" style="margin-bottom:8px; padding-bottom:8px;">
@@ -2501,8 +2508,8 @@
                             พร้อมม้วน: <span>${hDate}</span>${offerStatus}
                         </div>
                         <div style="display:flex; gap:8px; margin-top:12px;">
-                            <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;">📋 ข้อมูลแปลง</button>
-                            <button onclick="acceptJob(${item.row})" class="btn-small btn-small-primary" style="flex:1;">💰 เสนอราคา</button>
+                            <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;"> ข้อมูลแปลง</button>
+                            <button onclick="acceptJob(${item.row})" class="btn-small btn-small-primary" style="flex:1;"> เสนอราคา</button>
                         </div>
                     </div>`; 
             });
@@ -2580,12 +2587,12 @@
             const { value: formValues } = await Swal.fire({ 
                 html: `
                     <div style="text-align:left; font-family:'Kanit'; font-size:14px; color:var(--text-main);">
-                        <div style="font-size:18px; font-weight:600; margin-bottom:16px;">📸 แจ้งส่งงานชั่งน้ำหนัก</div>
-                        <label style="margin-top:0;">🌾 พื้นที่เสร็จสิ้น (ไร่):</label>
+                        <div style="font-size:18px; font-weight:600; margin-bottom:16px;"> แจ้งส่งงานชั่งน้ำหนัก</div>
+                        <label style="margin-top:0;"> พื้นที่เสร็จสิ้น (ไร่):</label>
                         <input type="number" id="close-actual-qty" value="${estQty}" step="0.1" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid var(--border); border-radius:10px;">
-                        <label>⚖️ น้ำหนักสุทธิ (ตัน):</label>
+                        <label> น้ำหนักสุทธิ (ตัน):</label>
                         <input type="number" id="close-actual-weight" placeholder="ระบุน้ำหนักตามใบชั่ง" step="0.1" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid var(--border); border-radius:10px;">
-                        <label>📸 อัปโหลดใบชั่งน้ำหนัก:</label>
+                        <label> อัปโหลดใบชั่งน้ำหนัก:</label>
                         <input type="file" id="close-photo" accept="image/*" style="border:none; padding:10px 0; margin-top:5px;">
                         <img id="close-photo-preview" style="width:100%; display:none; margin-top:10px; border-radius:10px; cursor:zoom-in;">
                     </div>`, 
