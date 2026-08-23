@@ -394,7 +394,7 @@
 
                     await checkBuyerProfile(); 
                 } else { 
-                    liff.login(); 
+                    liff.login({ redirectUri: "https://nutsukhonmanee-max.github.io/caneconnect/desktop_buyer.html" }); 
                 }
             } catch (err) { 
                 hideLoader();
