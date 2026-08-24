@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
     <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
     
-    <!-- Turf.js (คำนวณพื้นที่และตรวจสอบการทับซ้อน) -->
+    <!-- Turf.js (คำนวณพื้นที่และสร้างวงกลมรัศมี) -->
     <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
 
     <style>
@@ -104,7 +104,7 @@
         .btn-warning { background: var(--accent); box-shadow: 0 6px 0 #B9770E; } .btn-warning:hover { box-shadow: 0 4px 0 #B9770E; } .btn-warning:active { box-shadow: 0 0 0 #B9770E; }
         .btn-ghost { background: #FFF9E6; color: var(--accent); border: 2px solid #FDEBD0; box-shadow: 0 4px 0 #FDEBD0; margin-top: 5px; margin-bottom: 15px; border-radius: 12px; } .btn-ghost:hover { transform: translateY(2px); box-shadow: 0 2px 0 #FDEBD0; } .btn-ghost:active { transform: translateY(4px); box-shadow: 0 0 0 #FDEBD0; }
         
-        .btn-small { padding: 10px; border-radius: 10px; font-weight: 500; font-size: 14px; border: none; cursor: pointer; transition: all 0.1s ease; font-family: 'Kanit', sans-serif; text-align: center; }
+        .btn-small { padding: 10px; border-radius: 10px; font-weight: 500; font-size: 14px; border: none; cursor: pointer; transition: all 0.1s ease; font-family: 'Kanit', sans-serif; text-align: center; display: inline-block; box-sizing: border-box;}
         .btn-small-primary { background: var(--primary); color: white; box-shadow: 0 4px 0 var(--primary-dark); margin-bottom: 4px; } .btn-small-primary:active { transform: translateY(4px); box-shadow: 0 0 0 var(--primary-dark); margin-bottom: 0;}
         .btn-small-outline { background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border); box-shadow: 0 4px 0 var(--border); margin-bottom: 4px; } .btn-small-outline:active { transform: translateY(4px); box-shadow: 0 0 0 var(--border); margin-bottom: 0;}
         
@@ -291,11 +291,11 @@
             <!-- Tab: Saved Plots -->
             <div id="tab-plots" style="display:none;">
                 <div class="status-box" style="background: #FFF9E6; border-color: var(--accent); color: var(--accent); margin-bottom: 15px;">
-                    <i></i> เลื่อนแผนที่ไปยังพื้นที่ของท่าน ระบบจะดึงเส้นขอบแปลงอ้อยจากดาวเทียมมาให้คลิกเลือกได้ทันที!
+                    <i></i> เลื่อนแผนที่ไปยังพื้นที่ของท่าน สามารถกดปักหมุดหรือลากวาดแปลงเองได้เลยครับ
                 </div>
                 
                 <button type="button" class="btn-main btn-info" onclick="openAddPlotModal(-1)" style="margin-top: 0;">
-                    + วาดเพิ่มแปลงอ้อย
+                    + เพิ่มแปลงอ้อย
                 </button>
                 
                 <div id="all-plots-wrapper" style="display:none; margin-top: 25px;">
@@ -1041,7 +1041,7 @@
             });
         }
 
-        // ================= วาด/แก้ไขแปลงอ้อย =================
+        // ================= วาด/แก้ไขแปลงอ้อย (Dual Mode: วาด / ปักหมุด) =================
         function openAddPlotModal(editIndex = -1) {
             Swal.fire({ title: 'กำลังโหลดแผนที่...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
             
@@ -1078,12 +1078,15 @@
             let tempArea = plotToEdit ? plotToEdit.area : 0; 
             let tempCenter = plotToEdit && plotToEdit.center ? plotToEdit.center : [];
             let modalMap = null; 
-            let modalDrawnPolygon = null; 
+            let modalDrawnPolygon = null;
+            
+            // กำหนดโหมดเริ่มต้น (ถ้าสร้างใหม่ให้เป็น pin, ถ้าแก้ไขให้เป็น draw)
+            let currentMapMode = plotToEdit ? 'draw' : 'pin';
 
             Swal.fire({
                 html: `
                     <div style="text-align: left; font-family: 'Kanit'; padding: 0;">
-                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--primary-dark);"> ${plotToEdit ? 'แก้ไขแปลงอ้อย' : 'สร้างแปลงอ้อยอัตโนมัติ'}</div>
+                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--primary-dark);"> ${plotToEdit ? 'แก้ไขแปลงอ้อย' : 'เพิ่มแปลงอ้อย'}</div>
                         
                         <input type="text" id="plot-name" class="swal2-input" placeholder="ตั้งชื่อแปลง (เช่น แปลงหน้าบ้าน)" style="width: 100%; box-sizing: border-box; margin: 0 0 10px 0; font-family: 'Kanit'; padding: 10px; font-size: 14px;">
                         
@@ -1101,14 +1104,27 @@
                             </select>
                         </div>
                         
-                        <div style="font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px;"> เลื่อนแผนที่ไปยังไร่ของคุณ ระบบจะดึงเส้นขอบจากดาวเทียมมาให้คลิกเลือกได้เลย!</div>
+                        <!-- Toggle สลับโหมด -->
+                        <div style="display:flex; margin-bottom:10px; background:#F4F6F5; border-radius:12px; padding:4px;">
+                            <button type="button" id="mode-pin" class="${currentMapMode==='pin'?'btn-small btn-small-primary':'btn-small btn-small-outline'}" style="flex:1; margin:0; border:none; box-shadow:none; padding:10px; font-size:13px;" onclick="window.switchMapMode('pin')">📍 ปักหมุด (แบบง่าย)</button>
+                            <button type="button" id="mode-draw" class="${currentMapMode==='draw'?'btn-small btn-small-primary':'btn-small btn-small-outline'}" style="flex:1; margin:0; border:none; box-shadow:none; padding:10px; font-size:13px;" onclick="window.switchMapMode('draw')">✏️ วาดขอบเขต</button>
+                        </div>
+                        
+                        <div id="manual-area-input" style="display:${currentMapMode==='pin'?'block':'none'}; margin-bottom:12px; background:var(--primary-light); padding:12px; border-radius:12px; border:1px dashed var(--primary);">
+                            <label style="margin-top:0; color:var(--primary-dark); font-weight:600;">ระบุจำนวนพื้นที่ (ไร่):</label>
+                            <input type="number" id="manual-rai" class="swal2-input" placeholder="เช่น 15" oninput="window.updateCirclePreview()" style="margin:0; width:100%; padding:10px; font-size:15px; text-align:center;">
+                        </div>
+
+                        <div id="map-tip-text" style="font-size: 13px; font-weight: 500; color: var(--accent); margin-bottom: 6px;">
+                            ${currentMapMode==='pin' ? '👉 เลื่อนแผนที่แล้วแตะ 1 ครั้ง ตรงจุดกลางแปลงของคุณ' : '👉 ใช้เครื่องมือด้านซ้ายมือ ลากจุดวาดขอบเขตแปลงให้แม่นยำ'}
+                        </div>
                         
                         <div style="position:relative;">
-                            <div id="modal-map" style="height: 40vh; min-height: 250px; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);"></div>
+                            <div id="modal-map" style="height: 38vh; min-height: 250px; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);"></div>
                             <div id="gistda-loading-indicator" style="display:none; position:absolute; top:10px; right:10px; z-index:9999; background:rgba(255,255,255,0.95); padding:6px 12px; border-radius:20px; font-size:13px; font-weight:500; color:#2980B9; border:1px solid #3498DB; box-shadow:0 2px 8px rgba(0,0,0,0.15);"></div>
                         </div>
                         
-                        <div id="modal-area-text" style="margin-top:12px; color:var(--primary-dark); font-weight:600; text-align:center; font-size: 18px; background: var(--primary-light); padding: 8px; border-radius: 12px; border: 1px dashed var(--primary);">พื้นที่รวม: <span style="font-size:24px;">${tempArea}</span> ไร่</div>
+                        <div id="modal-area-text" style="margin-top:12px; color:var(--primary-dark); font-weight:600; text-align:center; font-size: 18px; background: var(--primary-light); padding: 8px; border-radius: 12px; border: 1px dashed var(--primary);">พื้นที่รวม: <span style="font-size:24px;" id="modal-area-value">${tempArea}</span> ไร่</div>
                     </div>
                 `,
                 showCancelButton: true, 
@@ -1117,16 +1133,21 @@
                 confirmButtonColor: THEME_PRIMARY, 
                 cancelButtonColor: '#BFC9C5',
                 didOpen: () => {
+                    const btnPin = document.getElementById('mode-pin');
+                    const btnDraw = document.getElementById('mode-draw');
+                    const manualInputDiv = document.getElementById('manual-area-input');
+                    const tipText = document.getElementById('map-tip-text');
+                    const manualRaiInput = document.getElementById('manual-rai');
+                    const areaValueSpan = document.getElementById('modal-area-value');
+                    
+                    let manualMarker = null;
+
                     if (plotToEdit) {
                         document.getElementById('plot-name').value = plotToEdit.name;
-                        if(plotToEdit.condition) { 
-                            let cSel = document.getElementById('plot-condition'); 
-                            if (Array.from(cSel.options).some(opt => opt.value === plotToEdit.condition)) { cSel.value = plotToEdit.condition; } 
-                        }
-                        if(plotToEdit.access) { 
-                            let aSel = document.getElementById('plot-access'); 
-                            if (Array.from(aSel.options).some(opt => opt.value === plotToEdit.access)) { aSel.value = plotToEdit.access; } 
-                        }
+                        if(plotToEdit.condition) { document.getElementById('plot-condition').value = plotToEdit.condition; }
+                        if(plotToEdit.access) { document.getElementById('plot-access').value = plotToEdit.access; }
+                        // สำหรับโหมด pin ดึงเลขไร่มาแสดงไว้
+                        if(currentMapMode === 'pin') { manualRaiInput.value = tempArea; }
                     }
                     
                     let startLat = plotToEdit && tempCenter.length === 2 ? tempCenter[0] : currentLat; 
@@ -1135,17 +1156,83 @@
                     modalMap = L.map('modal-map').setView([startLat, startLng], 15);
                     L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(modalMap);
                     
-                    modalMap.pm.addControls({ 
-                        position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, 
-                        drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, 
-                        dragMode: false, cutPolygon: false, removalMode: true 
-                    });
-
                     // สร้าง LayerGroup เพื่อเก็บแปลงที่ดึงมาจาก GISTDA
                     let gistdaLayer = L.featureGroup().addTo(modalMap);
                     let gistdaTimeout;
 
-                    // ฟังก์ชันดึง GISTDA ตามขอบเขตหน้าจอ
+                    // ฟังก์ชันสลับโหมด
+                    window.switchMapMode = function(mode) {
+                        currentMapMode = mode;
+                        if(mode === 'pin') {
+                            btnPin.style.background = 'var(--primary)'; btnPin.style.color = 'white';
+                            btnDraw.style.background = 'transparent'; btnDraw.style.color = 'var(--text-main)';
+                            manualInputDiv.style.display = 'block';
+                            tipText.innerHTML = '👉 เลื่อนแผนที่แล้วแตะ 1 ครั้ง ตรงจุดกลางแปลงของคุณ';
+                            modalMap.pm.removeControls();
+                            if(modalDrawnPolygon) { modalDrawnPolygon.remove(); modalDrawnPolygon = null; }
+                            tempPolygonGeoJSON = ""; tempArea = 0; tempCenter = [];
+                            areaValueSpan.innerText = '0.00';
+                            manualRaiInput.value = '';
+                        } else {
+                            btnPin.style.background = 'transparent'; btnPin.style.color = 'var(--text-main)';
+                            btnDraw.style.background = 'var(--primary)'; btnDraw.style.color = 'white';
+                            manualInputDiv.style.display = 'none';
+                            tipText.innerHTML = '👉 ใช้เครื่องมือด้านซ้ายมือ ลากจุดวาดขอบเขตแปลงให้แม่นยำ';
+                            modalMap.pm.addControls({ 
+                                position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, 
+                                drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, 
+                                dragMode: false, cutPolygon: false, removalMode: true 
+                            });
+                            if(manualMarker) { manualMarker.remove(); manualMarker = null; }
+                            if(modalDrawnPolygon) { modalDrawnPolygon.remove(); modalDrawnPolygon = null; }
+                            tempPolygonGeoJSON = ""; tempArea = 0; tempCenter = [];
+                            areaValueSpan.innerText = '0.00';
+                        }
+                    }
+
+                    // ปรับตั้งค่าเริ่มต้นให้ Geoman ถ้าอยู่ในโหมดวาด
+                    if(currentMapMode === 'draw') {
+                        modalMap.pm.addControls({ 
+                            position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, 
+                            drawRectangle: false, drawCircle: false, drawPolygon: true, editMode: true, 
+                            dragMode: false, cutPolygon: false, removalMode: true 
+                        });
+                    }
+
+                    // การคลิกเพื่อปักหมุดในโหมด 'pin'
+                    modalMap.on('click', function(e) {
+                        if(currentMapMode === 'pin') {
+                            if(manualMarker) manualMarker.remove();
+                            manualMarker = L.marker(e.latlng).addTo(modalMap);
+                            tempCenter = [e.latlng.lat, e.latlng.lng];
+                            window.updateCirclePreview();
+                        }
+                    });
+
+                    // สร้างวงกลมจำลองแปลงจาก Turf.js
+                    window.updateCirclePreview = function() {
+                        if(currentMapMode !== 'pin') return;
+                        let rai = parseFloat(manualRaiInput.value) || 0;
+                        if(modalDrawnPolygon) { modalDrawnPolygon.remove(); modalDrawnPolygon = null; }
+                        
+                        if(rai > 0 && tempCenter.length === 2) {
+                            let radiusMeters = Math.sqrt((rai * 1600) / Math.PI);
+                            let circleGeoJSON = turf.circle([tempCenter[1], tempCenter[0]], radiusMeters, {steps: 64, units: 'meters'});
+                            
+                            modalDrawnPolygon = L.geoJSON(circleGeoJSON, {
+                                style: { color: THEME_ACCENT, weight: 2, fillOpacity: 0.4 }
+                            }).addTo(modalMap);
+                            
+                            tempPolygonGeoJSON = JSON.stringify(circleGeoJSON.geometry.coordinates);
+                            tempArea = rai.toFixed(2);
+                            areaValueSpan.innerText = tempArea;
+                        } else {
+                            tempPolygonGeoJSON = ""; tempArea = 0;
+                            areaValueSpan.innerText = '0.00';
+                        }
+                    }
+
+                    // ฟังก์ชันดึง GISTDA
                     async function loadGistdaInBounds() {
                         let indicator = document.getElementById('gistda-loading-indicator');
                         if (modalMap.getZoom() < 14) {
@@ -1153,7 +1240,6 @@
                             indicator.style.display = 'block';
                             return; 
                         }
-                        
                         indicator.innerHTML = '<i class="fa-solid fa-satellite-dish fa-fade"></i> ค้นหาดาวเทียม...';
                         indicator.style.display = 'block';
 
@@ -1171,34 +1257,18 @@
                         try {
                             const response = await fetch(GAS_WEB_APP_URL, {
                                 method: 'POST',
-                                body: JSON.stringify({ 
-                                    action: 'verifyGistda', 
-                                    polygon: JSON.stringify(geojsonPoly.coordinates) 
-                                })
+                                body: JSON.stringify({ action: 'verifyGistda', polygon: JSON.stringify(geojsonPoly.coordinates) })
                             });
                             const result = await response.json();
-                            
                             gistdaLayer.clearLayers();
                             
                             if (result.status === "success") {
-                                // แกะกล่องข้อมูล
-                                let dataArr = [];
-                                if (Array.isArray(result.data)) {
-                                    dataArr = result.data;
-                                } else if (result.data && result.data.features) {
-                                    dataArr = result.data.features;
-                                } else if (result.data) {
-                                    dataArr = [result.data];
-                                }
-
+                                let dataArr = Array.isArray(result.data) ? result.data : (result.data.features || [result.data]);
                                 let drawnCount = 0;
 
                                 dataArr.forEach(item => {
                                     let geometry = item.geom || item.geometry || item;
-                                    
-                                    if (typeof geometry === 'string') {
-                                        try { geometry = JSON.parse(geometry); } catch(e){}
-                                    }
+                                    if (typeof geometry === 'string') try { geometry = JSON.parse(geometry); } catch(e){}
                                     
                                     if (geometry && geometry.type) {
                                         let poly = L.geoJSON(geometry, {
@@ -1206,46 +1276,30 @@
                                         });
                                         
                                         let popupContent = document.createElement('div');
-                                        popupContent.style.fontFamily = 'Kanit';
-                                        popupContent.style.textAlign = 'center';
-                                        popupContent.style.minWidth = '150px';
-                                        
+                                        popupContent.style.fontFamily = 'Kanit'; popupContent.style.textAlign = 'center';
                                         let areaStr = item.area ? parseFloat(item.area).toFixed(2) : '-';
                                         
                                         popupContent.innerHTML = `
                                             <b style="color:#2980B9; font-size:15px;"> ดาวเทียม GISTDA</b><br>
                                             <div style="margin:8px 0; font-size:14px;">ขนาดประเมิน: <b style="color:#E67E22;">${areaStr}</b> ไร่</div>
-                                            <button class="btn-small btn-small-primary" style="width:100%; box-shadow:none; font-size:13px; padding:8px;"> ดึงแปลงนี้มาแก้ไข</button>
+                                            <button class="btn-small btn-small-primary" style="width:100%; padding:8px;"> ดึงแปลงนี้มาใช้งาน</button>
                                         `;
                                         
                                         let btn = popupContent.querySelector('button');
                                         btn.onclick = () => {
                                             modalMap.closePopup();
-                                            if(modalDrawnPolygon) modalDrawnPolygon.remove();
+                                            // หากดึง GISTDA จะบังคับสลับไปโหมดวาด (Draw) เพราะไม่ใช่ทรงวงกลม
+                                            window.switchMapMode('draw'); 
                                             
-                                            let ring = [];
-                                            if (geometry.type === 'Polygon') {
-                                                ring = geometry.coordinates[0];
-                                            } else if (geometry.type === 'MultiPolygon') {
-                                                ring = geometry.coordinates[0][0]; 
-                                            }
-                                            
+                                            let ring = geometry.type === 'Polygon' ? geometry.coordinates[0] : geometry.coordinates[0][0]; 
                                             if (ring && ring.length > 0) {
                                                 let flippedCoords = ring.map(p => [p[1], p[0]]);
                                                 modalDrawnPolygon = L.polygon(flippedCoords, { color: '#6DB33F' }).addTo(modalMap);
                                                 calcModalArea();
-                                                
                                                 modalDrawnPolygon.on('pm:edit', function() { calcModalArea(); });
-                                                
-                                                Swal.fire({
-                                                    toast: true, position: 'top-end', icon: 'success', title: 'ดึงข้อมูลสำเร็จ!',
-                                                    text: 'ลากจุดเพื่อปรับรูปทรง หรือกดบันทึกได้เลย', showConfirmButton: false, timer: 3000
-                                                });
-                                            } else {
-                                                Swal.fire({toast:true, position:'top-end', icon:'error', title:'ดึงพิกัดล้มเหลว', showConfirmButton:false, timer:2000});
+                                                Swal.fire({toast: true, position: 'top-end', icon: 'success', title: 'ดึงข้อมูลสำเร็จ!', showConfirmButton: false, timer: 3000});
                                             }
                                         };
-                                        
                                         poly.bindPopup(popupContent);
                                         gistdaLayer.addLayer(poly);
                                         drawnCount++;
@@ -1255,76 +1309,64 @@
                                 if (drawnCount > 0) {
                                     indicator.innerHTML = `<span style="color:#27AE60;"> พบอ้อย ${drawnCount} แปลง</span>`;
                                     setTimeout(() => { indicator.style.display = 'none'; }, 4000);
-                                } else {
-                                    indicator.innerHTML = '<span style="color:#7F8C8D;"> ไม่พบอ้อยบริเวณนี้</span>';
-                                }
-                            } else {
-                                indicator.innerHTML = `<span style="color:#E74C3C;"> API Error</span>`;
-                                console.error("GISTDA Debug Error:", result.details);
+                                } else { indicator.innerHTML = '<span style="color:#7F8C8D;"> ไม่พบอ้อยบริเวณนี้</span>'; }
                             }
-                        } catch(e) { 
-                            indicator.innerHTML = '<span style="color:#E74C3C;"> โหลดข้อมูลไม่สำเร็จ</span>';
-                        }
+                        } catch(e) { indicator.innerHTML = '<span style="color:#E74C3C;"> โหลดข้อมูลไม่สำเร็จ</span>'; }
                     }
 
                     modalMap.on('moveend', function() {
                         clearTimeout(gistdaTimeout);
-                        gistdaTimeout = setTimeout(() => {
-                            loadGistdaInBounds();
-                        }, 800);
+                        gistdaTimeout = setTimeout(() => { loadGistdaInBounds(); }, 800);
                     });
                     
                     setTimeout(() => { loadGistdaInBounds(); }, 1000);
 
-                    if (!plotToEdit) { 
-                        L.marker([startLat, startLng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>").openPopup(); 
+                    // แสดงแปลงที่เคยบันทึกไว้ในตอนโหลด Modal
+                    if (!plotToEdit && currentMapMode === 'pin') { 
+                        manualMarker = L.marker([startLat, startLng]).addTo(modalMap).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งปัจจุบันของคุณ</div>").openPopup(); 
+                        tempCenter = [startLat, startLng];
                     }
                     
                     if (plotToEdit && plotToEdit.polygon) {
                         try {
                             let coords = JSON.parse(plotToEdit.polygon); 
                             let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
-                            modalDrawnPolygon = L.polygon(flippedCoords, { color: '#6DB33F' }).addTo(modalMap); 
+                            modalDrawnPolygon = L.polygon(flippedCoords, { color: currentMapMode==='pin' ? THEME_ACCENT : '#6DB33F' }).addTo(modalMap); 
                             modalMap.fitBounds(modalDrawnPolygon.getBounds(), { padding: [15, 15] });
                             
-                            modalDrawnPolygon.on('pm:edit', function() { 
-                                let overlapEdit = checkPolygonOverlap(modalDrawnPolygon.toGeoJSON(), editIndex); 
-                                if(overlapEdit) { Swal.fire({toast:true, position:'top-end', icon:'warning', title:`ทับซ้อนกับแปลง "${overlapEdit}"`, showConfirmButton:false, timer:3000}); } 
-                                calcModalArea(); 
-                            });
+                            if (currentMapMode === 'pin' && tempCenter.length === 2) {
+                                manualMarker = L.marker([tempCenter[0], tempCenter[1]]).addTo(modalMap);
+                            }
+                            
+                            if (currentMapMode === 'draw') {
+                                modalDrawnPolygon.on('pm:edit', function() { calcModalArea(); });
+                            }
                         } catch(e) {}
                     }
 
+                    // คำนวณพื้นที่สำหรับโหมดวาด
                     function calcModalArea() {
-                        if(!modalDrawnPolygon) return; 
+                        if(!modalDrawnPolygon || currentMapMode === 'pin') return; 
                         let geojson = modalDrawnPolygon.toGeoJSON();
                         tempPolygonGeoJSON = JSON.stringify(geojson.geometry.coordinates); 
                         tempArea = (turf.area(geojson) / 1600).toFixed(2);
                         let center = turf.centerOfMass(geojson); 
                         tempCenter = [center.geometry.coordinates[1], center.geometry.coordinates[0]];
-                        document.getElementById('modal-area-text').innerHTML = `พื้นที่รวม: <span style="font-size:24px;">${tempArea}</span> ไร่`;
+                        areaValueSpan.innerText = tempArea;
                     }
 
                     modalMap.on('pm:create', function(e) {
-                        let isOverlap = checkPolygonOverlap(e.layer.toGeoJSON(), editIndex);
-                        if(isOverlap) { 
-                            Swal.fire({toast:true, position:'top-end', icon:'warning', title:`ทับซ้อนกับแปลง "${isOverlap}"`, showConfirmButton:false, timer:3000}); 
-                            e.layer.remove(); 
-                            return; 
-                        }
-                        
+                        if(currentMapMode === 'pin') { e.layer.remove(); return; }
                         if(modalDrawnPolygon) modalDrawnPolygon.remove(); 
                         modalDrawnPolygon = e.layer; 
                         calcModalArea();
-                        
-                        modalDrawnPolygon.on('pm:edit', function() { 
-                            calcModalArea(); 
-                        });
+                        modalDrawnPolygon.on('pm:edit', function() { calcModalArea(); });
                     });
                     
                     modalMap.on('pm:remove', function(e) { 
+                        if(currentMapMode === 'pin') return;
                         modalDrawnPolygon = null; tempPolygonGeoJSON = ""; tempArea = 0; tempCenter = []; 
-                        document.getElementById('modal-area-text').innerHTML = `พื้นที่รวม: <span style="font-size:24px;">0.00</span> ไร่`; 
+                        areaValueSpan.innerText = '0.00'; 
                     });
                     
                     setTimeout(() => { modalMap.invalidateSize(); }, 300);
@@ -1335,7 +1377,7 @@
                     const pAcc = document.getElementById('plot-access').value;
                     
                     if (!pName) { Swal.showValidationMessage('กรุณาตั้งชื่อแปลง'); return false; }
-                    if (!tempPolygonGeoJSON) { Swal.showValidationMessage('กรุณาวาด หรือ คลิกเลือกแปลงบนแผนที่'); return false; }
+                    if (!tempPolygonGeoJSON || tempArea == 0) { Swal.showValidationMessage('กรุณาวาด หรือ ปักหมุดพร้อมระบุพื้นที่'); return false; }
                     
                     return { name: pName, polygon: tempPolygonGeoJSON, area: tempArea, center: tempCenter, condition: pCond, access: pAcc };
                 }
