@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CaneConnect - ระบบจัดการสำหรับชาวไร่ (Desktop)</title>
+    <title>CaneConnect - ระบบจัดการสำหรับชาวไร่ (Pro Desktop)</title>
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -22,6 +22,7 @@
     <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
 
     <style>
+        /* ================= Premium CSS Variables ================= */
         :root { 
             --primary: #58A735; 
             --primary-light: #EAF4E6; 
@@ -41,6 +42,7 @@
             --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.08);
         }
         
+        /* ================= Global Styles & Scrollbar ================= */
         body { 
             font-family: 'Kanit', sans-serif; 
             background: var(--bg-main); 
@@ -51,7 +53,13 @@
             overflow-x: hidden;
         }
 
-        /* Animated Background */
+        /* Custom Premium Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #D5DCD8; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #BFC9C5; }
+
+        /* Animated Ambient Background */
         body::before { 
             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: radial-gradient(circle at top right, #EAF4E6 0%, transparent 40%),
@@ -71,42 +79,29 @@
             flex-direction: column;
             z-index: 100;
             border-right: 1px solid var(--border);
-            transition: all 0.3s ease;
         }
 
         .sidebar-brand {
-            padding: 28px 24px;
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--primary-dark);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            letter-spacing: 0.5px;
+            padding: 28px 24px; font-size: 26px; font-weight: 700;
+            color: var(--primary-dark); display: flex; align-items: center; gap: 12px;
         }
 
         .sidebar-brand i { animation: gentle-bounce 3s infinite ease-in-out; }
 
         .sidebar-profile {
-            padding: 20px;
-            text-align: center;
-            margin: 0 20px 20px 20px;
-            background: var(--bg-main);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
+            padding: 20px; text-align: center; margin: 0 20px 20px 20px;
+            background: var(--bg-main); border-radius: var(--radius-lg); border: 1px solid var(--border);
         }
 
         .sidebar-profile img {
-            width: 80px; height: 80px; border-radius: 50%;
-            border: 3px solid var(--primary); object-fit: cover;
-            margin: 0 auto 12px auto; display: none;
-            box-shadow: 0 8px 16px rgba(88, 167, 53, 0.2);
-            transition: transform 0.3s;
+            width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary); 
+            object-fit: cover; margin: 0 auto 12px auto; display: none;
+            box-shadow: 0 8px 16px rgba(88, 167, 53, 0.2); transition: transform 0.3s;
         }
         .sidebar-profile img:hover { transform: scale(1.05); }
 
         .sidebar-profile-name { font-size: 17px; font-weight: 600; color: var(--text-main); }
-        .sidebar-profile-role { font-size: 13px; color: var(--text-muted); font-weight: 500; background: var(--primary-light); padding: 4px 10px; border-radius: 20px; display: inline-block; margin-top: 6px; color: var(--primary-dark);}
+        .sidebar-profile-role { font-size: 13px; font-weight: 500; background: var(--primary-light); padding: 4px 10px; border-radius: 20px; display: inline-block; margin-top: 6px; color: var(--primary-dark);}
 
         .sidebar-nav { padding: 0 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 
@@ -115,14 +110,12 @@
             background: transparent; color: var(--text-muted); text-align: left;
             font-size: 16px; font-weight: 500; font-family: 'Kanit'; cursor: pointer;
             display: flex; align-items: center; gap: 15px; position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden;
         }
 
         .nav-btn::before {
             content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px;
-            background: var(--primary); transform: scaleY(0); transition: transform 0.3s;
-            border-radius: 4px;
+            background: var(--primary); transform: scaleY(0); transition: transform 0.3s; border-radius: 4px;
         }
 
         .nav-btn i { font-size: 20px; width: 24px; text-align: center; z-index: 2; transition: all 0.3s; }
@@ -148,8 +141,7 @@
         .card {
             background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
             padding: 35px; border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,0.8);
-            box-shadow: var(--shadow-soft); margin-bottom: 30px;
-            transition: all 0.3s ease;
+            box-shadow: var(--shadow-soft); margin-bottom: 30px; transition: all 0.3s ease;
         }
 
         .page { display: none; animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); } 
@@ -218,9 +210,6 @@
         .badge.completed { background: var(--primary-light); color: var(--primary-dark); } 
         .badge.canceled { background: #FDEDEC; color: var(--danger); }      
         
-        .sale-detail { font-size: 15px; color: var(--text-main); line-height: 1.8; flex: 1; } 
-        .sale-detail span { font-weight: 600; color: var(--primary-dark); }
-        
         .empty-state { text-align: center; color: var(--text-muted); font-size: 18px; font-weight: 500; padding: 60px 0; background: rgba(255,255,255,0.5); border-radius: var(--radius-lg); border: 2px dashed var(--border); grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 15px;}
         .empty-state i { font-size: 48px; color: #D5DCD8; }
 
@@ -251,13 +240,13 @@
         .swal2-close { color: var(--text-muted) !important; background: #F4F7F6 !important; border-radius: 50% !important; width: 44px !important; height: 44px !important; position: absolute !important; top: 20px !important; right: 20px !important; transition: all 0.2s ease !important; z-index: 10;} 
         .swal2-close:hover { background: var(--danger) !important; color: white !important; transform: rotate(90deg);}
 
-        /* Keyframes */
+        /* Animations */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes gentle-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(243, 156, 18, 0); } 100% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0); } }
 
-        /* Loader */
+        /* Full Screen Loaders */
         #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(244,247,246,0.9); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(8px);} 
         .anim-container { position: relative; width: 180px; height: 70px; border-bottom: 5px solid var(--primary); overflow: hidden; margin-bottom: 25px; } 
         .anim-truck { position: absolute; bottom: -12px; left: -60px; font-size: 50px; animation: driveTruck 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1); } 
@@ -460,7 +449,8 @@
             
             <div id="farmer-dashboard-container" style="display:none; animation: slideDown 0.4s ease;"></div>
 
-            <div class="section-title" style="color: var(--info);"><i class="fa-solid fa-spinner fa-spin-pulse"></i> สถานะคิวงานปัจจุบัน</div>
+            <!-- ตรงนี้แก้ไอคอนให้ถูกต้องแล้ว ไม่ให้หมุนตลอดเวลา -->
+            <div class="section-title" style="color: var(--info);"><i class="fa-solid fa-list-check"></i> สถานะคิวงานปัจจุบัน</div>
             <div id="current-sales-container" class="sales-grid" style="margin-bottom: 50px;"></div>
             
             <div class="section-title" style="color: var(--primary);"><i class="fa-solid fa-check-double"></i> ประวัติการขาย (เสร็จสิ้น)</div>
@@ -819,7 +809,6 @@
                         } catch(e){}
                     } else if(currentMapMode==='pin') { manualMarker = L.marker([startLat, startLng]).addTo(modalMap); tempCenter=[startLat,startLng]; }
                     
-                    // Auto load GISTDA logic here if wanted, or keep it simple.
                     setTimeout(() => modalMap.invalidateSize(), 300);
                 },
                 preConfirm: () => {
@@ -917,7 +906,7 @@
             } catch(e) { hideLoader(); btn.disabled=false; }
         }
 
-        // ================= DESKTOP WIDE MODAL: SALE ISLAND DETAILS =================
+        // ================= WIDE MODAL: SALE ISLAND DETAILS =================
         function viewSaleIslandModal(index, role) {
             let item = globalSalesData[index]; if(!item) return; 
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
@@ -1117,7 +1106,26 @@
             });
         }
 
-        // ================= SALES DASHBOARD RENDER =================
+        // ================= SALES DASHBOARD RENDER & ERROR HANDLING =================
+        async function fetchSalesData() {
+            const curContainer = document.getElementById("current-sales-container"); 
+            const hisContainer = document.getElementById("history-sales-container"); 
+            
+            try { 
+                const res = await fetch(GAS_WEB_APP_URL, { 
+                    method: "POST", body: JSON.stringify({ action: "getSales", userId: userProfile.userId }) 
+                }); 
+                const result = await res.json(); 
+                if (result.status === "success") { globalSalesData = result.data; renderSalesUI(result.data); } 
+                else { renderSalesUI([]); }
+            } catch (error) { 
+                console.error("Fetch Error:", error);
+                document.getElementById("farmer-dashboard-container").style.display = "none";
+                curContainer.innerHTML = `<div class='empty-state' style='padding:40px 0;'><i class="fa-solid fa-circle-exclamation" style="font-size:32px; margin-bottom:10px; color:var(--danger);"></i><div style="font-size:16px;">ไม่สามารถเชื่อมต่อฐานข้อมูลได้<br><span style="font-size:13px; color:var(--text-muted);">โปรดลองรีเฟรชหน้าเว็บอีกครั้ง</span></div></div>`; 
+                hisContainer.innerHTML = "";
+            }
+        }
+
         function renderSalesUI(salesData) {
             const curContainer = document.getElementById("current-sales-container"); const hisContainer = document.getElementById("history-sales-container"); const dash = document.getElementById("farmer-dashboard-container");
             curContainer.innerHTML = ""; hisContainer.innerHTML = ""; let sumRai=0, sumTon=0, sumInc=0;
