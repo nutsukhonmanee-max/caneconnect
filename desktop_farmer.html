@@ -22,6 +22,24 @@
     <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
 
     <style>
+        /* ================= App Version Tag ================= */
+        .app-version {
+            position: fixed;
+            bottom: 10px;
+            right: 15px;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+            opacity: 0.6;
+            z-index: 9999;
+            pointer-events: none; /* เพื่อไม่ให้บังการคลิกเมาส์ */
+            font-family: 'Kanit', sans-serif;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 2px 8px;
+            border-radius: 10px;
+            backdrop-filter: blur(2px);
+        }
+        
         /* ================= Premium CSS Variables ================= */
         :root { 
             --primary: #58A735; 
@@ -139,8 +157,8 @@
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
-            padding: 35px; border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,0.8);
+            background: #FFFFFF;
+            padding: 35px; border-radius: var(--radius-lg); border: 1px solid var(--border);
             box-shadow: var(--shadow-soft); margin-bottom: 30px; transition: all 0.3s ease;
         }
 
@@ -232,7 +250,7 @@
         /* Split Map Layout */
         .desktop-report-layout { display: flex; gap: 40px; align-items: stretch; }
         .desktop-report-form { flex: 1; min-width: 400px; }
-        .desktop-report-map { flex: 1.5; position: sticky; top: 40px; }
+        .desktop-report-map { flex: 1.5; position: relative; }
 
         /* Modal Customization (Desktop Wide) */
         .swal2-container { z-index: 1000000 !important; } 
@@ -462,6 +480,8 @@
 
     <!-- LIFF SDK -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <!-- App Version Tag -->
+    <div class="app-version">v1.0.1 | อัปเดต: 25 ส.ค. 2026</div>
     
     <script>
         // ================= CONFIGURATION =================
