@@ -1537,11 +1537,11 @@
                         await checkBuyerForAction(); 
                     } 
                     else { 
-                        hideLoader();
-                        document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; 
-                        document.getElementById("header-text").innerText = "ยินดีต้อนรับ"; 
-                        Swal.fire('ข้อแนะนำ', 'กรุณาเข้าใช้งานผ่านเมนูใน LINE ครับ', 'info'); 
-                    }
+    // เมื่อไม่มี mode ระบุมา ให้เปิดหน้าจัดการข้อมูลเป็นค่าเริ่มต้น
+    document.getElementById("header-text").innerText = "ระบบจัดการข้อมูลชาวไร่"; 
+    document.getElementById("register-page").classList.add("active");
+    await checkUserForRegister(); 
+}
                 } else { 
                     liff.login(); 
                 }
