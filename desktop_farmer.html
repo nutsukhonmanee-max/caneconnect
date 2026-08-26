@@ -481,7 +481,7 @@
     <!-- LIFF SDK -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <!-- App Version Tag -->
-    <div class="app-version">v1.0.1 | อัปเดต: 25 ส.ค. 2026</div>
+    <div class="app-version">v1.0.2 | อัปเดต: 26 ส.ค. 2026</div>
     
     <script>
         // ================= CONFIGURATION =================
@@ -1222,10 +1222,29 @@
                     
                     if (navigator.geolocation) navigator.geolocation.watchPosition( p => { currentLat = p.coords.latitude; currentLng = p.coords.longitude; }, e => {}, {enableHighAccuracy: true});
                     
-                    const params = new URLSearchParams(window.location.search); const mode = params.get('mode');
-                    if (mode === 'report') { await navigateTo('report'); } else if (mode === 'sales') { await navigateTo('sales'); } else { await navigateTo('profile'); }
-                } else { liff.login(); }
-            } catch (err) { hideLoader(); Swal.fire('Error', 'ไม่สามารถเชื่อมต่อ LINE ได้ กรุณาเปิดผ่าน LINE', 'error'); } 
+                    const params = new URLSearchParams(window.location.search); 
+                    const mode = params.get('mode');
+                    const code = params.get('code'); // เช็กว่ามีการ Redirect กลับมาจากการล็อกอินด้วยหรือไม่
+                    
+                    // ปรับลอจิกการเข้าหน้าต่างๆ
+                    if (mode === 'report') { 
+                        await navigateTo('report'); 
+                    } else if (mode === 'sales') { 
+                        await navigateTo('sales'); 
+                    } else if (mode === 'register' || mode === 'profile' || code) { 
+                        // ถ้าพิมพ์ ?mode=... ตรงๆ หรือถ้าเพิ่งล็อกอินเสร็จแล้ว Redirect กลับมา (มี ?code=...) ให้เข้าหน้า Profile อัตโนมัติ
+                        await navigateTo('profile'); 
+                    } else {
+                        // หากเข้ามาแบบไม่มีพารามิเตอร์ใดๆ เลย (อาจจะก๊อปลิงก์มาตรงๆ) ให้เปิดหน้า Profile เป็นค่าเริ่มต้น
+                        await navigateTo('profile');
+                    }
+                } else { 
+                    liff.login(); 
+                }
+            } catch (err) { 
+                hideLoader(); 
+                Swal.fire('Error', 'ไม่สามารถเชื่อมต่อระบบได้ กรุณารีเฟรชหรือเปิดผ่าน LINE อีกครั้ง', 'error'); 
+            } 
         }
 
         window.onload = main;
