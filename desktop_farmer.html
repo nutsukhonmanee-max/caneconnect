@@ -1210,40 +1210,73 @@
             if(hisContainer.innerHTML === "") hisContainer.innerHTML = `<div class='empty-state' style='padding:40px 0;'><i class="fa-solid fa-clock-rotate-left" style="font-size:32px; margin-bottom:10px;"></i><div style="font-size:16px;">ยังไม่มีประวัติการขายเสร็จสิ้น</div></div>`;
         }
 
-        // ================= Core Initialization =================
+        // ================= Core Logic LIFF & Router =================
         async function main() {
-            showLoader(); await loadThaiData();
+            showLoader(); 
+            await loadThaiData();
+            
             try {
                 await liff.init({ liffId: LIFF_ID });
+
+                // 🚨 เพิ่มระบบตรวจจับหน้าจอคอมพิวเตอร์ตรงนี้ 🚨
+                // ถ้าเปิดผ่านเบราว์เซอร์ภายนอก และหน้าจอกว้างกว่า 800px (เป็นคอมพิวเตอร์/แท็บเล็ต)
+                if (liff.getOS() === 'web' && !liff.isInClient() && window.innerWidth > 800) {
+                    const params = new URLSearchParams(window.location.search);
+                    const mode = params.get('mode') || 'profile';
+                    // ให้ระบบเตะกลับไปหน้า Desktop อัตโนมัติ
+                    window.location.replace("desktop_farmer.html?mode=" + mode);
+                    return; // หยุดการทำงานของไฟล์มือถือทันที
+                }
+
                 if (liff.isLoggedIn()) {
                     userProfile = await liff.getProfile();
-                    document.getElementById("profile-img").src = userProfile.pictureUrl; document.getElementById("profile-img").style.display = "block";
-                    document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; 
+                    document.getElementById("profile-img").src = userProfile.pictureUrl; 
+                    document.getElementById("profile-img").style.display = "inline-block";
                     
-                    if (navigator.geolocation) navigator.geolocation.watchPosition( p => { currentLat = p.coords.latitude; currentLng = p.coords.longitude; }, e => {}, {enableHighAccuracy: true});
-                    
-                    const params = new URLSearchParams(window.location.search); 
-                    const mode = params.get('mode');
-                    const code = params.get('code'); // เช็กว่ามีการ Redirect กลับมาจากการล็อกอินด้วยหรือไม่
-                    
-                    // ปรับลอจิกการเข้าหน้าต่างๆ
-                    if (mode === 'report') { 
-                        await navigateTo('report'); 
-                    } else if (mode === 'sales') { 
-                        await navigateTo('sales'); 
-                    } else if (mode === 'register' || mode === 'profile' || code) { 
-                        // ถ้าพิมพ์ ?mode=... ตรงๆ หรือถ้าเพิ่งล็อกอินเสร็จแล้ว Redirect กลับมา (มี ?code=...) ให้เข้าหน้า Profile อัตโนมัติ
-                        await navigateTo('profile'); 
-                    } else {
-                        // หากเข้ามาแบบไม่มีพารามิเตอร์ใดๆ เลย (อาจจะก๊อปลิงก์มาตรงๆ) ให้เปิดหน้า Profile เป็นค่าเริ่มต้น
-                        await navigateTo('profile');
+                    const urlParams = new URLSearchParams(window.location.search); 
+                    const mode = urlParams.get('mode');
+
+                    if (navigator.geolocation) { 
+                        navigator.geolocation.watchPosition(
+                            p => { currentLat = p.coords.latitude; currentLng = p.coords.longitude; updateUserLocationOnMap(); }, 
+                            e => {}, {enableHighAccuracy: true}
+                        ); 
+                    }
+
+                    if (mode === 'register') { 
+                        document.getElementById("header-text").innerText = "ลงทะเบียนชาวไร่"; 
+                        document.getElementById("register-page").classList.add("active");
+                        await checkUserForRegister(); 
+                    } 
+                    else if (mode === 'report') { 
+                        document.getElementById("header-text").innerText = "แจ้งพิกัดใบอ้อย"; 
+                        await checkUserForAction('report'); 
+                    } 
+                    else if (mode === 'sales') { 
+                        document.getElementById("header-text").innerText = "ประวัติการขาย"; 
+                        await checkUserForAction('sales'); 
+                    } 
+                    else if (mode === 'register_buyer') { 
+                        document.getElementById("header-text").innerText = "โปรไฟล์พาร์ทเนอร์รถม้วน"; 
+                        document.getElementById("register-buyer-page").classList.add("active"); 
+                        await checkBuyerForRegister(); 
+                    } 
+                    else if (mode === 'buyer') { 
+                        document.getElementById("header-text").innerText = "ค้นหางานรอบตัว"; 
+                        await checkBuyerForAction(); 
+                    } 
+                    else { 
+                        hideLoader();
+                        document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; 
+                        document.getElementById("header-text").innerText = "ยินดีต้อนรับ"; 
+                        Swal.fire('ข้อแนะนำ', 'กรุณาเข้าใช้งานผ่านเมนูใน LINE ครับ', 'info'); 
                     }
                 } else { 
                     liff.login(); 
                 }
             } catch (err) { 
-                hideLoader(); 
-                Swal.fire('Error', 'ไม่สามารถเชื่อมต่อระบบได้ กรุณารีเฟรชหรือเปิดผ่าน LINE อีกครั้ง', 'error'); 
+                hideLoader();
+                document.getElementById("profile-info").innerText = "ไม่สามารถเชื่อมต่อ LINE ได้"; 
             } 
         }
 
