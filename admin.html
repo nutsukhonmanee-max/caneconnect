@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Pro Dashboard - CaneConnect</title>
-    
-    <!-- เพิ่ม Favicon (โลโก้บนแท็บเบราว์เซอร์) -->
-    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <title>CaneConnect | Modern Admin Dashboard</title>
     
     <!-- ฟอนต์และไอคอน -->
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- ไลบรารีที่จำเป็น -->
+    <!-- ไลบรารี -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -22,235 +20,325 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* ================= Premium CSS Variables ================= */
+        /* ================= Modern SaaS CSS Variables ================= */
         :root {
-            --primary: #6DB33F; 
-            --primary-dark: #4A8C28; 
-            --secondary: #1A252F; 
-            --bg-body: #F4F7F6;
-            --surface: #FFFFFF; 
-            --text-main: #333333; 
-            --text-muted: #7F8C8D; 
-            --border: #E1E8E3;
-            --danger: #E74C3C; 
-            --info: #3498DB; 
-            --warning: #F39C12; 
-            --radius: 12px;
+            /* โทนสีใหม่สไตล์แอปพรีเมียม (Tailwind Colors) */
+            --primary: #10B981;        /* Emerald 500 */
+            --primary-dark: #059669;   /* Emerald 600 */
+            --primary-light: #D1FAE5;  /* Emerald 100 */
+            --secondary: #0F172A;      /* Slate 900 (Sidebar) */
+            --secondary-light: #1E293B;/* Slate 800 */
+            --bg-body: #F8FAFC;        /* Slate 50 */
+            --surface: #FFFFFF;        /* White */
+            --text-main: #334155;      /* Slate 700 */
+            --text-muted: #64748B;     /* Slate 500 */
+            --border: #E2E8F0;         /* Slate 200 */
+            
+            /* Status Colors */
+            --danger: #EF4444;         --danger-light: #FEE2E2;
+            --info: #3B82F6;           --info-light: #DBEAFE;
+            --warning: #F59E0B;        --warning-light: #FEF3C7;
+            --purple: #8B5CF6;         --purple-light: #EDE9FE;
+
+            /* Borders & Shadows */
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.03);
+            --shadow-glow: 0 0 20px rgba(16, 185, 129, 0.15);
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body { 
-            font-family: 'Kanit', sans-serif; 
+            font-family: 'Kanit', 'Inter', sans-serif; 
             background-color: var(--bg-body); 
             color: var(--text-main); 
             display: flex; 
             height: 100vh; 
             overflow: hidden; 
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ================= Custom Scrollbar ================= */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #D5DCD8; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #BFC9C5; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
 
-        /* ================= App Version Tag ================= */
+        /* App Version Tag */
         .app-version {
-            position: fixed; 
-            bottom: 10px; 
-            right: 15px; 
-            font-size: 12px; 
-            color: var(--text-muted);
-            font-weight: 500; 
-            opacity: 0.6; 
-            z-index: 9999; 
-            pointer-events: none;
-            background: rgba(255, 255, 255, 0.8); 
-            padding: 2px 8px; 
-            border-radius: 10px;
+            position: fixed; bottom: 12px; right: 20px; font-size: 11px; color: var(--text-muted);
+            font-weight: 600; opacity: 0.7; z-index: 9999; pointer-events: none;
+            background: rgba(255, 255, 255, 0.9); padding: 4px 12px; border-radius: 20px;
+            box-shadow: var(--shadow-sm); border: 1px solid var(--border); letter-spacing: 0.5px;
         }
 
         /* ================= Login Overlay ================= */
         #login-overlay { 
-            position: fixed; 
-            top: 0; left: 0; width: 100%; height: 100%; 
-            background: var(--secondary); 
-            z-index: 999999; 
-            display: flex; align-items: center; justify-content: center; flex-direction: column; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%); 
+            z-index: 999999; display: flex; align-items: center; justify-content: center; 
         }
 
         .login-box { 
-            background: var(--surface); 
-            padding: 40px; 
-            border-radius: 20px; 
-            width: 90%; max-width: 400px; text-align: center; 
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4); 
-            animation: fadeIn 0.5s ease; 
+            background: var(--surface); padding: 50px 40px; border-radius: var(--radius-xl); 
+            width: 90%; max-width: 420px; text-align: center; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); animation: floatUp 0.6s ease; 
         }
 
-        .login-box h2 { color: var(--secondary); margin-bottom: 10px; font-weight: 700; }
-        .login-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
+        @keyframes floatUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .login-box h2 { color: var(--secondary); margin-bottom: 8px; font-weight: 700; font-size: 26px; }
+        .login-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 30px; }
+
+        .brand-logo-fallback {
+            width: 80px; height: 80px; border-radius: 20px; margin: 0 auto 20px auto;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 40px; box-shadow: var(--shadow-glow);
+        }
 
         /* ================= Sidebar ================= */
         .sidebar { 
-            width: 260px; 
-            background-color: var(--secondary); color: #ecf0f1; 
-            display: flex; flex-direction: column; 
-            z-index: 20; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            width: 280px; background-color: var(--secondary); color: #F8FAFC; 
+            display: flex; flex-direction: column; z-index: 20; 
+            box-shadow: 4px 0 20px rgba(0,0,0,0.05); transition: 0.3s;
         }
 
         .sidebar-header { 
-            padding: 24px 20px; font-size: 22px; font-weight: 700; 
-            color: var(--primary); border-bottom: 1px solid rgba(255,255,255,0.05); 
-            display: flex; align-items: center; gap: 12px;
+            padding: 30px 24px; font-size: 22px; font-weight: 700; 
+            color: var(--surface); border-bottom: 1px solid rgba(255,255,255,0.08); 
+            display: flex; align-items: center; gap: 14px; letter-spacing: 0.5px;
         }
 
-        @keyframes gentle-bounce { 
-            0%, 100% { transform: translateY(0); } 
-            50% { transform: translateY(-5px); } 
+        .sidebar-header i { color: var(--primary); font-size: 26px; }
+
+        .sidebar-profile {
+            padding: 24px 20px; text-align: center; margin: 20px 16px;
+            background: rgba(255,255,255,0.03); border-radius: var(--radius-lg); 
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .sidebar-header i { animation: gentle-bounce 3s infinite ease-in-out; }
-        .sidebar-menu { flex: 1; padding: 20px 0; overflow-y: auto; }
+        .sidebar-profile img {
+            width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--primary); 
+            object-fit: cover; margin: 0 auto 12px auto; display: none;
+        }
+
+        .sidebar-profile-fallback {
+            width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 12px auto;
+            background: var(--secondary-light); display: none; align-items: center; 
+            justify-content: center; color: var(--primary); font-size: 30px; border: 2px solid var(--primary);
+        }
+
+        .sidebar-profile-name { font-size: 16px; font-weight: 600; color: #F8FAFC; }
+        .sidebar-profile-role { 
+            font-size: 12px; font-weight: 600; background: rgba(16, 185, 129, 0.2); 
+            padding: 4px 12px; border-radius: 20px; display: inline-block; 
+            margin-top: 8px; color: var(--primary); border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .sidebar-menu { flex: 1; padding: 10px 16px; overflow-y: auto; }
 
         .menu-item { 
-            padding: 14px 24px; display: flex; align-items: center; gap: 12px; 
-            color: #bdc3c7; cursor: pointer; font-weight: 500; 
-            border-left: 4px solid transparent; transition: 0.2s;
+            padding: 14px 20px; display: flex; align-items: center; gap: 14px; 
+            color: #94A3B8; cursor: pointer; font-weight: 500; font-size: 15px;
+            border-radius: 12px; transition: all 0.2s ease; margin-bottom: 6px;
         }
 
-        .menu-item:hover, .menu-item.active { 
-            background-color: rgba(255,255,255,0.05); color: #fff; 
-            border-left-color: var(--primary); 
+        .menu-item:hover { background-color: rgba(255,255,255,0.05); color: #F8FAFC; transform: translateX(4px); }
+        .menu-item.active { 
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, transparent 100%);
+            color: var(--primary); font-weight: 600; border-left: 4px solid var(--primary);
+            border-radius: 0 12px 12px 0;
         }
+        .menu-item i { font-size: 18px; width: 24px; text-align: center; }
         
         /* ================= Main Content Area ================= */
-        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-body); }
         
         .topbar { 
-            height: 70px; background: var(--surface); display: flex; 
-            align-items: center; justify-content: space-between; padding: 0 30px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 10;
+            height: 80px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 40px; box-shadow: var(--shadow-sm); z-index: 10; border-bottom: 1px solid var(--border);
         }
 
-        .page-title { font-size: 22px; font-weight: 600; color: var(--secondary); display: flex; align-items: center; gap:10px; }
-        .admin-profile { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+        .page-title { font-size: 20px; font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 12px; }
+        .page-title i { color: var(--primary); background: var(--primary-light); padding: 10px; border-radius: 10px; }
         
-        .content-body { flex: 1; padding: 30px; overflow-y: auto; position: relative;}
-        .tab-pane { display: none; animation: fadeIn 0.3s ease; } 
+        .admin-profile { display: flex; align-items: center; gap: 15px; font-weight: 600; color: var(--secondary); }
+        .btn-refresh { 
+            background: var(--surface); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 8px 16px; border-radius: 20px; cursor: pointer; font-family: 'Kanit';
+            font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+            transition: 0.2s; box-shadow: var(--shadow-sm);
+        }
+        .btn-refresh:hover { background: var(--info-light); color: var(--info); border-color: var(--info-light); }
+        
+        .content-body { flex: 1; padding: 40px; overflow-y: auto; position: relative;}
+        .tab-pane { display: none; animation: fadeIn 0.4s ease; } 
         .tab-pane.active { display: block; }
         
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(10px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-
         /* ================= Dashboard Components ================= */
-        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 20px; }
-        .stat-card { background: var(--surface); border-radius: var(--radius); padding: 24px; display: flex; align-items: center; gap: 20px; border-left: 5px solid var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform 0.2s;}
-        .stat-icon { width: 60px; height: 60px; border-radius: 50%; background: #F0F8EC; color: var(--primary-dark); display: flex; align-items: center; justify-content: center; font-size: 24px; }
-        .stat-info h3 { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; }
-        .stat-info p { font-size: 26px; font-weight: 700; color: var(--text-main); line-height: 1; }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 30px; }
+        .stat-card { 
+            background: var(--surface); border-radius: var(--radius-lg); padding: 25px; 
+            display: flex; align-items: center; gap: 20px; border: 1px solid var(--border);
+            box-shadow: var(--shadow-md); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative; overflow: hidden;
+        }
+        .stat-card::after { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--primary); }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+        .stat-icon { 
+            width: 65px; height: 65px; border-radius: 16px; background: var(--primary-light); 
+            color: var(--primary-dark); display: flex; align-items: center; justify-content: center; font-size: 28px; 
+        }
+        .stat-info h3 { font-size: 14px; color: var(--text-muted); font-weight: 500; margin-bottom: 6px; }
+        .stat-info p { font-size: 32px; font-weight: 700; color: var(--secondary); line-height: 1; }
         
-        .chart-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; margin-bottom: 20px; }
-        .chart-card { background: var(--surface); border-radius: var(--radius); padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .chart-card h4 { margin-bottom: 15px; font-size: 16px; color: var(--secondary); font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .chart-container-inner { position: relative; height: 250px; width: 100%; }
+        .chart-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 24px; margin-bottom: 30px; }
+        .chart-card { background: var(--surface); border-radius: var(--radius-lg); padding: 25px; border: 1px solid var(--border); box-shadow: var(--shadow-md); }
+        .chart-card h4 { margin-bottom: 20px; font-size: 16px; color: var(--secondary); font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .chart-container-inner { position: relative; height: 280px; width: 100%; }
 
         /* ================= Panels & Tables ================= */
-        .panel { background: var(--surface); border-radius: var(--radius); box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; margin-bottom: 20px; }
-        .panel-header { padding: 15px 24px; border-bottom: 1px solid var(--border); font-size: 16px; font-weight: 600; color: var(--secondary); display: flex; justify-content: space-between; align-items: center;}
+        .panel { 
+            background: var(--surface); border-radius: var(--radius-lg); 
+            box-shadow: var(--shadow-md); border: 1px solid var(--border); 
+            overflow: hidden; margin-bottom: 30px; 
+        }
+        .panel-header { 
+            padding: 20px 30px; border-bottom: 1px solid var(--border); 
+            display: flex; justify-content: space-between; align-items: center; background: #FAFAFA;
+        }
+        .panel-title { font-size: 18px; font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 10px;}
         
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { background-color: #F8FAF9; padding: 14px 20px; font-weight: 600; color: var(--text-muted); font-size: 13px; border-bottom: 1px solid var(--border); white-space: nowrap;}
-        td { padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle;}
-        tr:hover { background-color: #F8FAF9; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; }
+        th { 
+            background-color: #F8FAFC; padding: 18px 30px; font-weight: 600; 
+            color: var(--text-muted); font-size: 12px; text-transform: uppercase; 
+            letter-spacing: 0.5px; border-bottom: 1px solid var(--border); white-space: nowrap;
+        }
+        td { padding: 18px 30px; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 500; color: var(--secondary); vertical-align: middle;}
+        tr:hover td { background-color: #F1F5F9; }
+        tr:last-child td { border-bottom: none; }
 
-        .badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
-        .bg-warning { background: #FEF5E7; color: var(--warning); } 
-        .bg-info { background: #EAF2F8; color: var(--info); } 
-        .bg-success { background: #F0F8EC; color: var(--primary-dark); }
-        .bg-danger { background: #FDEDEC; color: var(--danger); }
-        .bg-purple { background: #F4ECF7; color: #8E44AD; }
+        /* Badges */
+        .badge { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; letter-spacing: 0.3px;}
+        .bg-warning { background: var(--warning-light); color: #D97706; } 
+        .bg-info { background: var(--info-light); color: #2563EB; } 
+        .bg-success { background: var(--primary-light); color: var(--primary-dark); }
+        .bg-danger { background: var(--danger-light); color: var(--danger); }
+        .bg-purple { background: var(--purple-light); color: var(--purple); }
         
-        /* ================= Action Buttons ================= */
-        .btn-action { width: 32px; height: 32px; border-radius: 6px; border: none; cursor: pointer; color: white; display: inline-flex; align-items: center; justify-content: center; margin-right: 5px; transition: 0.2s;}
-        .btn-edit { background: var(--warning); } .btn-edit:hover { background: #D68910; }
-        .btn-view { background: var(--info); } .btn-view:hover { background: #2980B9; }
-        .btn-delete { background: var(--danger); } .btn-delete:hover { background: #C0392B; }
-        .btn-map { background: var(--primary); } .btn-map:hover { background: var(--primary-dark); }
+        /* Action Buttons */
+        .btn-action { 
+            width: 36px; height: 36px; border-radius: 8px; border: none; cursor: pointer; 
+            display: inline-flex; align-items: center; justify-content: center; 
+            margin-right: 6px; transition: 0.2s; font-size: 14px;
+        }
+        .btn-edit { background: var(--warning-light); color: #D97706; } .btn-edit:hover { background: var(--warning); color: white; }
+        .btn-view { background: var(--info-light); color: #2563EB; } .btn-view:hover { background: var(--info); color: white; }
+        .btn-delete { background: var(--danger-light); color: var(--danger); } .btn-delete:hover { background: var(--danger); color: white; }
+        .btn-map { background: var(--primary-light); color: var(--primary-dark); } .btn-map:hover { background: var(--primary); color: white; }
 
-        .btn-login { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-family: 'Kanit'; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        /* Inputs & Controls */
+        .swal-input, .filter-select { 
+            width: 100%; padding: 12px 16px; border: 1px solid var(--border); 
+            border-radius: 10px; font-family: 'Kanit'; font-size: 14px; 
+            box-sizing: border-box; background: #F8FAFC; color: var(--secondary);
+            transition: all 0.2s;
+        }
+        .swal-input:focus, .filter-select:focus { border-color: var(--primary); background: #FFF; outline: none; box-shadow: 0 0 0 3px var(--primary-light); }
+        
+        .btn-login, .btn-main { 
+            width: 100%; background: var(--primary); color: white; border: none; 
+            padding: 14px; border-radius: 10px; font-family: 'Kanit'; font-size: 16px; 
+            font-weight: 600; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow-md);
+        }
+        .btn-login:hover, .btn-main:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 
         /* ================= Loader ================= */
-        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.8); z-index: 9999999; display: none; align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(4px);}
-        .spinner { width: 50px; height: 50px; border: 5px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        .loader-overlay { 
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background: rgba(248,250,252,0.9); z-index: 9999999; display: none; 
+            align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(5px);
+        }
+        .spinner { 
+            width: 60px; height: 60px; border: 4px solid var(--border); 
+            border-top-color: var(--primary); border-radius: 50%; 
+            animation: spin 1s cubic-bezier(0.55, 0.085, 0.68, 0.53) infinite; margin-bottom: 20px; 
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Overview Map */
-        #overview-map { width: 100%; height: 600px; border-radius: 0 0 var(--radius) var(--radius); z-index: 1; }
+        /* ================= Maps ================= */
+        #overview-map { width: 100%; height: 650px; z-index: 1; }
         
-        /* ================= Swals Custom ================= */
-        .swal2-popup { font-family: 'Kanit', sans-serif !important; border-radius: 20px !important;}
-        .swal-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        /* ================= Swals Custom UI ================= */
+        .swal2-popup { font-family: 'Kanit', sans-serif !important; border-radius: 24px !important; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;}
+        .swal-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
         .swal-form-full { grid-column: 1 / -1; }
-        .swal-label { font-size: 13px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; display: block; }
-        .swal-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Kanit'; font-size: 14px; box-sizing: border-box; background: #FAFCFB;}
-        .swal-input:focus { border-color: var(--primary); outline: none; }
-        .filter-select { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); font-family: 'Kanit'; font-size: 13px; outline: none; }
+        .swal-label { font-size: 13px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; display: block; }
 
         /* Tabs inside Modals */
-        .modal-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 15px; }
-        .modal-tab { padding: 10px 20px; cursor: pointer; font-weight: 600; color: var(--text-muted); border-bottom: 3px solid transparent; margin-bottom: -2px;}
+        .modal-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; gap: 20px;}
+        .modal-tab { padding: 12px 4px; cursor: pointer; font-weight: 600; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; font-size: 15px; transition: 0.2s;}
+        .modal-tab:hover { color: var(--secondary); }
         .modal-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
 
         /* Logs Timeline */
         .timeline { position: relative; padding: 20px 0; }
-        .timeline::before { content: ''; position: absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: var(--border); }
-        .log-item { position: relative; padding-left: 50px; margin-bottom: 20px; }
-        .log-icon { position: absolute; left: 6px; top: 0; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; z-index: 2; border: 3px solid var(--surface);}
-        .log-content { background: #f9f9f9; padding: 15px; border-radius: 12px; border: 1px solid var(--border); }
-        .log-time { font-size: 12px; color: var(--text-muted); margin-bottom: 5px;}
-        .log-title { font-weight: 600; color: var(--secondary); font-size: 14px;}
+        .timeline::before { content: ''; position: absolute; left: 24px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+        .log-item { position: relative; padding-left: 60px; margin-bottom: 25px; }
+        .log-icon { 
+            position: absolute; left: 8px; top: 0; width: 34px; height: 34px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; color: white; 
+            font-size: 14px; z-index: 2; border: 4px solid var(--surface); box-shadow: var(--shadow-sm);
+        }
+        .log-content { background: var(--surface); padding: 18px 24px; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+        .log-time { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .log-title { font-weight: 700; color: var(--secondary); font-size: 15px;}
         
         /* Modal Internal Tables */
-        .swal-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
-        .swal-table th { background: #f4f9f9; padding: 10px; font-size: 13px; color: var(--secondary); border-bottom: 2px solid var(--border); white-space: nowrap; text-align: left;}
-        .swal-table td { padding: 10px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle;}
-        .swal-table tr:hover { background-color: #FAFCFB; }
+        .swal-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 5px; }
+        .swal-table th { background: #F8FAFC; padding: 12px 16px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; text-align: left; text-transform: uppercase;}
+        .swal-table td { padding: 12px 16px; font-size: 14px; color: var(--secondary); border-bottom: 1px solid var(--border); vertical-align: middle; font-weight: 500;}
+        .swal-table tr:hover td { background-color: #F1F5F9; }
         
         /* Receipt UI inside Modals */
-        .receipt-box { border: 2px dashed #BFC9C5; padding: 15px; margin-top: 15px; background: #FFFFFF; border-radius: 8px; font-family: 'Kanit'; }
-        .receipt-box .title { text-align: center; margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 10px; }
-        .receipt-box .title-main { font-size: 16px; font-weight: 600; color: var(--secondary); }
-        .receipt-box .title-sub { font-size: 12px; color: var(--text-muted); }
-        .receipt-box .section { font-size: 13px; line-height: 1.8; color: var(--text-main); margin-bottom: 12px; }
-        .receipt-box .row { display: flex; justify-content: space-between; margin-bottom: 4px; }
-        .receipt-box .row span:last-child { font-weight: 500; }
-        .receipt-box .total-section { border-top: 1px dashed #ccc; padding-top: 10px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 600; }
+        .receipt-box { border: 1px solid var(--border); padding: 24px; margin-top: 20px; background: #F8FAFC; border-radius: 16px; font-family: 'Kanit'; box-shadow: var(--shadow-sm);}
+        .receipt-box .title { text-align: center; margin-bottom: 15px; border-bottom: 1px dashed #CBD5E1; padding-bottom: 15px; }
+        .receipt-box .title-main { font-size: 18px; font-weight: 700; color: var(--secondary); }
+        .receipt-box .title-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px;}
+        .receipt-box .section { font-size: 14px; line-height: 2; color: var(--text-main); margin-bottom: 15px; }
+        .receipt-box .row { display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px solid #E2E8F0; padding-bottom: 6px;}
+        .receipt-box .row:last-child { border-bottom: none; }
+        .receipt-box .row span:last-child { font-weight: 600; color: var(--secondary);}
+        .receipt-box .total-section { border-top: 2px dashed #CBD5E1; padding-top: 15px; display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; align-items: center;}
     </style>
 </head>
 <body>
 
-    <!-- Overlay สำหรับ Login แอดมิน -->
+    <!-- Overlay สำหรับ Login แอดมิน (ดีไซน์ใหม่) -->
     <div id="login-overlay">
         <div class="login-box">
+            <!-- สมาร์ทโลโก้: ถ้ามีรูปจะโชว์รูป ถ้าหาไม่เจอจะโชว์ไอคอนสวยๆ แทน -->
+            <img src="logo.jpg" alt="Logo" onerror="this.style.display='none'; document.getElementById('fb-login-logo').style.display='flex';" style="width: 80px; height: 80px; border-radius: 20px; object-fit: cover; margin: 0 auto 20px auto; box-shadow: var(--shadow-glow);">
+            <div id="fb-login-logo" class="brand-logo-fallback"><i class="fa-solid fa-leaf"></i></div>
+            
             <h2>Admin Secure Login</h2>
-            <p>กรุณาใส่รหัสผ่านเพื่อเข้าสู่ระบบหลังบ้าน</p>
-            <input type="password" id="admin-password" class="swal-input" placeholder="••••" style="margin-bottom: 20px; text-align: center; font-size: 20px; letter-spacing: 4px;" onkeypress="if(event.key === 'Enter') checkLogin()">
-            <button onclick="checkLogin()" class="btn-login">เข้าสู่ระบบ</button>
+            <p>กรุณาใส่รหัสผ่านเพื่อเข้าสู่ระบบผู้ดูแล</p>
+            <input type="password" id="admin-password" class="swal-input" placeholder="••••" style="margin-bottom: 24px; text-align: center; font-size: 24px; letter-spacing: 8px; padding: 16px;" onkeypress="if(event.key === 'Enter') checkLogin()">
+            <button onclick="checkLogin()" class="btn-login"><i class="fa-solid fa-lock"></i> เข้าสู่ระบบ</button>
         </div>
     </div>
 
     <!-- จอโหลดระหว่างรอ API -->
     <div class="loader-overlay" id="loader">
         <div class="spinner"></div>
-        <h3 style="color: var(--primary-dark); font-family: 'Kanit';">กำลังประมวลผล...</h3>
+        <h3 style="color: var(--secondary); font-family: 'Kanit'; font-weight: 600;">กำลังประมวลผลข้อมูล...</h3>
     </div>
 
     <!-- เมนูด้านข้าง Sidebar -->
@@ -259,29 +347,39 @@
             <i class="fa-solid fa-leaf"></i> 
             <span>CaneConnect</span>
         </div>
+        
+        <div class="sidebar-profile">
+            <!-- สมาร์ทโลโก้ Sidebar -->
+            <img id="sidebar-logo-img" src="logo.jpg" alt="Logo" onerror="this.style.display='none'; document.getElementById('fb-side-logo').style.display='flex';">
+            <div id="fb-side-logo" class="sidebar-profile-fallback"><i class="fa-solid fa-user-shield"></i></div>
+            
+            <div class="sidebar-profile-name">ผู้ดูแลระบบ</div>
+            <div class="sidebar-profile-role">Admin Center</div>
+        </div>
+
         <div class="sidebar-menu">
             <div class="menu-item active" onclick="switchTab('dashboard', 'ภาพรวมระบบและสถิติ')">
-                <i class="fa-solid fa-chart-pie"></i> ภาพรวมและสถิติ
+                <i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span>
             </div>
             <div class="menu-item" onclick="switchTab('map', 'แผนที่ภาพรวมระดับประเทศ')">
-                <i class="fa-solid fa-map-location-dot"></i> แผนที่ภาพรวม
+                <i class="fa-solid fa-map-location-dot"></i> <span>แผนที่ภูมิสารสนเทศ</span>
             </div>
             <div class="menu-item" onclick="switchTab('farmers', 'ระบบจัดการข้อมูลชาวไร่')">
-                <i class="fa-solid fa-users"></i> ข้อมูลชาวไร่
+                <i class="fa-solid fa-users"></i> <span>ข้อมูลชาวไร่</span>
             </div>
             <div class="menu-item" onclick="switchTab('buyers', 'ระบบจัดการพาร์ทเนอร์รถม้วน')">
-                <i class="fa-solid fa-truck-moving"></i> ข้อมูลรถม้วน
+                <i class="fa-solid fa-truck-moving"></i> <span>ข้อมูลรถม้วน</span>
             </div>
             <div class="menu-item" onclick="switchTab('jobs', 'กระดานรายการแจ้งขายใบอ้อย')">
-                <i class="fa-solid fa-clipboard-list"></i> รายการคิวงาน
+                <i class="fa-solid fa-clipboard-list"></i> <span>รายการคิวงาน</span>
             </div>
             <div class="menu-item" onclick="switchTab('logs', 'บันทึกกิจกรรมในระบบ (System Logs)')">
-                <i class="fa-solid fa-clock-rotate-left"></i> บันทึกกิจกรรม (Logs)
+                <i class="fa-solid fa-clock-rotate-left"></i> <span>บันทึกกิจกรรม</span>
             </div>
             
-            <div style="margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
-                <div class="menu-item" onclick="logoutAdmin()" style="color: #E74C3C;">
-                    <i class="fa-solid fa-sign-out-alt"></i> ออกจากระบบ
+            <div style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+                <div class="menu-item" onclick="logoutAdmin()" style="color: #EF4444;">
+                    <i class="fa-solid fa-sign-out-alt"></i> <span>ออกจากระบบ</span>
                 </div>
             </div>
         </div>
@@ -291,13 +389,12 @@
     <main class="main-content">
         <header class="topbar">
             <div class="page-title" id="topbar-title">
-                <i class="fa-solid fa-chart-pie" style="color:var(--primary);"></i> ภาพรวมระบบและสถิติ
+                <i class="fa-solid fa-chart-pie"></i> Dashboard
             </div>
             <div class="admin-profile">
-                <button style="border:none; background:none; cursor:pointer; color:var(--info); font-size: 18px; margin-right: 15px;" onclick="refreshData()" title="รีเฟรชข้อมูล">
-                    <i class="fa-solid fa-sync-alt"></i> รีเฟรช
+                <button class="btn-refresh" onclick="refreshData()" title="รีเฟรชข้อมูล">
+                    <i class="fa-solid fa-sync-alt"></i> ซิงค์ข้อมูลล่าสุด
                 </button>
-                <span>ผู้ดูแลระบบ</span>
             </div>
         </header>
 
@@ -309,28 +406,28 @@
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
                         <div class="stat-info">
-                            <h3>ชาวไร่ในระบบ</h3>
+                            <h3>ชาวไร่ในระบบ (คน)</h3>
                             <p id="stat-farmers">0</p>
                         </div>
                     </div>
                     <div class="stat-card" style="border-left-color: var(--warning);">
-                        <div class="stat-icon" style="background:#FEF5E7; color:var(--warning);"><i class="fa-solid fa-truck-moving"></i></div>
+                        <div class="stat-icon" style="background:var(--warning-light); color:var(--warning);"><i class="fa-solid fa-truck-moving"></i></div>
                         <div class="stat-info">
-                            <h3>พาร์ทเนอร์รถม้วน</h3>
+                            <h3>พาร์ทเนอร์รถม้วน (คัน)</h3>
                             <p id="stat-buyers">0</p>
                         </div>
                     </div>
                     <div class="stat-card" style="border-left-color: var(--info);">
-                        <div class="stat-icon" style="background:#EAF2F8; color:var(--info);"><i class="fa-solid fa-file-invoice"></i></div>
+                        <div class="stat-icon" style="background:var(--info-light); color:var(--info);"><i class="fa-solid fa-file-invoice"></i></div>
                         <div class="stat-info">
-                            <h3>งานที่กำลังดำเนินการ</h3>
+                            <h3>งานที่กำลังดำเนินการ (คิว)</h3>
                             <p id="stat-jobs">0</p>
                         </div>
                     </div>
                     <div class="stat-card" style="border-left-color: var(--danger);">
-                        <div class="stat-icon" style="background:#FDEDEC; color:var(--danger);"><i class="fa-solid fa-weight-scale"></i></div>
+                        <div class="stat-icon" style="background:var(--danger-light); color:var(--danger);"><i class="fa-solid fa-weight-scale"></i></div>
                         <div class="stat-info">
-                            <h3>ปริมาณรับซื้อแล้ว (ตัน)</h3>
+                            <h3>ปริมาณรับซื้อสำเร็จ (ตัน)</h3>
                             <p id="stat-tons">0</p>
                         </div>
                     </div>
@@ -338,11 +435,11 @@
 
                 <div class="chart-grid">
                     <div class="chart-card">
-                        <h4>📊 สัดส่วนสถานะคิวงาน</h4>
+                        <h4><i class="fa-solid fa-chart-pie" style="color:var(--primary);"></i> สัดส่วนสถานะคิวงาน</h4>
                         <div class="chart-container-inner"><canvas id="statusChart"></canvas></div>
                     </div>
                     <div class="chart-card">
-                        <h4>📍 พื้นที่ปลูกอ้อยแยกตาม หมู่บ้าน/ตำบล (Top 7)</h4>
+                        <h4><i class="fa-solid fa-chart-simple" style="color:var(--info);"></i> พื้นที่ปลูกอ้อยแยกตาม หมู่บ้าน/ตำบล (Top 7)</h4>
                         <div class="chart-container-inner"><canvas id="villageChart"></canvas></div>
                     </div>
                 </div>
@@ -352,9 +449,9 @@
             <div id="tab-map" class="tab-pane">
                 <div class="panel">
                     <div class="panel-header">
-                        <div class="panel-title">แผนที่ภูมิสารสนเทศแปลงอ้อย</div>
-                        <select id="map-filter" class="filter-select" onchange="renderOverviewMap()">
-                            <option value="all">แสดงแปลงทั้งหมด</option>
+                        <div class="panel-title"><i class="fa-solid fa-earth-asia" style="color:var(--primary);"></i> แผนที่ภูมิสารสนเทศแปลงอ้อย</div>
+                        <select id="map-filter" class="filter-select" style="width:auto;" onchange="renderOverviewMap()">
+                            <option value="all">แสดงแปลงทั้งหมดในระบบ</option>
                             <option value="registered">เฉพาะแปลงที่ลงทะเบียน (สีเขียว)</option>
                             <option value="selling">เฉพาะแปลงที่ประกาศขาย (สีส้ม)</option>
                         </select>
@@ -367,11 +464,11 @@
             <div id="tab-farmers" class="tab-pane">
                 <div class="panel">
                     <div class="panel-header">
-                        <div class="panel-title">จัดการข้อมูลชาวไร่</div>
-                        <div>
-                            <span style="font-size:13px; color:var(--text-muted);">กรองพื้นที่: </span>
-                            <select id="filter-village" class="filter-select" onchange="renderFarmersTable()">
-                                <option value="all">ทั้งหมด</option>
+                        <div class="panel-title"><i class="fa-solid fa-users" style="color:var(--info);"></i> ฐานข้อมูลชาวไร่</div>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="font-size:13px; color:var(--text-muted); font-weight:600;">กรองพื้นที่: </span>
+                            <select id="filter-village" class="filter-select" style="width:auto; min-width:200px;" onchange="renderFarmersTable()">
+                                <option value="all">แสดงทั้งหมด</option>
                             </select>
                         </div>
                     </div>
@@ -379,12 +476,12 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>รหัส ID</th>
                                     <th>ชื่อ - นามสกุล</th>
                                     <th>หมู่บ้าน/ตำบล</th>
                                     <th>เบอร์โทรศัพท์</th>
                                     <th>จำนวนแปลง</th>
-                                    <th>จัดการ</th>
+                                    <th style="text-align:center;">จัดการ</th>
                                 </tr>
                             </thead>
                             <tbody id="table-farmers"></tbody>
@@ -396,16 +493,16 @@
             <!-- Tab 4: Buyers -->
             <div id="tab-buyers" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-header"><div class="panel-title">จัดการข้อมูลพาร์ทเนอร์รถม้วน</div></div>
+                    <div class="panel-header"><div class="panel-title"><i class="fa-solid fa-truck-moving" style="color:var(--warning);"></i> ฐานข้อมูลพาร์ทเนอร์รถม้วน</div></div>
                     <div style="overflow-x: auto;">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>ชื่อ/บริษัท</th>
+                                    <th>รหัส ID</th>
+                                    <th>ชื่อพาร์ทเนอร์/บริษัท</th>
                                     <th>เบอร์โทรศัพท์</th>
-                                    <th>จุดจอดรถ (อู่)</th>
-                                    <th>จัดการ</th>
+                                    <th>ที่ตั้งจุดจอดรถ (อู่)</th>
+                                    <th style="text-align:center;">จัดการ</th>
                                 </tr>
                             </thead>
                             <tbody id="table-buyers"></tbody>
@@ -418,10 +515,10 @@
             <div id="tab-jobs" class="tab-pane">
                 <div class="panel">
                     <div class="panel-header">
-                        <div class="panel-title">รายการแจ้งขายใบอ้อย</div>
-                        <div style="display:flex; gap:10px;">
-                            <select id="filter-job-status" class="filter-select" onchange="renderJobsTable()">
-                                <option value="all">📌 สถานะทั้งหมด</option>
+                        <div class="panel-title"><i class="fa-solid fa-clipboard-list" style="color:var(--purple);"></i> กระดานคิวงานแจ้งขาย</div>
+                        <div style="display:flex; gap:12px;">
+                            <select id="filter-job-status" class="filter-select" style="width:auto;" onchange="renderJobsTable()">
+                                <option value="all">📌 สถานะงานทั้งหมด</option>
                                 <option value="รอคิวรถ">รอคิวรถ</option>
                                 <option value="รอชาวไร่ยืนยัน">รอชาวไร่ยืนยัน</option>
                                 <option value="กำลังดำเนินการ">กำลังดำเนินการ</option>
@@ -436,12 +533,12 @@
                             <thead>
                                 <tr>
                                     <th>รหัสงาน</th>
-                                    <th>ผู้แจ้ง</th>
+                                    <th>ผู้แจ้งขาย</th>
                                     <th>ปริมาณประเมิน</th>
                                     <th>วันที่นัดม้วน</th>
                                     <th>สถานะปัจจุบัน</th>
                                     <th>ผู้รับงาน/พาร์ทเนอร์</th>
-                                    <th>จัดการระบบ</th>
+                                    <th style="text-align:center;">จัดการระบบ</th>
                                 </tr>
                             </thead>
                             <tbody id="table-jobs"></tbody>
@@ -453,8 +550,8 @@
             <!-- Tab 6: System Logs -->
             <div id="tab-logs" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-header"><div class="panel-title"><i class="fa-solid fa-list-ul"></i> บันทึกความเคลื่อนไหวในระบบ</div></div>
-                    <div style="padding: 20px;">
+                    <div class="panel-header"><div class="panel-title"><i class="fa-solid fa-list-ul" style="color:var(--secondary);"></i> บันทึกความเคลื่อนไหวในระบบ (System Logs)</div></div>
+                    <div style="padding: 30px;">
                         <div class="timeline" id="system-logs-container">
                             <!-- ข้อมูล Log จะถูกแทรกที่นี่ -->
                         </div>
@@ -466,7 +563,7 @@
     </main>
 
     <!-- ป้ายบอกเวอร์ชันแอป -->
-    <div class="app-version">v1.1.5 | อัปเดตล่าสุด: 26 ส.ค. 2026</div>
+    <div class="app-version">v2.0.0 Pro | อัปเดต: 26 ส.ค. 2026</div>
 
     <script>
         // ==========================================
@@ -482,6 +579,9 @@
         let chartStatusObj = null; 
         let chartVillageObj = null;
 
+        // รูปโปรไฟล์ Sidebar Fallback เช็กตอนโหลด
+        document.getElementById('sidebar-logo-img').onload = function() { this.style.display = 'block'; document.getElementById('fb-side-logo').style.display='none'; }
+
         // ==========================================
         // ระบบ Login เข้าหลังบ้านแอดมิน
         // ==========================================
@@ -493,7 +593,7 @@
                 document.getElementById("login-overlay").style.display = "none"; 
                 refreshData(); 
             } else { 
-                Swal.fire('รหัสผ่านผิด', 'ไม่อนุญาตให้เข้าสู่ระบบ', 'error'); 
+                Swal.fire({title: 'รหัสผ่านผิด', text:'ไม่อนุญาตให้เข้าสู่ระบบ', icon:'error', confirmButtonColor: '#EF4444', customClass: {popup: 'swal2-popup'}}); 
             }
         }
 
@@ -509,20 +609,15 @@
         function hideLoader() { document.getElementById('loader').style.display = 'none'; }
         
         function switchTab(tabId, title) {
-            // จัดการสีปุ่ม Sidebar
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); 
             event.currentTarget.classList.add('active');
             
-            // สลับหน้าจอ Content
             document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active')); 
             document.getElementById('tab-' + tabId).classList.add('active');
             document.getElementById('topbar-title').innerHTML = event.currentTarget.innerHTML;
             
-            // รีโหลดขนาดแผนที่ถ้าเปิดแท็บแผนที่
             if(tabId === 'map') { 
-                setTimeout(() => { 
-                    if(overviewMapObj) overviewMapObj.invalidateSize(); 
-                }, 200); 
+                setTimeout(() => { if(overviewMapObj) overviewMapObj.invalidateSize(); }, 300); 
             }
         }
 
@@ -553,13 +648,11 @@
                 if (result.status === "success") {
                     globalData = result.data;
                     
-                    // อัปเดตตัวเลขหน้า Dashboard
                     document.getElementById('stat-farmers').innerText = globalData.farmers.length;
                     document.getElementById('stat-buyers').innerText = globalData.buyers.length;
                     document.getElementById('stat-jobs').innerText = globalData.jobs.filter(j => j.status !== 'เสร็จสิ้น' && j.status !== 'ยกเลิก').length;
                     document.getElementById('stat-tons').innerText = globalData.totalTons.toLocaleString('th-TH');
 
-                    // เรียกใช้ฟังก์ชันอัปเดตแต่ละส่วน
                     updateVillageFilter(); 
                     renderFarmersTable(); 
                     renderBuyersTable(); 
@@ -575,7 +668,6 @@
             hideLoader();
         }
 
-        // ดึงเลเยอร์แผนที่ดาวเทียมจาก GISTDA (ต้องผ่าน Proxy ของ GAS)
         async function loadGistdaPolygonOverlay(farmerGeoJsonString, mapObject) {
             if (!farmerGeoJsonString) return;
             try {
@@ -589,10 +681,10 @@
                     result.data.forEach(item => {
                         if (item.geom) {
                             L.geoJSON(item.geom, {
-                                style: { color: '#3498DB', weight: 3, fillOpacity: 0.3, dashArray: '5, 5' }
+                                style: { color: '#3B82F6', weight: 3, fillOpacity: 0.2, dashArray: '5, 5' }
                             }).bindPopup(`
                                 <div style="font-family:'Kanit';">
-                                    <b style="color:#2980B9;">🛰️ ประเมินโดยดาวเทียม GISTDA</b><br>
+                                    <b style="color:#2563EB;">🛰️ ประเมินโดยดาวเทียม GISTDA</b><br>
                                     <b>ขนาดพื้นที่:</b> ${item.area ? parseFloat(item.area).toFixed(2) : '-'} ไร่<br>
                                     <span style="font-size:12px; color:gray;">อัปเดต: ${item.update || '-'}</span>
                                 </div>
@@ -609,15 +701,11 @@
         // การวาดกราฟสถิติ (Charts.js)
         // ==========================================
         function renderCharts() {
-            // ทำลายกราฟเก่าก่อนวาดใหม่ (ป้องกันการซ้อนกัน)
             if(chartStatusObj) chartStatusObj.destroy(); 
             if(chartVillageObj) chartVillageObj.destroy();
             
-            // 1. กราฟวงกลม: สถานะคิวงาน
             let statuses = {}; 
-            globalData.jobs.forEach(j => { 
-                statuses[j.status] = (statuses[j.status] || 0) + 1; 
-            });
+            globalData.jobs.forEach(j => { statuses[j.status] = (statuses[j.status] || 0) + 1; });
             
             chartStatusObj = new Chart(document.getElementById('statusChart'), { 
                 type: 'doughnut', 
@@ -625,22 +713,19 @@
                     labels: Object.keys(statuses), 
                     datasets: [{ 
                         data: Object.values(statuses), 
-                        backgroundColor: ['#F39C12', '#3498DB', '#9B59B6', '#6DB33F', '#E74C3C'] 
+                        backgroundColor: ['#F59E0B', '#3B82F6', '#8B5CF6', '#10B981', '#EF4444'],
+                        borderWidth: 0
                     }] 
                 }, 
-                options: { responsive: true, maintainAspectRatio: false } 
+                options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: { font: {family: 'Kanit'} } } } } 
             });
 
-            // 2. กราฟแท่ง: พื้นที่ปลูกอ้อยแยกตามหมู่บ้าน
             let villages = {}; 
             globalData.farmers.forEach(f => { 
                 let v = `ม.${f.moo} ต.${f.subDist}`; 
-                if(f.subDist) {
-                    villages[v] = (villages[v] || 0) + 1; 
-                }
+                if(f.subDist) { villages[v] = (villages[v] || 0) + 1; }
             });
             
-            // เรียงลำดับจากมากไปน้อย และดึงมาแค่ 7 อันดับแรก
             let sortedV = Object.entries(villages).sort((a,b) => b[1]-a[1]).slice(0, 7);
             
             chartVillageObj = new Chart(document.getElementById('villageChart'), { 
@@ -650,10 +735,11 @@
                     datasets: [{ 
                         label: 'จำนวนชาวไร่ในพื้นที่', 
                         data: sortedV.map(v => v[1]), 
-                        backgroundColor: '#6DB33F' 
+                        backgroundColor: '#10B981',
+                        borderRadius: 6
                     }] 
                 }, 
-                options: { responsive: true, maintainAspectRatio: false } 
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { font: {family: 'Kanit'} } } }, scales: { x: { ticks: { font: {family: 'Kanit'} } }, y: { ticks: { font: {family: 'Kanit'} } } } } 
             });
         }
 
@@ -663,13 +749,7 @@
         function updateVillageFilter() {
             let sel = document.getElementById('filter-village'); 
             let unq = new Set();
-            
-            globalData.farmers.forEach(f => { 
-                if(f.subDist) {
-                    unq.add(`ม.${f.moo} ต.${f.subDist} อ.${f.dist}`); 
-                }
-            });
-            
+            globalData.farmers.forEach(f => { if(f.subDist) { unq.add(`ม.${f.moo} ต.${f.subDist} อ.${f.dist}`); } });
             sel.innerHTML = '<option value="all">แสดงทั้งหมด</option>' + Array.from(unq).sort().map(v => `<option value="${v}">${v}</option>`).join('');
         }
 
@@ -683,12 +763,12 @@
                 
                 html += `
                 <tr>
-                    <td><b style="color:var(--secondary); font-size:12px;">${f.id}</b></td>
-                    <td>${f.name}</td>
-                    <td style="font-size:13px; color:var(--text-muted);">${v}</td>
-                    <td>${f.phone}</td>
-                    <td><b style="color:var(--primary);">${f.plots}</b></td>
-                    <td>
+                    <td><b style="color:var(--text-muted); font-size:12px;">${f.id}</b></td>
+                    <td><b style="color:var(--secondary);">${f.name}</b></td>
+                    <td style="font-size:13px; color:var(--text-muted);"><i class="fa-solid fa-location-dot"></i> ${v}</td>
+                    <td><i class="fa-solid fa-phone" style="font-size:12px; color:var(--text-muted);"></i> ${f.phone}</td>
+                    <td><span style="background:var(--primary-light); color:var(--primary-dark); padding:4px 10px; border-radius:12px; font-weight:700;">${f.plots}</span></td>
+                    <td style="text-align:center;">
                         <button class="btn-action btn-view" onclick="viewFarmerDetails(${i})" title="ดูรายละเอียดและประวัติ"><i class="fa-solid fa-eye"></i></button>
                         <button class="btn-action btn-map" onclick="adminManagePlots(${i})" title="วาดหรือจัดการแปลงอ้อย (แผนที่)"><i class="fa-solid fa-draw-polygon"></i></button>
                         <button class="btn-action btn-edit" onclick="editFarmer(${i})" title="แก้ไขข้อมูลส่วนตัว"><i class="fa-solid fa-pen"></i></button>
@@ -697,7 +777,7 @@
                 </tr>`;
             });
             
-            document.getElementById('table-farmers').innerHTML = html || '<tr><td colspan="6" style="text-align: center;">ไม่มีข้อมูล</td></tr>';
+            document.getElementById('table-farmers').innerHTML = html || '<tr><td colspan="6" style="text-align: center; padding: 30px;">ไม่มีข้อมูล</td></tr>';
         }
 
         // ดูข้อมูลและประวัติชาวไร่ (แยกแท็บกำลังดำเนินการ / เสร็จสิ้น)
@@ -706,69 +786,70 @@
             let plots = []; 
             try { if(f.savedPlotsRaw) plots = JSON.parse(f.savedPlotsRaw); } catch(e){}
             
-            // กรองประวัติงานของชาวไร่คนนี้
             let fJobs = globalData.jobs.filter(j => j.farmerLineId === f.lineId || j.farmer.replace(/\s/g,"") === f.name.replace(/\s/g,""));
             let ongo = fJobs.filter(j => j.status !== 'เสร็จสิ้น' && j.status !== 'ยกเลิก'); 
             let comp = fJobs.filter(j => j.status === 'เสร็จสิ้น');
 
             let renderTable = (arr) => {
-                if(arr.length === 0) return `<tr><td colspan="4" style="text-align:center;">ไม่มีประวัติข้อมูล</td></tr>`;
+                if(arr.length === 0) return `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">ไม่มีประวัติข้อมูล</td></tr>`;
                 return arr.map(j => `
                     <tr>
                         <td>${j.date.split(' ')[0]}</td>
-                        <td><b style="color:var(--primary);">${j.qty} ไร่</b></td>
+                        <td><b style="color:var(--secondary);">${j.qty} ไร่</b></td>
                         <td><span class="badge ${j.status==='เสร็จสิ้น'?'bg-success':'bg-info'}">${j.status}</span></td>
                         <td>${j.buyer||'-'}</td>
                     </tr>`).join('');
             };
 
             let plotListHTML = plots.length === 0 ? 
-                "<div style='color:var(--danger); font-size:13px; text-align:center; padding: 20px;'>ยังไม่มีการวาดแปลงบันทึกไว้ในระบบ</div>" : 
+                "<div style='color:var(--danger); font-size:13px; text-align:center; padding: 30px; background:var(--danger-light); border-radius:12px;'><i class='fa-solid fa-triangle-exclamation'></i> ยังไม่มีการวาดแปลงบันทึกไว้ในระบบ</div>" : 
                 plots.map(p => `
-                    <div style="background:#f9f9f9; padding:10px; border-radius:8px; border:1px solid #ddd; margin-bottom:8px; font-size:13px;">
-                        <b>${p.name}</b> <span style="color:var(--primary); font-weight:600;">(${p.area} ไร่)</span><br>
-                        <span style="color:var(--warning);">🚜 สภาพแปลง:</span> ${p.condition || 'ไม่ระบุ'}<br>
-                        <span style="color:var(--info);">🛣️ ทางเข้า:</span> ${p.access || 'ไม่ระบุ'}
+                    <div style="background:#F8FAFC; padding:12px; border-radius:12px; border:1px solid var(--border); margin-bottom:10px; font-size:13px;">
+                        <b style="font-size:14px; color:var(--secondary);">${p.name}</b> <span style="color:var(--primary-dark); font-weight:700; float:right;">${p.area} ไร่</span><br>
+                        <div style="margin-top:6px;"><span style="color:var(--warning);"><i class="fa-solid fa-tractor"></i> สภาพแปลง:</span> ${p.condition || 'ไม่ระบุ'}</div>
+                        <div style="margin-top:2px;"><span style="color:var(--info);"><i class="fa-solid fa-road"></i> ทางเข้า:</span> ${p.access || 'ไม่ระบุ'}</div>
                     </div>`).join('');
 
             Swal.fire({
                 title: 'ประวัติและข้อมูลชาวไร่', 
-                width: '900px',
+                width: '1000px',
                 html: `
                 <div style="text-align:left; font-family:'Kanit';">
-                    <div style="font-size:18px; color:var(--primary-dark); font-weight:600;">
-                        ${f.name} <span style="font-size:12px; color:gray;">(ID: ${f.id})</span>
-                    </div>
-                    <div style="font-size:14px; color:var(--text-muted); margin-bottom:20px;">
-                        📞 ${f.phone} | 📍 ม.${f.moo} ต.${f.subDist} อ.${f.dist}
+                    <div style="background:var(--secondary); color:white; padding:20px 24px; border-radius:16px; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow-md);">
+                        <div>
+                            <div style="font-size:22px; font-weight:700;">${f.name}</div>
+                            <div style="font-size:14px; color:#94A3B8;">📞 ${f.phone} | <i class="fa-solid fa-location-dot"></i> ม.${f.moo} ต.${f.subDist} อ.${f.dist}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:12px; color:#94A3B8;">User ID</div>
+                            <div style="font-weight:600; font-family:monospace; font-size:16px; color:var(--primary);">${f.id}</div>
+                        </div>
                     </div>
                     
-                    <div style="display:flex; gap:20px; flex-wrap:wrap;">
-                        <!-- ฝั่งซ้าย: ข้อมูลแปลง -->
+                    <div style="display:flex; gap:24px; flex-wrap:wrap;">
                         <div style="flex:1; min-width:320px;">
-                            <b>📍 แผนที่แปลงอ้อย (${plots.length} แปลง):</b>
-                            <div id="modal-farmer-map" style="width:100%; height:200px; border-radius:12px; border:1px solid var(--border); margin:8px 0;"></div>
-                            <div style="max-height:180px; overflow-y:auto; padding-right:5px;">${plotListHTML}</div>
+                            <b style="font-size:16px; color:var(--secondary); margin-bottom:10px; display:block;"><i class="fa-solid fa-map"></i> แผนที่แปลงอ้อย (${plots.length} แปลง)</b>
+                            <div id="modal-farmer-map" style="width:100%; height:250px; border-radius:16px; border:2px solid var(--border); margin-bottom:15px; z-index:1;"></div>
+                            <div style="max-height:220px; overflow-y:auto; padding-right:5px;">${plotListHTML}</div>
                         </div>
                         
-                        <!-- ฝั่งขวา: ประวัติคิวงาน -->
                         <div style="flex:1.2; min-width:350px;">
                             <div class="modal-tabs">
                                 <div class="modal-tab active" onclick="document.getElementById('m-ongo').style.display='block'; document.getElementById('m-comp').style.display='none'; document.querySelectorAll('.modal-tab').forEach(e=>e.classList.remove('active')); this.classList.add('active');">
-                                    งานที่กำลังดำเนินการ (${ongo.length})
+                                    กำลังดำเนินการ (${ongo.length})
                                 </div>
                                 <div class="modal-tab" onclick="document.getElementById('m-ongo').style.display='none'; document.getElementById('m-comp').style.display='block'; document.querySelectorAll('.modal-tab').forEach(e=>e.classList.remove('active')); this.classList.add('active');">
-                                    งานที่เสร็จสิ้น (${comp.length})
+                                    เสร็จสิ้น (${comp.length})
                                 </div>
                             </div>
-                            <div id="m-ongo" style="max-height:350px; overflow-y:auto;">
-                                <table class="swal-table">
+                            <div id="m-ongo" style="max-height:450px; overflow-y:auto; border: 1px solid var(--border); border-radius: 12px;">
+                                <table class="swal-table" style="margin:0;">
                                     <thead><tr><th>วันที่แจ้ง</th><th>พื้นที่</th><th>สถานะ</th><th>ผู้รับงาน</th></tr></thead>
                                     <tbody>${renderTable(ongo)}</tbody>
                                 </table>
                             </div>
-                            <div id="m-comp" style="display:none; max-height:350px; overflow-y:auto;">
-                                <table class="swal-table">
+                            <div id="m-comp" style="display:none; max-height:450px; overflow-y:auto; border: 1px solid var(--border); border-radius: 12px;">
+                                <table class="swal-table" style="margin:0;">
                                     <thead><tr><th>วันที่แจ้ง</th><th>พื้นที่</th><th>สถานะ</th><th>ผู้รับซื้อ</th></tr></thead>
                                     <tbody>${renderTable(comp)}</tbody>
                                 </table>
@@ -776,26 +857,22 @@
                         </div>
                     </div>
                 </div>`, 
-                showCloseButton: true, 
-                showConfirmButton: false,
+                showCloseButton: true, showConfirmButton: false,
                 didOpen: () => {
-                    // วาดแผนที่ตอนเปิด Modal
-                    let map = L.map('modal-farmer-map').setView([17.295, 101.782], 10);
+                    let map = L.map('modal-farmer-map', {zoomControl: false}).setView([17.295, 101.782], 10);
+                    L.control.zoom({ position: 'bottomright' }).addTo(map);
                     L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(map);
                     let fg = L.featureGroup().addTo(map);
                     
                     plots.forEach(p => { 
                         try { 
                             let coords = JSON.parse(p.polygon)[0].map(c => [c[1], c[0]]); 
-                            let poly = L.polygon(coords, { color: '#6DB33F', fillOpacity: 0.5 }).addTo(fg).bindPopup(`<b>${p.name}</b><br>${p.area} ไร่`); 
+                            let poly = L.polygon(coords, { color: '#10B981', weight: 2, fillOpacity: 0.4 }).addTo(fg).bindPopup(`<b style="font-family:'Kanit';">${p.name}</b><br>${p.area} ไร่`); 
                             loadGistdaPolygonOverlay(p.polygon, map); 
                         } catch(e){} 
                     });
                     
-                    setTimeout(() => { 
-                        map.invalidateSize(); 
-                        if(fg.getLayers().length > 0) map.fitBounds(fg.getBounds(), {padding:[15,15]}); 
-                    }, 200);
+                    setTimeout(() => { map.invalidateSize(); if(fg.getLayers().length > 0) map.fitBounds(fg.getBounds(), {padding:[20,20]}); }, 300);
                 }
             });
         }
@@ -807,98 +884,67 @@
             try { if(f.savedPlotsRaw) plots = JSON.parse(f.savedPlotsRaw); } catch(e){}
 
             Swal.fire({
-                title: `จัดการแปลงอ้อย: คุณ${f.firstName}`, 
-                width: '1000px',
+                title: `วาดจัดการแปลง: คุณ${f.firstName}`, 
+                width: '1100px',
                 html: `
-                    <div id="admin-geoman-map" style="width:100%; height:500px; border-radius:12px; border:2px solid var(--border);"></div>
-                    <div style="font-size:13px; color:var(--text-muted); margin-top:10px;">
-                        <i class="fa-solid fa-info-circle"></i> ใช้เครื่องมือด้านซ้ายมือเพื่อ วาด/แก้ไข/ลบแปลง เมื่อเสร็จแล้วให้กดบันทึก
+                    <div id="admin-geoman-map" style="width:100%; height:550px; border-radius:16px; border:2px solid var(--border); z-index:1;"></div>
+                    <div style="font-size:14px; color:var(--text-muted); margin-top:15px; background:var(--bg-body); padding:12px; border-radius:10px; border:1px dashed var(--border);">
+                        <i class="fa-solid fa-info-circle" style="color:var(--info);"></i> ใช้เครื่องมือด้านซ้ายมือบนแผนที่เพื่อ <b style="color:var(--secondary);">วาด (Polygon) / แก้ไขจุด (Edit) / ลบ (Trash)</b> เมื่อจัดการเสร็จแล้วให้กดบันทึกด้านล่าง
                     </div>
                 `,
-                showCancelButton: true, 
-                confirmButtonText: '<i class="fa-solid fa-save"></i> บันทึกข้อมูลแปลง', 
-                cancelButtonText: 'ยกเลิก', 
-                confirmButtonColor: '#6DB33F',
+                showCancelButton: true, confirmButtonText: '<i class="fa-solid fa-save"></i> บันทึกข้อมูลแปลงทั้งหมด', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#10B981',
                 didOpen: () => {
-                    // สร้างแผนที่พร้อมเครื่องมือ Geoman ให้แอดมินใช้แก้ไข
                     window.adminMap = L.map('admin-geoman-map').setView([17.295, 101.782], 10);
                     L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(window.adminMap);
                     window.adminMap.pm.addControls({ 
-                        position: 'topleft', 
-                        drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, 
+                        position: 'topleft', drawMarker: false, drawCircleMarker: false, drawPolyline: false, drawRectangle: false, drawCircle: false, 
                         drawPolygon: true, editMode: true, dragMode: true, removalMode: true 
                     });
                     
                     window.adminDrawnLayers = L.featureGroup().addTo(window.adminMap);
                     
-                    // โหลดแปลงเดิมที่มีอยู่ลงไป
                     plots.forEach((p, idx) => {
                         try {
                             let coords = JSON.parse(p.polygon)[0].map(c => [c[1], c[0]]);
-                            let poly = L.polygon(coords, { color: '#6DB33F', weight: 2 });
-                            poly.plotData = p; // เก็บข้อมูลเดิมยัดไว้ใน object ของ leaflet
+                            let poly = L.polygon(coords, { color: '#10B981', weight: 3 });
+                            poly.plotData = p; 
                             window.adminDrawnLayers.addLayer(poly);
                         } catch(e){}
                     });
                     
-                    if(window.adminDrawnLayers.getLayers().length > 0) {
-                        window.adminMap.fitBounds(window.adminDrawnLayers.getBounds(), {padding:[20,20]});
-                    }
+                    if(window.adminDrawnLayers.getLayers().length > 0) { window.adminMap.fitBounds(window.adminDrawnLayers.getBounds(), {padding:[30,30]}); }
                     
-                    // เมื่อแอดมินวาดแปลงใหม่เสร็จ ให้ตั้งชื่อแปลง
                     window.adminMap.on('pm:create', e => {
                         let layer = e.layer;
                         Swal.fire({
-                            title: 'กำหนดรายละเอียดแปลงใหม่',
+                            title: 'กำหนดรายละเอียดแปลง',
                             html: `
-                                <input id="new-plot-name" class="swal-input" placeholder="ตั้งชื่อแปลง (เช่น แปลงหน้าวัด)">
-                                <select id="new-plot-cond" class="swal-input" style="margin-top:10px;">
-                                    <option value="ไม่มีตอเก่า/หิน (แปลงสะอาด)">แปลงสะอาด</option>
-                                    <option value="มีตอเก่า">มีตอเก่า</option>
-                                </select>
+                                <div style="text-align:left; font-family:'Kanit';">
+                                    <label class="swal-label">ชื่อแปลงอ้อย:</label>
+                                    <input id="new-plot-name" class="swal-input" placeholder="ตั้งชื่อแปลง (เช่น แปลงหน้าวัด)">
+                                    <label class="swal-label" style="margin-top:15px;">สภาพแปลงเบื้องต้น:</label>
+                                    <select id="new-plot-cond" class="swal-input">
+                                        <option value="ไม่มีตอเก่า/หิน (แปลงสะอาด)">แปลงสะอาด</option>
+                                        <option value="มีตอเก่า">มีตอเก่า</option>
+                                    </select>
+                                </div>
                             `,
-                            preConfirm: () => { 
-                                return { 
-                                    n: document.getElementById('new-plot-name').value, 
-                                    c: document.getElementById('new-plot-cond').value 
-                                } 
-                            }
+                            preConfirm: () => { return { n: document.getElementById('new-plot-name').value, c: document.getElementById('new-plot-cond').value } }
                         }).then(r => {
                             if(r.isConfirmed && r.value.n) {
                                 let geo = layer.toGeoJSON();
-                                layer.plotData = { 
-                                    name: r.value.n, 
-                                    condition: r.value.c, 
-                                    access: 'เพิ่มโดยแอดมิน', 
-                                    area: (turf.area(geo)/1600).toFixed(2), 
-                                    polygon: JSON.stringify(geo.geometry.coordinates), 
-                                    center: [turf.centerOfMass(geo).geometry.coordinates[1], turf.centerOfMass(geo).geometry.coordinates[0]] 
-                                };
+                                layer.plotData = { name: r.value.n, condition: r.value.c, access: 'เพิ่มโดยแอดมิน', area: (turf.area(geo)/1600).toFixed(2), polygon: JSON.stringify(geo.geometry.coordinates), center: [turf.centerOfMass(geo).geometry.coordinates[1], turf.centerOfMass(geo).geometry.coordinates[0]] };
                                 window.adminDrawnLayers.addLayer(layer);
-                            } else { 
-                                // ถ้ายกเลิก ก็ให้ลบที่วาดตะกี้ออก
-                                window.adminMap.removeLayer(layer); 
-                            }
+                            } else { window.adminMap.removeLayer(layer); }
                         });
                     });
                 },
                 preConfirm: () => {
-                    // รวบรวมแปลงทั้งหมดบนหน้าจอกลับมาเป็น JSON เพื่อส่งไปเซฟ
                     let updatedPlots = [];
                     window.adminDrawnLayers.eachLayer(layer => {
-                        let geo = layer.toGeoJSON(); 
-                        let a = (turf.area(geo)/1600).toFixed(2); 
-                        let c = turf.centerOfMass(geo);
+                        let geo = layer.toGeoJSON(); let a = (turf.area(geo)/1600).toFixed(2); let c = turf.centerOfMass(geo);
                         let pd = layer.plotData || { name: 'แปลงใหม่ (แก้ไข)', condition: '', access: 'แก้ไขโดยแอดมิน' };
-                        
-                        updatedPlots.push({ 
-                            name: pd.name, 
-                            condition: pd.condition, 
-                            access: pd.access, 
-                            area: a, 
-                            polygon: JSON.stringify(geo.geometry.coordinates), 
-                            center: [c.geometry.coordinates[1], c.geometry.coordinates[0]] 
-                        });
+                        updatedPlots.push({ name: pd.name, condition: pd.condition, access: pd.access, area: a, polygon: JSON.stringify(geo.geometry.coordinates), center: [c.geometry.coordinates[1], c.geometry.coordinates[0]] });
                     });
                     return JSON.stringify(updatedPlots);
                 }
@@ -906,16 +952,9 @@
                 if(res.isConfirmed) {
                     showLoader();
                     try { 
-                        await fetch(GAS_URL, { 
-                            method: 'POST', 
-                            body: JSON.stringify({ action: 'adminUpdatePlots', row: f.row, plots: res.value }) 
-                        }); 
-                        Swal.fire('สำเร็จ', 'อัปเดตแปลงอ้อยเข้าสู่ระบบแล้ว', 'success'); 
-                        refreshData(); 
-                    } catch(e) { 
-                        hideLoader(); 
-                        Swal.fire('ข้อผิดพลาด', 'ไม่สามารถบันทึกข้อมูลแปลงได้', 'error'); 
-                    }
+                        await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'adminUpdatePlots', row: f.row, plots: res.value }) }); 
+                        Swal.fire('สำเร็จ', 'อัปเดตแปลงอ้อยเข้าสู่ระบบแล้ว', 'success'); refreshData(); 
+                    } catch(e) { hideLoader(); Swal.fire('ข้อผิดพลาด', 'ไม่สามารถบันทึกข้อมูลแปลงได้', 'error'); }
                 }
             });
         }
@@ -928,18 +967,18 @@
             globalData.buyers.forEach((b, i) => {
                 html += `
                 <tr>
-                    <td><b style="color:var(--secondary); font-size:12px;">${b.id}</b></td>
-                    <td>${b.name}</td>
-                    <td>${b.phone}</td>
-                    <td style="font-size:13px; color:var(--text-muted);">${b.location}</td>
-                    <td>
+                    <td><b style="color:var(--text-muted); font-size:12px;">${b.id}</b></td>
+                    <td><b style="color:var(--secondary);">${b.name}</b></td>
+                    <td><i class="fa-solid fa-phone" style="font-size:12px; color:var(--text-muted);"></i> ${b.phone}</td>
+                    <td style="font-size:13px; color:var(--text-muted);"><i class="fa-solid fa-warehouse"></i> ${b.location}</td>
+                    <td style="text-align:center;">
                         <button class="btn-action btn-view" onclick="viewBuyerDetails(${i})" title="ดูประวัติการรับซื้อ"><i class="fa-solid fa-eye"></i></button>
                         <button class="btn-action btn-edit" onclick="editBuyer(${i})" title="แก้ไขข้อมูลพาร์ทเนอร์"><i class="fa-solid fa-pen"></i></button>
                         <button class="btn-action btn-delete" onclick="deleteData('Buyers_Profile', '${b.id}', '${b.name}', ${b.row})" title="ลบข้อมูล"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>`;
             });
-            document.getElementById('table-buyers').innerHTML = html || '<tr><td colspan="5" style="text-align: center;">ไม่มีข้อมูลในระบบ</td></tr>';
+            document.getElementById('table-buyers').innerHTML = html || '<tr><td colspan="5" style="text-align: center; padding: 30px;">ไม่มีข้อมูลในระบบ</td></tr>';
         }
 
         function viewBuyerDetails(index) {
@@ -949,11 +988,11 @@
             let comp = bJobs.filter(j => j.status === 'เสร็จสิ้น');
 
             let renderTable = (arr) => {
-                if(arr.length === 0) return `<tr><td colspan="4" style="text-align:center;">ไม่มีข้อมูลประวัติ</td></tr>`;
+                if(arr.length === 0) return `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">ไม่มีข้อมูลประวัติ</td></tr>`;
                 return arr.map(j => `
                     <tr>
                         <td>${j.date.split(' ')[0]}</td>
-                        <td><b>${j.farmer}</b></td>
+                        <td><b style="color:var(--secondary);">${j.farmer}</b></td>
                         <td><span class="badge ${j.status==='เสร็จสิ้น'?'bg-success':'bg-info'}">${j.status}</span></td>
                         <td><b style="color:var(--primary);">${j.actualWeight || j.qty} ${j.status==='เสร็จสิ้น'?'ตัน':'ไร่'}</b></td>
                     </tr>`).join('');
@@ -964,11 +1003,15 @@
                 width: '800px',
                 html: `
                 <div style="text-align:left; font-family:'Kanit';">
-                    <div style="font-size:18px; color:var(--warning); font-weight:600;">
-                        ${b.name} <span style="font-size:12px; color:gray;">(ID: ${b.id})</span>
-                    </div>
-                    <div style="font-size:14px; color:var(--text-muted); margin-bottom:20px;">
-                        📞 ${b.phone} | 📍 ${b.location}
+                    <div style="background:var(--secondary); color:white; padding:20px 24px; border-radius:16px; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow-md);">
+                        <div>
+                            <div style="font-size:22px; font-weight:700;">${b.name}</div>
+                            <div style="font-size:14px; color:#94A3B8;">📞 ${b.phone} | <i class="fa-solid fa-warehouse"></i> ${b.location}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:12px; color:#94A3B8;">Buyer ID</div>
+                            <div style="font-weight:600; font-family:monospace; font-size:16px; color:var(--warning);">${b.id}</div>
+                        </div>
                     </div>
                     
                     <div class="modal-tabs">
@@ -980,14 +1023,14 @@
                         </div>
                     </div>
                     
-                    <div id="mb-ongo" style="max-height:300px; overflow-y:auto;">
-                        <table class="swal-table">
+                    <div id="mb-ongo" style="max-height:400px; overflow-y:auto; border: 1px solid var(--border); border-radius: 12px;">
+                        <table class="swal-table" style="margin:0;">
                             <thead><tr><th>วันที่แจ้งคิว</th><th>ชาวไร่</th><th>สถานะ</th><th>พื้นที่ประเมิน</th></tr></thead>
                             <tbody>${renderTable(ongo)}</tbody>
                         </table>
                     </div>
-                    <div id="mb-comp" style="display:none; max-height:300px; overflow-y:auto;">
-                        <table class="swal-table">
+                    <div id="mb-comp" style="display:none; max-height:400px; overflow-y:auto; border: 1px solid var(--border); border-radius: 12px;">
+                        <table class="swal-table" style="margin:0;">
                             <thead><tr><th>วันที่แจ้งคิว</th><th>ชาวไร่</th><th>สถานะ</th><th>น้ำหนักจริง</th></tr></thead>
                             <tbody>${renderTable(comp)}</tbody>
                         </table>
@@ -1005,7 +1048,6 @@
             let fStat = document.getElementById('filter-job-status').value; 
             let html = '';
             
-            // กรองสถานะงาน
             let filteredJobs = globalData.jobs.filter(j => fStat === 'all' || j.status === fStat);
             
             filteredJobs.forEach(j => {
@@ -1016,18 +1058,17 @@
                 if(j.status === 'รอชาวไร่ตรวจสอบ') badge = 'bg-purple';
                 
                 let origIdx = globalData.jobs.indexOf(j);
-                let reqDateStr = j.date ? j.date.toString().split(',')[0].split(' ')[0] : "-";
                 let harvDateStr = j.harvestDate ? j.harvestDate.toString().split(',')[0].split(' ')[0] : "-";
                 
                 html += `
                 <tr>
-                    <td><b style="font-size:12px;">${j.id}</b></td>
-                    <td>${j.farmer}</td>
-                    <td><b style="color:var(--primary);">${j.qty} ไร่</b></td>
-                    <td style="font-size:13px; color:var(--primary-dark); font-weight:500;">${harvDateStr}</td>
+                    <td><b style="font-size:12px; font-family:monospace; color:var(--text-muted);">${j.id}</b></td>
+                    <td><b style="color:var(--secondary);">${j.farmer}</b></td>
+                    <td><span style="color:var(--primary-dark); font-weight:700; font-size:16px;">${j.qty}</span> <span style="font-size:12px; color:gray;">ไร่</span></td>
+                    <td style="font-size:13px; color:var(--text-muted);"><i class="fa-regular fa-calendar"></i> ${harvDateStr}</td>
                     <td><span class="badge ${badge}">${j.status}</span></td>
-                    <td style="font-size:13px;">${j.buyer||'-'}</td>
-                    <td>
+                    <td style="font-size:14px; font-weight:500;">${j.buyer||'-'}</td>
+                    <td style="text-align:center;">
                         <button class="btn-action btn-view" onclick="viewJobDetails(${origIdx})" title="ดูรายละเอียดงานและแผนที่"><i class="fa-solid fa-eye"></i></button>
                         <button class="btn-action btn-edit" onclick="editJobDetail(${origIdx})" title="แก้ไขข้อมูลงานแบบละเอียด"><i class="fa-solid fa-file-pen"></i></button>
                         <button class="btn-action btn-delete" onclick="deleteData('CaneData_Raw', '${j.id}', 'งานของ ${j.farmer}', ${j.row})" title="ลบรายการงาน"><i class="fa-solid fa-trash"></i></button>
@@ -1035,7 +1076,7 @@
                 </tr>`;
             });
             
-            document.getElementById('table-jobs').innerHTML = html || '<tr><td colspan="7" style="text-align: center;">ไม่มีข้อมูลที่ตรงกับตัวกรอง</td></tr>';
+            document.getElementById('table-jobs').innerHTML = html || '<tr><td colspan="7" style="text-align: center; padding: 30px;">ไม่มีข้อมูลที่ตรงกับตัวกรอง</td></tr>';
         }
 
         // หน้าต่างดูรายละเอียดงาน (พร้อมแผนที่)
@@ -1049,56 +1090,67 @@
             let pricePerTon = extractPrice(j.price); let totalAmountStr = "-";
             if (actualW !== "-" && pricePerTon > 0) { totalAmountStr = (parseFloat(actualW) * pricePerTon).toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
 
-            let imgHTML = (j.closeProof && j.closeProof.length > 10) ? `<img src="${j.closeProof}" style="max-height:180px; max-width:100%; border-radius:8px; border:1px solid var(--border); margin-top:8px;">` : `<div style="color:gray; font-size:13px; margin-top:5px; background:var(--bg-body); padding:10px; border-radius:8px;">ไม่พบรูปภาพบิลชั่ง</div>`;
+            let imgHTML = (j.closeProof && j.closeProof.length > 10) ? `<img src="${j.closeProof}" style="max-height:200px; max-width:100%; border-radius:12px; border:2px solid var(--border); margin-top:8px; cursor:zoom-in; box-shadow:var(--shadow-sm);" onclick="Swal.fire({imageUrl: '${j.closeProof}', imageWidth: '100%', customClass:{popup:'custom-swal-desktop'}})">` : `<div style="color:var(--text-muted); font-size:14px; margin-top:5px; background:var(--bg-body); padding:20px; border-radius:12px; border: 1px dashed var(--border); text-align:center;"><i class="fa-solid fa-image-slash" style="font-size:24px; margin-bottom:8px;"></i><br>ไม่พบรูปภาพบิลชั่งน้ำหนัก</div>`;
             
             let billHTML = isComplete ? `
                 <div class="receipt-box">
-                    <div class="title"><div class="title-main">🧾 สรุปยอดใบเสร็จรับเงิน</div></div>
+                    <div class="title"><div class="title-main"><i class="fa-solid fa-receipt"></i> สรุปยอดใบเสร็จรับเงิน</div></div>
                     <div class="section"><div class="row"><span>รหัสงาน:</span> <span>${j.id}</span></div><div class="row"><span>ชาวไร่:</span> <span>${j.farmer}</span></div><div class="row"><span>รถม้วน:</span> <span>${j.buyer}</span></div></div>
-                    <div style="padding-bottom: 10px; font-size: 13px;"><div class="row"><span>น้ำหนักสุทธิ:</span> <span>${actualW} ตัน</span></div><div class="row"><span>ราคาตกลง:</span> <span>${pricePerTon} บาท/ตัน</span></div></div>
-                    <div class="total-section"><span>ยอดเงินรวมสุทธิ:</span> <span style="color:var(--danger);">${totalAmountStr} บาท</span></div>
+                    <div style="padding-bottom: 15px; font-size: 14px;"><div class="row"><span>น้ำหนักสุทธิ:</span> <span>${actualW} ตัน</span></div><div class="row"><span>ราคาตกลง:</span> <span>${pricePerTon.toLocaleString('th-TH')} บาท/ตัน</span></div></div>
+                    <div class="total-section"><span>ยอดเงินรวมสุทธิ:</span> <span style="color:var(--danger); font-size:22px;">${totalAmountStr} ฿</span></div>
                 </div>` : "";
 
             let closeProofHTML = isComplete ? `
-                <div style="margin-top:15px; padding-top:15px; border-top: 1px dashed var(--border);">
-                    <b style="color:var(--primary-dark);">🚚 ข้อมูลรับซื้อเสร็จสิ้น:</b>
-                    <div style="background:#f4f9f9; padding:10px; border-radius:8px; margin-top:8px; font-size:14px; border:1px solid var(--info);">
-                        <div><b>พื้นที่จริง:</b> ${actualQ} ไร่ | <b>น้ำหนักสุทธิ:</b> <span style="color:var(--primary-dark); font-weight:600;">${actualW} ตัน</span></div>
+                <div style="margin-top:20px; padding-top:20px; border-top: 2px dashed var(--border);">
+                    <b style="color:var(--primary-dark); font-size:16px;"><i class="fa-solid fa-truck-ramp-box"></i> ข้อมูลรับซื้อเสร็จสิ้น:</b>
+                    <div style="background:#F0FDF4; padding:15px; border-radius:12px; margin-top:12px; font-size:14px; border:1px solid #A7F3D0;">
+                        <div style="margin-bottom:6px;"><b>พื้นที่เก็บเกี่ยวจริง:</b> ${actualQ} ไร่</div>
+                        <div><b>น้ำหนักสุทธิ:</b> <span style="color:var(--primary-dark); font-weight:700; font-size:16px;">${actualW} ตัน</span></div>
                     </div>
-                    <b style="display:block; margin-top:10px;">📸 บิลชั่งน้ำหนัก:</b>
+                    <b style="display:block; margin-top:15px; font-size:15px;"><i class="fa-solid fa-file-invoice"></i> บิลชั่งน้ำหนัก:</b>
                     ${imgHTML}
                     ${billHTML}
                 </div>` : "";
 
             Swal.fire({
-                title: 'ข้อมูลการแจ้งขายใบอ้อย', width: '850px',
-                html: `<div style="display:flex; flex-wrap:wrap; gap:20px; text-align:left; font-family:'Kanit';">
-                        <div style="flex:1; min-width:300px;">
-                            <div style="background:#f4f9f9; padding:15px; border-radius:12px; border:1px solid #e1e8e3; font-size:14px; line-height:1.6;">
-                                <b>Job ID:</b> <span style="color:var(--primary);">${j.id}</span><br><b>ผู้แจ้ง:</b> ${j.farmer}<br><b>พื้นที่แจ้งขาย:</b> <span style="color:var(--warning); font-weight:600;">${j.qty} ไร่</span><br><b>สถานะ:</b> <span style="color:var(--info); font-weight:600;">${j.status}</span><br><b>วันที่แจ้งคิว:</b> ${reqDateStr}<br><b>วันที่พร้อมม้วน:</b> <span style="color:var(--primary-dark); font-weight:600;">${harvDateStr}</span><br><b>เงื่อนไขแปลง:</b> ${j.access || '-'}<br><hr style="margin:8px 0; border:0; border-top:1px dashed #ccc;"><b>ผู้รับซื้อ:</b> ${j.buyer}<br><b>ราคา:</b> ${j.price || '-'}
+                title: 'ข้อมูลการแจ้งขายใบอ้อย', width: '950px',
+                html: `<div style="display:flex; flex-wrap:wrap; gap:25px; text-align:left; font-family:'Kanit';">
+                        <div style="flex:1; min-width:320px;">
+                            <div style="background:var(--surface); padding:20px; border-radius:16px; border:1px solid var(--border); box-shadow:var(--shadow-sm); font-size:15px; line-height:1.8;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><b>Job ID:</b> <span style="color:var(--primary); font-weight:700; font-family:monospace;">${j.id}</span></div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><b>ผู้แจ้ง:</b> <span style="font-weight:600; color:var(--secondary);">${j.farmer}</span></div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><b>พื้นที่แจ้งขาย:</b> <span style="color:var(--warning); font-weight:700; font-size:18px;">${j.qty} ไร่</span></div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><b>สถานะ:</b> <span style="color:var(--info); font-weight:700;">${j.status}</span></div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><b>วันที่แจ้งคิว:</b> <span style="color:var(--text-muted);">${reqDateStr}</span></div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><b>วันที่พร้อมม้วน:</b> <span style="color:var(--primary-dark); font-weight:600;">${harvDateStr}</span></div>
+                                <div style="background:#F8FAFC; padding:10px; border-radius:8px; border:1px solid var(--border); margin-top:15px;"><b>เงื่อนไขแปลง:</b><br> <span style="color:var(--text-muted); font-size:13px;">${j.access || '-'}</span></div>
+                                <hr style="margin:15px 0; border:0; border-top:1px dashed #CBD5E1;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><b>ผู้รับซื้อ:</b> <span style="font-weight:600;">${j.buyer}</span></div>
+                                <div style="display:flex; justify-content:space-between;"><b>ราคา:</b> <span style="color:var(--danger); font-weight:600;">${j.price || '-'}</span></div>
                             </div>
                             ${closeProofHTML}
                         </div>
-                        <div style="flex:1; min-width:300px;">
-                            <b>🗺️ พิกัดแผนที่:</b>
-                            <div id="modal-job-map" style="width:100%; height:250px; border-radius:12px; border:1px solid var(--border); margin-top:5px; margin-bottom:15px;"></div>
+                        <div style="flex:1.2; min-width:350px;">
+                            <b style="font-size:16px; color:var(--secondary);"><i class="fa-solid fa-map-location-dot" style="color:var(--info);"></i> พิกัดแผนที่:</b>
+                            <div id="modal-job-map" style="width:100%; height:300px; border-radius:16px; border:2px solid var(--border); margin-top:10px; margin-bottom:20px; z-index:1;"></div>
                         </div>
                     </div>`, 
                 showCloseButton: true, showConfirmButton: false,
                 didOpen: () => {
                     let map = L.map('modal-job-map', {zoomControl: false}).setView([j.lat, j.lon], 16);
+                    L.control.zoom({ position: 'bottomright' }).addTo(map);
                     L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(map);
                     if(j.polygon) {
                         try { 
                             let coords = JSON.parse(j.polygon); 
                             let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
-                            let poly = L.polygon(flippedCoords, { color: '#F39C12', fillOpacity: 0.5 }).addTo(map); 
-                            setTimeout(() => { map.invalidateSize(); map.fitBounds(poly.getBounds()); }, 200); 
+                            let poly = L.polygon(flippedCoords, { color: '#F59E0B', weight: 3, fillOpacity: 0.4 }).addTo(map); 
+                            setTimeout(() => { map.invalidateSize(); map.fitBounds(poly.getBounds(), {padding:[20,20]}); }, 300); 
                             loadGistdaPolygonOverlay(j.polygon, map); 
                         } catch(e){ 
-                            L.marker([j.lat, j.lon]).addTo(map); setTimeout(() => { map.invalidateSize(); }, 200); 
+                            L.marker([j.lat, j.lon]).addTo(map); setTimeout(() => { map.invalidateSize(); }, 300); 
                         }
-                    } else { L.marker([j.lat, j.lon]).addTo(map); setTimeout(() => { map.invalidateSize(); }, 200); }
+                    } else { L.marker([j.lat, j.lon]).addTo(map); setTimeout(() => { map.invalidateSize(); }, 300); }
                 }
             });
         }
@@ -1110,17 +1162,18 @@
             
             Swal.fire({
                 title: `ปรับปรุงข้อมูลงาน: ${j.id}`, 
-                width: '750px',
+                width: '800px',
                 html: `
                     <div style="text-align:left; font-family:'Kanit';">
-                        <div style="background:var(--primary-light); padding:10px 15px; border-radius:8px; margin-bottom:15px; color:var(--primary-dark);">
-                            <i class="fa-solid fa-user"></i> ผู้แจ้ง (ชาวไร่): <b>${j.farmer}</b>
+                        <div style="background:var(--primary-light); padding:15px 20px; border-radius:12px; margin-bottom:20px; color:var(--primary-dark); border: 1px solid rgba(16, 185, 129, 0.2);">
+                            <div style="font-size:16px;"><i class="fa-solid fa-user"></i> ผู้แจ้ง (ชาวไร่): <b style="color:var(--secondary);">${j.farmer}</b></div>
+                            <div style="font-size:13px; margin-top:5px; color:var(--primary-dark); opacity:0.8;">แก้ไขข้อมูลงานเพื่อชดเชยการกรอกผิดพลาด หรือปรับเปลี่ยนผู้รับซื้อ</div>
                         </div>
                         
                         <div class="swal-form-grid">
                             <div>
                                 <label class="swal-label">สถานะงาน (อัปเดต):</label>
-                                <select id="ej-stat" class="swal-input">
+                                <select id="ej-stat" class="swal-input" style="font-weight:600; color:var(--info);">
                                     <option value="รอคิวรถ" ${j.status==='รอคิวรถ'?'selected':''}>รอคิวรถ</option>
                                     <option value="รอชาวไร่ยืนยัน" ${j.status==='รอชาวไร่ยืนยัน'?'selected':''}>รอชาวไร่ยืนยัน</option>
                                     <option value="กำลังดำเนินการ" ${j.status==='กำลังดำเนินการ'?'selected':''}>กำลังดำเนินการ</option>
@@ -1139,13 +1192,12 @@
                             </div>
                         </div>
                         
-                        <div style="margin: 20px 0 15px 0; border-bottom: 2px dashed #eee;"></div>
-                        <b style="font-size:15px; color:var(--warning);">ส่วนที่ 2: ข้อมูลการรับซื้อและการประเมินจริง</b><br>
-                        <span style="font-size:13px; color:gray;">(ปรับแก้ไขเพื่อชดเชยข้อมูลที่ชาวไร่หรือรถม้วนกรอกผิดพลาด)</span><br><br>
+                        <div style="margin: 25px 0 20px 0; border-bottom: 2px dashed var(--border);"></div>
+                        <b style="font-size:16px; color:var(--warning);"><i class="fa-solid fa-file-invoice-dollar"></i> ข้อมูลการรับซื้อและการประเมินจริง (ถ้ามี)</b><br><br>
                         
                         <div class="swal-form-grid">
                             <div>
-                                <label class="swal-label">ชื่อผู้รับซื้อ (รถม้วน):</label>
+                                <label class="swal-label">ชื่อผู้รับซื้อ (พาร์ทเนอร์รถม้วน):</label>
                                 <input id="ej-buyer" class="swal-input" value="${j.buyer!=='-'?j.buyer:''}" placeholder="ระบุชื่อพาร์ทเนอร์">
                             </div>
                             <div>
@@ -1165,7 +1217,7 @@
                 showCancelButton: true, 
                 confirmButtonText: '<i class="fa-solid fa-save"></i> บันทึกข้อมูลงาน', 
                 cancelButtonText: 'ยกเลิก', 
-                confirmButtonColor: '#6DB33F',
+                confirmButtonColor: '#10B981',
                 preConfirm: () => { 
                     return { 
                         row: j.row, 
@@ -1208,7 +1260,7 @@
 
             Swal.fire({
                 title: 'แก้ไขข้อมูลชาวไร่', 
-                width: '600px',
+                width: '700px',
                 html: `<div style="text-align:left; font-family:'Kanit';">
                     <div class="swal-form-grid">
                         <div><label class="swal-label">คำนำหน้า:</label><select id="e-pref" class="swal-input"><option value="นาย" ${f.prefix==='นาย'?'selected':''}>นาย</option><option value="นาง" ${f.prefix==='นาง'?'selected':''}>นาง</option><option value="นางสาว" ${f.prefix==='นางสาว'?'selected':''}>นางสาว</option></select></div>
@@ -1217,8 +1269,8 @@
                         <div><label class="swal-label">นามสกุล:</label><input id="e-lname" class="swal-input" value="${f.lastName}"></div>
                         <div class="swal-form-full"><label class="swal-label">วันเกิด:</label><input id="e-dob" type="date" class="swal-input" value="${fDob}"></div>
                     </div>
-                    <div style="margin: 15px 0 10px 0; border-bottom: 1px solid #eee;"></div>
-                    <b style="font-size:14px;">ที่อยู่ปัจจุบัน:</b><br><br>
+                    <div style="margin: 20px 0 15px 0; border-bottom: 2px dashed var(--border);"></div>
+                    <b style="font-size:15px; color:var(--primary-dark);"><i class="fa-solid fa-map-pin"></i> ที่อยู่ปัจจุบัน:</b><br><br>
                     <div class="swal-form-grid">
                         <div><label class="swal-label">บ้านเลขที่:</label><input id="e-no" class="swal-input" value="${f.addressNo}"></div>
                         <div><label class="swal-label">หมู่ที่:</label><input id="e-moo" class="swal-input" value="${f.moo}"></div>
@@ -1237,7 +1289,7 @@
                         </div>
                     </div>
                 </div>`,
-                showCancelButton: true, confirmButtonText: 'บันทึก', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#6DB33F',
+                showCancelButton: true, confirmButtonText: '<i class="fa-solid fa-save"></i> บันทึกการแก้ไข', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#10B981',
                 preConfirm: () => { 
                     return { 
                         row: f.row, prefix: document.getElementById('e-pref').value, 
@@ -1273,7 +1325,7 @@
 
             Swal.fire({
                 title: 'แก้ไขข้อมูลพาร์ทเนอร์', 
-                width: '600px',
+                width: '700px',
                 html: `<div style="text-align:left; font-family:'Kanit';">
                     <div class="swal-form-grid">
                         <div><label class="swal-label">คำนำหน้า:</label><select id="eb-pref" class="swal-input"><option value="นาย" ${b.prefix==='นาย'?'selected':''}>นาย</option><option value="นาง" ${b.prefix==='นาง'?'selected':''}>นาง</option><option value="บริษัท" ${b.prefix==='บริษัท'?'selected':''}>บริษัท</option></select></div>
@@ -1282,8 +1334,8 @@
                         <div><label class="swal-label">นามสกุล:</label><input id="eb-lname" class="swal-input" value="${b.lastName}"></div>
                         <div class="swal-form-full"><label class="swal-label">วันก่อตั้ง / วันเกิด:</label><input id="eb-dob" type="date" class="swal-input" value="${bDob}"></div>
                     </div>
-                    <div style="margin: 15px 0 10px 0; border-bottom: 1px solid #eee;"></div>
-                    <b style="font-size:14px;">ที่อยู่จุดจอดรถ:</b><br><br>
+                    <div style="margin: 20px 0 15px 0; border-bottom: 2px dashed var(--border);"></div>
+                    <b style="font-size:15px; color:var(--warning);"><i class="fa-solid fa-truck"></i> ที่อยู่จุดจอดรถ / อู่:</b><br><br>
                     <div class="swal-form-grid">
                         <div><label class="swal-label">บ้านเลขที่:</label><input id="eb-no" class="swal-input" value="${b.addressNo}"></div>
                         <div><label class="swal-label">หมู่ที่:</label><input id="eb-moo" class="swal-input" value="${b.moo}"></div>
@@ -1294,7 +1346,7 @@
                         <div class="swal-form-full"><label class="swal-label">ข้อมูลเครื่องจักร (รถม้วน):</label><textarea id="eb-vehicle" class="swal-input" rows="2">${b.vehicle}</textarea></div>
                     </div>
                 </div>`,
-                showCancelButton: true, confirmButtonText: 'บันทึก', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#F39C12',
+                showCancelButton: true, confirmButtonText: '<i class="fa-solid fa-save"></i> บันทึกการแก้ไข', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#F59E0B',
                 preConfirm: () => { 
                     return { 
                         row: b.row, prefix: document.getElementById('eb-pref').value, 
@@ -1327,8 +1379,8 @@
                 text: `คุณต้องการลบ "${name}" (ID: ${id}) ใช่หรือไม่? ข้อมูลนี้จะหายไปจากฐานข้อมูล Google Sheets ทันที`,
                 icon: 'warning', 
                 showCancelButton: true, 
-                confirmButtonColor: '#E74C3C', 
-                cancelButtonColor: '#BFC9C5', 
+                confirmButtonColor: '#EF4444', 
+                cancelButtonColor: '#94A3B8', 
                 confirmButtonText: '<i class="fa-solid fa-trash"></i> ใช่, ลบทิ้งเลย', 
                 cancelButtonText: 'ยกเลิก'
             }).then(async (result) => {
@@ -1357,21 +1409,19 @@
         function renderLogs() {
             let logs = [];
             
-            // ดึงคนที่สมัครใหม่
             globalData.farmers.forEach(f => { 
-                if(f.row > 1) logs.push({ type: 'user', time: getEpoch(f.dob), dateStr: "-", title: `ชาวไร่สมัครสมาชิกใหม่: ${f.name}`, desc: `ข้อมูลผู้ใช้: เบอร์ ${f.phone}, อยู่ที่ จ.${f.prov}`, icon: 'fa-user', color: '#3498DB' }); 
+                if(f.row > 1) logs.push({ type: 'user', time: getEpoch(f.dob), dateStr: "-", title: `ชาวไร่สมัครสมาชิกใหม่: ${f.name}`, desc: `ข้อมูลผู้ใช้: เบอร์ ${f.phone}, อยู่ที่ จ.${f.prov}`, icon: 'fa-user', color: '#3B82F6' }); 
             });
             globalData.buyers.forEach(b => { 
-                if(b.row > 1) logs.push({ type: 'buyer', time: getEpoch(b.dob), dateStr: "-", title: `พาร์ทเนอร์รถม้วนสมัครใหม่: ${b.name}`, desc: `ข้อมูลรถ: ${b.vehicle}`, icon: 'fa-truck', color: '#F39C12' }); 
+                if(b.row > 1) logs.push({ type: 'buyer', time: getEpoch(b.dob), dateStr: "-", title: `พาร์ทเนอร์รถม้วนสมัครใหม่: ${b.name}`, desc: `ข้อมูลรถ: ${b.vehicle}`, icon: 'fa-truck', color: '#F59E0B' }); 
             });
             
-            // ดึงการแจ้งคิวงาน และ การปิดจ็อบ
             globalData.jobs.forEach(j => {
                 logs.push({ 
                     type: 'job_new', time: getEpoch(j.date), dateStr: j.date, 
                     title: `มีการประกาศขายใบอ้อย: ผู้แจ้ง ${j.farmer}`, 
                     desc: `รหัสงาน: ${j.id} | พื้นที่ประเมิน ${j.qty} ไร่`, 
-                    icon: 'fa-bullhorn', color: '#6DB33F' 
+                    icon: 'fa-bullhorn', color: '#10B981' 
                 });
                 
                 if(j.status === 'เสร็จสิ้น') { 
@@ -1379,7 +1429,7 @@
                         type: 'job_done', time: getEpoch(j.date) + 1000, dateStr: "-", 
                         title: `งานปิดบัญชีเรียบร้อย: ${j.id}`, 
                         desc: `รถม้วนคุณ ${j.buyer} ม้วนเสร็จสิ้น ปริมาณสุทธิ ${j.actualWeight} ตัน`, 
-                        icon: 'fa-check-double', color: '#8E44AD' 
+                        icon: 'fa-check-double', color: '#8B5CF6' 
                     }); 
                 }
             });
@@ -1396,7 +1446,7 @@
                     <div class="log-content">
                         <div class="log-time"><i class="fa-regular fa-clock"></i> ${l.dateStr !== "-" ? l.dateStr.split(' ')[0] : new Date(l.time).toLocaleDateString('th-TH')}</div>
                         <div class="log-title">${l.title}</div>
-                        <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">${l.desc}</div>
+                        <div style="font-size:14px; color:var(--text-muted); margin-top:6px;">${l.desc}</div>
                     </div>
                 </div>`;
             });
@@ -1409,7 +1459,8 @@
         // ==========================================
         function renderOverviewMap() {
             if (!overviewMapObj) {
-                overviewMapObj = L.map('overview-map').setView([17.295, 101.782], 6);
+                overviewMapObj = L.map('overview-map', {zoomControl: false}).setView([17.295, 101.782], 6);
+                L.control.zoom({ position: 'bottomright' }).addTo(overviewMapObj);
                 L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(overviewMapObj);
                 overviewLayer = L.featureGroup().addTo(overviewMapObj);
             }
@@ -1425,11 +1476,11 @@
                             let plots = JSON.parse(f.savedPlotsRaw);
                             plots.forEach(p => {
                                 let coords = JSON.parse(p.polygon)[0].map(c => [c[1], c[0]]);
-                                let poly = L.polygon(coords, { color: '#6DB33F', fillOpacity: 0.3, weight: 2 });
+                                let poly = L.polygon(coords, { color: '#10B981', fillOpacity: 0.4, weight: 2 });
                                 poly.bindPopup(`
                                     <div style="font-family:'Kanit';">
-                                        <b style="color:var(--primary-dark); font-size:15px;">ชาวไร่: ${f.name} <span style="font-size:11px; color:gray;">(ID: ${f.id})</span></b><br>
-                                        <hr style="margin:5px 0; border:0; border-top:1px solid #eee;">
+                                        <b style="color:var(--primary-dark); font-size:16px;">ชาวไร่: ${f.name} <span style="font-size:12px; color:gray;">(ID: ${f.id})</span></b><br>
+                                        <hr style="margin:8px 0; border:0; border-top:1px dashed #CBD5E1;">
                                         <b>ชื่อแปลง:</b> ${p.name}<br>
                                         <b>พื้นที่:</b> ${p.area} ไร่<br>
                                     </div>
@@ -1447,11 +1498,11 @@
                     if (j.status !== 'เสร็จสิ้น' && j.status !== 'ยกเลิก' && j.polygon) {
                         try {
                             let coords = JSON.parse(j.polygon)[0].map(c => [c[1], c[0]]);
-                            let poly = L.polygon(coords, { color: '#F39C12', fillOpacity: 0.6, weight: 3 });
+                            let poly = L.polygon(coords, { color: '#F59E0B', fillOpacity: 0.7, weight: 3 });
                             poly.bindPopup(`
                                 <div style="font-family:'Kanit';">
-                                    <b style="color:#D68910; font-size:15px;">ประกาศขาย <span style="font-size:11px; color:gray;">(Job ID: ${j.id})</span></b><br>
-                                    <hr style="margin:5px 0; border:0; border-top:1px solid #eee;">
+                                    <b style="color:#D97706; font-size:16px;">ประกาศขายคิวงาน <span style="font-size:12px; color:gray;">(Job ID: ${j.id})</span></b><br>
+                                    <hr style="margin:8px 0; border:0; border-top:1px dashed #CBD5E1;">
                                     <b>ผู้แจ้ง:</b> ${j.farmer}<br>
                                     <b>พื้นที่:</b> ${j.qty} ไร่<br>
                                     <b>สถานะ:</b> ${j.status}
