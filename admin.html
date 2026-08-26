@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CaneConnect | Modern Admin Dashboard</title>
+    <title>CaneConnect | Enterprise Admin Dashboard</title>
     
     <!-- ฟอนต์และไอคอน -->
     <link rel="icon" type="image/jpeg" href="logo.jpg">
@@ -22,17 +22,16 @@
     <style>
         /* ================= Modern SaaS CSS Variables ================= */
         :root {
-            /* โทนสีใหม่สไตล์แอปพรีเมียม (Tailwind Colors) */
-            --primary: #10B981;        /* Emerald 500 */
-            --primary-dark: #059669;   /* Emerald 600 */
-            --primary-light: #D1FAE5;  /* Emerald 100 */
-            --secondary: #0F172A;      /* Slate 900 (Sidebar) */
-            --secondary-light: #1E293B;/* Slate 800 */
-            --bg-body: #F8FAFC;        /* Slate 50 */
-            --surface: #FFFFFF;        /* White */
-            --text-main: #334155;      /* Slate 700 */
-            --text-muted: #64748B;     /* Slate 500 */
-            --border: #E2E8F0;         /* Slate 200 */
+            --primary: #10B981;        
+            --primary-dark: #059669;   
+            --primary-light: #D1FAE5;  
+            --secondary: #0F172A;      
+            --secondary-light: #1E293B;
+            --bg-body: #F8FAFC;        
+            --surface: #FFFFFF;        
+            --text-main: #334155;      
+            --text-muted: #64748B;     
+            --border: #E2E8F0;         
             
             /* Status Colors */
             --danger: #EF4444;         --danger-light: #FEE2E2;
@@ -41,9 +40,7 @@
             --purple: #8B5CF6;         --purple-light: #EDE9FE;
 
             /* Borders & Shadows */
-            --radius-xl: 24px;
-            --radius-lg: 16px;
-            --radius-md: 12px;
+            --radius-xl: 24px; --radius-lg: 16px; --radius-md: 12px;
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
             --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
             --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.03);
@@ -56,9 +53,7 @@
             font-family: 'Kanit', 'Inter', sans-serif; 
             background-color: var(--bg-body); 
             color: var(--text-main); 
-            display: flex; 
-            height: 100vh; 
-            overflow: hidden; 
+            display: flex; height: 100vh; overflow: hidden; 
             -webkit-font-smoothing: antialiased;
         }
 
@@ -256,9 +251,13 @@
         .btn-login, .btn-main { 
             width: 100%; background: var(--primary); color: white; border: none; 
             padding: 14px; border-radius: 10px; font-family: 'Kanit'; font-size: 16px; 
-            font-weight: 600; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow-md);
+            font-weight: 600; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow-md); display:inline-flex; align-items:center; justify-content:center; gap:8px;
         }
         .btn-login:hover, .btn-main:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+        .btn-small { padding: 8px 16px; border-radius: 8px; font-weight: 500; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; font-family: 'Kanit'; display: inline-flex; align-items: center; justify-content: center; gap: 6px;}
+        .btn-small-primary { background: var(--primary-light); color: var(--primary-dark); font-weight: 600; } 
+        .btn-small-primary:hover { background: var(--primary); color: white; transform: translateY(-2px); box-shadow: var(--shadow-sm);}
 
         /* ================= Loader ================= */
         .loader-overlay { 
@@ -273,9 +272,25 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ================= Maps ================= */
-        #overview-map { width: 100%; height: 650px; z-index: 1; }
+        /* ================= Smart Map & Sidebar UI ================= */
+        .map-split-container { display: flex; height: 650px; background: #fff;}
+        #overview-map { flex: 1; height: 100%; z-index: 1; border-right: 1px solid var(--border);}
         
+        .map-sidebar-list {
+            width: 320px; background: #F8FAFC; overflow-y: auto; display: flex; flex-direction: column;
+        }
+        .map-list-header {
+            padding: 15px 20px; background: white; border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 10;
+        }
+        .map-list-item {
+            padding: 15px 20px; border-bottom: 1px solid var(--border); cursor: pointer;
+            transition: 0.2s; display: flex; flex-direction: column; gap: 5px;
+        }
+        .map-list-item:hover { background: white; border-left: 4px solid var(--primary); padding-left: 16px;}
+        .map-list-item-title { font-weight: 600; color: var(--secondary); font-size: 15px;}
+        .map-list-item-subtitle { font-size: 13px; color: var(--text-muted); }
+
         /* ================= Swals Custom UI ================= */
         .swal2-popup { font-family: 'Kanit', sans-serif !important; border-radius: 24px !important; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;}
         .swal-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
@@ -445,7 +460,7 @@
                 </div>
             </div>
 
-            <!-- Tab 2: Map Overview -->
+            <!-- Tab 2: Smart Map Overview -->
             <div id="tab-map" class="tab-pane">
                 <div class="panel">
                     <div class="panel-header">
@@ -456,7 +471,19 @@
                             <option value="selling">เฉพาะแปลงที่ประกาศขาย (สีส้ม)</option>
                         </select>
                     </div>
-                    <div id="overview-map"></div>
+                    
+                    <!-- ส่วน Layout แผนที่แบบมีแถบรายชื่อด้านขวา -->
+                    <div class="map-split-container">
+                        <div id="overview-map"></div>
+                        <div class="map-sidebar-list">
+                            <div class="map-list-header">
+                                <b style="color:var(--secondary); font-size:15px;"><i class="fa-solid fa-list"></i> รายชื่อแปลงในแผนที่</b>
+                            </div>
+                            <div id="overview-list-content" style="flex:1; overflow-y:auto;">
+                                <!-- รายชื่อแปลงจะถูกนำมาแสดงที่นี่ให้คลิกบินไปหาได้ -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -563,7 +590,7 @@
     </main>
 
     <!-- ป้ายบอกเวอร์ชันแอป -->
-    <div class="app-version">v2.0.0 Pro | อัปเดต: 26 ส.ค. 2026</div>
+    <div class="app-version">v2.5.0 Pro | อัปเดต: 26 ส.ค. 2026</div>
 
     <script>
         // ==========================================
@@ -877,19 +904,26 @@
             });
         }
 
-        // ================= Admin Manage Plots (ฟีเจอร์แอดมินวาดแปลงให้) =================
+        // ================= Admin Manage Plots (ฟีเจอร์แอดมินวาดแปลงให้แบบเด่นชัด) =================
         function adminManagePlots(farmerIndex) {
             let f = globalData.farmers[farmerIndex];
             let plots = []; 
             try { if(f.savedPlotsRaw) plots = JSON.parse(f.savedPlotsRaw); } catch(e){}
 
             Swal.fire({
-                title: `วาดจัดการแปลง: คุณ${f.firstName}`, 
+                title: `จัดการแปลงอ้อย: คุณ${f.firstName}`, 
                 width: '1100px',
                 html: `
+                    <!-- ปุ่มให้แอดมินกดวาดแปลงแบบชัดเจน -->
+                    <div style="text-align:right; margin-bottom:15px;">
+                        <button class="btn-small btn-small-primary" onclick="if(window.adminMap){window.adminMap.pm.enableDraw('Polygon', {snappable: true});}" style="font-size:15px; padding:10px 20px;">
+                            <i class="fa-solid fa-draw-polygon"></i> + กดเพื่อเริ่มวาดแปลงใหม่
+                        </button>
+                    </div>
+
                     <div id="admin-geoman-map" style="width:100%; height:550px; border-radius:16px; border:2px solid var(--border); z-index:1;"></div>
                     <div style="font-size:14px; color:var(--text-muted); margin-top:15px; background:var(--bg-body); padding:12px; border-radius:10px; border:1px dashed var(--border);">
-                        <i class="fa-solid fa-info-circle" style="color:var(--info);"></i> ใช้เครื่องมือด้านซ้ายมือบนแผนที่เพื่อ <b style="color:var(--secondary);">วาด (Polygon) / แก้ไขจุด (Edit) / ลบ (Trash)</b> เมื่อจัดการเสร็จแล้วให้กดบันทึกด้านล่าง
+                        <i class="fa-solid fa-info-circle" style="color:var(--info);"></i> หรือใช้เครื่องมือด้านซ้ายมือบนแผนที่เพื่อ <b style="color:var(--secondary);">แก้ไขจุด (Edit) / ลบ (Trash)</b> เมื่อจัดการเสร็จแล้วให้กดบันทึกข้อมูลแปลง
                     </div>
                 `,
                 showCancelButton: true, confirmButtonText: '<i class="fa-solid fa-save"></i> บันทึกข้อมูลแปลงทั้งหมด', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#10B981',
@@ -1023,13 +1057,13 @@
                         </div>
                     </div>
                     
-                    <div id="mb-ongo" style="max-height:400px; overflow-y:auto; border: 1px solid var(--border); border-radius: 12px;">
+                    <div id="mb-ongo" style="max-height:300px; overflow-y:auto; border: 1px solid var(--border); border-radius: 12px;">
                         <table class="swal-table" style="margin:0;">
                             <thead><tr><th>วันที่แจ้งคิว</th><th>ชาวไร่</th><th>สถานะ</th><th>พื้นที่ประเมิน</th></tr></thead>
                             <tbody>${renderTable(ongo)}</tbody>
                         </table>
                     </div>
-                    <div id="mb-comp" style="display:none; max-height:400px; overflow-y:auto; border: 1px solid var(--border); border-radius: 12px;">
+                    <div id="mb-comp" style="display:none; max-height:300px; overflow-y:auto; border: 1px solid var(--border); border-radius: 12px;">
                         <table class="swal-table" style="margin:0;">
                             <thead><tr><th>วันที่แจ้งคิว</th><th>ชาวไร่</th><th>สถานะ</th><th>น้ำหนักจริง</th></tr></thead>
                             <tbody>${renderTable(comp)}</tbody>
@@ -1409,6 +1443,7 @@
         function renderLogs() {
             let logs = [];
             
+            // ดึงคนที่สมัครใหม่
             globalData.farmers.forEach(f => { 
                 if(f.row > 1) logs.push({ type: 'user', time: getEpoch(f.dob), dateStr: "-", title: `ชาวไร่สมัครสมาชิกใหม่: ${f.name}`, desc: `ข้อมูลผู้ใช้: เบอร์ ${f.phone}, อยู่ที่ จ.${f.prov}`, icon: 'fa-user', color: '#3B82F6' }); 
             });
@@ -1416,6 +1451,7 @@
                 if(b.row > 1) logs.push({ type: 'buyer', time: getEpoch(b.dob), dateStr: "-", title: `พาร์ทเนอร์รถม้วนสมัครใหม่: ${b.name}`, desc: `ข้อมูลรถ: ${b.vehicle}`, icon: 'fa-truck', color: '#F59E0B' }); 
             });
             
+            // ดึงการแจ้งคิวงาน และ การปิดจ็อบ
             globalData.jobs.forEach(j => {
                 logs.push({ 
                     type: 'job_new', time: getEpoch(j.date), dateStr: j.date, 
@@ -1455,8 +1491,12 @@
         }
 
         // ==========================================
-        // แผนที่ภาพรวมระดับประเทศ (Overview Map)
+        // แผนที่ภาพรวมระดับประเทศ (Overview Map) - แบบแยก Split Screen
         // ==========================================
+        function flyToMap(lat, lng) {
+            overviewMapObj.flyTo([lat, lng], 16, {duration: 1.5});
+        }
+
         function renderOverviewMap() {
             if (!overviewMapObj) {
                 overviewMapObj = L.map('overview-map', {zoomControl: false}).setView([17.295, 101.782], 6);
@@ -1467,25 +1507,38 @@
             overviewLayer.clearLayers();
             
             let filter = document.getElementById('map-filter').value;
+            let listHtml = '';
 
             // วาดแปลงที่ลงทะเบียน (สีเขียว)
             if (filter === 'all' || filter === 'registered') {
-                globalData.farmers.forEach(f => {
+                globalData.farmers.forEach((f, index) => {
                     if (f.savedPlotsRaw && f.savedPlotsRaw !== "[]") {
                         try {
                             let plots = JSON.parse(f.savedPlotsRaw);
                             plots.forEach(p => {
                                 let coords = JSON.parse(p.polygon)[0].map(c => [c[1], c[0]]);
                                 let poly = L.polygon(coords, { color: '#10B981', fillOpacity: 0.4, weight: 2 });
+                                
+                                // เพิ่มปุ่มลิงก์เจาะลึกเข้าไปดูชาวไร่ใน Popup
                                 poly.bindPopup(`
                                     <div style="font-family:'Kanit';">
                                         <b style="color:var(--primary-dark); font-size:16px;">ชาวไร่: ${f.name} <span style="font-size:12px; color:gray;">(ID: ${f.id})</span></b><br>
                                         <hr style="margin:8px 0; border:0; border-top:1px dashed #CBD5E1;">
                                         <b>ชื่อแปลง:</b> ${p.name}<br>
                                         <b>พื้นที่:</b> ${p.area} ไร่<br>
+                                        <button onclick="viewFarmerDetails(${index})" class="btn-small btn-small-primary" style="margin-top:10px; width:100%;">
+                                            <i class="fa-solid fa-user-check"></i> ข้อมูลเชิงลึกชาวไร่
+                                        </button>
                                     </div>
                                 `);
                                 overviewLayer.addLayer(poly);
+
+                                // เพิ่มเข้าเมนูด้านขวา
+                                listHtml += `
+                                <div class="map-list-item" onclick="flyToMap(${p.center[0]}, ${p.center[1]})">
+                                    <div class="map-list-item-title"><i class="fa-solid fa-leaf" style="color:var(--primary);"></i> ${p.name}</div>
+                                    <div class="map-list-item-subtitle">เจ้าของ: ${f.name} | ${p.area} ไร่</div>
+                                </div>`;
                             });
                         } catch(e) {}
                     }
@@ -1494,29 +1547,47 @@
 
             // วาดแปลงที่ประกาศขาย/กำลังทำงาน (สีส้ม)
             if (filter === 'all' || filter === 'selling') {
-                globalData.jobs.forEach(j => {
+                globalData.jobs.forEach((j, index) => {
                     if (j.status !== 'เสร็จสิ้น' && j.status !== 'ยกเลิก' && j.polygon) {
                         try {
                             let coords = JSON.parse(j.polygon)[0].map(c => [c[1], c[0]]);
                             let poly = L.polygon(coords, { color: '#F59E0B', fillOpacity: 0.7, weight: 3 });
+                            
+                            // เพิ่มปุ่มลิงก์เจาะลึกเข้าไปดูงานใน Popup
                             poly.bindPopup(`
                                 <div style="font-family:'Kanit';">
                                     <b style="color:#D97706; font-size:16px;">ประกาศขายคิวงาน <span style="font-size:12px; color:gray;">(Job ID: ${j.id})</span></b><br>
                                     <hr style="margin:8px 0; border:0; border-top:1px dashed #CBD5E1;">
                                     <b>ผู้แจ้ง:</b> ${j.farmer}<br>
                                     <b>พื้นที่:</b> ${j.qty} ไร่<br>
-                                    <b>สถานะ:</b> ${j.status}
+                                    <b>สถานะ:</b> ${j.status}<br>
+                                    <button onclick="viewJobDetails(${index})" class="btn-small btn-small-outline" style="margin-top:10px; width:100%; border-color:var(--warning); color:var(--warning);">
+                                        <i class="fa-solid fa-expand"></i> ดูรายละเอียดคิวงาน
+                                    </button>
                                 </div>
                             `);
                             overviewLayer.addLayer(poly);
+
+                            // เพิ่มเข้าเมนูด้านขวา
+                            listHtml += `
+                            <div class="map-list-item" onclick="flyToMap(${j.lat}, ${j.lon})">
+                                <div class="map-list-item-title"><i class="fa-solid fa-bullhorn" style="color:var(--warning);"></i> งานของ ${j.farmer}</div>
+                                <div class="map-list-item-subtitle">${j.qty} ไร่ | ${j.status}</div>
+                            </div>`;
                         } catch(e) {}
                     }
                 });
             }
 
-            // จัดแผนที่ให้ซูมพอดีกับข้อมูลที่มี
+            // นำ HTML ใส่ใน List ด้านขวา
+            if(listHtml === '') {
+                listHtml = `<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:13px;">ไม่มีแปลงในระบบ</div>`;
+            }
+            document.getElementById('overview-list-content').innerHTML = listHtml;
+
+            // จัดแผนที่ให้ซูมพอดีกับข้อมูลที่มี (ตั้ง maxZoom ไม่ให้ซูมเข้าลึกเกินไป)
             if (overviewLayer.getLayers().length > 0) { 
-                overviewMapObj.fitBounds(overviewLayer.getBounds(), { padding: [30, 30] }); 
+                overviewMapObj.fitBounds(overviewLayer.getBounds(), { padding: [30, 30], maxZoom: 14 }); 
             }
         }
 
