@@ -1212,29 +1212,47 @@
 
         // ================= Core Initialization =================
         async function main() {
-            showLoader(); await loadThaiData();
+            showLoader(); 
+            await loadThaiData();
+            
             try {
                 await liff.init({ liffId: LIFF_ID });
+                
+                // ตรวจสอบว่าเข้าสู่ระบบ LINE หรือยัง
                 if (liff.isLoggedIn()) {
                     userProfile = await liff.getProfile();
-                    document.getElementById("profile-img").src = userProfile.pictureUrl; document.getElementById("profile-img").style.display = "block";
+                    document.getElementById("profile-img").src = userProfile.pictureUrl; 
+                    document.getElementById("profile-img").style.display = "block";
                     document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; 
                     
-                    if (navigator.geolocation) navigator.geolocation.watchPosition( p => { currentLat = p.coords.latitude; currentLng = p.coords.longitude; }, e => {}, {enableHighAccuracy: true});
+                    // ดึงพิกัด
+                    if (navigator.geolocation) {
+                        navigator.geolocation.watchPosition( 
+                            p => { currentLat = p.coords.latitude; currentLng = p.coords.longitude; }, 
+                            e => {}, 
+                            {enableHighAccuracy: true}
+                        );
+                    }
                     
                     const params = new URLSearchParams(window.location.search); 
                     const mode = params.get('mode');
                     
-                    if (mode === 'report') { await navigateTo('report'); } 
-                    else if (mode === 'sales') { await navigateTo('sales'); } 
-                    else { await navigateTo('profile'); }
+                    // เลือกเปิดหน้าตามลิงก์ที่กดมา
+                    if (mode === 'report') { 
+                        await navigateTo('report'); 
+                    } else if (mode === 'sales') { 
+                        await navigateTo('sales'); 
+                    } else { 
+                        await navigateTo('profile'); 
+                    }
                 } else { 
-                    // 🚨 ไม้ตาย! สั่งให้ LIFF เด้งกลับมาที่หน้าเว็บคอมพิวเตอร์แบบระบุ URL ชัดเจน
+                    // ถ้ายังไม่ได้ล็อกอิน ให้เด้งไปล็อกอินแล้วกลับมาที่หน้า Desktop
                     liff.login({ redirectUri: "https://nutsukhonmanee-max.github.io/caneconnect/desktop_farmer.html" }); 
                 }
             } catch (err) { 
                 hideLoader(); 
-                Swal.fire('Error', 'ไม่สามารถเชื่อมต่อ LINE ได้', 'error'); 
+                console.error("LIFF Init Error: ", err);
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบบัญชี LINE ได้ กรุณาลองรีเฟรชหน้าเว็บอีกครั้งครับ', 'error'); 
             } 
         }
 
