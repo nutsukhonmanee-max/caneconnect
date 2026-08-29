@@ -610,7 +610,21 @@
         }
 
         // ================= PLOT MANAGEMENT & AUTO SAVE =================
-        // เพิ่มปุ่มตำแหน่งของฉัน
+        let allPlotsMapObj = null; let allPlotsLayer = null;
+        
+        function renderAllPlotsMap() {
+            const wrapper = document.getElementById('all-plots-wrapper'); const container = document.getElementById('all-plots-map');
+            if (!container) return; 
+            
+            // ให้แผนที่แสดงตลอดเวลา
+            wrapper.style.display = 'block';
+
+            if (!allPlotsMapObj) {
+                allPlotsMapObj = L.map('all-plots-map').setView([currentLat, currentLng], 14);
+                L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(allPlotsMapObj);
+                allPlotsLayer = L.featureGroup().addTo(allPlotsMapObj);
+                
+                // เพิ่มปุ่มตำแหน่งของฉัน
                 let myLocationMarker = null; // ตัวแปรสำหรับเก็บหมุด
                 const locateControl = L.control({position: 'bottomright'});
                 
@@ -674,6 +688,7 @@
                 };
                 locateControl.addTo(allPlotsMapObj);
             }
+
             allPlotsLayer.clearLayers();
             
             // วาดแปลงที่มีอยู่ลงบนแผนที่
