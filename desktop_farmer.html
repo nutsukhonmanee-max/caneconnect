@@ -636,11 +636,28 @@
                         e.stopPropagation();
                         e.preventDefault();
                         if(navigator.geolocation) {
+                            // ใส่ Loading เพื่อให้รู้ว่ากำลังค้นหา
+                            Swal.fire({ title: 'กำลังค้นหาพิกัด...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+                            
                             navigator.geolocation.getCurrentPosition(pos => {
+                                Swal.close(); // ปิด Loading เมื่อเจอพิกัด
                                 map.flyTo([pos.coords.latitude, pos.coords.longitude], 16, {animate: true});
                             }, err => {
-                                Swal.fire('ไม่พบพิกัด', 'กรุณาเปิดการเข้าถึงตำแหน่งที่ตั้ง (GPS)', 'warning');
-                            }, { enableHighAccuracy: true });
+                                Swal.close();
+                                // แยกแยะ Error เพื่อให้ชาวไร่รู้ว่าเกิดจากอะไร
+                                let errorMsg = 'กรุณาเปิดการเข้าถึงตำแหน่งที่ตั้ง (GPS)';
+                                if (err.code === 1) errorMsg = 'คุณยังไม่อนุญาตให้เว็บไซต์เข้าถึง GPS (Permission denied)';
+                                else if (err.code === 2) errorMsg = 'ไม่สามารถดึงสัญญาณ GPS ได้ในขณะนี้';
+                                else if (err.code === 3) errorMsg = 'หมดเวลาในการค้นหาตำแหน่ง (Timeout) โปรดลองใหม่';
+                                
+                                Swal.fire('ไม่พบพิกัด', errorMsg, 'warning');
+                            }, { 
+                                enableHighAccuracy: true, 
+                                timeout: 10000, // กำหนดเวลาสูงสุด 10 วินาที ป้องกันการโหลดค้างบน PC
+                                maximumAge: 0 
+                            });
+                        } else {
+                            Swal.fire('ไม่รองรับ', 'เบราว์เซอร์ของคุณไม่รองรับการดึงตำแหน่ง', 'error');
                         }
                     };
                     return btn;
