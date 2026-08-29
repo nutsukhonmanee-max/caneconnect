@@ -6,7 +6,7 @@
     <title>CaneConnect - ระบบจัดการรถม้วน (Desktop)</title>
     
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- SweetAlert2 -->
@@ -19,45 +19,153 @@
     <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
     
     <style>
-        :root { 
-            --primary: #6DB33F; --primary-light: #F0F8EC; --primary-dark: #4A8C28; 
-            --bg-main: #F4F7F6; --surface: #FFFFFF; --text-main: #2C3E50; --text-muted: #7F8C8D; 
-            --border: #E1E8E3; --accent: #F39C12; --danger: #E74C3C; --info: #2980B9; 
-            --radius-lg: 16px; --radius-md: 10px; --sidebar-width: 280px;
+        /* ================= Modern SaaS CSS Variables ================= */
+        :root {
+            --primary: #10B981;        
+            --primary-dark: #059669;   
+            --primary-light: #D1FAE5;  
+            --secondary: #0F172A;      
+            --secondary-light: #1E293B;
+            --bg-body: #F8FAFC;        
+            --surface: #FFFFFF;        
+            --text-main: #334155;      
+            --text-muted: #64748B;     
+            --border: #E2E8F0;         
+            
+            /* Status Colors */
+            --danger: #EF4444;         --danger-light: #FEE2E2;
+            --info: #3B82F6;           --info-light: #DBEAFE;
+            --warning: #F59E0B;        --warning-light: #FEF3C7;
+            --purple: #8B5CF6;         --purple-light: #EDE9FE;
+
+            /* Borders & Shadows */
+            --radius-xl: 24px; --radius-lg: 16px; --radius-md: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.03);
+            --shadow-glow: 0 0 20px rgba(16, 185, 129, 0.15);
+            --sidebar-width: 280px;
         }
-        
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body { 
-            font-family: 'Kanit', sans-serif; background: var(--bg-main); color: var(--text-main); 
-            padding: 0; margin: 0; display: flex; height: 100vh; overflow: hidden;
+            font-family: 'Kanit', 'Inter', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            display: flex; height: 100vh; overflow: hidden; 
+            -webkit-font-smoothing: antialiased;
         }
-        
-        /* Sidebar Styles */
-        .sidebar {
-            width: var(--sidebar-width); background: var(--surface); box-shadow: 2px 0 15px rgba(0,0,0,0.05);
-            display: flex; flex-direction: column; z-index: 100;
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+        /* App Version Tag */
+        .app-version {
+            position: fixed; bottom: 12px; right: 20px; font-size: 11px; color: var(--text-muted);
+            font-weight: 600; opacity: 0.7; z-index: 9999; pointer-events: none;
+            background: rgba(255, 255, 255, 0.9); padding: 4px 12px; border-radius: 20px;
+            box-shadow: var(--shadow-sm); border: 1px solid var(--border); letter-spacing: 0.5px;
         }
-        .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border); text-align: center; }
-        .sidebar-header h1 { margin: 0; color: var(--primary-dark); font-size: 22px; }
-        
-        .profile-box { padding: 24px; border-bottom: 1px solid var(--border); text-align: center; }
-        .profile-img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; margin-bottom: 10px; display: none; margin-left: auto; margin-right: auto;}
-        .profile-name { font-size: 16px; font-weight: 600; color: var(--text-main); }
-        
-        .nav-menu { list-style: none; padding: 15px; margin: 0; flex: 1; }
-        .nav-item { 
-            padding: 14px 18px; margin-bottom: 8px; border-radius: var(--radius-md); 
-            cursor: pointer; font-size: 15px; font-weight: 500; color: var(--text-muted); 
-            transition: all 0.2s ease; display: flex; align-items: center; gap: 12px;
+
+        /* ================= Login Overlay ================= */
+        #login-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%); 
+            z-index: 999999; display: flex; align-items: center; justify-content: center; 
         }
-        .nav-item:hover { background: var(--primary-light); color: var(--primary-dark); }
-        .nav-item.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(109,179,63,0.3); }
+
+        .login-box { 
+            background: var(--surface); padding: 50px 40px; border-radius: var(--radius-xl); 
+            width: 90%; max-width: 420px; text-align: center; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); animation: floatUp 0.6s ease; 
+        }
+
+        @keyframes floatUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .login-box h2 { color: var(--secondary); margin-bottom: 8px; font-weight: 700; font-size: 26px; }
+        .login-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 30px; }
+
+        .brand-logo-fallback {
+            width: 80px; height: 80px; border-radius: 20px; margin: 0 auto 20px auto;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 40px; box-shadow: var(--shadow-glow);
+        }
+
+        /* ================= Sidebar ================= */
+        .sidebar { 
+            width: var(--sidebar-width); background-color: var(--secondary); color: #F8FAFC; 
+            display: flex; flex-direction: column; z-index: 20; 
+            box-shadow: 4px 0 20px rgba(0,0,0,0.05); transition: 0.3s;
+        }
+
+        .sidebar-header { 
+            padding: 30px 24px; font-size: 22px; font-weight: 700; 
+            color: var(--surface); border-bottom: 1px solid rgba(255,255,255,0.08); 
+            display: flex; align-items: center; gap: 14px; letter-spacing: 0.5px;
+        }
+
+        .sidebar-header i { color: var(--primary); font-size: 26px; }
+
+        .sidebar-profile {
+            padding: 24px 20px; text-align: center; margin: 20px 16px;
+            background: rgba(255,255,255,0.03); border-radius: var(--radius-lg); 
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sidebar-profile img {
+            width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--primary); 
+            object-fit: cover; margin: 0 auto 12px auto; display: none;
+        }
+
+        .sidebar-profile-fallback {
+            width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 12px auto;
+            background: var(--secondary-light); display: none; align-items: center; 
+            justify-content: center; color: var(--primary); font-size: 30px; border: 2px solid var(--primary);
+        }
+
+        .sidebar-profile-name { font-size: 16px; font-weight: 600; color: #F8FAFC; }
+        .sidebar-profile-role { 
+            font-size: 12px; font-weight: 600; background: rgba(16, 185, 129, 0.2); 
+            padding: 4px 12px; border-radius: 20px; display: inline-block; 
+            margin-top: 8px; color: var(--primary); border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .sidebar-menu { flex: 1; padding: 10px 16px; overflow-y: auto; }
+
+        .menu-item { 
+            padding: 14px 20px; display: flex; align-items: center; gap: 14px; 
+            color: #94A3B8; cursor: pointer; font-weight: 500; font-size: 15px;
+            border-radius: 12px; transition: all 0.2s ease; margin-bottom: 6px;
+        }
+
+        .menu-item:hover { background-color: rgba(255,255,255,0.05); color: #F8FAFC; transform: translateX(4px); }
+        .menu-item.active { 
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, transparent 100%);
+            color: var(--primary); font-weight: 600; border-left: 4px solid var(--primary);
+            border-radius: 0 12px 12px 0;
+        }
+        .menu-item i { font-size: 18px; width: 24px; text-align: center; }
         
-        /* Main Content Styles */
-        .main-content { flex: 1; overflow-y: auto; padding: 30px 40px; position: relative; }
-        .page { display: none; animation: fadeIn 0.3s ease; } .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* ================= Main Content Area ================= */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-body); }
         
-        .section-title { font-size: 20px; font-weight: 600; color: var(--text-main); margin-bottom: 20px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+        .topbar { 
+            background: var(--danger-light); color: var(--danger);
+            display: flex; align-items: center; justify-content: center; 
+            padding: 10px 40px; box-shadow: var(--shadow-sm); z-index: 10; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 500; text-align: center;
+        }
+        .topbar a { color: var(--danger); font-weight: bold; }
+        
+        .content-body { flex: 1; padding: 40px; overflow-y: auto; position: relative;}
+        .page { display: none; animation: fadeIn 0.4s ease; } 
+        .page.active { display: block; }
+        
+        .section-title { font-size: 20px; font-weight: 700; color: var(--secondary); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border);}
         
         /* Grid Layouts for Desktop */
         .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; margin-bottom: 30px; }
@@ -66,7 +174,7 @@
         /* Filters Panel */
         .filter-panel { 
             background: var(--surface); padding: 20px; border-radius: var(--radius-lg); 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px; border: 1px solid var(--border);
+            box-shadow: var(--shadow-md); margin-bottom: 20px; border: 1px solid var(--border);
             display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end;
         }
         .filter-item { flex: 1; min-width: 200px; }
@@ -75,50 +183,62 @@
         input[type="range"] { width: 100%; accent-color: var(--primary); cursor: pointer; }
         input[type="text"], input[type="tel"], input[type="number"], input[type="date"], select, textarea { 
             width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-md); 
-            font-size: 14px; font-family: 'Kanit', sans-serif; box-sizing: border-box; background: #F9FBFB;
+            font-size: 14px; font-family: 'Kanit', sans-serif; box-sizing: border-box; background: #F8FAFC; color: var(--secondary);
+            transition: all 0.2s;
         }
-        input:focus, select:focus { border-color: var(--primary); outline: none; background: #FFF; box-shadow: 0 0 0 3px rgba(109,179,63,0.1); }
+        input:focus, select:focus { border-color: var(--primary); outline: none; background: #FFF; box-shadow: 0 0 0 3px var(--primary-light); }
         
         /* Map Container */
-        .map-container { height: 450px; width: 100%; border-radius: var(--radius-lg); margin-bottom: 25px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1;}
+        .map-container { height: 450px; width: 100%; border-radius: var(--radius-lg); margin-bottom: 25px; border: 1px solid var(--border); box-shadow: var(--shadow-md); z-index: 1;}
         
         /* Cards */
-        .sale-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: transform 0.2s; display: flex; flex-direction: column; justify-content: space-between;}
-        .sale-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .sale-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); transition: transform 0.2s; display: flex; flex-direction: column; justify-content: space-between;}
+        .sale-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
         .sale-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px; }
-        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .badge.pending { background: #EAF2F8; color: var(--info); } .badge.waiting { background: #FEF5E7; color: var(--accent); } .badge.processing { background: #E8F6F3; color: #1ABC9C; } .badge.verify { background: #F4ECF7; color: #8E44AD; } .badge.completed { background: var(--primary-light); color: var(--primary-dark); } .badge.canceled { background: #FDEDEC; color: var(--danger); }
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; letter-spacing: 0.3px;}
+        .badge.pending { background: var(--info-light); color: var(--info); } .badge.waiting { background: var(--warning-light); color: var(--warning); } .badge.processing { background: #E8F6F3; color: #1ABC9C; } .badge.verify { background: var(--purple-light); color: var(--purple); } .badge.completed { background: var(--primary-light); color: var(--primary-dark); } .badge.canceled { background: var(--danger-light); color: var(--danger); }
         
         /* Buttons */
-        .btn-main { padding: 12px 20px; background: var(--primary); color: white; border: none; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Kanit'; width: 100%; box-shadow: 0 4px 10px rgba(109,179,63,0.2);}
-        .btn-main:hover { background: var(--primary-dark); }
+        .btn-main { padding: 14px; background: var(--primary); color: white; border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Kanit'; width: 100%; box-shadow: var(--shadow-md); display:inline-flex; align-items:center; justify-content:center; gap:8px;}
+        .btn-main:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
         .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow:none;} .btn-outline:hover { background: var(--primary-light); }
-        .btn-warning { background: var(--accent); box-shadow: 0 4px 10px rgba(243,156,18,0.2);} .btn-warning:hover { background: #D68910; }
+        .btn-warning { background: var(--warning); box-shadow: var(--shadow-md);} .btn-warning:hover { background: #D97706; }
         
         /* Dashboard Stats */
         .dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; grid-column: 1 / -1;}
-        .dash-card { background: var(--surface); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.02); text-align: center;}
+        .dash-card { background: var(--surface); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); text-align: center;}
         .dash-card .label { font-size: 13px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500;}
-        .dash-card .value { font-size: 24px; font-weight: 600; color: var(--primary-dark); }
+        .dash-card .value { font-size: 24px; font-weight: 600; color: var(--secondary); }
         
         .empty-state { text-align: center; color: var(--text-muted); font-size: 15px; padding: 50px 0; background: var(--surface); border-radius: var(--radius-md); border: 1px dashed var(--border);}
         
-        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        /* ================= Loader ================= */
+        .loader-overlay { 
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background: rgba(248,250,252,0.9); z-index: 9999999; display: none; 
+            align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(5px);
+        }
+        .spinner { 
+            width: 60px; height: 60px; border: 4px solid var(--border); 
+            border-top-color: var(--primary); border-radius: 50%; 
+            animation: spin 1s cubic-bezier(0.55, 0.085, 0.68, 0.53) infinite; margin-bottom: 20px; 
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         
-        .swal2-popup { font-family: 'Kanit', sans-serif !important; border-radius: 20px !important; }
-        .swal-map-container { height: 250px; width: 100%; border-radius: 10px; border: 1px solid #ddd; margin: 10px 0; z-index: 9999;}
+        .swal2-popup { font-family: 'Kanit', sans-serif !important; border-radius: 20px !important; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important; }
+        .swal-map-container { height: 250px; width: 100%; border-radius: 10px; border: 1px solid var(--border); margin: 10px 0; z-index: 9999;}
     </style>
 </head>
 <body>
 
     <!-- Loading Screen -->
-    <div id="loading-screen">
-        <i class="fa-solid fa-truck-fast fa-beat-fade" style="font-size: 40px; color: var(--primary); margin-bottom: 15px;"></i>
-        <h3 style="color:var(--primary-dark); margin:0;">กำลังเตรียมระบบ...</h3>
+    <div class="loader-overlay" id="loading-screen">
+        <div class="spinner"></div>
+        <h3 style="color:var(--secondary); margin:0; font-family: 'Kanit'; font-weight: 600;">กำลังเตรียมระบบ...</h3>
     </div>
 
     <!-- Image Viewer Overlay -->
-    <div id="image-viewer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20,25,22,0.95); z-index: 100000; justify-content: center; align-items: center; flex-direction: column;">
+    <div id="image-viewer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.95); z-index: 100000; justify-content: center; align-items: center; flex-direction: column;">
         <span onclick="closeImageViewer()" style="position: absolute; top: 30px; right: 30px; color: white; font-size: 32px; cursor: pointer; width: 44px; height: 44px; text-align: center; line-height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; border: 1px solid rgba(255,255,255,0.2);">&times;</span>
         <img id="image-viewer-img" src="" style="max-width: 90%; max-height: 80%; border-radius: 16px; object-fit: contain;">
     </div>
@@ -126,140 +246,156 @@
     <!-- Sidebar Layout -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <h1>CaneConnect</h1>
-            <div style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">ระบบพาร์ทเนอร์รถม้วน</div>
+            <i class="fa-solid fa-leaf"></i> 
+            <span>CaneConnect</span>
         </div>
-        <div class="profile-box">
-            <img id="profile-img" class="profile-img" src="">
-            <div id="profile-info" class="profile-name">กรุณาเข้าสู่ระบบ</div>
+        <div class="sidebar-profile">
+            <!-- สมาร์ทโลโก้ Sidebar -->
+            <img id="profile-img" class="profile-img" src="logo.jpg" alt="Logo" onerror="this.style.display='none'; document.getElementById('fb-side-logo').style.display='flex';">
+            <div id="fb-side-logo" class="sidebar-profile-fallback"><i class="fa-solid fa-user-shield"></i></div>
+            
+            <div id="profile-info" class="sidebar-profile-name">กรุณาเข้าสู่ระบบ</div>
+            <div class="sidebar-profile-role">ระบบพาร์ทเนอร์รถม้วน</div>
         </div>
-        <ul class="nav-menu">
-            <li class="nav-item active" id="nav-jobs" onclick="switchPage('buyer-map-page')">
-                <i class="fa-solid fa-map-location-dot"></i> ค้นหางาน & แผนที่
-            </li>
-            <li class="nav-item" id="nav-history" onclick="switchPage('buyer-history-page')">
-                <i class="fa-solid fa-clock-rotate-left"></i> ประวัติการรับซื้อ
-            </li>
-            <li class="nav-item" id="nav-profile" onclick="switchPage('register-buyer-page')">
-                <i class="fa-solid fa-user-gear"></i> ข้อมูลโปรไฟล์ / อู่
-            </li>
-            <li class="nav-item" style="color:var(--danger); margin-top: auto;" onclick="logout()">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i> ออกจากระบบ
-            </li>
-        </ul>
+        <div class="sidebar-menu">
+            <div class="menu-item active" id="nav-jobs" onclick="switchPage('buyer-map-page')">
+                <i class="fa-solid fa-map-location-dot"></i> <span>ค้นหางาน & แผนที่</span>
+            </div>
+            <div class="menu-item" id="nav-history" onclick="switchPage('buyer-history-page')">
+                <i class="fa-solid fa-clock-rotate-left"></i> <span>ประวัติการรับซื้อ</span>
+            </div>
+            <div class="menu-item" id="nav-profile" onclick="switchPage('register-buyer-page')">
+                <i class="fa-solid fa-user-gear"></i> <span>ข้อมูลโปรไฟล์ / อู่</span>
+            </div>
+            
+            <div style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+                <div class="menu-item" style="color: #EF4444;" onclick="logout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>ออกจากระบบ</span>
+                </div>
+            </div>
+        </div>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
-        
-        <!-- 1. หน้าโปรไฟล์ / อู่ -->
-        <div id="register-buyer-page" class="page">
-            <div class="section-title">ข้อมูลโปรไฟล์พาร์ทเนอร์</div>
-            <div style="background: var(--surface); padding: 30px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-                <button id="btn-enable-buyer-edit" class="btn-main btn-outline" style="width:auto; margin-bottom:20px; display:none;" onclick="enableBuyerProfileEdit()">
-                    <i class="fa-solid fa-pen-to-square"></i> ปลดล็อกเพื่อแก้ไขข้อมูล
-                </button>
-                
-                <div class="form-grid">
-                    <div>
-                        <label>คำนำหน้า:</label>
-                        <select id="buyer-prefix"><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="บริษัท">บริษัท</option></select>
+        <header class="topbar">
+            <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px;"></i> ระบบนี้อยู่ในช่วงพัฒนาระบบ หากมีปัญหา หรือข้อเสนอแนะ ให้สามารถติดต่อแอดมินได้ที่ ไลน์ CaneConnect - รับงาน ไอดีไลน์ @673iaryk หรือ <a href="https://line.me/R/ti/p/@673iaryk" target="_blank" style="margin-left: 4px;">คลิกที่นี่</a>
+        </header>
+
+        <div class="content-body">
+            
+            <!-- 1. หน้าโปรไฟล์ / อู่ -->
+            <div id="register-buyer-page" class="page">
+                <div class="section-title">ข้อมูลโปรไฟล์พาร์ทเนอร์</div>
+                <div style="background: var(--surface); padding: 30px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-md);">
+                    <button id="btn-enable-buyer-edit" class="btn-main btn-outline" style="width:auto; margin-bottom:20px; display:none;" onclick="enableBuyerProfileEdit()">
+                        <i class="fa-solid fa-pen-to-square"></i> ปลดล็อกเพื่อแก้ไขข้อมูล
+                    </button>
+                    
+                    <div class="form-grid">
+                        <div>
+                            <label>คำนำหน้า:</label>
+                            <select id="buyer-prefix"><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="บริษัท">บริษัท</option></select>
+                        </div>
+                        <div><label>ชื่อจริง/บริษัท:</label><input type="text" id="buyer-firstname" required></div>
+                        <div><label>นามสกุล (ถ้ามี):</label><input type="text" id="buyer-lastname"></div>
+                        <div><label>วัน/เดือน/ปีเกิด:</label><input type="date" id="buyer-dob" required></div>
+                        <div><label>เบอร์โทรศัพท์ติดต่อ:</label><input type="tel" id="buyer-phone" required></div>
                     </div>
-                    <div><label>ชื่อจริง/บริษัท:</label><input type="text" id="buyer-firstname" required></div>
-                    <div><label>นามสกุล (ถ้ามี):</label><input type="text" id="buyer-lastname"></div>
-                    <div><label>วัน/เดือน/ปีเกิด:</label><input type="date" id="buyer-dob" required></div>
-                    <div><label>เบอร์โทรศัพท์ติดต่อ:</label><input type="tel" id="buyer-phone" required></div>
-                </div>
-                
-                <div class="section-title" style="margin-top: 30px; font-size: 18px;">ที่ตั้งจุดจอดรถ / อู่</div>
-                <div class="form-grid">
-                    <div><label>บ้านเลขที่:</label><input type="text" id="buyer-no" required></div>
-                    <div><label>หมู่ที่:</label><input type="text" id="buyer-moo" required></div>
-                    <div><label>จังหวัด:</label><select id="buyer-prov" required><option value="">กำลังโหลด...</option></select></div>
-                    <div><label>อำเภอ:</label><select id="buyer-dist" required disabled></select></div>
-                    <div><label>ตำบล:</label><select id="buyer-subdist" required disabled></select></div>
-                    <div><label>รหัสไปรษณีย์:</label><input type="text" id="buyer-zip" required readonly></div>
-                    <div class="full-width"><label>ข้อมูลเครื่องจักร (เช่น รถพ่วง 2 คัน):</label><input type="text" id="buyer-vehicle"></div>
-                </div>
-                
-                <div id="pdpa-box-buyer" style="margin-top: 20px; background: #F8FAF9; padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
-                    <label style="display: flex; align-items: center; gap: 10px; margin: 0; cursor: pointer;">
-                        <input type="checkbox" id="buyer-pdpa" style="width: 18px; height: 18px;">
-                        <span>ข้าพเจ้ายินยอมให้เก็บรวบรวมข้อมูลส่วนบุคคลตามนโยบาย PDPA</span>
-                    </label>
-                </div>
-                
-                <button id="btn-buyer-register" class="btn-main" style="width: 200px; margin-top: 25px;" onclick="submitBuyerRegistration()">บันทึกข้อมูล</button>
-            </div>
-        </div>
-
-        <!-- 2. หน้าค้นหางาน และ แผนที่ -->
-        <div id="buyer-map-page" class="page active">
-            <div class="section-title">ตั้งค่าค้นหางานรอบตัว</div>
-            
-            <!-- Filters Panel -->
-            <div class="filter-panel">
-                <div class="filter-item">
-                    <label>รัศมีวิ่งงานสูงสุด: <span id="val-dist" style="color:var(--primary); font-size:15px;">10 กม.</span></label>
-                    <input type="range" id="slider-dist" min="2" max="50" value="10" step="1" oninput="updateClusterLogic()">
-                </div>
-                <div class="filter-item">
-                    <label>คิวงานห่างกันสูงสุด: <span id="val-days" style="color:var(--primary); font-size:15px;">5 วัน</span></label>
-                    <input type="range" id="slider-days" min="1" max="30" value="5" step="1" oninput="updateClusterLogic()">
-                </div>
-                <div class="filter-item">
-                    <label>ตั้งแต่วันที่:</label>
-                    <input type="date" id="filter-date-start" onchange="updateClusterLogic()">
-                </div>
-                <div class="filter-item">
-                    <label>ถึงวันที่:</label>
-                    <input type="date" id="filter-date-end" onchange="updateClusterLogic()">
-                </div>
-                <div class="filter-item">
-                    <label>สถานะงาน:</label>
-                    <select id="filter-status" onchange="updateClusterLogic()">
-                        <option value="all">เปิดอยู่ทั้งหมด</option>
-                        <option value="รอคิวรถ">เฉพาะงานว่าง (รอคิวรถ)</option>
-                        <option value="รอชาวไร่ยืนยัน">รอชาวไร่พิจารณา</option>
-                    </select>
-                </div>
-                <div class="filter-item">
-                    <label>จัดเรียงตาม:</label>
-                    <select id="sort-by" onchange="updateClusterLogic()">
-                        <option value="priority">แนะนำความคุ้มค่า</option>
-                        <option value="date-new">อัปเดตล่าสุด</option>
-                        <option value="date-old">เก่าสุด</option>
-                        <option value="harvest-near">พร้อมม้วนเร็วสุด</option>
-                    </select>
+                    
+                    <div class="section-title" style="margin-top: 30px; font-size: 18px;">ที่ตั้งจุดจอดรถ / อู่</div>
+                    <div class="form-grid">
+                        <div><label>บ้านเลขที่:</label><input type="text" id="buyer-no" required></div>
+                        <div><label>หมู่ที่:</label><input type="text" id="buyer-moo" required></div>
+                        <div><label>จังหวัด:</label><select id="buyer-prov" required><option value="">กำลังโหลด...</option></select></div>
+                        <div><label>อำเภอ:</label><select id="buyer-dist" required disabled></select></div>
+                        <div><label>ตำบล:</label><select id="buyer-subdist" required disabled></select></div>
+                        <div><label>รหัสไปรษณีย์:</label><input type="text" id="buyer-zip" required readonly></div>
+                        <div class="full-width"><label>ข้อมูลเครื่องจักร (เช่น รถพ่วง 2 คัน):</label><input type="text" id="buyer-vehicle"></div>
+                    </div>
+                    
+                    <div id="pdpa-box-buyer" style="margin-top: 20px; background: #F8FAFC; padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                        <label style="display: flex; align-items: center; gap: 10px; margin: 0; cursor: pointer;">
+                            <input type="checkbox" id="buyer-pdpa" style="width: 18px; height: 18px;">
+                            <span>ข้าพเจ้ายินยอมให้เก็บรวบรวมข้อมูลส่วนบุคคลตามนโยบาย PDPA</span>
+                        </label>
+                    </div>
+                    
+                    <button id="btn-buyer-register" class="btn-main" style="width: 200px; margin-top: 25px;" onclick="submitBuyerRegistration()">บันทึกข้อมูล</button>
                 </div>
             </div>
 
-            <!-- Map -->
-            <div id="buyer-map" class="map-container"></div>
-            
-            <div class="section-title" style="margin-top: 30px; display:none;" id="title-active-jobs">กระดานประมูลงาน (รอดำเนินการ)</div>
-            <div id="buyer-active-jobs-container" class="jobs-grid"></div>
-            
-            <div class="section-title" style="margin-top: 30px;" id="title-list-jobs">รายการแจ้งคิวอ้อย</div>
-            <div id="buyer-list-container" class="jobs-grid"></div>
-        </div>
+            <!-- 2. หน้าค้นหางาน และ แผนที่ -->
+            <div id="buyer-map-page" class="page active">
+                <div class="section-title">ตั้งค่าค้นหางานรอบตัว</div>
+                
+                <!-- Filters Panel -->
+                <div class="filter-panel">
+                    <div class="filter-item">
+                        <label>รัศมีวิ่งงานสูงสุด: <span id="val-dist" style="color:var(--primary); font-size:15px;">10 กม.</span></label>
+                        <input type="range" id="slider-dist" min="2" max="50" value="10" step="1" oninput="updateClusterLogic()">
+                    </div>
+                    <div class="filter-item">
+                        <label>คิวงานห่างกันสูงสุด: <span id="val-days" style="color:var(--primary); font-size:15px;">5 วัน</span></label>
+                        <input type="range" id="slider-days" min="1" max="30" value="5" step="1" oninput="updateClusterLogic()">
+                    </div>
+                    <div class="filter-item">
+                        <label>ตั้งแต่วันที่:</label>
+                        <input type="date" id="filter-date-start" onchange="updateClusterLogic()">
+                    </div>
+                    <div class="filter-item">
+                        <label>ถึงวันที่:</label>
+                        <input type="date" id="filter-date-end" onchange="updateClusterLogic()">
+                    </div>
+                    <div class="filter-item">
+                        <label>สถานะงาน:</label>
+                        <select id="filter-status" onchange="updateClusterLogic()">
+                            <option value="all">เปิดอยู่ทั้งหมด</option>
+                            <option value="รอคิวรถ">เฉพาะงานว่าง (รอคิวรถ)</option>
+                            <option value="รอชาวไร่ยืนยัน">รอชาวไร่พิจารณา</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label>จัดเรียงตาม:</label>
+                        <select id="sort-by" onchange="updateClusterLogic()">
+                            <option value="priority">แนะนำความคุ้มค่า</option>
+                            <option value="date-new">อัปเดตล่าสุด</option>
+                            <option value="date-old">เก่าสุด</option>
+                            <option value="harvest-near">พร้อมม้วนเร็วสุด</option>
+                        </select>
+                    </div>
+                </div>
 
-        <!-- 3. หน้าประวัติการรับซื้อ -->
-        <div id="buyer-history-page" class="page">
-            <div class="section-title">สถิติและประวัติการรับซื้อ (เสร็จสิ้น)</div>
-            <div id="buyer-history-container" class="jobs-grid"></div>
-        </div>
+                <!-- Map -->
+                <div id="buyer-map" class="map-container"></div>
+                
+                <div class="section-title" style="margin-top: 30px; display:none;" id="title-active-jobs">กระดานประมูลงาน (รอดำเนินการ)</div>
+                <div id="buyer-active-jobs-container" class="jobs-grid"></div>
+                
+                <div class="section-title" style="margin-top: 30px;" id="title-list-jobs">รายการแจ้งคิวอ้อย</div>
+                <div id="buyer-list-container" class="jobs-grid"></div>
+            </div>
 
+            <!-- 3. หน้าประวัติการรับซื้อ -->
+            <div id="buyer-history-page" class="page">
+                <div class="section-title">สถิติและประวัติการรับซื้อ (เสร็จสิ้น)</div>
+                <div id="buyer-history-container" class="jobs-grid"></div>
+            </div>
+            
+        </div>
     </main>
+
+    <!-- ป้ายบอกเวอร์ชันแอป -->
+    <div class="app-version">v1.2.0 | อัปเดตล่าสุด: 29 ส.ค. 2026</div>
 
     <!-- LIFF SDK -->
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     
     <script>
-        const THEME_PRIMARY = '#6DB33F'; 
-        const THEME_ACCENT = '#F39C12'; 
-        const THEME_INFO = '#2980B9'; 
-        const THEME_MUTED = '#7F8C8D';
+        const THEME_PRIMARY = '#10B981'; 
+        const THEME_ACCENT = '#F59E0B'; 
+        const THEME_INFO = '#3B82F6'; 
+        const THEME_MUTED = '#64748B';
         
         const LIFF_ID = "2010423459-prdYAD4u"; // ใส่ LIFF ID ของคุณ
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwKNL6jqjvtpuBxDzgqBIQiKLjA7_2QupvMAK9tcod5SlBbcs7iIbswlglT76xI5xOwng/exec";
@@ -300,7 +436,7 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             
-            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(nav => nav.classList.remove('active'));
             let navId = pageId.replace('-page', '');
             if(document.getElementById('nav-' + navId)) document.getElementById('nav-' + navId).classList.add('active');
 
@@ -402,6 +538,7 @@
                     userProfile = await liff.getProfile();
                     document.getElementById("profile-img").src = userProfile.pictureUrl; 
                     document.getElementById("profile-img").style.display = "block";
+                    document.getElementById('fb-side-logo').style.display = 'none';
                     document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName;
 
                     if (navigator.geolocation) { 
@@ -535,7 +672,7 @@
         function updateUserLocationOnMap() {
             let userIcon = L.divIcon({ 
                 className: 'user-loc-icon', 
-                html: `<div style='background-color:#3498DB; width:18px; height:18px; border-radius:50%; border:3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5);'></div>` 
+                html: `<div style='background-color:#3B82F6; width:18px; height:18px; border-radius:50%; border:3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5);'></div>` 
             });
             if (buyerMapObj) {
                 if (currentUserMarker) { currentUserMarker.setLatLng([currentLat, currentLng]); } 
@@ -572,9 +709,9 @@
                         let geometry = item.geom || item.geometry || item;
                         if (typeof geometry === 'string') try { geometry = JSON.parse(geometry); } catch(e){}
                         if (geometry && geometry.type) {
-                            L.geoJSON(geometry, { style: { color: '#3498DB', weight: 3, fillOpacity: 0.3, dashArray: '5, 5' } }).bindPopup(`
+                            L.geoJSON(geometry, { style: { color: '#3B82F6', weight: 3, fillOpacity: 0.3, dashArray: '5, 5' } }).bindPopup(`
                                 <div style="font-family:'Kanit'; text-align:center;">
-                                    <b style="color:#2980B9;">ประเมินโดย GISTDA</b><br>
+                                    <b style="color:#2563EB;">ประเมินโดย GISTDA</b><br>
                                     <b>ขนาดพื้นที่:</b> ${item.area ? parseFloat(item.area).toFixed(2) : '-'} ไร่
                                 </div>
                             `).addTo(mapObject);
@@ -627,9 +764,9 @@
                     let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
                     let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
                     activeContainer.innerHTML += `
-                        <div class="sale-card" style="border-left: 5px solid var(--info); background:#F4F9F9;">
+                        <div class="sale-card" style="border-left: 5px solid var(--info); background:#F8FAFC;">
                             <div class="sale-header">
-                                <span style="font-weight:600;">คุณ ${item.farmerName}</span>
+                                <span style="font-weight:600; color:var(--secondary);">คุณ ${item.farmerName}</span>
                                 <span class="badge processing">${item.status === 'รอชาวไร่ตรวจสอบ' ? 'รอฝั่งชาวไร่ปิดงาน' : item.status}</span>
                             </div>
                             <div class="sale-detail">
@@ -668,7 +805,7 @@
                     historyHTMLList += `
                     <div class="sale-card" style="border-left: 5px solid var(--primary); opacity: 0.9;">
                         <div class="sale-header">
-                            <span style="font-weight:600;">คุณ ${item.farmerName}</span>
+                            <span style="font-weight:600; color:var(--secondary);">คุณ ${item.farmerName}</span>
                             <span class="badge ${item.status === "เสร็จสิ้น" ? "completed" : "canceled"}">${item.status}</span>
                         </div>
                         <div class="sale-detail">
@@ -782,12 +919,12 @@
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
             let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:500; margin-top:8px;">มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
             let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
-            let priorityBadge = parseFloat(actualQ) >= 100 ? `<span class="badge" style="background:#E8F5E9; color:#2E7D32;">คุ้มทุน</span>` : "";
+            let priorityBadge = parseFloat(actualQ) >= 100 ? `<span class="badge" style="background:var(--primary-light); color:var(--primary-dark);">คุ้มทุน</span>` : "";
             
             return `
                 <div class="sale-card" style="border-left: 5px solid ${colorHex};">
                     <div class="sale-header">
-                        <span style="font-weight:600;">คุณ ${item.farmerName} ${priorityBadge}</span>
+                        <span style="font-weight:600; color:var(--secondary);">คุณ ${item.farmerName} ${priorityBadge}</span>
                         <span class="badge ${item.status === "Pending" ? "pending" : "waiting"}">${item.status === "Pending" ? "ว่าง" : item.status}</span>
                     </div>
                     <div class="sale-detail">
@@ -818,7 +955,7 @@
                             </div>
                         </div>
                         <div style="text-align:right;">
-                            <div style="font-size:18px; font-weight:600;">รวม: <b style="color:var(--accent);">${cData.totalRai} ไร่</b></div>
+                            <div style="font-size:18px; font-weight:600; color:var(--secondary);">รวม: <b style="color:var(--accent);">${cData.totalRai} ไร่</b></div>
                             <button onclick="acceptClusterJob('${cData.id}', ${cData.totalRai})" class="btn-small btn-warning" style="margin-top:5px; padding:8px 15px; color:#fff;">เสนอซื้อเหมากลุ่ม</button>
                         </div>
                     </div>
@@ -831,7 +968,7 @@
                 clusterHTML += `
                         <div class="sale-card" style="border-left: 3px solid var(--accent); margin:0; padding:15px; box-shadow:none;">
                             <div class="sale-header" style="margin-bottom:8px; padding-bottom:8px;">
-                                <span style="font-weight:600; font-size:14px;">คุณ ${item.farmerName}</span>
+                                <span style="font-weight:600; font-size:14px; color:var(--secondary);">คุณ ${item.farmerName}</span>
                                 <span style="color:var(--accent); font-weight:600; font-size:14px;">${actualQ} ไร่</span>
                             </div>
                             <div class="sale-detail" style="font-size:13px;">พร้อมม้วน: <span>${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span>${offerStatus}</div>
@@ -873,7 +1010,7 @@
         async function acceptClusterJob(cId, totalRai) {
             let rowIds = clusterDataMap[cId]; if(!rowIds || rowIds.length === 0) return; 
             const { value: priceInput } = await Swal.fire({ 
-                html: `<div style="font-family:'Kanit';"><div style="font-size:18px; font-weight:600; margin-bottom:8px;">เสนอราคายกคลัสเตอร์</div><div style="font-size:14px; font-weight:500; color:var(--info); margin-bottom:16px;">รวมพื้นที่: ${totalRai} ไร่</div><input id="swal-input1" class="swal2-input" type="number" placeholder="ระบุราคาเหมา (บาท/ไร่)" style="font-family:'Kanit'; margin-top:0;"></div>`, 
+                html: `<div style="font-family:'Kanit';"><div style="font-size:18px; font-weight:600; margin-bottom:8px;">เสนอราคายกคลัสเตอร์</div><div style="font-size:14px; font-weight:500; color:var(--info); margin-bottom:16px;">รวมพื้นที่: ${totalRai} ไร่</div><input id="swal-input1" class="swal-input" type="number" placeholder="ระบุราคาเหมา (บาท/ไร่)" style="margin-top:0;"></div>`, 
                 focusConfirm: false, showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY, 
                 preConfirm: () => { return document.getElementById('swal-input1').value } 
             });
@@ -889,7 +1026,7 @@
 
         async function acceptJob(rowId, qty) {
             const { value: priceInput } = await Swal.fire({ 
-                html: `<div style="font-family:'Kanit';"><div style="font-size:18px; font-weight:600; margin-bottom:8px;">เสนอราคารับซื้อ</div><div style="font-size:14px; font-weight:500; color:var(--info); margin-bottom:16px;">พื้นที่แปลง: ${qty} ไร่</div><input id="swal-input2" class="swal2-input" type="number" placeholder="ระบุราคา (บาท/ไร่)" style="font-family:'Kanit'; margin-top:0;"></div>`, 
+                html: `<div style="font-family:'Kanit';"><div style="font-size:18px; font-weight:600; margin-bottom:8px;">เสนอราคารับซื้อ</div><div style="font-size:14px; font-weight:500; color:var(--info); margin-bottom:16px;">พื้นที่แปลง: ${qty} ไร่</div><input id="swal-input2" class="swal-input" type="number" placeholder="ระบุราคา (บาท/ไร่)" style="margin-top:0;"></div>`, 
                 focusConfirm: false, showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY, 
                 preConfirm: () => { return document.getElementById('swal-input2').value } 
             });
@@ -908,8 +1045,8 @@
             
             // ปรับรูปให้ขนาดเล็กลงเรียงต่อกัน
             let photoGalleryHTML = item.photos && item.photos.length > 0 ? 
-                `<div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:5px;">${item.photos.map(img => `<img src="${img}" style="width:80px; height:80px; object-fit:cover; border-radius:8px; cursor:zoom-in; border:1px solid #ddd;" onclick="openImageViewer('${img}')">`).join('')}</div>` 
-                : `<div style="color:var(--text-muted); font-size:13px; background:#f9f9f9; padding:10px; border-radius:8px; text-align:center;">(ไม่มีรูปภาพประกอบ)</div>`;
+                `<div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:5px;">${item.photos.map(img => `<img src="${img}" style="width:80px; height:80px; object-fit:cover; border-radius:8px; cursor:zoom-in; border:1px solid var(--border);" onclick="openImageViewer('${img}')">`).join('')}</div>` 
+                : `<div style="color:var(--text-muted); font-size:13px; background:var(--bg-body); padding:10px; border-radius:8px; text-align:center;">(ไม่มีรูปภาพประกอบ)</div>`;
             
             let isComplete = (item.status === 'เสร็จสิ้น' || item.status === 'รอชาวไร่ตรวจสอบ');
             let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
@@ -919,12 +1056,12 @@
             if (isComplete) {
                 let totalStr = (actualQ !== "-" && pricePerRai > 0) ? (parseFloat(actualQ) * pricePerRai).toLocaleString('th-TH', {minimumFractionDigits: 2}) : "-";
                 billHTML = `
-                <div class="receipt-box" style="margin-bottom:16px; padding:15px; border:2px dashed var(--primary); background:#FAFCFB; border-radius:10px;">
-                    <div style="text-align:center; font-weight:600; color:var(--primary-dark); margin-bottom:10px; border-bottom:1px dashed #ccc; padding-bottom:10px;">สรุปบิลจำลอง</div>
+                <div class="receipt-box" style="margin-bottom:16px; padding:15px; border:2px dashed var(--primary); background:#F8FAFC; border-radius:10px;">
+                    <div style="text-align:center; font-weight:600; color:var(--primary-dark); margin-bottom:10px; border-bottom:1px dashed var(--border); padding-bottom:10px;">สรุปบิลจำลอง</div>
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>ราคาที่ตกลง:</span> <b>${pricePerRai.toLocaleString('th-TH')} บาท/ไร่</b></div>
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>พื้นที่จริง:</span> <b>${actualQ} ไร่</b></div>
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>น้ำหนัก:</span> <b>${item.actualWeight || "-"} ตัน</b></div>
-                    <div style="display:flex; justify-content:space-between; margin-top:10px; padding-top:10px; border-top:1px dashed #ccc; font-size:16px;"><span>ยอดรวมสุทธิ:</span> <b style="color:var(--danger);">${totalStr} บาท</b></div>
+                    <div style="display:flex; justify-content:space-between; margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); font-size:16px;"><span>ยอดรวมสุทธิ:</span> <b style="color:var(--danger);">${totalStr} บาท</b></div>
                 </div>`;
             }
 
@@ -932,20 +1069,20 @@
                 <div style="background:var(--primary-light); padding:16px; border:1px solid var(--primary); border-radius:12px; margin-top:auto;">
                     <div style="margin-bottom:8px; font-weight: 500; color: var(--primary-dark);">รวมพื้นที่ประเมิน: ${actualQ} ไร่</div>
                     <label style="color:var(--primary-dark); font-size:13px;">เสนอราคารับซื้อ (บาท/ไร่):</label>
-                    <input type="number" id="island-bid-price" placeholder="ระบุราคาที่นี่ (เช่น 50)" style="margin-bottom:12px; border-color:var(--primary);">
+                    <input type="number" id="island-bid-price" placeholder="ระบุราคาที่นี่ (เช่น 50)" class="swal-input" style="margin-bottom:12px; border-color:var(--primary);">
                     <button onclick="submitIslandBid(${item.row})" class="btn-main" style="box-shadow:none;">ส่งข้อเสนอราคา</button>
                 </div>` : "";
 
             Swal.fire({ 
                 html: `
                     <div style="text-align:left; font-size:14px; font-family:'Kanit';">
-                        <div style="font-size:20px; font-weight:600; margin-bottom:16px; color:var(--primary-dark); border-bottom:1px solid #eee; padding-bottom:10px;">ข้อมูลแปลงอ้อย</div>
+                        <div style="font-size:20px; font-weight:600; margin-bottom:16px; color:var(--primary-dark); border-bottom:1px solid var(--border); padding-bottom:10px;">ข้อมูลแปลงอ้อย</div>
                         
                         <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;">
                             <!-- ฝั่งซ้าย: แผนที่นำทางและรูปภาพ -->
                             <div>
                                 <div id="swal-map" class="swal-map-container" style="height: 240px; margin-top: 0; margin-bottom: 12px;"></div>
-                                <a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lon}" target="_blank" class="btn-main" style="background:#4285F4; text-decoration:none; display:flex; justify-content:center; align-items:center; margin-bottom:16px; box-shadow:none; padding:10px; font-size:14px;">
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lon}" target="_blank" class="btn-main" style="background:#3B82F6; text-decoration:none; display:flex; justify-content:center; align-items:center; margin-bottom:16px; box-shadow:none; padding:10px; font-size:14px;">
                                     <i class="fa-solid fa-map-location-dot" style="margin-right:8px;"></i> เปิด Google Maps นำทาง
                                 </a>
                                 <div style="font-weight:600; margin-bottom:8px;">สภาพหน้างาน:</div>
@@ -954,7 +1091,7 @@
                             
                             <!-- ฝั่งขวา: รายละเอียดและการเสนอราคา -->
                             <div style="display: flex; flex-direction: column;">
-                                <div style="background:var(--bg-main); padding:16px; border-radius:12px; margin-bottom:16px;">
+                                <div style="background:var(--bg-body); padding:16px; border-radius:12px; margin-bottom:16px; border: 1px solid var(--border);">
                                     <div style="font-size:16px; font-weight:600; color:var(--primary); margin-bottom:4px;">คุณ ${item.farmerName}</div>
                                     <div style="font-size:13px;"><b>เบอร์โทรศัพท์:</b> <a href="tel:${item.farmerPhone}" style="color:var(--primary); font-weight:500; text-decoration:none;">${item.farmerPhone}</a></div>
                                 </div>
@@ -962,10 +1099,10 @@
                                 <div style="background:var(--surface); border:1px solid var(--border); padding:16px; border-radius:12px; margin-bottom:16px;">
                                     <div style="margin-bottom:6px;"><b>พื้นที่แจ้งขาย:</b> <span style="color:var(--primary); font-weight:600;">${actualQ} ไร่</span></div>
                                     <div style="margin-bottom:6px;"><b>วันพร้อมม้วน:</b> ${new Date(item.harvestDate).toLocaleDateString('th-TH')}</div>
-                                    <div style="line-height:1.5;"><b>ข้อมูลแปลง:</b> <span style="color:var(--accent); font-weight:500;">${item.access || "ไม่ระบุ"}</span></div>
+                                    <div style="line-height:1.5;"><b>ข้อมูลแปลง:</b> <span style="color:var(--warning); font-weight:500;">${item.access || "ไม่ระบุ"}</span></div>
                                 </div>
                                 
-                                ${isComplete && item.closeProof && item.closeProof.length > 10 ? `<div style="font-weight:600; margin-bottom:8px;">บิลชั่งน้ำหนัก:</div><img src="${item.closeProof}" onclick="openImageViewer('${item.closeProof}')" style="width:100%; height:80px; object-fit:cover; border-radius:8px; border:1px solid #ddd; cursor:zoom-in; margin-bottom:16px;">` : ""}
+                                ${isComplete && item.closeProof && item.closeProof.length > 10 ? `<div style="font-weight:600; margin-bottom:8px;">บิลชั่งน้ำหนัก:</div><img src="${item.closeProof}" onclick="openImageViewer('${item.closeProof}')" style="width:100%; height:80px; object-fit:cover; border-radius:8px; border:1px solid var(--border); cursor:zoom-in; margin-bottom:16px;">` : ""}
                                 
                                 ${billHTML}
                                 ${actionHTML}
@@ -1002,14 +1139,14 @@
             const { value: formValues } = await Swal.fire({ 
                 html: `
                     <div style="text-align:left; font-family:'Kanit'; font-size:14px; color:var(--text-main);">
-                        <div style="font-size:18px; font-weight:600; margin-bottom:16px;"> แจ้งส่งงานชั่งน้ำหนัก</div>
-                        <label style="margin-top:0;"> พื้นที่เสร็จสิ้น (ไร่):</label>
-                        <input type="number" id="close-actual-qty" value="${estQty}" step="0.1" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid var(--border); border-radius:10px;">
-                        <label> น้ำหนักสุทธิ (ตัน):</label>
-                        <input type="number" id="close-actual-weight" placeholder="ระบุน้ำหนักตามใบชั่ง" step="0.1" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid var(--border); border-radius:10px;">
-                        <label> อัปโหลดใบชั่งน้ำหนัก:</label>
-                        <input type="file" id="close-photo" accept="image/*" style="border:none; padding:10px 0; margin-top:5px;">
-                        <img id="close-photo-preview" style="width:100%; display:none; margin-top:10px; border-radius:10px; cursor:zoom-in;">
+                        <div style="font-size:18px; font-weight:600; margin-bottom:16px; color:var(--secondary);"> แจ้งส่งงานชั่งน้ำหนัก</div>
+                        <label style="margin-top:0; font-weight:600; color:var(--text-muted);"> พื้นที่เสร็จสิ้น (ไร่):</label>
+                        <input type="number" id="close-actual-qty" class="swal-input" value="${estQty}" step="0.1" style="margin-bottom:12px;">
+                        <label style="font-weight:600; color:var(--text-muted);"> น้ำหนักสุทธิ (ตัน):</label>
+                        <input type="number" id="close-actual-weight" class="swal-input" placeholder="ระบุน้ำหนักตามใบชั่ง" step="0.1" style="margin-bottom:12px;">
+                        <label style="font-weight:600; color:var(--text-muted);"> อัปโหลดใบชั่งน้ำหนัก:</label>
+                        <input type="file" id="close-photo" accept="image/*" style="border:none; padding:10px 0; margin-top:5px; width:100%;">
+                        <img id="close-photo-preview" style="width:100%; display:none; margin-top:10px; border-radius:10px; border:1px solid var(--border); cursor:zoom-in;">
                     </div>`, 
                 showCancelButton: true, confirmButtonText: 'ส่งหลักฐานปิดงาน', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_INFO, 
                 didOpen: () => { 
