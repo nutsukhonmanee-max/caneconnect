@@ -78,7 +78,7 @@
         ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
 
-        /* ================= App Version Tag (Fixed Position) ================= */
+        /* ================= App Version Tag ================= */
         .app-version {
             position: fixed !important; 
             bottom: 20px !important; 
@@ -140,352 +140,96 @@
             display: none; 
         }
 
-        .sidebar-profile-name { 
-            font-size: 15px; 
-            font-weight: 600; 
-            color: #F8FAFC; 
-        }
+        .sidebar-profile-name { font-size: 15px; font-weight: 600; color: #F8FAFC; }
+        .sidebar-profile-role { font-size: 12px; font-weight: 600; background: rgba(16, 185, 129, 0.2); padding: 4px 12px; border-radius: 20px; display: inline-block; margin-top: 6px; color: var(--primary); border: 1px solid rgba(16, 185, 129, 0.3); }
 
-        .sidebar-profile-role { 
-            font-size: 12px; 
-            font-weight: 600; 
-            background: rgba(16, 185, 129, 0.2); 
-            padding: 4px 12px; 
-            border-radius: 20px; 
-            display: inline-block; 
-            margin-top: 6px; 
-            color: var(--primary); 
-            border: 1px solid rgba(16, 185, 129, 0.3); 
-        }
-
-        .sidebar-menu { 
-            flex: 1; 
-            padding: 10px 16px; 
-            overflow-y: auto; 
-        }
+        .sidebar-menu { flex: 1; padding: 10px 16px; overflow-y: auto; }
 
         .menu-item { 
-            padding: 12px 16px; 
-            display: flex; 
-            align-items: center; 
-            gap: 14px; 
-            color: #94A3B8; 
-            cursor: pointer; 
-            font-weight: 500; 
-            font-size: 15px; 
-            border-radius: 12px; 
-            transition: all 0.2s ease; 
-            margin-bottom: 6px;
-            position: relative;
+            padding: 12px 16px; display: flex; align-items: center; gap: 14px; 
+            color: #94A3B8; cursor: pointer; font-weight: 500; font-size: 15px; 
+            border-radius: 12px; transition: all 0.2s ease; margin-bottom: 6px; position: relative;
         }
 
-        .menu-item:hover { 
-            background-color: rgba(255,255,255,0.05); 
-            color: #F8FAFC; 
-            transform: translateX(4px); 
-        }
-
-        .menu-item.active { 
-            background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, transparent 100%); 
-            color: var(--primary); 
-            font-weight: 600; 
-            border-left: 4px solid var(--primary); 
-            border-radius: 0 12px 12px 0; 
-        }
-
-        .menu-item i { 
-            font-size: 16px; 
-            width: 20px; 
-            text-align: center; 
-        }
+        .menu-item:hover { background-color: rgba(255,255,255,0.05); color: #F8FAFC; transform: translateX(4px); }
+        .menu-item.active { background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, transparent 100%); color: var(--primary); font-weight: 600; border-left: 4px solid var(--primary); border-radius: 0 12px 12px 0; }
+        .menu-item i { font-size: 16px; width: 20px; text-align: center; }
 
         .noti-badge {
-            background: var(--danger);
-            color: white;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 10px;
-            margin-left: auto;
-            display: none;
+            background: var(--danger); color: white; font-size: 11px; font-weight: 700;
+            padding: 2px 6px; border-radius: 10px; margin-left: auto; display: none;
         }
 
-        .sidebar-footer { 
-            padding: 15px; 
-            font-size: 11px; 
-            color: #64748B; 
-            text-align: center; 
-            border-top: 1px solid rgba(255,255,255,0.05); 
-            line-height: 1.6; 
-        }
+        .sidebar-footer { padding: 15px; font-size: 11px; color: #64748B; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); line-height: 1.6; }
 
         /* ================= Main Content Area ================= */
-        .main-content { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-            background: var(--bg-body); 
-        }
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-body); }
         
         .topbar-alert { 
-            background: var(--danger-light); 
-            color: var(--danger); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 10px 40px; 
-            box-shadow: var(--shadow-sm); 
-            z-index: 10; 
-            border-bottom: 1px solid var(--border); 
-            font-size: 14px; 
-            font-weight: 500; 
-            text-align: center;
+            background: var(--danger-light); color: var(--danger); display: flex; align-items: center; justify-content: center; 
+            padding: 10px 40px; box-shadow: var(--shadow-sm); z-index: 10; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 500; text-align: center;
         }
-
-        .topbar-alert a { 
-            color: var(--danger); 
-            font-weight: bold; 
-            text-decoration: underline;
-        }
+        .topbar-alert a { color: var(--danger); font-weight: bold; text-decoration: underline;}
         
-        .content-body { 
-            flex: 1; 
-            padding: 30px 40px; 
-            overflow-y: auto; 
-            position: relative;
-        }
-
-        .page { display: none; animation: fadeIn 0.4s ease; } 
-        .page.active { display: block; }
-
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(10px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        .content-body { flex: 1; padding: 30px 40px; overflow-y: auto; position: relative;}
+        .page { display: none; animation: fadeIn 0.4s ease; } .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .section-title { 
-            font-size: 20px; 
-            font-weight: 700; 
-            color: var(--secondary); 
-            margin-bottom: 20px; 
-            padding-bottom: 10px; 
-            border-bottom: 1px solid var(--border); 
-            display: flex; 
-            align-items: center; 
-            gap: 10px;
-        }
+        .section-title { font-size: 20px; font-weight: 700; color: var(--secondary); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;}
         
         /* ================= Grid Layouts ================= */
-        .jobs-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
-            gap: 20px; 
-            margin-bottom: 30px; 
-        }
-
-        .form-grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 15px; 
-        } 
-
-        .full-width { grid-column: 1 / -1; }
+        .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; } .full-width { grid-column: 1 / -1; }
         
         /* ================= Filters Panel ================= */
         .filter-panel { 
-            background: var(--surface); 
-            padding: 20px; 
-            border-radius: var(--radius-lg); 
-            box-shadow: var(--shadow-md); 
-            margin-bottom: 20px; 
-            border: 1px solid var(--border);
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 15px; 
-            align-items: flex-end;
-            position: relative;
-            z-index: 100;
+            background: var(--surface); padding: 20px; border-radius: var(--radius-lg); 
+            box-shadow: var(--shadow-md); margin-bottom: 20px; border: 1px solid var(--border);
+            display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; position: relative; z-index: 100;
         }
 
-        .filter-item { 
-            flex: 1; 
-            min-width: 150px; 
-        }
-
-        .filter-item label { 
-            font-size: 13px; 
-            font-weight: 600; 
-            color: var(--text-muted); 
-            margin-bottom: 6px; 
-            display: block;
-        }
+        .filter-item { flex: 1; min-width: 150px; }
+        .filter-item label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; display: block;}
         
-        input[type="text"], 
-        input[type="tel"], 
-        input[type="number"], 
-        input[type="date"], 
-        select, 
-        textarea { 
-            width: 100%; 
-            padding: 10px 14px; 
-            border: 1px solid var(--border); 
-            border-radius: var(--radius-md); 
-            font-size: 14px; 
-            font-family: 'Kanit', sans-serif; 
-            box-sizing: border-box; 
-            background: #F8FAFC; 
-            color: var(--secondary); 
-            transition: all 0.2s;
-            height: 44px;
+        input[type="text"], input[type="tel"], input[type="number"], input[type="date"], select, textarea { 
+            width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); 
+            font-size: 14px; font-family: 'Kanit', sans-serif; box-sizing: border-box; background: #F8FAFC; color: var(--secondary); transition: all 0.2s; height: 44px;
         }
 
-        input:focus, select:focus { 
-            border-color: var(--primary); 
-            outline: none; 
-            background: #FFF; 
-            box-shadow: 0 0 0 3px var(--primary-light); 
-        }
+        input:focus, select:focus { border-color: var(--primary); outline: none; background: #FFF; box-shadow: 0 0 0 3px var(--primary-light); }
 
         /* ================= Custom Multi-Select Dropdown ================= */
-        .multi-select-container { 
-            position: relative; 
-            width: 100%; 
-        }
-        
+        .multi-select-container { position: relative; width: 100%; }
         .multi-select-button { 
-            width: 100%; 
-            height: 44px;
-            padding: 10px 14px; 
-            border: 1px solid var(--border); 
-            border-radius: var(--radius-md); 
-            background: #F8FAFC; 
-            text-align: left; 
-            cursor: pointer; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            color: var(--secondary); 
-            font-size: 14px;
-            transition: all 0.2s;
+            width: 100%; height: 44px; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); 
+            background: #F8FAFC; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; 
+            color: var(--secondary); font-size: 14px; transition: all 0.2s;
         }
-        
-        .multi-select-button:hover {
-            border-color: var(--primary);
-        }
-
+        .multi-select-button:hover { border-color: var(--primary); }
         .multi-select-dropdown { 
-            position: absolute; 
-            top: 100%; 
-            left: 0; 
-            width: 100%; 
-            background: #fff; 
-            border: 1px solid var(--border); 
-            border-radius: var(--radius-md); 
-            max-height: 250px; 
-            overflow-y: auto; 
-            z-index: 1000; 
-            display: none; 
-            box-shadow: var(--shadow-lg); 
-            margin-top: 5px; 
+            position: absolute; top: 100%; left: 0; width: 100%; background: #fff; border: 1px solid var(--border); 
+            border-radius: var(--radius-md); max-height: 250px; overflow-y: auto; z-index: 1000; display: none; box-shadow: var(--shadow-lg); margin-top: 5px; 
         }
-        
         .multi-select-dropdown.show { display: block; }
-        
-        .multi-select-option { 
-            padding: 10px 12px; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            cursor: pointer; 
-            font-size: 14px; 
-            border-bottom: 1px solid #F1F5F9;
-        }
-        
+        .multi-select-option { padding: 10px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #F1F5F9; }
         .multi-select-option:last-child { border-bottom: none; }
         .multi-select-option:hover { background: var(--bg-body); }
         .multi-select-option input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var(--primary);}
+        .group-header { padding: 6px 12px; font-size: 12px; font-weight: 700; color: var(--primary-dark); background: var(--primary-light); position: sticky; top: 0; z-index: 2; }
 
-        .group-header {
-            padding: 6px 12px; 
-            font-size: 12px; 
-            font-weight: 700; 
-            color: var(--primary-dark); 
-            background: var(--primary-light); 
-            position: sticky; 
-            top: 0; 
-            z-index: 2;
-        }
-
-        /* ================= Map Container (ขยายความสูงให้เห็นกว้างขึ้น) ================= */
-        .map-container { 
-            height: 600px; 
-            width: 100%; 
-            border-radius: var(--radius-lg); 
-            margin-bottom: 25px; 
-            border: 1px solid var(--border); 
-            box-shadow: var(--shadow-md); 
-            z-index: 1;
-        }
+        /* ================= Map Container ================= */
+        .map-container { height: 600px; width: 100%; border-radius: var(--radius-lg); margin-bottom: 25px; border: 1px solid var(--border); box-shadow: var(--shadow-md); z-index: 1; }
         
-        /* User Location Pulse Animation */
-        .pulse-marker { 
-            width: 18px; 
-            height: 18px; 
-            background: #3B82F6; 
-            border-radius: 50%; 
-            border: 3px solid white; 
-            box-shadow: 0 0 0 rgba(59, 130, 246, 0.7); 
-            animation: pulse-blue 2s infinite; 
-        }
-        @keyframes pulse-blue { 
-            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 
-            70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } 
-        }
+        .pulse-marker { width: 18px; height: 18px; background: #3B82F6; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 rgba(59, 130, 246, 0.7); animation: pulse-blue 2s infinite; }
+        @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
 
-        /* Active Target Pulse Animation */
-        @keyframes pulse-red { 
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 
-            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } 
-        }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
         /* ================= Cards ================= */
-        .sale-card { 
-            background: var(--surface); 
-            border: 1px solid var(--border); 
-            border-radius: var(--radius-lg); 
-            padding: 20px; 
-            box-shadow: var(--shadow-sm); 
-            transition: transform 0.2s; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between;
-        }
-
-        .sale-card:hover { 
-            transform: translateY(-3px); 
-            box-shadow: var(--shadow-md); 
-        }
-
-        .sale-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border-bottom: 1px solid var(--border); 
-            padding-bottom: 12px; 
-            margin-bottom: 12px; 
-        }
-
-        .badge { 
-            padding: 6px 12px; 
-            border-radius: 20px; 
-            font-size: 12px; 
-            font-weight: 600; 
-            display: inline-block; 
-            letter-spacing: 0.3px;
-        }
+        .sale-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); transition: transform 0.2s; display: flex; flex-direction: column; justify-content: space-between; }
+        .sale-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+        .sale-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px; }
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; letter-spacing: 0.3px; }
 
         .bg-warning { background: var(--warning-light); color: #D97706; } 
         .bg-info { background: var(--info-light); color: #2563EB; } 
@@ -494,200 +238,37 @@
         .bg-purple { background: var(--purple-light); color: var(--purple); }
         
         /* ================= Buttons ================= */
-        .btn-main { 
-            padding: 10px 16px; 
-            background: var(--primary); 
-            color: white; 
-            border: none; 
-            border-radius: var(--radius-md); 
-            font-size: 15px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            font-family: 'Kanit'; 
-            width: 100%; 
-            box-shadow: var(--shadow-md); 
-            display:inline-flex; 
-            align-items:center; 
-            justify-content:center; 
-            gap:8px;
-        }
+        .btn-main { padding: 10px 16px; background: var(--primary); color: white; border: none; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Kanit'; width: 100%; box-shadow: var(--shadow-md); display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+        .btn-main:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow:none; } 
+        .btn-outline:hover { background: var(--primary-light); }
 
-        .btn-main:hover { 
-            background: var(--primary-dark); 
-            transform: translateY(-2px); 
-            box-shadow: var(--shadow-lg); 
-        }
+        .btn-add, .btn-view, .btn-delete { border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: 0.2s; }
+        .btn-add { background: var(--secondary); color: white; } .btn-add:hover { background: black; }
+        .btn-view { background: var(--info-light); color: var(--info); } .btn-view:hover { background: var(--info); color: white; }
+        .btn-delete { background: var(--danger-light); color: var(--danger); } .btn-delete:hover { background: var(--danger); color: white; }
 
-        .btn-outline { 
-            background: transparent; 
-            color: var(--primary); 
-            border: 2px solid var(--primary); 
-            box-shadow:none;
-        } 
-
-        .btn-outline:hover { 
-            background: var(--primary-light); 
-        }
-
-        .btn-add { 
-            background: var(--secondary); 
-            color: white; 
-            border-radius: 8px;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            cursor: pointer;
-            transition: 0.2s;
-        } 
-
-        .btn-add:hover { background: black; }
-
-        .btn-view { 
-            background: var(--info-light); 
-            color: var(--info); 
-            border-radius: 8px;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            cursor: pointer;
-            transition: 0.2s;
-        } 
-
-        .btn-view:hover { background: var(--info); color: white; }
-
-        .btn-delete {
-            background: var(--danger-light); 
-            color: var(--danger); 
-            border-radius: 8px;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-delete:hover { background: var(--danger); color: white; }
-
-        .btn-small { 
-            padding: 8px 16px; 
-            border-radius: 8px; 
-            font-weight: 500; 
-            font-size: 13px; 
-            border: none; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            font-family: 'Kanit'; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 6px;
-        }
-
-        .btn-small-outline { 
-            background: var(--surface); 
-            color: var(--text-main); 
-            border: 1px solid var(--border); 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02); 
-        } 
+        .btn-small { padding: 8px 16px; border-radius: 8px; font-weight: 500; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; font-family: 'Kanit'; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-small-outline { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.02); } 
+        .btn-small-outline:hover { background: var(--bg-body); transform: translateY(-2px); }
         
-        .btn-small-outline:hover { 
-            background: var(--bg-body); 
-            transform: translateY(-2px); 
-        }
-        
-        .empty-state { 
-            text-align: center; 
-            color: var(--text-muted); 
-            font-size: 15px; 
-            padding: 50px 0; 
-            background: var(--surface); 
-            border-radius: var(--radius-md); 
-            border: 1px dashed var(--border);
-        }
+        .empty-state { text-align: center; color: var(--text-muted); font-size: 15px; padding: 50px 0; background: var(--surface); border-radius: var(--radius-md); border: 1px dashed var(--border); }
         
         /* ================= Loader ================= */
-        .loader-overlay { 
-            position: fixed; 
-            top:0; left:0; width:100%; height:100%; 
-            background: rgba(248,250,252,0.9); 
-            z-index: 9999999; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            flex-direction: column; 
-            backdrop-filter: blur(5px);
-        }
-
-        .spinner { 
-            width: 60px; 
-            height: 60px; 
-            border: 4px solid var(--border); 
-            border-top-color: var(--primary); 
-            border-radius: 50%; 
-            animation: spin 1s cubic-bezier(0.55, 0.085, 0.68, 0.53) infinite; 
-            margin-bottom: 20px; 
-        }
+        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(248,250,252,0.9); z-index: 9999999; display: flex; align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(5px); }
+        .spinner { width: 60px; height: 60px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s cubic-bezier(0.55, 0.085, 0.68, 0.53) infinite; margin-bottom: 20px; }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        .swal2-popup { 
-            font-family: 'Kanit', sans-serif !important; 
-            border-radius: 20px !important; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important; 
-        }
+        .swal2-popup { font-family: 'Kanit', sans-serif !important; border-radius: 20px !important; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important; }
         
         /* ================= Trip Planner Layout ================= */
-        .trip-layout { 
-            display: flex; 
-            gap: 20px; 
-            height: calc(100vh - 180px); 
-        }
-
-        .trip-left { 
-            flex: 1.2; 
-            background: var(--surface); 
-            border-radius: var(--radius-lg); 
-            border: 1px solid var(--border); 
-            padding: 20px; 
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column;
-        }
-
-        .trip-right { 
-            flex: 1; 
-            background: var(--bg-body); 
-            border-radius: var(--radius-lg); 
-            border: 2px dashed var(--border); 
-            padding: 20px; 
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column; 
-            position: relative;
-        }
+        .trip-layout { display: flex; gap: 20px; height: calc(100vh - 180px); }
+        .trip-left { flex: 1.2; background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        .trip-right { flex: 1; background: var(--bg-body); border-radius: var(--radius-lg); border: 2px dashed var(--border); padding: 20px; overflow-y: auto; display: flex; flex-direction: column; position: relative; }
         
         /* ================= Calendar ================= */
-        #calendar { 
-            background: white; 
-            padding: 20px; 
-            border-radius: var(--radius-lg); 
-            border: 1px solid var(--border); 
-            box-shadow: var(--shadow-sm); 
-        }
+        #calendar { background: white; padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
         .fc-event { cursor: pointer; }
-        
-        /* Group Title for Purchases */
-        .purchase-group { margin-bottom: 30px; }
-        .purchase-group-title { font-size: 16px; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid var(--border); margin-bottom: 15px; display:flex; align-items:center; gap:8px;}
 
     </style>
 </head>
@@ -756,7 +337,7 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- แจ้งเตือนด้านบนพร้อมช่องทางติดต่อ -->
+        <!-- แจ้งเตือนด้านบน -->
         <header class="topbar-alert">
             <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px;"></i> 
             ระบบนี้อยู่ในช่วงพัฒนาระบบ หากมีปัญหา หรือข้อเสนอแนะ ติดต่อแอดมินได้ที่ ไลน์ CaneConnect - รับงาน ไอดีไลน์ @673iaryk หรือ 
@@ -860,7 +441,7 @@
                     </button>
                 </div>
                 
-                <!-- Filters Panel (ปุ่มค้นหา ไม่มีแถบเลื่อน) -->
+                <!-- Filters Panel (อัปเดตใหม่เอาแถบเลื่อนออก เพิ่มปุ่มค้นหา) -->
                 <div class="filter-panel">
                     <div class="filter-item">
                         <label>จังหวัด:</label>
@@ -882,7 +463,7 @@
                     </div>
                     <div class="filter-item" style="display: flex; align-items: flex-end; min-width:auto;">
                         <button class="btn-main" style="width: auto; padding: 10px 24px; height: 44px;" onclick="triggerSearch()">
-                            <i class="fa-solid fa-magnifying-glass"></i> ค้นหา
+                            <i class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล
                         </button>
                     </div>
                 </div>
@@ -913,7 +494,7 @@
                     <i class="fa-solid fa-route" style="color:var(--accent);"></i> วางแผนการม้วน (Trip Planner)
                 </div>
                 <div class="trip-layout">
-                    <!-- Left: Available Jobs for Selection -->
+                    <!-- Left: Available Jobs -->
                     <div class="trip-left">
                         <div style="font-size:16px; font-weight:600; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">
                             รายการงานที่เปิดรับ (คลิก + เพื่อเลือก)
@@ -923,7 +504,7 @@
                         </div>
                     </div>
                     
-                    <!-- Right: Current Trip Planner -->
+                    <!-- Right: Current Trip -->
                     <div class="trip-right">
                         <div style="font-size:16px; font-weight:600; margin-bottom:15px; color:var(--primary-dark); display:flex; justify-content:space-between; align-items:center;">
                             <input type="text" id="trip-name" class="swal-input" placeholder="ตั้งชื่อทริป (เช่น ทริปผาขาว 1)" style="font-weight:700; font-size:16px; width: 60%; border-color:var(--primary-light);">
@@ -945,7 +526,7 @@
                 </div>
             </div>
 
-            <!-- 4. หน้าการซื้อของฉัน (My Purchases - ละเอียดแยกระดับ) -->
+            <!-- 4. หน้าการซื้อของฉัน (My Purchases) -->
             <div id="buyer-purchases-page" class="page">
                 <div class="section-title">
                     <i class="fa-solid fa-cart-shopping" style="color:var(--danger);"></i> การซื้อของฉัน
@@ -1019,7 +600,7 @@
     </main>
 
     <!-- ป้ายบอกเวอร์ชันแอป (ย้ายไปมุมขวาล่างสุด) -->
-    <div class="app-version">v2.7.0 Pro | อัปเดต: 26 ส.ค. 2026</div>
+    <div class="app-version">v2.6.0 Pro | อัปเดต: 26 ส.ค. 2026</div>
 
     <!-- LIFF SDK -->
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -1644,11 +1225,12 @@
                     <div class="jobs-grid" style="margin-bottom:0;">`;
                 
                 activeJobs.forEach(item => {
+                    let displayName = item.farmerFullName || item.farmerName; // ใช้ชื่อจริงถ้าระบบส่งมา
                     let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
                     html += `
                         <div class="sale-card" style="border-left: 5px solid var(--primary); background:#F0FDF4;">
                             <div class="sale-header">
-                                <span style="font-weight:700; color:var(--primary-dark); font-size:16px;">คุณ ${item.farmerName}</span>
+                                <span style="font-weight:700; color:var(--primary-dark); font-size:16px;">คุณ ${displayName}</span>
                                 <span class="badge" style="background:#A7F3D0; color:#064E3B;">พร้อมเข้าม้วน!</span>
                             </div>
                             <div class="sale-detail">
@@ -1658,37 +1240,9 @@
                                 <div style="font-size:13px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-phone"></i> โทร: <a href="tel:${item.farmerPhone}">${item.farmerPhone || 'ไม่ระบุ'}</a></div>
                             </div>
                             <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1;"><i class="fa-solid fa-map-location-dot"></i> ดูแผนที่</button>
-                                <button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1;"><i class="fa-solid fa-flag-checkered"></i> แจ้งส่งบิลชั่ง</button>
-                            </div>
-                        </div>`;
-                });
-                html += `</div></div>`;
-                container.innerHTML += html;
-            }
-
-            // Section: รอชาวไร่ตรวจสอบบิล
-            if(verifyingJobs.length > 0) {
-                let html = `
-                <div class="purchase-group full-width">
-                    <div class="purchase-group-title" style="color:var(--purple);">
-                        <i class="fa-solid fa-file-invoice"></i> รอชาวไร่ตรวจสอบบิลชั่งน้ำหนัก <span class="badge bg-purple">${verifyingJobs.length} งาน</span>
-                    </div>
-                    <div class="jobs-grid" style="margin-bottom:0;">`;
-                
-                verifyingJobs.forEach(item => {
-                    html += `
-                        <div class="sale-card" style="border-left: 5px solid var(--purple); background:#F5F3FF;">
-                            <div class="sale-header">
-                                <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${item.farmerName}</span>
-                                <span class="badge bg-purple">รอชาวไร่ยืนยันบิล</span>
-                            </div>
-                            <div class="sale-detail">
-                                <div>น้ำหนักที่ชั่งได้: <span style="color:var(--purple); font-weight:700; font-size:16px;">${item.actualWeight} ตัน</span></div>
-                                <div>ราคาที่ตกลง: <span style="font-weight:600; color:var(--danger);">${item.price}</span></div>
-                            </div>
-                            <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; border-color:var(--purple); color:var(--purple);"><i class="fa-solid fa-eye"></i> ดูรายละเอียดบิล</button>
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1;" title="ดูพิกัดแผนที่"><i class="fa-solid fa-map-location-dot"></i></button>
+                                <button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1;"><i class="fa-solid fa-flag-checkered"></i> ปิดงาน</button>
+                                <button onclick="cancelPurchase(${item.row})" class="btn-main btn-outline" style="flex:0.5; border-color:var(--danger); color:var(--danger);" title="ยกเลิกการรับซื้อ"><i class="fa-solid fa-xmark"></i></button>
                             </div>
                         </div>`;
                 });
@@ -1706,11 +1260,12 @@
                     <div class="jobs-grid" style="margin-bottom:0;">`;
                 
                 offeredJobs.forEach(item => {
+                    let displayName = item.farmerFullName || item.farmerName; // ใช้ชื่อจริงถ้าระบบส่งมา
                     let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
                     html += `
                         <div class="sale-card" style="border-left: 5px solid var(--warning); background:#FFFBEB;">
                             <div class="sale-header">
-                                <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${item.farmerName}</span>
+                                <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>
                                 <span class="badge bg-warning">รอพิจารณา</span>
                             </div>
                             <div class="sale-detail">
@@ -1719,7 +1274,38 @@
                                 <div>กำหนดเข้าม้วน: <span style="font-weight:600;">${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span></div>
                             </div>
                             <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; border-color:var(--warning); color:var(--warning);"><i class="fa-solid fa-eye"></i> ดูแปลง / เสนอใหม่</button>
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--warning); color:var(--warning);"><i class="fa-solid fa-eye"></i> ดูแปลง</button>
+                                <button onclick="cancelOffer(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger);"><i class="fa-solid fa-ban"></i> ถอนข้อเสนอ</button>
+                            </div>
+                        </div>`;
+                });
+                html += `</div></div>`;
+                container.innerHTML += html;
+            }
+
+            // Section: รอชาวไร่ตรวจสอบบิล
+            if(verifyingJobs.length > 0) {
+                let html = `
+                <div class="purchase-group full-width">
+                    <div class="purchase-group-title" style="color:var(--purple);">
+                        <i class="fa-solid fa-file-invoice"></i> รอชาวไร่ตรวจสอบบิลชั่งน้ำหนัก <span class="badge bg-purple">${verifyingJobs.length} งาน</span>
+                    </div>
+                    <div class="jobs-grid" style="margin-bottom:0;">`;
+                
+                verifyingJobs.forEach(item => {
+                    let displayName = item.farmerFullName || item.farmerName; // ใช้ชื่อจริงถ้าระบบส่งมา
+                    html += `
+                        <div class="sale-card" style="border-left: 5px solid var(--purple); background:#F5F3FF;">
+                            <div class="sale-header">
+                                <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>
+                                <span class="badge bg-purple">รอชาวไร่ยืนยันบิล</span>
+                            </div>
+                            <div class="sale-detail">
+                                <div>น้ำหนักที่ชั่งได้: <span style="color:var(--purple); font-weight:700; font-size:16px;">${item.actualWeight} ตัน</span></div>
+                                <div>ราคาที่ตกลง: <span style="font-weight:600; color:var(--danger);">${item.price}</span></div>
+                            </div>
+                            <div style="display:flex; gap:10px; margin-top:16px;">
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; border-color:var(--purple); color:var(--purple);"><i class="fa-solid fa-eye"></i> ดูรายละเอียดบิล</button>
                             </div>
                         </div>`;
                 });
@@ -1729,10 +1315,79 @@
         }
 
         // ==========================================
+        // ยกเลิกข้อเสนอ / ยกเลิกการซื้อ
+        // ==========================================
+        async function cancelOffer(rowId) {
+            const { value: reason } = await Swal.fire({
+                title: 'ถอนข้อเสนอรับซื้อ?',
+                text: 'โปรดระบุเหตุผลที่ต้องการถอนข้อเสนอนี้ (เพื่อให้ชาวไร่ทราบ)',
+                input: 'text',
+                inputPlaceholder: 'ระบุเหตุผล (เช่น คิวงานเต็ม, รถเสีย...)',
+                showCancelButton: true,
+                confirmButtonColor: THEME_DANGER,
+                confirmButtonText: 'ยืนยันการถอนข้อเสนอ',
+                cancelButtonText: 'กลับ',
+                inputValidator: (value) => {
+                    if (!value) return 'กรุณาระบุเหตุผลด้วยครับ!'
+                }
+            });
+
+            if (reason) {
+                Swal.fire({ title: 'กำลังดำเนินการ...', didOpen: () => { Swal.showLoading() } });
+                try {
+                    const res = await fetch(GAS_WEB_APP_URL, {
+                        method: "POST",
+                        body: JSON.stringify({ action: "buyerCancelOffer", row: rowId, userId: userProfile.userId, reason: reason })
+                    });
+                    if ((await res.json()).status === "success") {
+                        // อัปเดต Local Storage
+                        myOfferedRows = myOfferedRows.filter(id => id !== rowId);
+                        localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows));
+                        
+                        Swal.fire('ถอนข้อเสนอสำเร็จ', 'ระบบได้ถอนข้อเสนอของคุณแล้ว', 'success').then(() => { 
+                            fetchBuyerRawData(); 
+                        });
+                    }
+                } catch(e) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบได้', 'error'); }
+            }
+        }
+
+        async function cancelPurchase(rowId) {
+            const { value: reason } = await Swal.fire({
+                title: 'ยกเลิกการรับซื้อ?',
+                text: 'การยกเลิกงานที่ตกลงกันแล้วอาจส่งผลต่อคะแนนเครดิตของคุณ โปรดระบุเหตุผลที่ชัดเจน',
+                input: 'text',
+                inputPlaceholder: 'ระบุเหตุผล (เช่น เข้าพื้นที่ไม่ได้, เครื่องจักรขัดข้อง...)',
+                showCancelButton: true,
+                confirmButtonColor: THEME_DANGER,
+                confirmButtonText: 'ยืนยันยกเลิกการรับซื้อ',
+                cancelButtonText: 'กลับ',
+                inputValidator: (value) => {
+                    if (!value) return 'กรุณาระบุเหตุผลด้วยครับ!'
+                }
+            });
+
+            if (reason) {
+                Swal.fire({ title: 'กำลังดำเนินการ...', didOpen: () => { Swal.showLoading() } });
+                try {
+                    const res = await fetch(GAS_WEB_APP_URL, {
+                        method: "POST",
+                        body: JSON.stringify({ action: "buyerCancelJob", row: rowId, userId: userProfile.userId, reason: reason })
+                    });
+                    if ((await res.json()).status === "success") {
+                        Swal.fire('ยกเลิกสำเร็จ', 'ระบบได้ยกเลิกงานนี้และแจ้งชาวไร่แล้ว', 'success').then(() => { 
+                            fetchBuyerRawData(); 
+                        });
+                    }
+                } catch(e) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบได้', 'error'); }
+            }
+        }
+
+        // ==========================================
         // Rendering Logic (หน้าค้นหางาน)
         // ==========================================
         function triggerSearch() {
-            Swal.fire({ title: 'กำลังประมวลผลข้อมูลแแผนที่...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+            Swal.fire({ title: 'กำลังประมวลผลข้อมูลแผนที่...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
             setTimeout(() => {
                 updateClusterLogic();
                 Swal.close();
@@ -1767,6 +1422,7 @@
                 let hHTML = "";
                 
                 historyJobs.forEach(item => {
+                    let displayName = item.farmerFullName || item.farmerName; // ใช้ชื่อจริง
                     let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
                     let actualW = item.actualWeight || "-";
                     let pRai = extractPrice(item.price);
@@ -1785,7 +1441,7 @@
                     hHTML += `
                     <div class="sale-card" style="border-left: 5px solid var(--primary); opacity: 0.9;">
                         <div class="sale-header">
-                            <span style="font-weight:600;">คุณ ${item.farmerName}</span>
+                            <span style="font-weight:600;">คุณ ${displayName}</span>
                             <span class="badge ${item.status === "เสร็จสิ้น" ? "bg-success" : "bg-danger"}">${item.status}</span>
                         </div>
                         <div class="sale-detail">
@@ -1852,6 +1508,7 @@
         }
 
         function renderSingleCardHTML(item, colorHex) {
+            let displayName = item.farmerFullName || item.farmerName; // แก้ชื่อ
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
             let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:600; margin-top:8px;"><i class="fa-solid fa-fire"></i> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
             let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
@@ -1867,7 +1524,7 @@
             return `
                 <div class="sale-card" style="border-left: 5px solid ${colorHex};">
                     <div class="sale-header">
-                        <span style="font-weight:700; color:var(--secondary); font-size:16px;">${item.farmerName}</span>
+                        <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>
                         ${badgeHtml}
                     </div>
                     <div class="sale-detail">
@@ -1891,9 +1548,11 @@
             
             let customIcon = L.divIcon({ className: 'custom-div-icon', html: markerHtml }); 
             let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
+            let displayName = item.farmerFullName || item.farmerName; // แก้ชื่อใน popup
+            
             let popupContent = `
                 <div style="font-family:'Kanit'; text-align:center; min-width:180px;">
-                    <b style="font-size:16px; color:var(--text-main);">${item.farmerName}</b><br>
+                    <b style="font-size:16px; color:var(--text-main);">คุณ ${displayName}</b><br>
                     <span style="font-size:14px; color:${colorHex}; font-weight:600;">${actualQ} ไร่</span><span style="font-size:12px; color:var(--text-muted);"> | ${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span>
                     <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">`;
             
@@ -1939,12 +1598,10 @@
                         body: JSON.stringify({ action: "acceptJob", row: rowId, userId: userProfile.userId, buyerName: buyerNameContext, buyerPhone: buyerPhoneContext, price: priceInput }) 
                     }); 
                     if ((await res.json()).status === "success") { 
-                        // เก็บ Row ไว้ในเครื่อง เพื่อให้รู้ว่าเราเสนอราคาไปแล้ว
                         if(!myOfferedRows.includes(rowId)) {
                             myOfferedRows.push(rowId);
                             localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows));
                         }
-
                         Swal.fire({title: 'สำเร็จ!', text: 'ส่งราคาให้ชาวไร่พิจารณาเรียบร้อย งานถูกย้ายไปที่ "การซื้อของฉัน"', icon: 'success', confirmButtonColor: THEME_PRIMARY}).then(() => { 
                             switchPage('buyer-purchases-page');
                             fetchBuyerRawData(); 
@@ -1977,17 +1634,18 @@
                 availList.innerHTML = '<div class="empty-state">ไม่มีงานว่างให้เลือก</div>'; 
             }
             
-            // เรนเดอร์ฝั่งซ้าย (งานที่ยังไม่ได้เลือก) มีปุ่มตาให้ดูแปลงได้
+            // เรนเดอร์ฝั่งซ้าย
             availableJobs.forEach(j => {
                 let isSelected = currentTripJobs.includes(j.row);
                 if(!isSelected) {
+                    let displayName = j.farmerFullName || j.farmerName;
                     let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0));
                     let hDate = new Date(j.harvestDate).toLocaleDateString('th-TH');
                     
                     availList.innerHTML += `
                         <div style="background:var(--bg-body); border:1px solid var(--border); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
                             <div>
-                                <b style="color:var(--secondary);">${j.farmerName}</b> <span style="color:var(--primary-dark); font-weight:700;">${actualQ} ไร่</span><br>
+                                <b style="color:var(--secondary);">${displayName}</b> <span style="color:var(--primary-dark); font-weight:700;">${actualQ} ไร่</span><br>
                                 <span style="font-size:12px; color:var(--text-muted);"><i class="fa-regular fa-calendar"></i> ${hDate}</span>
                             </div>
                             <div style="display:flex; gap:5px;">
@@ -1999,12 +1657,13 @@
                 }
             });
             
-            // เรนเดอร์ฝั่งขวา (งานที่ถูกเลือกเข้าทริป พร้อมคำนวณระยะห่าง Real-time)
+            // เรนเดอร์ฝั่งขวา
             let totalTripRai = 0;
             let prevLat = null, prevLon = null;
 
             if(sortedTripJobs.length > 0) {
                 sortedTripJobs.forEach((j, index) => {
+                    let displayName = j.farmerFullName || j.farmerName;
                     let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0));
                     let hDate = new Date(j.harvestDate).toLocaleDateString('th-TH');
                     totalTripRai += actualQ;
@@ -2024,7 +1683,7 @@
                     selList.innerHTML += distHtml + `
                         <div style="background:var(--primary-light); border:1px solid var(--primary); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow-sm);">
                             <div style="flex:1;">
-                                <b style="color:var(--primary-dark);">${index+1}. ${j.farmerName}</b> <span style="font-weight:700; color:var(--secondary);">${actualQ} ไร่</span><br>
+                                <b style="color:var(--primary-dark);">${index+1}. คุณ ${displayName}</b> <span style="font-weight:700; color:var(--secondary);">${actualQ} ไร่</span><br>
                                 <span style="font-size:12px; color:var(--primary-dark);"><i class="fa-regular fa-calendar"></i> นัด: ${hDate}</span>
                             </div>
                             <div style="display:flex; gap:5px;">
@@ -2069,9 +1728,7 @@
             }
         }
 
-        // ==========================================
-        // Save Trip & Multi-Offer (เสนอราคาแยกแปลงรวดเดียว)
-        // ==========================================
+        // บันทึกการวางแผนทริป (Multi-Offer)
         async function saveTrip() {
             if(currentTripJobs.length === 0) {
                 Swal.fire('ไม่มีข้อมูล', 'กรุณาเพิ่มแปลงเข้าทริปก่อนทำการบันทึก', 'warning');
@@ -2084,10 +1741,11 @@
             let tripJobsData = currentTripJobs.map(id => rawBuyerData.find(j => j.row === id)).filter(j => j);
             
             tripJobsData.forEach((j, index) => {
+                let displayName = j.farmerFullName || j.farmerName;
                 let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0));
                 htmlForm += `
                     <div style="background:var(--bg-body); padding:12px; border-radius:8px; border:1px solid var(--border); margin-bottom:10px;">
-                        <div style="font-weight:600; color:var(--primary-dark);">${index+1}. คุณ ${j.farmerName} <span style="float:right;">${actualQ} ไร่</span></div>
+                        <div style="font-weight:600; color:var(--primary-dark);">${index+1}. คุณ ${displayName} <span style="float:right;">${actualQ} ไร่</span></div>
                         <input type="number" id="trip-price-${j.row}" class="swal-input" placeholder="เสนอราคา (บาท/ไร่)" style="margin-top:8px; height: 38px;" required>
                     </div>
                 `;
@@ -2159,10 +1817,63 @@
         }
 
         // ==========================================
-        // Modal Popup & Submit Jobs (แก้ไขหน้าต่างเจาะลึก)
+        // เมนูปฏิทินคิวงาน (Calendar) พร้อมฟิลเตอร์
+        // ==========================================
+        function renderCalendar() {
+            var calendarEl = document.getElementById('calendar');
+            if(calendarObj) { calendarObj.destroy(); }
+            
+            let fProv = document.getElementById("cal-filter-prov").value;
+
+            let events = [];
+            
+            rawBuyerData.forEach(j => {
+                let displayName = j.farmerFullName || j.farmerName;
+                
+                // กรองข้อมูลตาม Multi-select Filter
+                if(fProv !== 'all' && j.prov !== fProv) return;
+                if(selectedCalDists.length > 0 && !selectedCalDists.includes(j.dist)) return;
+                if(selectedCalSubDists.length > 0 && !selectedCalSubDists.includes(j.subDist)) return;
+
+                if(j.status === "รอคิวรถ" || j.status === "รอชาวไร่ยืนยัน") {
+                    let d = new Date(j.harvestDate);
+                    events.push({
+                        title: `${displayName} (${j.qty} ไร่)`,
+                        start: d.toISOString().split('T')[0],
+                        color: '#F59E0B',
+                        extendedProps: { rowId: j.row }
+                    });
+                } else if(j.status === "กำลังดำเนินการ") {
+                    let d = new Date(j.harvestDate);
+                    events.push({
+                        title: `[รับแล้ว] ${displayName}`,
+                        start: d.toISOString().split('T')[0],
+                        color: '#10B981',
+                        extendedProps: { rowId: j.row }
+                    });
+                }
+            });
+
+            calendarObj = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'th',
+                height: 550,
+                events: events,
+                eventClick: function(info) {
+                    viewSaleIslandModal(info.event.extendedProps.rowId);
+                }
+            });
+            
+            calendarObj.render();
+        }
+
+        // ==========================================
+        // Modal Popup 
         // ==========================================
         function viewSaleIslandModal(index) {
             let item = rawBuyerData.find(p => p.row === index); if(!item) return; 
+            
+            let displayName = item.farmerFullName || item.farmerName;
             
             let photoGalleryHTML = item.photos && item.photos.length > 0 ? 
                 `<div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:5px;">${item.photos.map(img => `<img src="${img}" style="width:80px; height:80px; object-fit:cover; border-radius:8px; cursor:zoom-in; border:1px solid var(--border);" onclick="openImageViewer('${img}')">`).join('')}</div>` 
@@ -2172,7 +1883,7 @@
             let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
             let pricePerRai = extractPrice(item.price);
             
-            // คำนวณระยะห่างเพื่อโชว์ใน Popup
+            // คำนวณระยะห่าง
             let distanceStr = "";
             if(currentLat && currentLng && item.lat && item.lon) {
                 let d = getDistanceJS(currentLat, currentLng, item.lat, item.lon);
@@ -2192,7 +1903,7 @@
                 </div>`;
             }
 
-            // เพิ่มปุ่ม "เพิ่มลงทริป"
+            // ปุ่มแอดลงทริป
             let addToTripBtn = (item.status === "รอชาวไร่ยืนยัน" || item.status === "รอคิวรถ") ? 
                 `<button onclick="addToTripFromModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--info); color:var(--info);"><i class="fa-solid fa-route"></i> เพิ่มลงทริป</button>` : '';
 
@@ -2223,7 +1934,7 @@
                             
                             <div style="display: flex; flex-direction: column;">
                                 <div style="background:var(--bg-body); padding:16px; border-radius:12px; margin-bottom:16px; border: 1px solid var(--border);">
-                                    <div style="font-size:16px; font-weight:600; color:var(--primary); margin-bottom:4px;">คุณ ${item.farmerName}</div>
+                                    <div style="font-size:16px; font-weight:600; color:var(--primary); margin-bottom:4px;">คุณ ${displayName}</div>
                                     <div style="font-size:13px;"><b>เบอร์โทรศัพท์:</b> <a href="tel:${item.farmerPhone}" style="color:var(--primary); font-weight:500; text-decoration:none;">${item.farmerPhone}</a></div>
                                 </div>
                                 
