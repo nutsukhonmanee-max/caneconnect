@@ -833,34 +833,7 @@
                     </button>
                 </div>
                 
-                <!-- Filters Panel (ปุ่มค้นหา ไม่มีแถบเลื่อน) -->
-                <div class="filter-panel">
-                    <div class="filter-item">
-                        <label>จังหวัด:</label>
-                        <select id="filter-map-prov" class="filter-select" onchange="updateFilterDist()">
-                            <option value="all">ทั่วประเทศ</option>
-                        </select>
-                    </div>
-                    <div class="filter-item">
-                        <label>อำเภอ:</label>
-                        <select id="filter-map-dist" class="filter-select" onchange="updateFilterSubdist()" disabled>
-                            <option value="all">ทุกอำเภอ</option>
-                        </select>
-                    </div>
-                    <div class="filter-item">
-                        <label>ตำบล:</label>
-                        <select id="filter-map-subdist" class="filter-select" disabled>
-                            <option value="all">ทุกตำบล</option>
-                        </select>
-                    </div>
-                    <div class="filter-item" style="display: flex; align-items: flex-end; min-width:auto;">
-                        <button class="btn-main" style="width: auto; padding: 10px 24px; height: 44px;" onclick="triggerSearch()">
-                            <i class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Map Container (สูงขึ้นเพื่อให้เห็นภาพรวม & ปุ่มเต็มจอ) -->
+                <!-- Map Container (เต็มจอกับ UI Clean) -->
                 <div style="position: relative;">
                     <button id="fullscreen-btn" onclick="toggleFullscreen()" class="btn-small btn-small-outline" style="position: absolute; top: 15px; right: 15px; z-index: 400; background: white;">
                         <i class="fa-solid fa-expand"></i> ขยายเต็มจอ
@@ -893,11 +866,11 @@
                 <div class="trip-layout">
                     <!-- Left: Available Jobs -->
                     <div class="trip-left">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">
-                            <span style="font-size:16px; font-weight:600;">รายการงานที่เปิดรับ</span>
+                        <div style="font-size:16px; font-weight:600; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">
+                            รายการงานที่เปิดรับ (คลิก + เพื่อเลือก)
                         </div>
                         
-                        <!-- ตัวกรองของ Trip Planner -->
+                        <!-- ตัวกรองค้นหางานฝั่งซ้ายของทริป -->
                         <div style="margin-bottom:15px; display:flex; gap:10px;">
                             <input type="text" id="trip-search" class="swal-input" placeholder="ค้นหาชื่อ, ตำบล, อำเภอ..." onkeyup="renderTripPlanner()" style="height: 40px; font-size:13px; flex:1;">
                             <select id="trip-sort" class="filter-select" onchange="renderTripPlanner()" style="height: 40px; width:auto; padding:0 10px;">
@@ -937,7 +910,7 @@
                         </div>
 
                         <div id="trip-selected-list" style="display:flex; flex-direction:column; gap:10px; flex:1;">
-                            <div class="empty-state" style="background:transparent; border:none; margin-top:20px;">
+                            <div class="empty-state" style="background:transparent; border:none; margin-top:50px;">
                                 <i class="fa-solid fa-box-open" style="font-size:30px; margin-bottom:10px; color:var(--border);"></i><br>
                                 ทริปว่างเปล่า<br>
                                 <span style="font-size:13px;">กดปุ่ม "+" จากรายการด้านซ้ายเพื่อเพิ่มแปลงเข้าทริปนี้</span>
@@ -1162,7 +1135,6 @@
                 populateProvinces("buyer-prov");
                 setupAddressDropdowns("buyer");
                 
-                populateProvinces("filter-map-prov");
                 populateProvinces("cal-filter-prov");
             } catch(e) { console.error('Error loading address data'); }
         }
@@ -1226,48 +1198,6 @@
                 const zip = this.options[this.selectedIndex] ? this.options[this.selectedIndex].getAttribute('data-zip') : ''; 
                 if (zip) zipInput.value = zip; 
             });
-        }
-
-        // หน้าค้นหางาน
-        function updateFilterDist() {
-            const provSelect = document.getElementById("filter-map-prov");
-            const distSelect = document.getElementById("filter-map-dist");
-            const subdistSelect = document.getElementById("filter-map-subdist");
-            const pId = provSelect.options[provSelect.selectedIndex] ? provSelect.options[provSelect.selectedIndex].getAttribute('data-id') : null;
-            
-            distSelect.innerHTML = '<option value="all">ทุกอำเภอ</option>'; 
-            subdistSelect.innerHTML = '<option value="all">ทุกตำบล</option>';
-            distSelect.disabled = (provSelect.value === 'all'); 
-            subdistSelect.disabled = true;
-
-            if (pId && provSelect.value !== 'all') {
-                const pData = thaiData.find(p => p.id == pId);
-                if (pData && pData.amphure) { 
-                    [...pData.amphure].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(amp => { 
-                        distSelect.innerHTML += `<option value="${amp.name_th}" data-id="${amp.id}">${amp.name_th}</option>`; 
-                    }); 
-                }
-            }
-        }
-        function updateFilterSubdist() {
-            const provSelect = document.getElementById("filter-map-prov");
-            const distSelect = document.getElementById("filter-map-dist");
-            const subdistSelect = document.getElementById("filter-map-subdist");
-            const pId = provSelect.options[provSelect.selectedIndex] ? provSelect.options[provSelect.selectedIndex].getAttribute('data-id') : null;
-            const dId = distSelect.options[distSelect.selectedIndex] ? distSelect.options[distSelect.selectedIndex].getAttribute('data-id') : null;
-            
-            subdistSelect.innerHTML = '<option value="all">ทุกตำบล</option>'; 
-            subdistSelect.disabled = (distSelect.value === 'all');
-
-            if (pId && dId && distSelect.value !== 'all') {
-                const pData = thaiData.find(p => p.id == pId); 
-                const dData = pData.amphure.find(a => a.id == dId);
-                if (dData && dData.tambon) { 
-                    [...dData.tambon].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(tam => { 
-                        subdistSelect.innerHTML += `<option value="${tam.name_th}" data-zip="${tam.zip_code}">${tam.name_th}</option>`; 
-                    }); 
-                }
-            }
         }
 
         // ==========================================
@@ -1545,6 +1475,14 @@
         // ==========================================
         // Map & Fetching Data
         // ==========================================
+        function getDistanceJS(lat1, lon1, lat2, lon2) { 
+            var R = 6371; // รัศมีโลก
+            var dLat = (lat2-lat1)*(Math.PI/180); 
+            var dLon = (lon2-lon1)*(Math.PI/180); 
+            var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*(Math.PI/180))*Math.cos(lat2*(Math.PI/180))*Math.sin(dLon/2)*Math.sin(dLon/2); 
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        }
+
         function updateUserLocationOnMap() {
             let userIcon = L.divIcon({ 
                 className: 'user-loc-icon', 
@@ -1637,6 +1575,7 @@
             let offeredJobs = rawBuyerData.filter(j => j.status === 'รอชาวไร่ยืนยัน' && myOfferedRows.includes(j.row));
             
             // 2. งานที่ต้องไปม้วน (รับงานแล้ว)
+            // (Note: Backend getBuyerMap กรองงานที่เป็นชื่อเรามาให้อยู่แล้ว เลยดึงสถานะตรงๆ ได้เลย)
             let activeJobs = rawBuyerData.filter(j => j.status === 'กำลังดำเนินการ');
             
             // 3. รอชาวไร่ตรวจสอบบิล (เราปิดงานแล้ว)
@@ -1667,7 +1606,7 @@
                     <div class="jobs-grid" style="margin-bottom:0;">`;
                 
                 activeJobs.forEach(item => {
-                    let displayName = item.farmerFullName || item.farmerName; 
+                    let displayName = item.farmerFullName || item.farmerName; // ใช้ชื่อจริงถ้าระบบส่งมา
                     let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
                     html += `
                         <div class="sale-card" style="border-left: 5px solid var(--primary); background:#F0FDF4;">
@@ -1683,7 +1622,7 @@
                             </div>
                             <div style="display:flex; gap:10px; margin-top:16px;">
                                 <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1;" title="ดูพิกัดแผนที่"><i class="fa-solid fa-map-location-dot"></i></button>
-                                <button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1;"><i class="fa-solid fa-flag-checkered"></i> แจ้งส่งบิลชั่ง</button>
+                                <button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1;"><i class="fa-solid fa-flag-checkered"></i> ปิดงาน</button>
                                 <button onclick="cancelPurchase(${item.row})" class="btn-main btn-outline" style="flex:0.5; border-color:var(--danger); color:var(--danger);" title="ยกเลิกการรับซื้อ"><i class="fa-solid fa-xmark"></i></button>
                             </div>
                         </div>`;
@@ -1702,7 +1641,7 @@
                     <div class="jobs-grid" style="margin-bottom:0;">`;
                 
                 verifyingJobs.forEach(item => {
-                    let displayName = item.farmerFullName || item.farmerName; 
+                    let displayName = item.farmerFullName || item.farmerName; // ใช้ชื่อจริงถ้าระบบส่งมา
                     html += `
                         <div class="sale-card" style="border-left: 5px solid var(--purple); background:#F5F3FF;">
                             <div class="sale-header">
@@ -1732,7 +1671,7 @@
                     <div class="jobs-grid" style="margin-bottom:0;">`;
                 
                 offeredJobs.forEach(item => {
-                    let displayName = item.farmerFullName || item.farmerName; 
+                    let displayName = item.farmerFullName || item.farmerName; // ใช้ชื่อจริงถ้าระบบส่งมา
                     let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
                     html += `
                         <div class="sale-card" style="border-left: 5px solid var(--warning); background:#FFFBEB;">
@@ -1782,10 +1721,10 @@
                         body: JSON.stringify({ action: "buyerCancelOffer", row: rowId, userId: userProfile.userId, reason: reason })
                     });
                     if ((await res.json()).status === "success") {
+                        // อัปเดต Local Storage ลบออกจากการรอพิจารณา และไปใส่ใน Canceled
                         myOfferedRows = myOfferedRows.filter(id => id !== rowId);
                         localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows));
                         
-                        // เอาไปใส่ใน Local Canceled ไว้ดูเป็นประวัติ
                         if(!myCanceledRows.includes(rowId)) {
                             myCanceledRows.push(rowId);
                             localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
@@ -2038,6 +1977,7 @@
                 try { 
                     let coords = JSON.parse(item.polygon); 
                     let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
+                    // ให้ Polygon มีขอบหนาและสีเข้ม
                     buyerPolygonLayer.addLayer(L.polygon(flippedCoords, { color: colorHex, fillOpacity: 0.3, weight: 3 })); 
                 } catch(e) {} 
             }
@@ -2084,11 +2024,12 @@
         }
 
         // ==========================================
-        // เมนู Trip Planner (เพิ่ม Filter และ Summary Detail)
+        // เมนู Trip Planner (วางแผนการวิ่งรถอัจฉริยะ)
         // ==========================================
         function renderTripPlanner() {
             const availList = document.getElementById("trip-available-list");
             const selList = document.getElementById("trip-selected-list");
+            const sumRai = document.getElementById("trip-total-rai");
             
             availList.innerHTML = ''; 
             selList.innerHTML = '';
