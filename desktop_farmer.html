@@ -644,9 +644,14 @@
                         e.preventDefault();
                         
                         if(navigator.geolocation) {
-                            Swal.fire({ title: 'กำลังค้นหาพิกัด...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+                            // อัปเดตข้อความให้ชาวไร่รู้ว่า บนคอมพิวเตอร์อาจใช้เวลาสักครู่
+                            Swal.fire({ title: 'กำลังค้นหาพิกัด...', text: 'หากใช้งานบนคอมพิวเตอร์ อาจใช้เวลาสักครู่...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
                             
-                            navigator.geolocation.getCurrentPosition(pos => {
+                            // ระบบ Fallback: ลองหาแบบแม่นยำสูงก่อน ถ้านานเกินไป ให้ใช้แบบแม่นยำต่ำ
+                            const optionsHighAcc = { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 };
+                            const optionsLowAcc = { enableHighAccuracy: false, timeout: 10000, maximumAge: 0 };
+
+                            const successCallback = pos => {
                                 Swal.close();
                                 const lat = pos.coords.latitude;
                                 const lng = pos.coords.longitude;
@@ -658,7 +663,7 @@
                                 if (myLocationMarker) {
                                     myLocationMarker.setLatLng([lat, lng]);
                                 } else {
-                                    // สร้างหมุดแบบจุดกลมสีน้ำเงิน (เหมือนใน Google Maps)
+                                    // สร้างหมุดแบบจุดกลมสีน้ำเงิน
                                     const myIcon = L.divIcon({
                                         className: 'custom-my-location',
                                         html: "<div style='background-color:#3B82F6; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow: 0 0 6px rgba(0,0,0,0.5);'></div>",
@@ -668,18 +673,29 @@
                                     myLocationMarker = L.marker([lat, lng], {icon: myIcon}).addTo(map)
                                         .bindPopup('<div style="font-family:Kanit; font-weight:600; text-align:center;">📍 ตำแหน่งปัจจุบันของคุณ</div>');
                                 }
-                                
-                                // เปิด Popup ของหมุด
                                 myLocationMarker.openPopup();
-                                
-                            }, err => {
-                                Swal.close();
-                                let errorMsg = 'กรุณาเปิดการเข้าถึงตำแหน่งที่ตั้ง (GPS)';
-                                if (err.code === 1) errorMsg = 'คุณยังไม่อนุญาตให้เว็บไซต์เข้าถึง GPS (Permission denied)';
-                                else if (err.code === 2) errorMsg = 'ไม่สามารถดึงสัญญาณ GPS ได้ในขณะนี้';
-                                else if (err.code === 3) errorMsg = 'หมดเวลาในการค้นหาตำแหน่ง (Timeout)';
-                                Swal.fire('ไม่พบพิกัด', errorMsg, 'warning');
-                            }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+                            };
+
+                            const errorCallback = err => {
+                                if (err.code === 3) {
+                                    // ถ้าแม่นยำสูง Timeout ให้ลองเปลี่ยนเป็นแม่นยำต่ำ (แก้ปัญหาบน Desktop)
+                                    navigator.geolocation.getCurrentPosition(successCallback, finalErr => {
+                                        Swal.close();
+                                        Swal.fire('ไม่พบพิกัด', 'เบราว์เซอร์ไม่สามารถเข้าถึงพิกัดได้ หรือสัญญาณเครือข่ายไม่อนุญาต', 'warning');
+                                    }, optionsLowAcc);
+                                } else {
+                                    Swal.close();
+                                    let errorMsg = 'กรุณาเปิดการเข้าถึงตำแหน่งที่ตั้ง (GPS)';
+                                    // โค้ด 1 คือ Permission Denied (โดนบล็อก) แนะนำให้กดปลดล็อก
+                                    if (err.code === 1) errorMsg = 'เบราว์เซอร์ถูกบล็อกสิทธิ์เข้าถึง GPS โปรดคลิกที่ "ไอคอนแม่กุญแจ" หน้า URL ข้างบนสุด เพื่อกดยืนยันอนุญาต';
+                                    else if (err.code === 2) errorMsg = 'ไม่สามารถดึงสัญญาณ GPS ได้ในขณะนี้';
+                                    
+                                    Swal.fire('ไม่พบพิกัด', errorMsg, 'warning');
+                                }
+                            };
+
+                            // เริ่มทำงาน
+                            navigator.geolocation.getCurrentPosition(successCallback, errorCallback, optionsHighAcc);
                         } else {
                             Swal.fire('ไม่รองรับ', 'เบราว์เซอร์ของคุณไม่รองรับการดึงตำแหน่ง', 'error');
                         }
