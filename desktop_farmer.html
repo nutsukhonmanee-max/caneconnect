@@ -610,52 +610,62 @@
         }
 
         // ================= PLOT MANAGEMENT & AUTO SAVE =================
-        let allPlotsMapObj = null; let allPlotsLayer = null;
-        function renderAllPlotsMap() {
-            const wrapper = document.getElementById('all-plots-wrapper'); const container = document.getElementById('all-plots-map');
-            if (!container) return; 
-            
-            // ให้แผนที่แสดงตลอดเวลา
-            wrapper.style.display = 'block';
-
-            if (!allPlotsMapObj) {
-                allPlotsMapObj = L.map('all-plots-map').setView([currentLat, currentLng], 14);
-                L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(allPlotsMapObj);
-                allPlotsLayer = L.featureGroup().addTo(allPlotsMapObj);
-                
-                // เพิ่มปุ่มตำแหน่งของฉัน
+        // เพิ่มปุ่มตำแหน่งของฉัน
+                let myLocationMarker = null; // ตัวแปรสำหรับเก็บหมุด
                 const locateControl = L.control({position: 'bottomright'});
+                
                 locateControl.onAdd = function(map) {
                     const btn = L.DomUtil.create('button', 'btn-small btn-small-primary');
                     btn.style.margin = '10px';
                     btn.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
                     btn.style.backgroundColor = '#FFFFFF';
                     btn.style.color = 'var(--primary-dark)';
+                    btn.style.cursor = 'pointer'; // เพิ่ม cursor ให้รู้ว่าเป็นปุ่ม
                     btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> ตำแหน่งของฉัน';
+                    
+                    // ป้องกันแผนที่กลืน Event การคลิกปุ่ม (สำคัญมากสำหรับปุ่มบน Leaflet)
+                    L.DomEvent.disableClickPropagation(btn);
+
                     btn.onclick = function(e) {
-                        e.stopPropagation();
                         e.preventDefault();
+                        
                         if(navigator.geolocation) {
-                            // ใส่ Loading เพื่อให้รู้ว่ากำลังค้นหา
                             Swal.fire({ title: 'กำลังค้นหาพิกัด...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
                             
                             navigator.geolocation.getCurrentPosition(pos => {
-                                Swal.close(); // ปิด Loading เมื่อเจอพิกัด
-                                map.flyTo([pos.coords.latitude, pos.coords.longitude], 16, {animate: true});
+                                Swal.close();
+                                const lat = pos.coords.latitude;
+                                const lng = pos.coords.longitude;
+                                
+                                // เลื่อนแผนที่ไปหาตำแหน่ง
+                                map.flyTo([lat, lng], 16, {animate: true});
+                                
+                                // สร้างหรืออัปเดตตำแหน่งหมุด
+                                if (myLocationMarker) {
+                                    myLocationMarker.setLatLng([lat, lng]);
+                                } else {
+                                    // สร้างหมุดแบบจุดกลมสีน้ำเงิน (เหมือนใน Google Maps)
+                                    const myIcon = L.divIcon({
+                                        className: 'custom-my-location',
+                                        html: "<div style='background-color:#3B82F6; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow: 0 0 6px rgba(0,0,0,0.5);'></div>",
+                                        iconSize: [22, 22],
+                                        iconAnchor: [11, 11]
+                                    });
+                                    myLocationMarker = L.marker([lat, lng], {icon: myIcon}).addTo(map)
+                                        .bindPopup('<div style="font-family:Kanit; font-weight:600; text-align:center;">📍 ตำแหน่งปัจจุบันของคุณ</div>');
+                                }
+                                
+                                // เปิด Popup ของหมุด
+                                myLocationMarker.openPopup();
+                                
                             }, err => {
                                 Swal.close();
-                                // แยกแยะ Error เพื่อให้ชาวไร่รู้ว่าเกิดจากอะไร
                                 let errorMsg = 'กรุณาเปิดการเข้าถึงตำแหน่งที่ตั้ง (GPS)';
                                 if (err.code === 1) errorMsg = 'คุณยังไม่อนุญาตให้เว็บไซต์เข้าถึง GPS (Permission denied)';
                                 else if (err.code === 2) errorMsg = 'ไม่สามารถดึงสัญญาณ GPS ได้ในขณะนี้';
-                                else if (err.code === 3) errorMsg = 'หมดเวลาในการค้นหาตำแหน่ง (Timeout) โปรดลองใหม่';
-                                
+                                else if (err.code === 3) errorMsg = 'หมดเวลาในการค้นหาตำแหน่ง (Timeout)';
                                 Swal.fire('ไม่พบพิกัด', errorMsg, 'warning');
-                            }, { 
-                                enableHighAccuracy: true, 
-                                timeout: 10000, // กำหนดเวลาสูงสุด 10 วินาที ป้องกันการโหลดค้างบน PC
-                                maximumAge: 0 
-                            });
+                            }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
                         } else {
                             Swal.fire('ไม่รองรับ', 'เบราว์เซอร์ของคุณไม่รองรับการดึงตำแหน่ง', 'error');
                         }
