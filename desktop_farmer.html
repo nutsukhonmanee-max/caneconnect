@@ -5,20 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CaneConnect - ระบบจัดการสำหรับชาวไร่ (Pro Desktop)</title>
     
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- Leaflet & Geoman (Map & Drawing) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
     <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
     
-    <!-- Turf.js -->
     <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
 
     <style>
@@ -256,19 +252,16 @@
 </head>
 <body>
 
-    <!-- Loading Screen -->
     <div id="loading-screen">
         <div class="spinner"></div>
         <h3 style="color:var(--secondary); font-weight:600; font-size:20px; margin:0;">กำลังซิงค์ข้อมูล...</h3>
     </div>
 
-    <!-- Image Viewer -->
     <div id="image-viewer">
-        <span onclick="closeImageViewer()" style="position: absolute; top: 30px; right: 30px; color: white; font-size: 32px; cursor: pointer; width: 44px; height: 44px; text-align: center; line-height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; border: 1px solid rgba(255,255,255,0.2);">&times;</span>
+        <span onclick="closeImageViewer()" style="position: absolute; top: 30px; right: 30px; color: white; font-size: 32px; cursor: pointer; width: 44px; height: 44px; text-align: center; line-height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; border: 1px solid rgba(255,255,255,0.2);">×</span>
         <img id="image-viewer-img" src="">
     </div>
 
-    <!-- Sidebar Navigation -->
     <aside class="sidebar" id="main-sidebar">
         <div class="sidebar-header">
             <img src="logo.jpg" alt="Logo" style="width: 35px; height: 35px; border-radius: 8px; object-fit: cover;" onerror="this.style.display='none'"> 
@@ -303,7 +296,6 @@
                 </div>
             </div>
         </div>
-        <!-- เครดิตทีมพัฒนา -->
         <div class="sidebar-footer">
             <b>ระบบนี้พัฒนาโดย</b><br>
             ทีม Santi Green Code<br>
@@ -311,7 +303,6 @@
         </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-wrapper">
         <header class="topbar-alert">
             <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px;"></i> 
@@ -321,7 +312,6 @@
 
         <div class="content-body">
 
-            <!-- ================= 1. หน้าข้อมูลส่วนตัว ================= -->
             <div id="profile-page" class="page active">
                 <div class="card">
                     <div class="section-title" style="margin-top:0;"><i class="fa-regular fa-id-card" style="color:var(--primary);"></i> ข้อมูลส่วนตัว (Profile)</div>
@@ -354,7 +344,7 @@
                     <div id="pdpa-box-farmer" style="margin-top: 30px; background: #F8FAFC; padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border);">
                         <label style="display: flex; align-items: flex-start; gap: 15px; margin: 0; cursor: pointer;">
                             <input type="checkbox" id="reg-pdpa" style="width: 20px; height: 20px; margin-top: 2px;">
-                            <span style="font-size: 14px; line-height: 1.6; color: var(--secondary);">ข้าพเจ้ายินยอมให้แพลตฟอร์มเก็บรวบรวมข้อมูลส่วนบุคคล (ชื่อ, เบอร์โทร, พิกัด) เพื่อใช้จับคู่ซื้อขายใบอ้อย ตาม <a href="#" style="color: var(--info); font-weight: 600;">นโยบายความเป็นส่วนตัว (PDPA)</a></span>
+                            <span style="font-size: 14px; line-height: 1.6; color: var(--secondary);">ข้าพเจ้ายินยอมให้แพลตฟอร์มเก็บรวบรวมข้อมูลส่วนบุคคล (ชื่อ,เบอร์โทร, พิกัด) เพื่อใช้จับคู่ซื้อขายใบอ้อย ตาม <a href="#" style="color: var(--info); font-weight: 600;">นโยบายความเป็นส่วนตัว (PDPA)</a></span>
                         </label>
                     </div>
                     
@@ -364,7 +354,6 @@
                 </div>
             </div>
 
-            <!-- ================= 2. หน้าจัดการแปลงอ้อย ================= -->
             <div id="plots-page" class="page">
                 <div class="card">
                     <div class="section-title" style="margin-top:0; display:flex; justify-content:space-between; align-items:center;">
@@ -378,7 +367,7 @@
                         <i class="fa-solid fa-satellite"></i> ระบบรองรับการประเมินพื้นที่ด้วยดาวเทียม หรือปักหมุดด้วยตนเอง ข้อมูลจะถูกบันทึกอัตโนมัติเมื่อกดเพิ่มแปลง
                     </div>
                     
-                    <div id="all-plots-wrapper" style="display:none; margin-bottom: 30px;">
+                    <div id="all-plots-wrapper" style="margin-bottom: 30px;">
                         <div id="all-plots-map" class="map-container" style="height: 400px;"></div>
                     </div>
                     
@@ -392,10 +381,8 @@
                 </div>
             </div>
 
-            <!-- ================= 3. หน้าแจ้งพิกัดอ้อย (หาคิวรถ) ================= -->
             <div id="report-page" class="page">
                 <div class="desktop-report-layout">
-                    <!-- Form Area -->
                     <div class="desktop-report-form">
                         <div class="card" style="padding: 25px;">
                             <div class="section-title" style="margin-top: 0;">1. เลือกแปลงและกำหนดการ</div>
@@ -443,7 +430,6 @@
                         </div>
                     </div>
 
-                    <!-- Map Area -->
                     <div class="desktop-report-map" id="preview-map-wrapper" style="display: none; animation: fadeIn 0.6s ease;">
                         <div class="card" style="padding: 25px; height: 100%; display: flex; flex-direction: column;">
                             <div class="section-title" style="margin-top: 0;">2. ตรวจสอบพิกัดแแผนที่</div>
@@ -456,27 +442,24 @@
                 </div>
             </div>
 
-            <!-- ================= 4. หน้าสถานะคิวงาน (Active Jobs) ================= -->
             <div id="active-jobs-page" class="page">
                 <div class="section-title" style="color: var(--info); margin-top:0;"><i class="fa-solid fa-list-check"></i> สถานะคิวงานปัจจุบัน</div>
-                
-                <div id="farmer-dashboard-container" style="display:none; animation: slideDown 0.4s ease;"></div>
                 
                 <div id="current-sales-container" class="sales-grid"></div>
             </div>
 
-            <!-- ================= 5. หน้าประวัติการขาย (History) ================= -->
             <div id="history-page" class="page">
                 <div class="section-title" style="color: var(--primary); margin-top:0;"><i class="fa-solid fa-clock-rotate-left"></i> ประวัติการขาย (เสร็จสิ้น & ยกเลิก)</div>
+                
+                <div id="farmer-dashboard-container" style="display:none; animation: slideDown 0.4s ease;"></div>
+                
                 <div id="history-sales-container" class="sales-grid"></div>
             </div>
 
         </div>
     </main>
 
-    <!-- LIFF SDK -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <!-- App Version Tag -->
     <div class="app-version">v2.1.0 Pro | อัปเดต: 29 ส.ค. 2026</div>
     
     <script>
@@ -631,23 +614,69 @@
         function renderAllPlotsMap() {
             const wrapper = document.getElementById('all-plots-wrapper'); const container = document.getElementById('all-plots-map');
             if (!container) return; 
-            if (userSavedPlots.length === 0) { wrapper.style.display = 'none'; return; }
+            
+            // ให้แผนที่แสดงตลอดเวลา
             wrapper.style.display = 'block';
 
             if (!allPlotsMapObj) {
                 allPlotsMapObj = L.map('all-plots-map').setView([currentLat, currentLng], 14);
                 L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(allPlotsMapObj);
                 allPlotsLayer = L.featureGroup().addTo(allPlotsMapObj);
+                
+                // เพิ่มปุ่มตำแหน่งของฉัน
+                const locateControl = L.control({position: 'bottomright'});
+                locateControl.onAdd = function(map) {
+                    const btn = L.DomUtil.create('button', 'btn-small btn-small-primary');
+                    btn.style.margin = '10px';
+                    btn.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+                    btn.style.backgroundColor = '#FFFFFF';
+                    btn.style.color = 'var(--primary-dark)';
+                    btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> ตำแหน่งของฉัน';
+                    btn.onclick = function(e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        if(navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(pos => {
+                                map.flyTo([pos.coords.latitude, pos.coords.longitude], 16, {animate: true});
+                            }, err => {
+                                Swal.fire('ไม่พบพิกัด', 'กรุณาเปิดการเข้าถึงตำแหน่งที่ตั้ง (GPS)', 'warning');
+                            }, { enableHighAccuracy: true });
+                        }
+                    };
+                    return btn;
+                };
+                locateControl.addTo(allPlotsMapObj);
             }
             allPlotsLayer.clearLayers();
-            userSavedPlots.forEach((plot, index) => {
+            
+            // วาดแปลงที่มีอยู่ลงบนแผนที่
+            if (userSavedPlots.length > 0) {
+                userSavedPlots.forEach((plot, index) => {
+                    try {
+                        let coords = JSON.parse(plot.polygon); let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
+                        let polygon = L.polygon(flippedCoords, { color: THEME_PRIMARY, fillOpacity: 0.5, weight: 2 }).bindPopup(`<div style="font-family:Kanit;"><b>${plot.name}</b><br>พื้นที่: ${plot.area} ไร่</div>`);
+                        allPlotsLayer.addLayer(polygon);
+                    } catch(e) {}
+                });
+                setTimeout(() => { allPlotsMapObj.invalidateSize(); if (allPlotsLayer.getLayers().length > 0) allPlotsMapObj.fitBounds(allPlotsLayer.getBounds(), { padding: [40, 40] }); }, 300);
+            } else {
+                setTimeout(() => { allPlotsMapObj.invalidateSize(); allPlotsMapObj.setView([currentLat, currentLng], 14); }, 300);
+            }
+        }
+        
+        // ฟังก์ชันใหม่: ใช้สำหรับคลิกการ์ดแล้วซูมไปหาแปลงนั้นๆ
+        function focusPlotOnMap(index) {
+            if(!allPlotsMapObj) return;
+            const plot = userSavedPlots[index];
+            if(plot && plot.polygon) {
                 try {
-                    let coords = JSON.parse(plot.polygon); let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
-                    let polygon = L.polygon(flippedCoords, { color: THEME_PRIMARY, fillOpacity: 0.5, weight: 2 }).bindPopup(`<div style="font-family:Kanit;"><b>${plot.name}</b><br>พื้นที่: ${plot.area} ไร่</div>`);
-                    allPlotsLayer.addLayer(polygon);
-                } catch(e) {}
-            });
-            setTimeout(() => { allPlotsMapObj.invalidateSize(); if (allPlotsLayer.getLayers().length > 0) allPlotsMapObj.fitBounds(allPlotsLayer.getBounds(), { padding: [40, 40] }); }, 300);
+                    let coords = JSON.parse(plot.polygon)[0].map(p => [p[1], p[0]]);
+                    let poly = L.polygon(coords);
+                    allPlotsMapObj.fitBounds(poly.getBounds(), { padding: [40, 40], maxZoom: 18, animate: true });
+                    // สั่งให้เลื่อนหน้าจอไปยังส่วนแผนที่เบาๆ
+                    document.getElementById('all-plots-wrapper').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } catch(e){}
+            }
         }
 
         function renderSavedPlotsList() {
@@ -661,8 +690,9 @@
             
             let html = ''; let optionsHtml = '<option value="">-- กรุณาเลือกแปลงอ้อย --</option>';
             userSavedPlots.forEach((plot, index) => {
+                // ใส่ฟังก์ชัน onclick ฝังใน card เลย เพื่อให้กดแล้วซูมไปที่แปลง
                 html += `
-                    <div class="sale-card">
+                    <div class="sale-card" onclick="focusPlotOnMap(${index})" style="cursor: pointer;" title="คลิกเพื่อดูในแผนที่">
                         <div>
                             <div style="font-weight:700; font-size:18px; color:var(--secondary); border-bottom: 1px dashed var(--border); padding-bottom: 10px; margin-bottom: 15px;">
                                 <i class="fa-solid fa-leaf" style="color:var(--primary);"></i> ${plot.name}
@@ -672,8 +702,8 @@
                             <div style="font-size:14px; color:var(--text-muted);">ทางเข้า: <b>${plot.access||'-'}</b></div>
                         </div>
                         <div style="display:flex; gap:12px; margin-top:25px;">
-                            <button onclick="openAddPlotModal(${index})" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-pen"></i> แก้ไข</button>
-                            <button onclick="removeSavedPlot(${index})" class="btn-small btn-small-outline" style="flex:1; border-color:var(--danger); color:var(--danger); background:#FEF2F2;"><i class="fa-solid fa-trash"></i> ลบ</button>
+                            <button onclick="event.stopPropagation(); openAddPlotModal(${index})" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+                            <button onclick="event.stopPropagation(); removeSavedPlot(${index})" class="btn-small btn-small-outline" style="flex:1; border-color:var(--danger); color:var(--danger); background:#FEF2F2;"><i class="fa-solid fa-trash"></i> ลบ</button>
                         </div>
                     </div>`;
                 optionsHtml += `<option value="${index}">${plot.name} (${plot.area} ไร่)</option>`;
@@ -714,7 +744,6 @@
                 customClass: { popup: 'custom-swal-desktop' },
                 html: `
                     <div style="display:flex; height:600px; text-align:left;">
-                        <!-- Left Panel: Form -->
                         <div style="flex:0.8; padding:35px; background:var(--surface); display:flex; flex-direction:column; overflow-y:auto; border-right:1px solid var(--border);">
                             <div style="font-size: 20px; font-weight: 700; margin-bottom: 25px; color: var(--secondary);"><i class="fa-solid ${plotToEdit?'fa-pen':'fa-plus'}"></i> ${plotToEdit ? 'แก้ไขแปลงอ้อย' : 'เพิ่มแปลงอ้อยใหม่'}</div>
                             
@@ -758,7 +787,6 @@
                             </div>
                         </div>
                         
-                        <!-- Right Panel: Map -->
                         <div style="flex:1.2; position:relative; background:#E2E8F0;">
                             <div id="modal-map" style="height: 100%; width: 100%;"></div>
                         </div>
@@ -1031,7 +1059,6 @@
                 width: '1100px', customClass: { popup: 'custom-swal-desktop' },
                 html: `
                     <div style="display:flex; height:650px; text-align:left;">
-                        <!-- Left Panel: Details -->
                         <div style="flex:1; padding:40px; background:var(--surface); display:flex; flex-direction:column; overflow-y:auto; border-right:1px solid var(--border);">
                             <div style="font-size: 26px; font-weight: 700; margin-bottom: 20px; color: var(--text-main);">ข้อมูลการขายใบอ้อย</div>
                             <div style="display:inline-block; padding:8px 16px; border-radius:20px; font-size:14px; font-weight:600; background:#EAF2F8; color:var(--info); width:fit-content; margin-bottom:25px;">
@@ -1062,7 +1089,6 @@
                                 </div>` : ""}
                         </div>
                         
-                        <!-- Right Panel: Map & Photos -->
                         <div style="flex:1.2; display:flex; flex-direction:column; background:#F4F7F6;">
                             <div id="swal-map" style="flex:1; width:100%;"></div>
                             <div style="padding:25px; background:var(--surface); border-top:1px solid var(--border);">
