@@ -704,45 +704,54 @@
             }
         }
 
-        // ================= หน้าต่างแสดงข้อตกลงและเงื่อนไข (Terms of Use) =================
+        // ================= ข้อตกลงและเงื่อนไขการใช้งาน (Terms of Use) =================
         function showTerms() {
             Swal.fire({
                 title: 'ข้อตกลงและเงื่อนไขการใช้งาน',
                 html: `
-                    <div style="text-align:left; font-size:13px; line-height:1.6; max-height:300px; overflow-y:auto; padding-right:10px; font-family:'Kanit';">
-                        <b>1. สถานะและบทบาทของแพลตฟอร์ม:</b><br>
-                        CaneConnect เป็นเพียงแพลตฟอร์ม "สื่อกลาง" ในการเชื่อมโยงชาวไร่อ้อยและรถม้วน ผู้พัฒนาและทีมงานไม่มีส่วนเกี่ยวข้องกับข้อตกลง การจ้างงาน หรือการชำระเงินระหว่างผู้ใช้งาน<br><br>
-                        
-                        <b>2. ข้อจำกัดความรับผิดชอบ (สำคัญ):</b><br>
-                        ผู้พัฒนาขอสงวนสิทธิ์ปฏิเสธความรับผิดชอบทางกฎหมายในทุกกรณี ซึ่งรวมถึงข้อพิพาทระหว่างผู้ใช้งาน การทิ้งงาน ความเสียหายในพื้นที่ และความขัดข้องของระบบ เนื่องจากเป็นโครงการเพื่อการศึกษาและอยู่ในช่วงทดสอบ (Beta)<br><br>
-                        
-                        <b>3. หน้าที่และความรับผิดชอบ:</b><br>
-                        ผู้ใช้ต้องให้ข้อมูลที่เป็นจริง เสนอราคาอย่างเป็นธรรม และพาร์ทเนอร์ต้องใช้ความระมัดระวังในการปฏิบัติงานเพื่อไม่ให้เกิดความเสียหายแก่ทรัพย์สินของชาวไร่<br><br>
-                        
-                        <b>4. การจัดการข้อมูลส่วนบุคคล (PDPA):</b><br>
-                        ระบบจำเป็นต้องเก็บชื่อ พิกัด และเบอร์โทรศัพท์ โดยจะเปิดเผย "เบอร์โทรศัพท์" ของท่านให้อีกฝ่ายเห็น ก็ต่อเมื่อมีการยืนยันตกลงรับงานกันบนระบบแล้วเท่านั้น ข้อมูลผลการดำเนินงานจะถูกนำไปใช้ประมวลผลเป็นสถิติลด PM2.5 ของโครงการ
+                    <div style="text-align:left; font-size:13px; line-height:1.6; max-height:350px; overflow-y:auto; padding-right:10px; font-family:'Kanit';">
+                        <b style="color:var(--primary-dark); font-size:15px;">ข้อตกลงและเงื่อนไขการใช้งาน (Terms of Use)</b><br>
+                        <b>ฉบับปรับปรุงล่าสุด และ นโยบายคุ้มครองข้อมูลส่วนบุคคล (PDPA)</b><br><br>
+                        แพลตฟอร์ม CaneConnect พัฒนาขึ้นโดย <b>ทีม Santi Green Code โรงเรียนสันติวิทยาสรรพ์ อำเภอผาขาว จังหวัดเลย</b> ภายใต้โครงการ "อนาคตใกล้ฉัน ปีที่ 5" โดยมีวัตถุประสงค์เพื่อเป็นสื่อกลางในการลดการเผาใบอ้อยและแก้ไขปัญหามลพิษ PM2.5 
+                        <br><br><b style="color:var(--danger);">⚠️ ประกาศสำคัญ: แพลตฟอร์มนี้ยังอยู่ใน "ช่วงการทดสอบและพัฒนาระบบ" (Beta Version)</b><br><br>
+                        <b>ข้อที่ 1. สถานะและบทบาทของแพลตฟอร์ม</b><br>
+                        CaneConnect ทำหน้าที่เป็นเพียง "ระบบสารสนเทศสื่อกลาง" เพื่อจับคู่ความต้องการระหว่าง "ชาวไร่อ้อย" และ "พาร์ทเนอร์รถม้วน" ผู้พัฒนาและสถานศึกษาไม่มีส่วนร่วม เป็นตัวแทน หรือเป็นคู่สัญญาในธุรกรรม การจ้างงาน หรือการชำระเงินใดๆ ระหว่างผู้ใช้งานทั้งสิ้น<br><br>
+                        <b>ข้อที่ 2. การปฏิเสธและข้อจำกัดความรับผิด (Limitation of Liability)</b><br>
+                        ผู้พัฒนาและทีมงานขอปฏิเสธความรับผิดชอบทางกฎหมาย ทางแพ่ง และทางอาญา ในทุกกรณี ซึ่งรวมถึงแต่ไม่จำกัดเพียง:<br>
+                        - ความขัดแย้ง การผิดสัญญา การไม่ชำระเงิน การละทิ้งงาน (เทงาน) หรือข้อพิพาทใดๆ ระหว่างผู้ใช้งาน<br>
+                        - ความเสียหายต่อทรัพย์สิน อุบัติเหตุ หรือการบาดเจ็บที่เกิดขึ้นจากการปฏิบัติงานในพื้นที่จริง<br>
+                        - ความผิดพลาดของข้อมูลพิกัด ขนาดพื้นที่ หรือการประเมินราคา<br>
+                        - ความล่าช้า ความขัดข้องทางเทคนิค ข้อมูลสูญหาย หรือการหยุดให้บริการของระบบ เนื่องจากอยู่ระหว่างการพัฒนา<br><br>
+                        <b>ข้อที่ 3. หน้าที่และความรับผิดชอบของผู้ใช้งาน</b><br>
+                        ผู้ใช้งานตกลงที่จะให้ข้อมูลที่ถูกต้องตามความเป็นจริง ปฏิบัติตามข้อตกลงที่ทำไว้กับอีกฝ่ายอย่างสุจริต และพาร์ทเนอร์รถม้วนต้องใช้ความระมัดระวังสูงสุดเพื่อไม่ให้เกิดความเสียหายต่อแปลงเกษตรของชาวไร่<br><br>
+                        <b>ข้อที่ 4. นโยบายคุ้มครองข้อมูลส่วนบุคคล (PDPA)</b><br>
+                        - <b>ข้อมูลที่จัดเก็บ:</b> ชื่อ-นามสกุล, เบอร์โทรศัพท์, ข้อมูลที่อยู่, พิกัดแปลงเกษตร และจุดจอดรถ<br>
+                        - <b>การเปิดเผยข้อมูล:</b> ระบบจะแสดงเพียง "ชื่อและพิกัด/ข้อมูลแปลง" บนกระดานคิวงาน และจะเปิดเผย "เบอร์โทรศัพท์ติดต่อ" ให้แก่อีกฝ่าย <b>ก็ต่อเมื่อมีการยืนยันตกลงรับงานหรือเสนอราคากันแล้วเท่านั้น</b> เพื่อปกป้องความเป็นส่วนตัวของท่าน<br>
+                        - <b>การใช้ข้อมูล:</b> ข้อมูลสถิติ (ปริมาณไร่, น้ำหนัก) จะถูกนำไปประมวลผลในภาพรวมเพื่อการศึกษาและการวัดผลการลด PM2.5<br><br>
+                        <b>ข้อที่ 5. การแก้ไขและระงับการให้บริการ</b><br>
+                        ทีมงานขอสงวนสิทธิ์ในการแก้ไขข้อตกลง ระงับบัญชีผู้ใช้งานที่ฝ่าฝืนเงื่อนไข หรือหยุดให้บริการแพลตฟอร์มในเวลาใดๆ โดยไม่ต้องแจ้งให้ทราบล่วงหน้า
                     </div>
                 `,
-                confirmButtonText: 'รับทราบ',
+                confirmButtonText: 'ปิดหน้าต่าง',
                 confirmButtonColor: THEME_PRIMARY
             });
         }
 
-        // ================= ฟังก์ชันบังคับให้กดยอมรับข้อตกลงและเงื่อนไข =================
         async function requireTermsOfUse(role) {
             hideLoader(); 
             return new Promise((resolve) => {
                 Swal.fire({
                     title: 'ข้อตกลงและเงื่อนไข (อัปเดตใหม่)',
                     html: `
-                        <div style="text-align:left; font-size:13px; line-height:1.6; max-height:200px; overflow-y:auto; padding:12px; background:var(--bg-main); border-radius:12px; border:1px solid var(--border); margin-bottom:15px; font-family:'Kanit';">
-                            <b>1. สื่อกลางเท่านั้น:</b> แพลตฟอร์มไม่รับผิดชอบต่อข้อตกลง สัญญา หรือการชำระเงินใดๆ ระหว่างผู้ใช้งาน<br>
-                            <b>2. ปฏิเสธความรับผิดชอบ:</b> ไม่รับผิดชอบต่อข้อพิพาท การเทงาน อุบัติเหตุ หรือความขัดข้องของระบบ<br>
-                            <b>3. ความเป็นส่วนตัว (PDPA):</b> เบอร์โทรศัพท์จะถูกเปิดเผยเมื่อตกลงรับงานแล้วเท่านั้น
+                        <div style="text-align:left; font-size:13px; line-height:1.6; max-height:220px; overflow-y:auto; padding:12px; background:var(--bg-main); border-radius:12px; border:1px solid var(--border); margin-bottom:15px; font-family:'Kanit';">
+                            <b style="color:var(--danger);">⚠️ ระบบอยู่ในช่วงทดสอบและพัฒนา (Beta) โดยทีม Santi Green Code โรงเรียนสันติวิทยาสรรพ์ อ.ผาขาว จ.เลย</b><br><br>
+                            <b>1. สื่อกลางเท่านั้น:</b> แพลตฟอร์มเป็นเพียงสื่อกลาง ไม่รับผิดชอบต่อข้อตกลง สัญญา การจ้างงาน หรือการชำระเงินใดๆ ระหว่างผู้ใช้งาน<br>
+                            <b>2. ปฏิเสธความรับผิด:</b> ผู้พัฒนาไม่รับผิดชอบทางกฎหมายต่อข้อพิพาท การละทิ้งงาน ความเสียหายในพื้นที่ อุบัติเหตุ หรือความขัดข้องของระบบในทุกกรณี<br>
+                            <b>3. ความเป็นส่วนตัว (PDPA):</b> ข้อมูลพิกัดจะถูกใช้เพื่อการประเมินงาน และ "เบอร์โทรศัพท์" จะถูกเปิดเผยเมื่อตกลงรับงานกันแล้วเท่านั้น
                         </div>
                         <label style="display: flex; align-items: flex-start; gap: 10px; margin: 0; cursor: pointer; text-align:left;">
                             <input type="checkbox" id="popup-terms-check" style="width: 20px; height: 20px; flex-shrink: 0; margin-top:2px;">
-                            <span style="font-size:14px; font-weight:500; color:var(--text-main);">ข้าพเจ้าได้อ่านและยอมรับ ข้อตกลงและเงื่อนไขการใช้งาน (Terms of Use) รวมถึงนโยบาย PDPA อย่างครบถ้วน</span>
+                            <span style="font-size:14px; font-weight:500; color:var(--text-main);">ข้าพเจ้าได้อ่าน เข้าใจ และยอมรับข้อตกลงเงื่อนไขทางกฎหมาย รวมถึงนโยบาย PDPA อย่างครบถ้วน</span>
                         </label>
                     `,
                     allowOutsideClick: false,
@@ -759,10 +768,8 @@
                 }).then(async (result) => {
                     if (result.isConfirmed) {
                         showLoader(); 
-                        // บันทึกลงในเครื่องว่าเคยกดยอมรับเวอร์ชันนี้แล้ว
-                        localStorage.setItem('caneconnect_terms_v1', 'accepted');
+                        localStorage.setItem('caneconnect_terms_v2', 'accepted');
                         try {
-                            // อัปเดตในฐานข้อมูล (ใช้ฟังก์ชัน acceptPDPA เดิมเพื่อบันทึกสถานะ)
                             await fetch(GAS_WEB_APP_URL, {
                                 method: 'POST',
                                 body: JSON.stringify({
@@ -1613,7 +1620,7 @@
                 
                 if (result.status === "found") {
                     // ================= บังคับยอมรับ Terms of Use =================
-                    if (!result.data.pdpa || localStorage.getItem('caneconnect_terms_v1') !== 'accepted') { 
+                    if (!result.data.pdpa || localStorage.getItem('caneconnect_terms_v2') !== 'accepted') { 
                         await requireTermsOfUse('farmer'); 
                     } 
                     
@@ -1705,7 +1712,7 @@
                 
                 if (result.status === "success") { 
                     if (!isEditMode) {
-                        localStorage.setItem('caneconnect_terms_v1', 'accepted');
+                        localStorage.setItem('caneconnect_terms_v2', 'accepted');
                     }
                     
                     isEditMode = true; 
@@ -1739,7 +1746,7 @@
                 
                 if (result.status === "found") {
                     // ================= บังคับยอมรับ Terms of Use =================
-                    if (!result.data.pdpa || localStorage.getItem('caneconnect_terms_v1') !== 'accepted') { 
+                    if (!result.data.pdpa || localStorage.getItem('caneconnect_terms_v2') !== 'accepted') { 
                         await requireTermsOfUse('farmer'); 
                     } 
                     
@@ -2259,7 +2266,7 @@
                 
                 if (result.status === "found") {
                     // ================= บังคับยอมรับ Terms of Use =================
-                    if (!result.data.pdpa || localStorage.getItem('caneconnect_terms_v1') !== 'accepted') { 
+                    if (!result.data.pdpa || localStorage.getItem('caneconnect_terms_v2') !== 'accepted') { 
                         await requireTermsOfUse('buyer'); 
                     } 
                     
@@ -2341,7 +2348,7 @@
                 const result = await res.json(); 
                 if (result.status === "success") { 
                     if (!isBuyerEditMode) {
-                        localStorage.setItem('caneconnect_terms_v1', 'accepted');
+                        localStorage.setItem('caneconnect_terms_v2', 'accepted');
                     }
                     Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: 'บันทึกข้อมูลแล้ว', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then(()=>{ location.reload(); }); 
                 } 
@@ -2358,7 +2365,7 @@
                 
                 if (result.status === "found") { 
                     // ================= บังคับยอมรับ Terms of Use =================
-                    if (!result.data.pdpa || localStorage.getItem('caneconnect_terms_v1') !== 'accepted') { 
+                    if (!result.data.pdpa || localStorage.getItem('caneconnect_terms_v2') !== 'accepted') { 
                         await requireTermsOfUse('buyer'); 
                     } 
                     
@@ -2415,6 +2422,14 @@
                     renderPurchasesPage(); 
                 } 
             } catch (error) { console.error("Load map error", error); }
+        }
+
+        function getDistanceJS(lat1, lon1, lat2, lon2) { 
+            var R = 6371; 
+            var dLat = (lat2 - lat1) * (Math.PI / 180); 
+            var dLon = (lon2 - lon1) * (Math.PI / 180); 
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * Math.sin(dLon / 2) * Math.sin(dLon / 2); 
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
         }
 
         function updateClusterLogic() {
@@ -2751,7 +2766,7 @@
                     <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">`;
                     
             if(!isActive) { 
-                popupContent += `<button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="width:100%; padding:8px; border-color:${colorHex}; color:${colorHex};">ดูรายละเอียด / เสนอราคา</button>`; 
+                popupContent += `<button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; padding:8px; border-color:${colorHex}; color:${colorHex};">ดูรายละเอียด / เสนอราคา</button>`; 
             } else { 
                 popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="width:100%; padding:8px;">แจ้งปิดงาน</button>`; 
             } 
@@ -2766,7 +2781,8 @@
                 try { 
                     let coords = JSON.parse(item.polygon); 
                     let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
-                    buyerPolygonLayer.addLayer(L.polygon(flippedCoords, { color: colorHex, fillOpacity: 0.3, weight: 3 })); 
+                    let polygon = L.polygon(flippedCoords, { color: colorHex, fillOpacity: 0.2, weight: 2 }); 
+                    buyerPolygonLayer.addLayer(polygon); 
                 } catch(e) {} 
             }
         }
@@ -2886,7 +2902,501 @@
             }
         }
 
-        // ================= เริ่มการทำงานเมื่อโหลดเว็บ =================
+        // ==========================================
+        // การซื้อของฉัน (My Purchases - Detailed)
+        // ==========================================
+        function renderPurchasesPage() {
+            const container = document.getElementById("buyer-purchases-container");
+            const alertBanner = document.getElementById("purchase-alert-banner");
+            const badge = document.getElementById("purchase-noti-badge");
+            
+            container.innerHTML = '';
+            
+            let offeredJobs = rawBuyerData.filter(j => j.status === 'รอชาวไร่ยืนยัน' && myOfferedRows.includes(j.row));
+            let activeJobs = rawBuyerData.filter(j => j.status === 'กำลังดำเนินการ');
+            let verifyingJobs = rawBuyerData.filter(j => j.status === 'รอชาวไร่ตรวจสอบ');
+
+            let totalActive = activeJobs.length;
+            if(totalActive > 0) { 
+                badge.innerText = totalActive; 
+                badge.style.display = 'inline-block'; 
+                alertBanner.style.display = 'flex'; 
+            } else { 
+                badge.style.display = 'none'; 
+                alertBanner.style.display = 'none'; 
+            }
+            
+            if(offeredJobs.length === 0 && activeJobs.length === 0 && verifyingJobs.length === 0) { 
+                container.innerHTML = "<div class='empty-state full-width'>ยังไม่มีรายการสั่งซื้อ หรือรอการพิจารณาครับ</div>"; 
+                return; 
+            }
+
+            if(activeJobs.length > 0) {
+                let html = `
+                    <div class="purchase-group full-width">
+                        <div class="purchase-group-title" style="color:var(--primary-dark); font-weight:700; margin-bottom:15px; font-size:18px;">
+                            <i class="fa-solid fa-truck-fast"></i> งานที่ต้องไปดำเนินการ (ชาวไร่ตกลงแล้ว) <span class="badge bg-success">${activeJobs.length} งาน</span>
+                        </div>
+                        <div class="jobs-grid" style="margin-bottom:0;">
+                `;
+                activeJobs.forEach(item => {
+                    let displayName = item.farmerFullName || item.farmerName; 
+                    let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
+                    html += `
+                        <div class="sale-card" style="border-left: 5px solid var(--primary); background:#F0FDF4;">
+                            <div class="sale-header">
+                                <span style="font-weight:700; color:var(--primary-dark); font-size:16px;">คุณ ${displayName}</span>
+                                <span class="badge" style="background:#A7F3D0; color:#064E3B;">พร้อมเข้าม้วน!</span>
+                            </div>
+                            <div class="sale-detail">
+                                <div>เป้าหมายวิ่งงาน: <span style="color:var(--primary-dark); font-weight:700; font-size:16px;">${actualQ} ไร่</span></div>
+                                <div>ราคาที่ตกลง: <span style="font-weight:600; color:var(--danger);">${item.price}</span></div>
+                                <div>กำหนดเข้าม้วน: <span style="font-weight:600;">${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span></div>
+                                <div style="font-size:13px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-phone"></i> โทร: <a href="tel:${item.farmerPhone}">${item.farmerPhone || 'ไม่ระบุ'}</a></div>
+                            </div>
+                            <div style="display:flex; gap:10px; margin-top:16px;">
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1;" title="ดูพิกัดแผนที่"><i class="fa-solid fa-map-location-dot"></i></button>
+                                <button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1;"><i class="fa-solid fa-flag-checkered"></i> ปิดงาน</button>
+                                <button onclick="cancelPurchase(${item.row})" class="btn-main btn-outline" style="flex:0.5; border-color:var(--danger); color:var(--danger);" title="ยกเลิกการรับซื้อ"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
+                    `;
+                }); 
+                html += `</div></div>`; 
+                container.innerHTML += html;
+            }
+
+            if(verifyingJobs.length > 0) {
+                let html = `
+                    <div class="purchase-group full-width" style="margin-top:20px;">
+                        <div class="purchase-group-title" style="color:var(--purple); font-weight:700; margin-bottom:15px; font-size:18px;">
+                            <i class="fa-solid fa-file-invoice"></i> รอชาวไร่ตรวจสอบบิลชั่งน้ำหนัก <span class="badge bg-purple">${verifyingJobs.length} งาน</span>
+                        </div>
+                        <div class="jobs-grid" style="margin-bottom:0;">
+                `;
+                verifyingJobs.forEach(item => {
+                    let displayName = item.farmerFullName || item.farmerName; 
+                    html += `
+                        <div class="sale-card" style="border-left: 5px solid var(--purple); background:#F5F3FF;">
+                            <div class="sale-header">
+                                <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>
+                                <span class="badge bg-purple">รอชาวไร่ยืนยันบิล</span>
+                            </div>
+                            <div class="sale-detail">
+                                <div>น้ำหนักที่ชั่งได้: <span style="color:var(--purple); font-weight:700; font-size:16px;">${item.actualWeight} ตัน</span></div>
+                                <div>ราคาที่ตกลง: <span style="font-weight:600; color:var(--danger);">${item.price}</span></div>
+                            </div>
+                            <div style="display:flex; gap:10px; margin-top:16px;">
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; border-color:var(--purple); color:var(--purple);"><i class="fa-solid fa-eye"></i> ดูรายละเอียดบิล</button>
+                            </div>
+                        </div>
+                    `;
+                }); 
+                html += `</div></div>`; 
+                container.innerHTML += html;
+            }
+
+            if(offeredJobs.length > 0) {
+                let html = `
+                    <div class="purchase-group full-width" style="margin-top:20px;">
+                        <div class="purchase-group-title" style="color:var(--warning); font-weight:700; margin-bottom:15px; font-size:18px;">
+                            <i class="fa-solid fa-hourglass-half"></i> รอชาวไร่พิจารณาข้อเสนอ <span class="badge bg-warning">${offeredJobs.length} งาน</span>
+                        </div>
+                        <div class="jobs-grid" style="margin-bottom:0;">
+                `;
+                offeredJobs.forEach(item => {
+                    let displayName = item.farmerFullName || item.farmerName; 
+                    let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
+                    html += `
+                        <div class="sale-card" style="border-left: 5px solid var(--warning); background:#FFFBEB;">
+                            <div class="sale-header">
+                                <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>
+                                <span class="badge bg-warning">รอพิจารณา</span>
+                            </div>
+                            <div class="sale-detail">
+                                <div>พื้นที่ประเมิน: <span style="font-weight:700; font-size:16px;">${actualQ} ไร่</span></div>
+                                <div>สถานะของคุณ: <span style="color:var(--danger); font-weight:700; font-size:16px;">เสนอราคาแล้ว</span></div>
+                                <div>กำหนดเข้าม้วน: <span style="font-weight:600;">${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span></div>
+                            </div>
+                            <div style="display:flex; gap:10px; margin-top:16px;">
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--warning); color:var(--warning);"><i class="fa-solid fa-eye"></i> ดูแปลง</button>
+                                <button onclick="cancelOffer(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger);"><i class="fa-solid fa-ban"></i> ถอนข้อเสนอ</button>
+                            </div>
+                        </div>
+                    `;
+                }); 
+                html += `</div></div>`; 
+                container.innerHTML += html;
+            }
+        }
+
+        async function cancelOffer(rowId) {
+            const { value: reason } = await Swal.fire({ 
+                title: 'ถอนข้อเสนอรับซื้อ?', 
+                text: 'โปรดระบุเหตุผลที่ต้องการถอนข้อเสนอนี้ (เพื่อให้ชาวไร่ทราบ)', 
+                input: 'text', 
+                inputPlaceholder: 'ระบุเหตุผล (เช่น คิวงานเต็ม, รถเสีย...)', 
+                showCancelButton: true, 
+                confirmButtonColor: THEME_DANGER, 
+                confirmButtonText: 'ยืนยันการถอนข้อเสนอ', 
+                cancelButtonText: 'กลับ', 
+                inputValidator: (value) => { if (!value) return 'กรุณาระบุเหตุผลด้วยครับ!' } 
+            });
+            
+            if (reason) {
+                Swal.fire({ title: 'กำลังดำเนินการ...', didOpen: () => { Swal.showLoading() } });
+                try {
+                    const res = await fetch(GAS_WEB_APP_URL, { 
+                        method: "POST", 
+                        body: JSON.stringify({ action: "buyerCancelOffer", row: rowId, userId: userProfile.userId, reason: reason }) 
+                    });
+                    if ((await res.json()).status === "success") {
+                        myOfferedRows = myOfferedRows.filter(id => id !== rowId); 
+                        localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows));
+                        if(!myCanceledRows.includes(rowId)) { 
+                            myCanceledRows.push(rowId); 
+                            localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows)); 
+                        }
+                        Swal.fire('ถอนข้อเสนอสำเร็จ', 'ระบบได้ถอนข้อเสนอของคุณแล้ว', 'success').then(() => { fetchBuyerRawData(); });
+                    }
+                } catch(e) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบได้', 'error'); }
+            }
+        }
+
+        async function cancelPurchase(rowId) {
+            const { value: reason } = await Swal.fire({ 
+                title: 'ยกเลิกการรับซื้อ?', 
+                text: 'การยกเลิกงานที่ตกลงกันแล้วอาจส่งผลต่อคะแนนเครดิตของคุณ โปรดระบุเหตุผลที่ชัดเจน', 
+                input: 'text', 
+                inputPlaceholder: 'ระบุเหตุผล (เช่น เข้าพื้นที่ไม่ได้, เครื่องจักรขัดข้อง...)', 
+                showCancelButton: true, 
+                confirmButtonColor: THEME_DANGER, 
+                confirmButtonText: 'ยืนยันยกเลิกการรับซื้อ', 
+                cancelButtonText: 'กลับ', 
+                inputValidator: (value) => { if (!value) return 'กรุณาระบุเหตุผลด้วยครับ!' } 
+            });
+            
+            if (reason) {
+                Swal.fire({ title: 'กำลังดำเนินการ...', didOpen: () => { Swal.showLoading() } });
+                try {
+                    const res = await fetch(GAS_WEB_APP_URL, { 
+                        method: "POST", 
+                        body: JSON.stringify({ action: "buyerCancelJob", row: rowId, userId: userProfile.userId, reason: reason }) 
+                    });
+                    if ((await res.json()).status === "success") {
+                        if(!myCanceledRows.includes(rowId)) { 
+                            myCanceledRows.push(rowId); 
+                            localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows)); 
+                        }
+                        Swal.fire('ยกเลิกสำเร็จ', 'ระบบได้ยกเลิกงานนี้และแจ้งชาวไร่แล้ว', 'success').then(() => { fetchBuyerRawData(); });
+                    }
+                } catch(e) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบได้', 'error'); }
+            }
+        }
+
+        // ==========================================
+        // เมนู Trip Planner
+        // ==========================================
+        function renderTripPlanner() {
+            const availList = document.getElementById("trip-available-list"); 
+            const selList = document.getElementById("trip-selected-list");
+            availList.innerHTML = ''; 
+            selList.innerHTML = '';
+            
+            let searchQuery = document.getElementById('trip-search') ? document.getElementById('trip-search').value.toLowerCase() : "";
+            let sortBy = document.getElementById('trip-sort') ? document.getElementById('trip-sort').value : "date-near";
+            let availableJobs = rawBuyerData.filter(p => p.status === "รอคิวรถ" || p.status === "รอชาวไร่ยืนยัน");
+            
+            if (searchQuery) { 
+                availableJobs = availableJobs.filter(j => 
+                    (j.farmerFullName || j.farmerName).toLowerCase().includes(searchQuery) || 
+                    (j.plotProv && j.plotProv.toLowerCase().includes(searchQuery)) || 
+                    (j.prov && j.prov.toLowerCase().includes(searchQuery)) || 
+                    (j.plotDist && j.plotDist.toLowerCase().includes(searchQuery)) || 
+                    (j.dist && j.dist.toLowerCase().includes(searchQuery)) 
+                ); 
+            }
+            
+            if (sortBy === "date-near") { 
+                availableJobs.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate)); 
+            } else if (sortBy === "dist-near") { 
+                availableJobs.sort((a,b) => { 
+                    let dA = (currentLat && currentLng && a.lat && a.lon && !isNaN(parseFloat(a.lat))) ? getDistanceJS(currentLat, currentLng, a.lat, a.lon) : 999999; 
+                    let dB = (currentLat && currentLng && b.lat && b.lon && !isNaN(parseFloat(b.lat))) ? getDistanceJS(currentLat, currentLng, b.lat, b.lon) : 999999; 
+                    return dA - dB; 
+                }); 
+            } else if (sortBy === "rai-desc") { 
+                availableJobs.sort((a,b) => parseFloat(b.qty||0) - parseFloat(a.qty||0)); 
+            }
+            
+            if(availableJobs.length === 0) { 
+                availList.innerHTML = '<div class="empty-state">ไม่พบรายการที่ค้นหา</div>'; 
+            }
+            
+            availableJobs.forEach(j => {
+                let isSelected = currentTripJobs.includes(j.row);
+                if(!isSelected) {
+                    let displayName = j.farmerFullName || j.farmerName; 
+                    let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0)); 
+                    let hDate = new Date(j.harvestDate).toLocaleDateString('th-TH');
+                    availList.innerHTML += `
+                        <div style="background:var(--bg-body); border:1px solid var(--border); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <b style="color:var(--secondary);">${displayName}</b> <span style="color:var(--primary-dark); font-weight:700;">${actualQ} ไร่</span><br>
+                                <span style="font-size:12px; color:var(--text-muted);"><i class="fa-regular fa-calendar"></i> ${hDate}</span>
+                            </div>
+                            <div style="display:flex; gap:5px;">
+                                <button onclick="viewSaleIslandModal(${j.row})" class="btn-action btn-view" title="ดูรายละเอียดแปลง"><i class="fa-solid fa-eye"></i></button>
+                                <button onclick="addToTrip(${j.row})" class="btn-action btn-add" title="เพิ่มเข้าทริป"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            let sortedTripJobs = currentTripJobs.map(id => rawBuyerData.find(j => j.row === id)).filter(j => j);
+            sortedTripJobs.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate));
+
+            let totalTripRai = 0; 
+            let prevLat = null, prevLon = null; 
+            let uniqueFarmers = new Set(); 
+            let dates = [];
+            
+            if(sortedTripJobs.length > 0) {
+                sortedTripJobs.forEach((j, index) => {
+                    let displayName = j.farmerFullName || j.farmerName; 
+                    let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0)); 
+                    let hDate = new Date(j.harvestDate).toLocaleDateString('th-TH');
+                    
+                    totalTripRai += actualQ; 
+                    uniqueFarmers.add(j.farmerLineId || j.farmerName); 
+                    dates.push(new Date(j.harvestDate).getTime());
+                    
+                    let distHtml = '';
+                    if (index > 0 && prevLat && prevLon && j.lat && j.lon && !isNaN(parseFloat(j.lat))) { 
+                        let d = getDistanceJS(prevLat, prevLon, j.lat, j.lon).toFixed(1); 
+                        distHtml = `
+                            <div style="text-align:center; padding:6px 0; color:var(--info); font-size:12px; font-weight:600; display:flex; flex-direction:column; align-items:center;">
+                                <div style="width:2px; height:15px; background:var(--info); margin-bottom:2px;"></div>
+                                <span><i class="fa-solid fa-truck"></i> ขับรถไปอีก ${d} กม.</span>
+                                <div style="width:2px; height:15px; background:var(--info); margin-top:2px;"></div>
+                            </div>
+                        `; 
+                    }
+                    prevLat = j.lat; prevLon = j.lon;
+                    
+                    selList.innerHTML += distHtml + `
+                        <div style="background:var(--primary-light); border:1px solid var(--primary); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow-sm);">
+                            <div style="flex:1;">
+                                <b style="color:var(--primary-dark);">${index+1}. คุณ ${displayName}</b> <span style="font-weight:700; color:var(--secondary);">${actualQ} ไร่</span><br>
+                                <span style="font-size:12px; color:var(--primary-dark);"><i class="fa-regular fa-calendar"></i> นัด: ${hDate}</span>
+                            </div>
+                            <div style="display:flex; gap:5px;">
+                                <button onclick="viewSaleIslandModal(${j.row})" class="btn-action btn-view" title="ดูรายละเอียดแปลง"><i class="fa-solid fa-eye"></i></button>
+                                <button onclick="removeFromTrip(${j.row})" class="btn-action btn-delete" title="เอาออก"><i class="fa-solid fa-minus"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else { 
+                selList.innerHTML = `
+                    <div class="empty-state" style="background:transparent; border:none; margin-top:50px;">
+                        <i class="fa-solid fa-truck-moving" style="font-size:40px; margin-bottom:15px; color:var(--border);"></i><br>
+                        ทริปว่างเปล่า<br><span style="font-size:13px;">กดปุ่ม + ด้านซ้าย เพื่อเพิ่มงานเข้ามาในเส้นทางนี้</span>
+                    </div>
+                `; 
+            }
+            
+            let totalDays = 0; 
+            if (dates.length > 0) { 
+                let minDate = Math.min(...dates); 
+                let maxDate = Math.max(...dates); 
+                totalDays = Math.ceil((maxDate - minDate) / (1000 * 3600 * 24)) + 1; 
+            }
+            
+            document.getElementById("trip-total-rai").innerText = totalTripRai.toFixed(1) + " ไร่"; 
+            document.getElementById("trip-total-days").innerText = totalDays + " วัน"; 
+            document.getElementById("trip-total-farmers").innerText = uniqueFarmers.size + " ราย";
+        }
+
+        function addToTrip(rowId) { 
+            currentTripJobs.push(rowId); 
+            renderTripPlanner(); 
+        }
+        
+        function removeFromTrip(rowId) { 
+            currentTripJobs = currentTripJobs.filter(id => id !== rowId); 
+            renderTripPlanner(); 
+        }
+        
+        function addToTripFromModal(rowId) {
+            if(!currentTripJobs.includes(rowId)) { 
+                currentTripJobs.push(rowId); 
+                Swal.fire({ title: 'เพิ่มลงทริปแล้ว!', icon: 'success', timer: 1500, showConfirmButton: false });
+                if(document.getElementById('buyer-trip-page').classList.contains('active')) { 
+                    renderTripPlanner(); 
+                } else if(document.getElementById('buyer-calendar-page').classList.contains('active')) { 
+                    Swal.close(); 
+                }
+            } else { 
+                Swal.fire('มีในทริปแล้ว', 'งานนี้ถูกเพิ่มลงในทริปปัจจุบันแล้วครับ', 'info'); 
+            }
+        }
+
+        async function saveTrip() {
+            if(currentTripJobs.length === 0) { 
+                Swal.fire('ไม่มีข้อมูล', 'กรุณาเพิ่มแปลงเข้าทริปก่อนทำการบันทึก', 'warning'); 
+                return; 
+            }
+            
+            let htmlForm = `
+                <div style="text-align:left; font-family:'Kanit'; max-height:60vh; overflow-y:auto; padding-right:10px;">
+                    <div style="font-size:16px; font-weight:600; margin-bottom:15px; color:var(--secondary);">
+                        <i class="fa-solid fa-hand-holding-dollar"></i> ระบุราคารับซื้อ (บาท/ไร่) สำหรับแต่ละแปลง
+                    </div>
+            `;
+            
+            let tripJobsData = currentTripJobs.map(id => rawBuyerData.find(j => j.row === id)).filter(j => j);
+            tripJobsData.forEach((j, index) => {
+                let displayName = j.farmerFullName || j.farmerName; 
+                let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0));
+                htmlForm += `
+                    <div style="background:var(--bg-body); padding:12px; border-radius:8px; border:1px solid var(--border); margin-bottom:10px;">
+                        <div style="font-weight:600; color:var(--primary-dark);">${index+1}. คุณ ${displayName} <span style="float:right;">${actualQ} ไร่</span></div>
+                        <input type="number" id="trip-price-${j.row}" class="swal-input" placeholder="เสนอราคา (บาท/ไร่)" style="margin-top:8px; height: 38px; width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Kanit';" required>
+                    </div>
+                `;
+            }); 
+            htmlForm += `</div>`;
+
+            const { value: formValues } = await Swal.fire({
+                title: 'ยืนยันส่งข้อเสนอราคาทริป', 
+                html: htmlForm, 
+                width: '600px', 
+                showCancelButton: true, 
+                confirmButtonText: '<i class="fa-solid fa-paper-plane"></i> ส่งข้อเสนอทั้งหมด', 
+                cancelButtonText: 'ยกเลิก', 
+                confirmButtonColor: THEME_PRIMARY,
+                preConfirm: () => {
+                    let results = [];
+                    for(let j of tripJobsData) {
+                        let price = document.getElementById(`trip-price-${j.row}`).value;
+                        if(!price) { 
+                            Swal.showValidationMessage('กรุณาระบุราคาให้ครบทุกแปลง'); 
+                            return false; 
+                        }
+                        results.push({ row: j.row, price: price });
+                    }
+                    return results;
+                }
+            });
+
+            if(formValues) {
+                Swal.fire({ title: 'กำลังส่งคำเสนอซื้อแบบกลุ่ม...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } }); 
+                try {
+                    let promises = formValues.map(item => { 
+                        return fetch(GAS_WEB_APP_URL, { 
+                            method: "POST", 
+                            body: JSON.stringify({ 
+                                action: "acceptJob", 
+                                row: item.row, 
+                                userId: userProfile.userId, 
+                                buyerName: buyerNameContext, 
+                                buyerPhone: buyerPhoneContext, 
+                                price: item.price 
+                            }) 
+                        }).then(res => res.json()).then(result => { 
+                            if (result.status === "success") { 
+                                myCanceledRows = myCanceledRows.filter(id => id !== item.row); 
+                                if(!myOfferedRows.includes(item.row)) { 
+                                    myOfferedRows.push(item.row); 
+                                } 
+                            } 
+                        }); 
+                    });
+                    
+                    await Promise.all(promises); 
+                    localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows)); 
+                    localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
+                    
+                    Swal.fire({ 
+                        title: 'สำเร็จ!', 
+                        text: 'ส่งข้อเสนอให้ชาวไร่ทุกแปลงพิจารณาเรียบร้อยแล้ว', 
+                        icon: 'success', 
+                        confirmButtonColor: THEME_PRIMARY 
+                    }).then(() => { 
+                        currentTripJobs = []; 
+                        document.getElementById('trip-name').value = ''; 
+                        switchPage('buyer-purchases-page'); 
+                        fetchBuyerRawData(); 
+                    }); 
+                } catch (error) { 
+                    Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคาได้ทั้งหมด', 'error'); 
+                }
+            }
+        }
+
+        // ==========================================
+        // เมนูปฏิทินคิวงาน (Calendar) Multi-Select
+        // ==========================================
+        function renderCalendar() {
+            var calendarEl = document.getElementById('calendar');
+            if(calendarObj) { 
+                calendarObj.destroy(); 
+            }
+            
+            let events = [];
+            
+            rawBuyerData.forEach(j => {
+                let pass = true;
+                let iProv = (j.plotProv || j.prov || "").replace('จ.', '').trim();
+                let iDist = (j.plotDist || j.dist || "").replace('อ.', '').trim();
+                let iSub  = (j.plotSubDist || j.subDist || "").replace('ต.', '').trim();
+
+                if (filters.cal.provs.length > 0 && !filters.cal.provs.some(p => iProv.includes(p) || p.includes(iProv))) pass = false;
+                if (filters.cal.dists.length > 0 && !filters.cal.dists.some(d => iDist.includes(d) || d.includes(iDist))) pass = false;
+                if (filters.cal.subs.length > 0 && !filters.cal.subs.some(s => iSub.includes(s) || s.includes(iSub))) pass = false;
+                
+                if(!pass) return;
+
+                // Safe Date parsing to prevent FullCalendar crash
+                if(j.harvestDate) {
+                    let dateObj = new Date(j.harvestDate);
+                    if(!isNaN(dateObj.getTime())) {
+                        let dateStr = dateObj.toISOString().split('T')[0];
+                        let displayName = j.farmerFullName || j.farmerName;
+                        
+                        if(j.status === "รอคิวรถ" || j.status === "รอชาวไร่ยืนยัน") {
+                            events.push({ 
+                                title: `${displayName} (${j.qty} ไร่)`, 
+                                start: dateStr, 
+                                color: '#F59E0B', 
+                                extendedProps: { rowId: j.row } 
+                            });
+                        } else if(j.status === "กำลังดำเนินการ") {
+                            events.push({ 
+                                title: `[รับแล้ว] ${displayName}`, 
+                                start: dateStr, 
+                                color: '#10B981', 
+                                extendedProps: { rowId: j.row } 
+                            });
+                        }
+                    }
+                }
+            });
+
+            calendarObj = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth', 
+                locale: 'th', 
+                height: 550, 
+                events: events,
+                eventClick: function(info) { 
+                    viewSaleIslandModal(info.event.extendedProps.rowId, 'buyer'); 
+                }
+            });
+            calendarObj.render();
+        }
+
         window.onload = main;
     </script>
 </body>
