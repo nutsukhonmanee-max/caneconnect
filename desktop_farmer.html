@@ -49,7 +49,11 @@
             --sidebar-width: 280px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
 
         body { 
             font-family: 'Kanit', 'Inter', sans-serif; 
@@ -69,42 +73,68 @@
 
         /* ================= App Version Tag ================= */
         .app-version {
-            position: fixed !important; bottom: 20px !important; right: 20px !important; 
-            font-size: 12px; color: var(--text-muted); font-weight: 600; opacity: 0.8; 
-            z-index: 999999 !important; pointer-events: none; background: rgba(255, 255, 255, 0.95); 
-            padding: 6px 14px; border-radius: 20px; box-shadow: var(--shadow-md); 
-            border: 1px solid var(--border); letter-spacing: 0.5px;
+            position: fixed !important; 
+            bottom: 20px !important; 
+            right: 20px !important; 
+            top: auto !important; 
+            font-size: 12px; 
+            color: var(--text-muted);
+            font-weight: 600; 
+            opacity: 0.8; 
+            z-index: 999999 !important; 
+            pointer-events: none;
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 6px 14px; 
+            border-radius: 20px;
+            box-shadow: var(--shadow-md); 
+            border: 1px solid var(--border); 
+            letter-spacing: 0.5px;
         }
 
         /* ================= Sidebar Layout ================= */
         .sidebar { 
-            width: var(--sidebar-width); background-color: var(--secondary); 
-            color: #F8FAFC; display: flex; flex-direction: column; z-index: 20; 
-            box-shadow: 4px 0 20px rgba(0,0,0,0.05); transition: 0.3s;
+            width: var(--sidebar-width); 
+            background-color: var(--secondary); 
+            color: #F8FAFC; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 20; 
+            box-shadow: 4px 0 20px rgba(0,0,0,0.05); 
+            transition: 0.3s;
         }
 
         .sidebar-header { 
-            padding: 24px 20px; font-size: 20px; font-weight: 700; color: var(--surface); 
-            border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 14px;
+            padding: 24px 20px; 
+            font-size: 20px; 
+            font-weight: 700; 
+            color: var(--surface); 
+            border-bottom: 1px solid rgba(255,255,255,0.08); 
+            display: flex; 
+            align-items: center; 
+            gap: 14px;
         }
 
         .sidebar-profile {
-            padding: 20px; text-align: center; margin: 15px 16px;
-            background: rgba(255,255,255,0.03); border-radius: var(--radius-lg); 
+            padding: 20px; 
+            text-align: center; 
+            margin: 15px 16px;
+            background: rgba(255,255,255,0.03); 
+            border-radius: var(--radius-lg); 
             border: 1px solid rgba(255,255,255,0.05);
         }
 
         .sidebar-profile img { 
-            width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--primary); 
-            object-fit: cover; margin: 0 auto 10px auto; display: none; 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            border: 2px solid var(--primary); 
+            object-fit: cover; 
+            margin: 0 auto 10px auto; 
+            display: none; 
         }
 
         .sidebar-profile-name { font-size: 15px; font-weight: 600; color: #F8FAFC; }
-        .sidebar-profile-role { 
-            font-size: 12px; font-weight: 600; background: rgba(16, 185, 129, 0.2); 
-            padding: 4px 12px; border-radius: 20px; display: inline-block; 
-            margin-top: 6px; color: var(--primary); border: 1px solid rgba(16, 185, 129, 0.3); 
-        }
+        .sidebar-profile-role { font-size: 12px; font-weight: 600; background: rgba(16, 185, 129, 0.2); padding: 4px 12px; border-radius: 20px; display: inline-block; margin-top: 6px; color: var(--primary); border: 1px solid rgba(16, 185, 129, 0.3); }
 
         .sidebar-menu { flex: 1; padding: 10px 16px; overflow-y: auto; }
 
@@ -448,7 +478,7 @@
     <!-- LIFF SDK -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <!-- App Version Tag -->
-    <div class="app-version">v2.1.0 Pro | อัปเดต: 29 ส.ค. 2026</div>
+    <div class="app-version">v2.2.0 Pro | อัปเดต: 29 ส.ค. 2026 (เพิ่มวันที่ประกาศ)</div>
     
     <script>
         // ================= CONFIGURATION =================
@@ -1026,7 +1056,6 @@
                 Swal.close();
 
                 if (result.status === "success" && result.data.buyers) {
-                    // ทำการ Clean เบอร์โทรเพื่อเทียบ
                     let cleanPhoneSearch = phone.replace(/-/g, '').trim();
                     if(cleanPhoneSearch.startsWith("'")) cleanPhoneSearch = cleanPhoneSearch.substring(1);
                     if(cleanPhoneSearch.startsWith("0")) cleanPhoneSearch = cleanPhoneSearch.substring(1);
@@ -1064,6 +1093,7 @@
         function viewSaleIslandModal(index, role) {
             let item = globalSalesData[index]; if(!item) return; 
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
+            let reqDateStr = new Date(item.timestamp).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) + " น.";
             let photoGalleryHTML = "";
             if(item.photos && item.photos.length > 0) { photoGalleryHTML = `<div class="photo-gallery">`; item.photos.forEach(img => { photoGalleryHTML += `<img src="${img}" onclick="openImageViewer('${img}')">`; }); photoGalleryHTML += `</div>`; } 
             else { photoGalleryHTML = `<div style="color:var(--text-muted); font-size:14px; padding:15px; background:var(--bg-main); border-radius:12px; border:1px dashed var(--border); text-align:center;">ไม่มีรูปภาพประกอบ</div>`; }
@@ -1116,6 +1146,9 @@
                             </div>
                             
                             <div style="font-size:16px; line-height:1.8;">
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
+                                    <span style="color:var(--text-muted);">วันที่ประกาศขาย:</span> <span style="font-weight:600;">${reqDateStr}</span>
+                                </div>
                                 <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
                                     <span style="color:var(--text-muted);">พื้นที่แจ้งขาย:</span> <span style="font-weight:700; font-size:18px; color:var(--primary);">${actualQ} ไร่</span>
                                 </div>
@@ -1319,15 +1352,19 @@
 
                 let clickableBuyerName = (item.buyer && item.buyer !== "undefined" && item.buyer !== "-") ? `<span class="clickable-buyer" onclick="viewBuyerDetails('${item.buyerPhone}')"><i class="fa-solid fa-magnifying-glass"></i> ${item.buyer}</span>` : "-";
 
+                let reqDateStr = new Date(item.timestamp).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                let hDateStr = new Date(item.harvestDate).toLocaleDateString('th-TH');
+
                 let cardHTML = `
                     <div class="sale-card hover-lift" style="border-top: 5px solid ${borderColor};">
                         <div>
                             <div class="sale-header">
-                                <span style="font-weight:600; color:var(--text-main); font-size:16px;"><i class="fa-regular fa-calendar"></i> นัดม้วน: ${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span>
+                                <span style="font-weight:600; color:var(--text-main); font-size:16px;"><i class="fa-regular fa-calendar-check"></i> นัดม้วน: ${hDateStr}</span>
                                 <span class="badge ${badge}">${st}</span>
                             </div>
                             <div class="sale-detail">
-                                <div style="font-size:15px; color:var(--text-muted); margin-bottom:12px;">พื้นที่ประเมิน: <span style="font-size:22px; color:var(--primary); font-weight:700;">${item.quantity} ไร่</span></div>
+                                <div style="font-size:13px; color:var(--text-muted); margin-bottom:6px;"><i class="fa-solid fa-bullhorn" style="width:16px;"></i> ประกาศเมื่อ: ${reqDateStr} น.</div>
+                                <div style="font-size:15px; color:var(--text-muted); margin-bottom:12px;"><i class="fa-solid fa-ruler-combined" style="width:16px;"></i> พื้นที่ประเมิน: <span style="font-size:22px; color:var(--primary); font-weight:700;">${item.quantity} ไร่</span></div>
                                 ${badge==='waiting'&&item.offers&&item.offers.length>0 ? `<div style="background:#FFF9E6; padding:10px 15px; border-radius:10px; color:var(--accent); font-weight:600; margin-bottom:15px;"><i class="fa-solid fa-bell fa-shake"></i> มีผู้เสนอราคา ${item.offers.length} ราย</div>` : ''}
                                 ${(badge==='processing'||badge==='verify'||badge==='completed') ? `<div style="background:var(--bg-main); padding:12px; border-radius:10px; margin-bottom:10px;"><div style="font-size:14px; color:var(--text-muted); margin-bottom:4px;">ผู้ซื้อ: <b style="color:var(--text-main);">${clickableBuyerName}</b></div><div style="font-size:14px; color:var(--text-muted);">ตกลงราคา: <span style="color:var(--primary-dark); font-size:16px;">${item.price}</span></div></div>` : ''}
                                 ${(badge==='verify'||badge==='completed') ? `<div style="margin-top:15px; padding-top:15px; border-top:1px dashed var(--border); font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between;"><span>น้ำหนักสุทธิ:</span> <b style="color:var(--text-main);">${item.actualWeight} ตัน</b></div>` : ''}
