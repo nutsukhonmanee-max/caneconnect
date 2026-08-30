@@ -477,7 +477,7 @@
                     </button>
                 </div>
                 
-                <!-- Filters Panel (ปุ่มค้นหา ไม่มีแถบเลื่อน) -->
+                <!-- Filters Panel -->
                 <div class="filter-panel">
                     <div class="filter-item">
                         <label>จังหวัด:</label>
@@ -504,7 +504,7 @@
                     </div>
                 </div>
 
-                <!-- Map Container (สูงขึ้นเพื่อให้เห็นภาพรวม & ปุ่มเต็มจอ) -->
+                <!-- Map Container -->
                 <div style="position: relative;">
                     <button id="fullscreen-btn" onclick="toggleFullscreen()" class="btn-small btn-small-outline" style="position: absolute; top: 15px; right: 15px; z-index: 400; background: white;">
                         <i class="fa-solid fa-expand"></i> ขยายเต็มจอ
@@ -1286,6 +1286,188 @@
         }
 
         // ==========================================
+        // ฟังก์ชันใหม่: เรียกดูข้อมูลแปลงอ้อยจากตารางรถม้วน
+        // ==========================================
+        function viewSaleIslandModal(rowId) {
+            let item = rawBuyerData.find(j => j.row === rowId); 
+            if(!item) {
+                Swal.fire('ข้อผิดพลาด', 'ไม่พบข้อมูลแปลงนี้', 'error');
+                return; 
+            }
+            
+            let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
+            let photoGalleryHTML = "";
+            if(item.photos && item.photos.length > 0) { 
+                photoGalleryHTML = `<div class="photo-gallery" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">`; 
+                item.photos.forEach(img => { 
+                    photoGalleryHTML += `<img src="${img}" onclick="openImageViewer('${img}')" style="width:80px; height:80px; object-fit:cover; border-radius:8px; cursor:zoom-in; border:1px solid var(--border);">`; 
+                }); 
+                photoGalleryHTML += `</div>`; 
+            } else { 
+                photoGalleryHTML = `<div style="color:var(--text-muted); font-size:14px; padding:15px; background:var(--bg-body); border-radius:12px; border:1px dashed var(--border); text-align:center; margin-top:10px;">ไม่มีรูปภาพประกอบ</div>`; 
+            }
+            
+            let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
+            let displayName = item.farmerFullName || item.farmerName;
+            
+            let actionsHTML = "";
+            if (item.status === "รอคิวรถ" || item.status === "รอชาวไร่ยืนยัน") {
+                actionsHTML = `
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <button onclick="acceptJob(${item.row}, ${actualQ})" class="btn-main" style="flex:1;"><i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา</button>
+                        <button onclick="addToTripFromModal(${item.row})" class="btn-main btn-outline" style="flex:1;"><i class="fa-solid fa-route"></i> เพิ่มลงทริป</button>
+                    </div>
+                `;
+            } else if (item.status === "กำลังดำเนินการ") {
+                 actionsHTML = `
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1; background:var(--info);"><i class="fa-solid fa-flag-checkered"></i> แจ้งปิดงาน</button>
+                    </div>
+                `;
+            }
+
+            Swal.fire({ 
+                width: '1000px', 
+                customClass: { popup: 'swal2-popup' },
+                html: `
+                    <div style="display:flex; height:550px; text-align:left;">
+                        <div style="flex:1; padding:30px; background:var(--surface); display:flex; flex-direction:column; overflow-y:auto; border-right:1px solid var(--border);">
+                            <div style="font-size: 24px; font-weight: 700; margin-bottom: 20px; color: var(--text-main);">ข้อมูลแปลงอ้อย</div>
+                            
+                            <div style="font-size:16px; line-height:1.8;">
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
+                                    <span style="color:var(--text-muted);">ชาวไร่:</span> <span style="font-weight:700; font-size:18px; color:var(--primary);">คุณ ${displayName}</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
+                                    <span style="color:var(--text-muted);">พื้นที่แจ้งขาย:</span> <span style="font-weight:700; font-size:18px; color:var(--primary);">${actualQ} ไร่</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
+                                    <span style="color:var(--text-muted);">วันนัดเข้าม้วน:</span> <span style="font-weight:600;">${hDate}</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
+                                    <span style="color:var(--text-muted);">สภาพทางเข้า:</span> <span style="font-weight:600;">${item.access || "ไม่ระบุ"}</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
+                                    <span style="color:var(--text-muted);">เบอร์ติดต่อ:</span> <span style="font-weight:600; color:var(--info);"><a href="tel:${item.farmerPhone}" style="text-decoration:none;">${item.farmerPhone || "ไม่ระบุ"}</a></span>
+                                </div>
+                            </div>
+                            ${actionsHTML}
+                        </div>
+                        
+                        <div style="flex:1.2; display:flex; flex-direction:column; background:#F4F7F6;">
+                            <div id="swal-map" style="flex:1; width:100%; z-index: 1;"></div>
+                            <div style="padding:20px; background:var(--surface); border-top:1px solid var(--border);">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <b style="font-size:16px;"><i class="fa-regular fa-images"></i> สภาพหน้างาน:</b>
+                                    <a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lon}" target="_blank" class="btn-small btn-small-primary" style="text-decoration:none;"><i class="fa-solid fa-diamond-turn-right"></i> นำทางแผนที่</a>
+                                </div>
+                                ${photoGalleryHTML}
+                            </div>
+                        </div>
+                    </div>`, 
+                showConfirmButton: false, showCloseButton: true, 
+                didOpen: () => { 
+                    let sMap = L.map('swal-map', { zoomControl: false }).setView([item.lat, item.lon], 16); 
+                    L.control.zoom({ position: 'topright' }).addTo(sMap);
+                    L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(sMap); 
+                    if (item.polygon && item.polygon !== "") { 
+                        try { 
+                            let c = JSON.parse(item.polygon)[0].map(p=>[p[1],p[0]]); 
+                            let poly = L.polygon(c, {color: THEME_PRIMARY, weight:3, fillOpacity:0.4}).addTo(sMap); 
+                            sMap.fitBounds(poly.getBounds(), {padding:[30,30]}); 
+                            loadGistdaPolygonOverlay(item.polygon, sMap);
+                        } catch(e) {} 
+                    } else { 
+                        L.marker([item.lat, item.lon]).addTo(sMap); 
+                    } 
+                    setTimeout(() => { sMap.invalidateSize(); }, 200); 
+                } 
+            });
+        }
+
+        // ==========================================
+        // ฟังก์ชันใหม่: ฟอร์มแจ้งปิดงานของรถม้วน
+        // ==========================================
+        async function buyerCloseJobModal(rowId, defaultQty) {
+            const { value: formValues } = await Swal.fire({
+                title: 'แจ้งปิดงาน & ส่งบิลชั่งน้ำหนัก',
+                html: `
+                    <div style="text-align:left; font-family:'Kanit';">
+                        <label style="font-weight:600; font-size:14px; color:var(--text-muted);">พื้นที่เก็บเกี่ยวจริง (ไร่):</label>
+                        <input id="swal-actual-qty" type="number" value="${defaultQty}" style="margin-bottom:15px; width:100%; height:44px; padding:10px 14px; border:1px solid var(--border); border-radius:12px; font-family:'Kanit';">
+                        
+                        <label style="font-weight:600; font-size:14px; color:var(--text-muted);">น้ำหนักรวมสุทธิ (ตัน):</label>
+                        <input id="swal-actual-weight" type="number" placeholder="เช่น 45.5" style="margin-bottom:15px; width:100%; height:44px; padding:10px 14px; border:1px solid var(--border); border-radius:12px; font-family:'Kanit';">
+                        
+                        <label style="font-weight:600; font-size:14px; color:var(--text-muted);">อัปโหลดภาพบิลชั่งน้ำหนัก (ถ้ามี):</label>
+                        <input id="swal-close-proof" type="file" accept="image/*" style="margin-bottom:15px; width:100%; font-family:'Kanit';">
+                    </div>
+                `,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'บันทึกและส่งตรวจสอบ',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: THEME_PRIMARY,
+                preConfirm: () => {
+                    const actQty = document.getElementById('swal-actual-qty').value;
+                    const actWt = document.getElementById('swal-actual-weight').value;
+                    const proofFile = document.getElementById('swal-close-proof').files[0];
+                    
+                    if (!actQty || !actWt) {
+                        Swal.showValidationMessage('กรุณาระบุพื้นที่และน้ำหนักให้ครบถ้วน');
+                        return false;
+                    }
+                    return { actQty: actQty, actWt: actWt, proofFile: proofFile };
+                }
+            });
+
+            if (formValues) {
+                Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+                
+                let base64Image = "";
+                if (formValues.proofFile) {
+                    base64Image = await new Promise((resolve) => {
+                        let reader = new FileReader();
+                        reader.onload = (e) => {
+                            let img = new Image();
+                            img.onload = () => {
+                                let cvs = document.createElement('canvas');
+                                let scale = 800 / img.width;
+                                cvs.width = 800;
+                                cvs.height = img.height * scale;
+                                let ctx = cvs.getContext('2d');
+                                ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
+                                resolve(cvs.toDataURL('image/jpeg', 0.6));
+                            };
+                            img.src = e.target.result;
+                        };
+                        reader.readAsDataURL(formValues.proofFile);
+                    });
+                }
+
+                try {
+                    const payload = {
+                        action: "buyerCloseJob",
+                        row: rowId,
+                        actualQty: formValues.actQty,
+                        actualWeight: formValues.actWt,
+                        photoProof: base64Image
+                    };
+                    const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
+                    const result = await res.json();
+                    
+                    if (result.status === "success") {
+                        Swal.fire('สำเร็จ', 'ส่งข้อมูลให้ชาวไร่ตรวจสอบเรียบร้อยแล้ว', 'success').then(() => {
+                            fetchBuyerRawData();
+                        });
+                    }
+                } catch (err) {
+                    Swal.fire('ข้อผิดพลาด', 'ไม่สามารถบันทึกข้อมูลได้', 'error');
+                }
+            }
+        }
+
+        // ==========================================
         // การซื้อของฉัน (My Purchases - Detailed)
         // ==========================================
         function renderPurchasesPage() {
@@ -1323,7 +1505,7 @@
             if(activeJobs.length > 0) {
                 let html = `
                 <div class="purchase-group full-width">
-                    <div class="purchase-group-title" style="color:var(--primary-dark);">
+                    <div class="purchase-group-title" style="color:var(--primary-dark); font-weight:700; margin-bottom:15px; font-size:18px;">
                         <i class="fa-solid fa-truck-fast"></i> งานที่ต้องไปดำเนินการ (ชาวไร่ตกลงแล้ว) <span class="badge bg-success">${activeJobs.length} งาน</span>
                     </div>
                     <div class="jobs-grid" style="margin-bottom:0;">`;
@@ -1357,8 +1539,8 @@
             // Section: รอชาวไร่ตรวจสอบบิล
             if(verifyingJobs.length > 0) {
                 let html = `
-                <div class="purchase-group full-width">
-                    <div class="purchase-group-title" style="color:var(--purple);">
+                <div class="purchase-group full-width" style="margin-top:20px;">
+                    <div class="purchase-group-title" style="color:var(--purple); font-weight:700; margin-bottom:15px; font-size:18px;">
                         <i class="fa-solid fa-file-invoice"></i> รอชาวไร่ตรวจสอบบิลชั่งน้ำหนัก <span class="badge bg-purple">${verifyingJobs.length} งาน</span>
                     </div>
                     <div class="jobs-grid" style="margin-bottom:0;">`;
@@ -1387,8 +1569,8 @@
             // Section: รอชาวไร่พิจารณาข้อเสนอ
             if(offeredJobs.length > 0) {
                 let html = `
-                <div class="purchase-group full-width">
-                    <div class="purchase-group-title" style="color:var(--warning);">
+                <div class="purchase-group full-width" style="margin-top:20px;">
+                    <div class="purchase-group-title" style="color:var(--warning); font-weight:700; margin-bottom:15px; font-size:18px;">
                         <i class="fa-solid fa-hourglass-half"></i> รอชาวไร่พิจารณาข้อเสนอ <span class="badge bg-warning">${offeredJobs.length} งาน</span>
                     </div>
                     <div class="jobs-grid" style="margin-bottom:0;">`;
@@ -1408,7 +1590,7 @@
                                 <div>กำหนดเข้าม้วน: <span style="font-weight:600;">${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span></div>
                             </div>
                             <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--warning); color:var(--warning);"><i class="fa-solid fa-eye"></i> ดูแปลง / เสนอใหม่</button>
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--warning); color:var(--warning);"><i class="fa-solid fa-eye"></i> ดูแปลง</button>
                                 <button onclick="cancelOffer(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger);"><i class="fa-solid fa-ban"></i> ถอนข้อเสนอ</button>
                             </div>
                         </div>`;
@@ -1577,7 +1759,7 @@
                                 <div>พื้นที่: <span style="font-weight:600;">${actualQ} ไร่</span> | น้ำหนัก: <span style="font-weight:600;">${actualW} ตัน</span></div>
                                 <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);">ยอดจ่าย: <b style="color:var(--danger);">${totalStr} บาท</b></div>
                             </div>
-                            <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; margin-top:16px;">ดูบิลชั่ง / ใบเสร็จ</button>
+                            <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; margin-top:16px;">ดูรายละเอียด / บิลชั่ง</button>
                         </div>`;
                     } catch(e) { console.error("History Render Error:", e); }
                 });
@@ -1718,7 +1900,7 @@
                 <div style="font-family:'Kanit';">
                     <div style="font-size:20px; font-weight:700; margin-bottom:8px; color:var(--secondary);">เสนอราคารับซื้อ</div>
                     <div style="font-size:15px; font-weight:600; color:var(--warning); margin-bottom:16px;">พื้นที่แจ้งขาย: ${qty} ไร่</div>
-                    <input id="swal-input2" class="swal-input" type="number" placeholder="ระบุราคาที่ต้องการเสนอ (บาท/ไร่)" style="margin-top:0;">
+                    <input id="swal-input2" class="swal-input" type="number" placeholder="ระบุราคาที่ต้องการเสนอ (บาท/ไร่)" style="margin-top:0; height: 44px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-family:'Kanit';">
                 </div>`, 
                 focusConfirm: false, showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY, 
                 preConfirm: () => { return document.getElementById('swal-input2').value } 
@@ -1912,7 +2094,7 @@
                 htmlForm += `
                     <div style="background:var(--bg-body); padding:12px; border-radius:8px; border:1px solid var(--border); margin-bottom:10px;">
                         <div style="font-weight:600; color:var(--primary-dark);">${index+1}. คุณ ${displayName} <span style="float:right;">${actualQ} ไร่</span></div>
-                        <input type="number" id="trip-price-${j.row}" class="swal-input" placeholder="เสนอราคา (บาท/ไร่)" style="margin-top:8px; height: 38px;" required>
+                        <input type="number" id="trip-price-${j.row}" class="swal-input" placeholder="เสนอราคา (บาท/ไร่)" style="margin-top:8px; height: 38px; width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Kanit';" required>
                     </div>
                 `;
             });
