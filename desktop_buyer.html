@@ -15,6 +15,8 @@
     <!-- Leaflet & Geoman (Map) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
+    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
     
     <!-- Turf.js สำหรับคำนวณแผนที่ -->
     <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
@@ -822,7 +824,7 @@
                             <input type="text" id="buyer-moo" required>
                         </div>
                         <div>
-                            <label>จังหวัด:</label>
+                            <label>จังหวัด (ตามทะเบียน):</label>
                             <select id="buyer-prov" required>
                                 <option value="">กำลังโหลด...</option>
                             </select>
@@ -858,7 +860,7 @@
                 </div>
             </div>
 
-            <!-- 2. หน้าค้นหางาน และ แผนที่ -->
+            <!-- 2. หน้าค้นหางาน และ แผนที่ (Dynamic Active Filters) -->
             <div id="buyer-map-page" class="page active">
                 <div class="section-title" style="margin-bottom: 15px; display:flex; justify-content:space-between; align-items:center;">
                     <div><i class="fa-solid fa-map-location-dot" style="color:var(--primary);"></i> ค้นหางาน & แผนที่</div>
@@ -867,10 +869,10 @@
                     </button>
                 </div>
                 
-                <!-- Filters Panel (Multi-Select) -->
+                <!-- Filters Panel (Multi-Select Smart Filters) -->
                 <div class="filter-panel" style="z-index: 500;">
                     <div class="filter-item">
-                        <label>จังหวัด (เลือกได้หลายจังหวัด):</label>
+                        <label>จังหวัดที่มีคิวงาน (เลือกได้หลายจังหวัด):</label>
                         <div class="multi-select-container">
                             <div class="multi-select-button" onclick="toggleMultiSelect('map-prov-dropdown')">
                                 <span id="map-prov-label">ทุกจังหวัด</span> <i class="fa-solid fa-chevron-down"></i>
@@ -879,7 +881,7 @@
                         </div>
                     </div>
                     <div class="filter-item">
-                        <label>อำเภอ (เลือกได้หลายอำเภอ):</label>
+                        <label>อำเภอที่มีคิวงาน (เลือกได้หลายอำเภอ):</label>
                         <div class="multi-select-container">
                             <div class="multi-select-button" onclick="toggleMultiSelect('map-dist-dropdown')">
                                 <span id="map-dist-label">ทุกอำเภอ</span> <i class="fa-solid fa-chevron-down"></i>
@@ -890,7 +892,7 @@
                         </div>
                     </div>
                     <div class="filter-item">
-                        <label>ตำบล (เลือกได้หลายตำบล):</label>
+                        <label>ตำบลที่มีคิวงาน (เลือกได้หลายตำบล):</label>
                         <div class="multi-select-container">
                             <div class="multi-select-button" onclick="toggleMultiSelect('map-subdist-dropdown')">
                                 <span id="map-subdist-label">ทุกตำบล</span> <i class="fa-solid fa-chevron-down"></i>
@@ -981,10 +983,16 @@
                 </div>
             </div>
 
-            <!-- 5. หน้าปฏิทิน (Calendar) แบบ Multi-select -->
+            <!-- 5. หน้าปฏิทิน (Calendar) แบบโหมดคู่ -->
             <div id="buyer-calendar-page" class="page">
                 <div class="section-title">
-                    <i class="fa-solid fa-calendar-alt" style="color:var(--info);"></i> ปฏิทินคิวประกาศขายอ้อย
+                    <i class="fa-solid fa-calendar-alt" style="color:var(--info);"></i> ปฏิทินคิวงาน
+                </div>
+                
+                <!-- แท็บเมนูสลับระบบปฏิทิน -->
+                <div style="display:flex; margin-bottom:15px; background:var(--surface); border-radius:12px; padding:6px; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+                    <button type="button" id="cal-mode-available" class="btn-main" style="flex:1; margin:0; padding:10px; font-size:14px; box-shadow:none; border-radius:8px;" onclick="switchCalMode('available')">คิวประกาศขาย (หาคิวรถ)</button>
+                    <button type="button" id="cal-mode-confirmed" class="btn-outline" style="flex:1; margin:0; padding:10px; font-size:14px; border:none; border-radius:8px; color:var(--text-muted);" onclick="switchCalMode('confirmed')">คิวคอนเฟิร์มแล้ว (รอเข้าม้วน)</button>
                 </div>
                 
                 <div class="filter-panel" style="padding: 15px; margin-bottom: 15px; z-index: 10;">
@@ -1041,7 +1049,7 @@
     </main>
 
     <!-- ป้ายบอกเวอร์ชันแอป -->
-    <div class="app-version">v2.9.7 Pro | อัปเดต: แก้ไขข้อผิดพลาดปฏิทิน (สมบูรณ์)</div>
+    <div class="app-version">v3.0.0 Pro | อัปเดต: ระบบกรองพื้นที่อัจฉริยะ & ปฏิทินคู่</div>
 
     <!-- LIFF SDK -->
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -1073,7 +1081,8 @@
         let thaiData = []; 
         let currentTripJobs = [];
         
-        let calendarObj = null; // ตัวแปรสำหรับใช้งานปฏิทิน
+        let calendarObj = null; 
+        let currentCalMode = 'available'; // Default calendar mode
         
         let myOfferedRows = []; 
         let myCanceledRows = [];
@@ -1090,11 +1099,13 @@
             myCanceledRows = []; 
         }
 
-        // Multi-Select Filters Data
+        // Multi-Select Filters Data & Dynamic Locations
         let filters = { 
             map: { provs: [], dists: [], subs: [] }, 
             cal: { provs: [], dists: [], subs: [] } 
         };
+        
+        let activeJobLocations = {}; // เก็บสถานที่ที่มีงานอยู่จริงๆ
         
         // Caching for Reverse Geocoding
         let caneGeoCache = JSON.parse(localStorage.getItem('caneGeoCache')) || {};
@@ -1191,14 +1202,14 @@
         }
 
         // ==========================================
-        // Address Setup (Profile)
+        // Address Setup (Profile - from ThaiData)
         // ==========================================
         async function loadThaiData() {
             try {
                 const res = await fetch('https://raw.githubusercontent.com/kongvut/thai-province-data/master/api/v1/province_with_amphure_tambon.json');
                 thaiData = await res.json();
                 
-                // สำหรับหน้าโปรไฟล์ (Single select)
+                // เฉพาะหน้าโปรไฟล์ให้แสดงทั้งหมดของประเทศไทย
                 let buyerProv = document.getElementById("buyer-prov");
                 if(buyerProv) {
                     buyerProv.innerHTML = '<option value="" disabled selected>เลือกจังหวัด</option>';
@@ -1207,10 +1218,6 @@
                     });
                     setupAddressDropdowns("buyer");
                 }
-                
-                // สำหรับหน้า Map และ Calendar (Multi-Select)
-                initMultiSelectFilter('map');
-                initMultiSelectFilter('cal');
             } catch(e) { 
                 console.error('Error loading address data'); 
             }
@@ -1221,6 +1228,8 @@
             const distSelect = document.getElementById(`${prefix}-dist`); 
             const subdistSelect = document.getElementById(`${prefix}-subdist`); 
             const zipInput = document.getElementById(`${prefix}-zip`);
+            
+            if(!provSelect) return;
             
             provSelect.addEventListener('change', function() {
                 const selectedProvId = this.options[this.selectedIndex] ? this.options[this.selectedIndex].getAttribute('data-id') : null;
@@ -1265,6 +1274,27 @@
         }
 
         // ==========================================
+        // Dynamic Job Locations Extractor (หาจังหวัดที่มีงานจริงๆ)
+        // ==========================================
+        function buildJobLocations() {
+            activeJobLocations = {};
+            rawBuyerData.forEach(item => {
+                // เอางานที่ยังว่าง และงานที่กำลังดำเนินการ (เผื่อดูปฏิทินคอนเฟิร์ม)
+                if (item.status === "เสร็จสิ้น" || item.status === "ยกเลิก") return;
+
+                let p = (item.plotProv || item.prov || "").replace('จ.', '').trim();
+                let d = (item.plotDist || item.dist || "").replace('อ.', '').trim();
+                let s = (item.plotSubDist || item.subDist || "").replace('ต.', '').trim();
+
+                if (!p) return;
+                
+                if (!activeJobLocations[p]) activeJobLocations[p] = {};
+                if (!activeJobLocations[p][d]) activeJobLocations[p][d] = new Set();
+                if (s) activeJobLocations[p][d].add(s);
+            });
+        }
+
+        // ==========================================
         // Multi-Select System (Map & Calendar)
         // ==========================================
         function toggleMultiSelect(id) {
@@ -1285,10 +1315,24 @@
             if(!provDrop) return;
             
             let phtml = '';
-            [...thaiData].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(p => {
-                phtml += `<label class="multi-select-option"><input type="checkbox" value="${p.name_th}" onchange="onFilterChange('${prefix}', 'prov')"> ${p.name_th}</label>`;
+            let provs = Object.keys(activeJobLocations).sort();
+            
+            if (provs.length === 0) {
+                provDrop.innerHTML = '<div class="multi-select-option"><input type="checkbox" disabled> ไม่มีข้อมูลพื้นที่ที่มีคิวงาน</div>';
+                document.getElementById(`${prefix}-prov-label`).innerText = 'ทุกจังหวัด';
+                return;
+            }
+
+            provs.forEach(p => {
+                phtml += `<label class="multi-select-option"><input type="checkbox" value="${p}" onchange="onFilterChange('${prefix}', 'prov')"> ${p}</label>`;
             });
             provDrop.innerHTML = phtml;
+            
+            document.getElementById(`${prefix}-prov-label`).innerText = 'ทุกจังหวัด';
+            document.getElementById(`${prefix}-dist-label`).innerText = 'ทุกอำเภอ';
+            document.getElementById(`${prefix}-subdist-label`).innerText = 'ทุกตำบล';
+            
+            filters[prefix] = { provs: [], dists: [], subs: [] };
         }
 
         function onFilterChange(prefix, level) {
@@ -1327,15 +1371,15 @@
             
             let dhtml = '';
             filters[prefix].provs.forEach(provName => {
-                const pData = thaiData.find(p => p.name_th === provName);
-                if(pData && pData.amphure) {
+                if(activeJobLocations[provName]) {
                     dhtml += `<div class="group-header">จ.${provName}</div>`;
-                    [...pData.amphure].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(amp => {
-                        dhtml += `<label class="multi-select-option"><input type="checkbox" value="${amp.name_th}" onchange="onFilterChange('${prefix}', 'dist')"> ${amp.name_th}</label>`;
+                    let dists = Object.keys(activeJobLocations[provName]).sort();
+                    dists.forEach(amp => {
+                        dhtml += `<label class="multi-select-option"><input type="checkbox" value="${amp}" onchange="onFilterChange('${prefix}', 'dist')"> ${amp}</label>`;
                     });
                 }
             });
-            distDrop.innerHTML = dhtml;
+            distDrop.innerHTML = dhtml || '<div class="multi-select-option">ไม่มีข้อมูล</div>';
         }
 
         function updateMultiFilterSub(prefix) {
@@ -1350,19 +1394,19 @@
             
             let shtml = '';
             filters[prefix].provs.forEach(provName => {
-                const pData = thaiData.find(p => p.name_th === provName);
-                if(pData && pData.amphure) {
-                    pData.amphure.forEach(amp => {
-                        if(filters[prefix].dists.includes(amp.name_th)) {
-                            shtml += `<div class="group-header">อ.${amp.name_th}</div>`;
-                            [...amp.tambon].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(tam => {
-                                shtml += `<label class="multi-select-option"><input type="checkbox" value="${tam.name_th}" onchange="onFilterChange('${prefix}', 'sub')"> ${tam.name_th}</label>`;
+                if(activeJobLocations[provName]) {
+                    filters[prefix].dists.forEach(amp => {
+                        if(activeJobLocations[provName][amp]) {
+                            shtml += `<div class="group-header">อ.${amp}</div>`;
+                            let subs = Array.from(activeJobLocations[provName][amp]).sort();
+                            subs.forEach(tam => {
+                                shtml += `<label class="multi-select-option"><input type="checkbox" value="${tam}" onchange="onFilterChange('${prefix}', 'sub')"> ${tam}</label>`;
                             });
                         }
                     });
                 }
             });
-            subDrop.innerHTML = shtml;
+            subDrop.innerHTML = shtml || '<div class="multi-select-option">ไม่มีข้อมูล</div>';
         }
 
         // ==========================================
@@ -1371,7 +1415,6 @@
         async function processRealPlotLocations(jobsList) {
             let pendingJobs = jobsList.filter(j => j.lat && j.lon && !caneGeoCache[`${parseFloat(j.lat).toFixed(3)},${parseFloat(j.lon).toFixed(3)}`]);
             
-            // ประยุกต์ค่าที่มีใน Cache ให้ทำงานทันที
             jobsList.forEach(j => {
                 if(j.lat && j.lon) {
                     let key = `${parseFloat(j.lat).toFixed(3)},${parseFloat(j.lon).toFixed(3)}`;
@@ -1380,7 +1423,6 @@
                         j.plotDist = caneGeoCache[key].dist; 
                         j.plotSubDist = caneGeoCache[key].sub;
                     } else {
-                        // Fallback ใช้ที่อยู่ตามทะเบียนของชาวไร่ไปก่อน
                         j.plotProv = j.prov; 
                         j.plotDist = j.dist; 
                         j.plotSubDist = j.subDist;
@@ -1388,7 +1430,6 @@
                 }
             });
 
-            // แอบดึงข้อมูลพิกัดที่ยังไม่มีแบบค่อยๆ ดึง (ป้องกัน API Block)
             for(let i = 0; i < pendingJobs.length; i++) {
                 let j = pendingJobs[i];
                 let key = `${parseFloat(j.lat).toFixed(3)},${parseFloat(j.lon).toFixed(3)}`;
@@ -1402,7 +1443,6 @@
                         let d = data.address.county || data.address.town || data.address.city || data.address.district || j.dist || "";
                         let s = data.address.village || data.address.suburb || data.address.hamlet || data.address.municipality || j.subDist || "";
                         
-                        // Clean text
                         p = p.replace('จังหวัด', '').replace('จ.', '').trim();
                         d = d.replace('อำเภอ', '').replace('อ.', '').replace('เขต', '').trim();
                         s = s.replace('ตำบล', '').replace('ต.', '').replace('แขวง', '').trim();
@@ -1414,7 +1454,6 @@
                         
                         localStorage.setItem('caneGeoCache', JSON.stringify(caneGeoCache));
                     }
-                    // หน่วงเวลา 1.5 วินาที เพื่อไม่ให้เซิร์ฟเวอร์ OpenStreetMap บล็อก
                     await new Promise(r => setTimeout(r, 1500));
                 } catch(e) { 
                     console.log("Geocode process error (Silent)"); 
@@ -1636,9 +1675,17 @@
                 if (result.status === "success") { 
                     rawBuyerData = result.data; 
                     
+                    // อัปเดต Filter ด้วยที่อยู่ปัจจุบันก่อน
+                    buildJobLocations();
+                    initMultiSelectFilter('map');
+                    initMultiSelectFilter('cal');
+                    
                     // รันระบบแปลงพิกัดดาวเทียมเป็นที่อยู่จริงแบบเงียบๆ
                     processRealPlotLocations(rawBuyerData).then(() => {
-                        // เมื่อดึงเสร็จ หากผู้ใช้อยู่หน้าปฏิทินหรือทริป ให้ render ซ้ำเบาๆ เพื่อให้ที่อยู่สมบูรณ์ขึ้น
+                        // เมื่อดึงเสร็จ รีบิลด์ Filter อีกรอบเพื่อให้ข้อมูลสมบูรณ์ที่สุด
+                        buildJobLocations();
+                        initMultiSelectFilter('map');
+                        initMultiSelectFilter('cal');
                     });
                     
                     updateClusterLogic(); 
@@ -1952,7 +1999,6 @@
             // Filter logic using Multi-Select & True Coordinates (Reverse Geocoding)
             let filteredAvailable = availableJobs.filter(item => { 
                 let pass = true;
-                // ถ้าดึง Plot จริงได้ใช้ Plot จริง ไม่งั้นใช้ Profile ของชาวไร่
                 let iProv = (item.plotProv || item.prov || "").replace('จ.', '').trim();
                 let iDist = (item.plotDist || item.dist || "").replace('อ.', '').trim();
                 let iSub  = (item.plotSubDist || item.subDist || "").replace('ต.', '').trim();
@@ -2569,6 +2615,35 @@
         // ==========================================
         // เมนูปฏิทินคิวงาน (Calendar) Multi-Select
         // ==========================================
+        function switchCalMode(mode) {
+            currentCalMode = mode;
+            const btnAvail = document.getElementById('cal-mode-available');
+            const btnConf = document.getElementById('cal-mode-confirmed');
+            
+            if (mode === 'available') {
+                btnAvail.className = 'btn-main';
+                btnAvail.style.background = 'var(--primary)';
+                btnAvail.style.color = 'white';
+                btnAvail.style.boxShadow = 'var(--shadow-md)';
+                
+                btnConf.className = 'btn-outline';
+                btnConf.style.background = 'transparent';
+                btnConf.style.color = 'var(--text-muted)';
+                btnConf.style.boxShadow = 'none';
+            } else {
+                btnConf.className = 'btn-main';
+                btnConf.style.background = 'var(--info)';
+                btnConf.style.color = 'white';
+                btnConf.style.boxShadow = 'var(--shadow-md)';
+                
+                btnAvail.className = 'btn-outline';
+                btnAvail.style.background = 'transparent';
+                btnAvail.style.color = 'var(--text-muted)';
+                btnAvail.style.boxShadow = 'none';
+            }
+            renderCalendar();
+        }
+
         function renderCalendar() {
             var calendarEl = document.getElementById('calendar');
             if(calendarObj) { 
@@ -2589,25 +2664,30 @@
                 
                 if(!pass) return;
 
-                // Safe Date parsing to prevent FullCalendar crash
+                let isAvailable = (j.status === "รอคิวรถ" || j.status === "รอชาวไร่ยืนยัน");
+                let isConfirmed = (j.status === "กำลังดำเนินการ");
+
+                if (currentCalMode === 'available' && !isAvailable) return;
+                if (currentCalMode === 'confirmed' && !isConfirmed) return;
+
                 if(j.harvestDate) {
                     let dateObj = new Date(j.harvestDate);
                     if(!isNaN(dateObj.getTime())) {
                         let dateStr = dateObj.toISOString().split('T')[0];
                         let displayName = j.farmerFullName || j.farmerName;
                         
-                        if(j.status === "รอคิวรถ" || j.status === "รอชาวไร่ยืนยัน") {
+                        if(isAvailable) {
                             events.push({ 
                                 title: `${displayName} (${j.qty} ไร่)`, 
                                 start: dateStr, 
                                 color: '#F59E0B', 
                                 extendedProps: { rowId: j.row } 
                             });
-                        } else if(j.status === "กำลังดำเนินการ") {
+                        } else if(isConfirmed) {
                             events.push({ 
                                 title: `[รับแล้ว] ${displayName}`, 
                                 start: dateStr, 
-                                color: '#10B981', 
+                                color: '#3B82F6', 
                                 extendedProps: { rowId: j.row } 
                             });
                         }
@@ -2621,7 +2701,7 @@
                 height: 550, 
                 events: events,
                 eventClick: function(info) { 
-                    viewSaleIslandModal(info.event.extendedProps.rowId); 
+                    viewSaleIslandModal(info.event.extendedProps.rowId, 'buyer'); 
                 }
             });
             calendarObj.render();
