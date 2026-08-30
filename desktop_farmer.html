@@ -49,11 +49,7 @@
             --sidebar-width: 280px;
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body { 
             font-family: 'Kanit', 'Inter', sans-serif; 
@@ -73,68 +69,42 @@
 
         /* ================= App Version Tag ================= */
         .app-version {
-            position: fixed !important; 
-            bottom: 20px !important; 
-            right: 20px !important; 
-            top: auto !important; 
-            font-size: 12px; 
-            color: var(--text-muted);
-            font-weight: 600; 
-            opacity: 0.8; 
-            z-index: 999999 !important; 
-            pointer-events: none;
-            background: rgba(255, 255, 255, 0.95); 
-            padding: 6px 14px; 
-            border-radius: 20px;
-            box-shadow: var(--shadow-md); 
-            border: 1px solid var(--border); 
-            letter-spacing: 0.5px;
+            position: fixed !important; bottom: 20px !important; right: 20px !important; 
+            font-size: 12px; color: var(--text-muted); font-weight: 600; opacity: 0.8; 
+            z-index: 999999 !important; pointer-events: none; background: rgba(255, 255, 255, 0.95); 
+            padding: 6px 14px; border-radius: 20px; box-shadow: var(--shadow-md); 
+            border: 1px solid var(--border); letter-spacing: 0.5px;
         }
 
         /* ================= Sidebar Layout ================= */
         .sidebar { 
-            width: var(--sidebar-width); 
-            background-color: var(--secondary); 
-            color: #F8FAFC; 
-            display: flex; 
-            flex-direction: column; 
-            z-index: 20; 
-            box-shadow: 4px 0 20px rgba(0,0,0,0.05); 
-            transition: 0.3s;
+            width: var(--sidebar-width); background-color: var(--secondary); 
+            color: #F8FAFC; display: flex; flex-direction: column; z-index: 20; 
+            box-shadow: 4px 0 20px rgba(0,0,0,0.05); transition: 0.3s;
         }
 
         .sidebar-header { 
-            padding: 24px 20px; 
-            font-size: 20px; 
-            font-weight: 700; 
-            color: var(--surface); 
-            border-bottom: 1px solid rgba(255,255,255,0.08); 
-            display: flex; 
-            align-items: center; 
-            gap: 14px;
+            padding: 24px 20px; font-size: 20px; font-weight: 700; color: var(--surface); 
+            border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 14px;
         }
 
         .sidebar-profile {
-            padding: 20px; 
-            text-align: center; 
-            margin: 15px 16px;
-            background: rgba(255,255,255,0.03); 
-            border-radius: var(--radius-lg); 
+            padding: 20px; text-align: center; margin: 15px 16px;
+            background: rgba(255,255,255,0.03); border-radius: var(--radius-lg); 
             border: 1px solid rgba(255,255,255,0.05);
         }
 
         .sidebar-profile img { 
-            width: 60px; 
-            height: 60px; 
-            border-radius: 50%; 
-            border: 2px solid var(--primary); 
-            object-fit: cover; 
-            margin: 0 auto 10px auto; 
-            display: none; 
+            width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--primary); 
+            object-fit: cover; margin: 0 auto 10px auto; display: none; 
         }
 
         .sidebar-profile-name { font-size: 15px; font-weight: 600; color: #F8FAFC; }
-        .sidebar-profile-role { font-size: 12px; font-weight: 600; background: rgba(16, 185, 129, 0.2); padding: 4px 12px; border-radius: 20px; display: inline-block; margin-top: 6px; color: var(--primary); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .sidebar-profile-role { 
+            font-size: 12px; font-weight: 600; background: rgba(16, 185, 129, 0.2); 
+            padding: 4px 12px; border-radius: 20px; display: inline-block; 
+            margin-top: 6px; color: var(--primary); border: 1px solid rgba(16, 185, 129, 0.3); 
+        }
 
         .sidebar-menu { flex: 1; padding: 10px 16px; overflow-y: auto; }
 
@@ -231,9 +201,11 @@
         .photo-gallery img:hover { border-color: var(--primary); }
 
         /* Split Map Layout */
-        .desktop-report-layout { display: flex; gap: 30px; align-items: stretch; }
-        .desktop-report-form { flex: 1; min-width: 400px; }
-        .desktop-report-map { flex: 1.5; position: relative; }
+        .desktop-report-layout { display: flex; gap: 30px; align-items: stretch; height: calc(100vh - 120px); }
+        .desktop-report-form { flex: 1; min-width: 400px; max-width: 500px; display: flex; flex-direction: column;}
+        .desktop-report-map { flex: 2; position: relative; display: flex; flex-direction: column; }
+        
+        .card-full-height { background: var(--surface); padding: 25px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; height: 100%; overflow-y: auto;}
 
         /* Modal Customization (Desktop Wide) */
         .swal2-container { z-index: 1000000 !important; } 
@@ -248,20 +220,26 @@
 
         #image-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.95); z-index: 100000; justify-content: center; align-items: center; flex-direction: column;} 
         #image-viewer-img { max-width: 90%; max-height: 80%; border-radius: 16px; object-fit: contain; } 
+        
+        .clickable-buyer { cursor: pointer; color: var(--info); text-decoration: underline; transition: 0.2s; }
+        .clickable-buyer:hover { color: #1E3A8A; }
     </style>
 </head>
 <body>
 
+    <!-- Loading Screen -->
     <div id="loading-screen">
         <div class="spinner"></div>
         <h3 style="color:var(--secondary); font-weight:600; font-size:20px; margin:0;">กำลังซิงค์ข้อมูล...</h3>
     </div>
 
+    <!-- Image Viewer -->
     <div id="image-viewer">
         <span onclick="closeImageViewer()" style="position: absolute; top: 30px; right: 30px; color: white; font-size: 32px; cursor: pointer; width: 44px; height: 44px; text-align: center; line-height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; border: 1px solid rgba(255,255,255,0.2);">×</span>
         <img id="image-viewer-img" src="">
     </div>
 
+    <!-- Sidebar Navigation -->
     <aside class="sidebar" id="main-sidebar">
         <div class="sidebar-header">
             <img src="logo.jpg" alt="Logo" style="width: 35px; height: 35px; border-radius: 8px; object-fit: cover;" onerror="this.style.display='none'"> 
@@ -296,6 +274,7 @@
                 </div>
             </div>
         </div>
+        <!-- เครดิตทีมพัฒนา -->
         <div class="sidebar-footer">
             <b>ระบบนี้พัฒนาโดย</b><br>
             ทีม Santi Green Code<br>
@@ -303,6 +282,7 @@
         </div>
     </aside>
 
+    <!-- Main Content -->
     <main class="main-wrapper">
         <header class="topbar-alert">
             <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px;"></i> 
@@ -312,6 +292,7 @@
 
         <div class="content-body">
 
+            <!-- ================= 1. หน้าข้อมูลส่วนตัว ================= -->
             <div id="profile-page" class="page active">
                 <div class="card">
                     <div class="section-title" style="margin-top:0;"><i class="fa-regular fa-id-card" style="color:var(--primary);"></i> ข้อมูลส่วนตัว (Profile)</div>
@@ -354,6 +335,7 @@
                 </div>
             </div>
 
+            <!-- ================= 2. หน้าจัดการแปลงอ้อย ================= -->
             <div id="plots-page" class="page">
                 <div class="card">
                     <div class="section-title" style="margin-top:0; display:flex; justify-content:space-between; align-items:center;">
@@ -381,10 +363,12 @@
                 </div>
             </div>
 
-            <div id="report-page" class="page">
+            <!-- ================= 3. หน้าแจ้งพิกัดอ้อย (หาคิวรถ) ================= -->
+            <div id="report-page" class="page" style="height: 100%;">
                 <div class="desktop-report-layout">
+                    <!-- Form Area (Left) -->
                     <div class="desktop-report-form">
-                        <div class="card" style="padding: 25px;">
+                        <div class="card-full-height">
                             <div class="section-title" style="margin-top: 0;">1. เลือกแปลงและกำหนดการ</div>
                             
                             <div style="padding: 20px; background: #F8FAFC; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 25px;">
@@ -394,7 +378,7 @@
                                 </select>
                             </div>
 
-                            <div id="preview-form-wrapper" style="display: none; animation: slideDown 0.4s ease;">
+                            <div id="preview-form-wrapper" style="display: none; animation: slideDown 0.4s ease; flex: 1; display: flex; flex-direction: column;">
                                 <div class="form-grid" style="grid-template-columns: 1fr; gap: 15px;">
                                     <div>
                                         <label>พื้นที่ประเมิน (ไร่):</label>
@@ -423,16 +407,17 @@
                                     </div>
                                 </div>
                                 
-                                <button id="submit-btn" class="btn-main btn-full" onclick="submitCaneData()" disabled style="margin-top: 30px; font-size: 16px;">
+                                <button id="submit-btn" class="btn-main btn-full" onclick="submitCaneData()" disabled style="margin-top: auto; font-size: 16px;">
                                     <i class="fa-solid fa-paper-plane"></i> ยืนยันการประกาศหาคิวรถม้วน
                                 </button>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Map Area (Right) -->
                     <div class="desktop-report-map" id="preview-map-wrapper" style="display: none; animation: fadeIn 0.6s ease;">
-                        <div class="card" style="padding: 25px; height: 100%; display: flex; flex-direction: column;">
-                            <div class="section-title" style="margin-top: 0;">2. ตรวจสอบพิกัดแแผนที่</div>
+                        <div class="card-full-height">
+                            <div class="section-title" style="margin-top: 0;">2. ตรวจสอบพิกัดแผนที่</div>
                             <div class="status-box" style="margin-bottom: 15px; background: #DBEAFE; border-color: var(--info); color: var(--info);">
                                 <i class="fa-solid fa-location-crosshairs"></i> ดึงพิกัดแปลงสำเร็จแล้ว
                             </div>
@@ -442,12 +427,13 @@
                 </div>
             </div>
 
+            <!-- ================= 4. หน้าสถานะคิวงาน (Active Jobs) ================= -->
             <div id="active-jobs-page" class="page">
                 <div class="section-title" style="color: var(--info); margin-top:0;"><i class="fa-solid fa-list-check"></i> สถานะคิวงานปัจจุบัน</div>
-                
                 <div id="current-sales-container" class="sales-grid"></div>
             </div>
 
+            <!-- ================= 5. หน้าประวัติการขาย (History) ================= -->
             <div id="history-page" class="page">
                 <div class="section-title" style="color: var(--primary); margin-top:0;"><i class="fa-solid fa-clock-rotate-left"></i> ประวัติการขาย (เสร็จสิ้น & ยกเลิก)</div>
                 
@@ -459,7 +445,9 @@
         </div>
     </main>
 
+    <!-- LIFF SDK -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <!-- App Version Tag -->
     <div class="app-version">v2.1.0 Pro | อัปเดต: 29 ส.ค. 2026</div>
     
     <script>
@@ -484,6 +472,7 @@
         let userSavedPlots = [];
         let compressedFieldPhotos = []; 
         let thaiData = [];
+        let buyerProfilesCache = {}; // เก็บข้อมูล Profile รถม้วน
 
         // ================= UTILITIES =================
         function showLoader() { document.getElementById("loading-screen").style.display = "flex"; }
@@ -611,7 +600,6 @@
 
         // ================= PLOT MANAGEMENT & AUTO SAVE =================
         let allPlotsMapObj = null; let allPlotsLayer = null;
-        
         function renderAllPlotsMap() {
             const wrapper = document.getElementById('all-plots-wrapper'); const container = document.getElementById('all-plots-map');
             if (!container) return; 
@@ -625,86 +613,32 @@
                 allPlotsLayer = L.featureGroup().addTo(allPlotsMapObj);
                 
                 // เพิ่มปุ่มตำแหน่งของฉัน
-                let myLocationMarker = null; // ตัวแปรสำหรับเก็บหมุด
                 const locateControl = L.control({position: 'bottomright'});
-                
                 locateControl.onAdd = function(map) {
                     const btn = L.DomUtil.create('button', 'btn-small btn-small-primary');
                     btn.style.margin = '10px';
                     btn.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
                     btn.style.backgroundColor = '#FFFFFF';
                     btn.style.color = 'var(--primary-dark)';
-                    btn.style.cursor = 'pointer'; // เพิ่ม cursor ให้รู้ว่าเป็นปุ่ม
                     btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> ตำแหน่งของฉัน';
                     
-                    // ป้องกันแผนที่กลืน Event การคลิกปุ่ม (สำคัญมากสำหรับปุ่มบน Leaflet)
                     L.DomEvent.disableClickPropagation(btn);
-
+                    
                     btn.onclick = function(e) {
+                        e.stopPropagation();
                         e.preventDefault();
-                        
                         if(navigator.geolocation) {
-                            // อัปเดตข้อความให้ชาวไร่รู้ว่า บนคอมพิวเตอร์อาจใช้เวลาสักครู่
-                            Swal.fire({ title: 'กำลังค้นหาพิกัด...', text: 'หากใช้งานบนคอมพิวเตอร์ อาจใช้เวลาสักครู่...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
-                            
-                            // ระบบ Fallback: ลองหาแบบแม่นยำสูงก่อน ถ้านานเกินไป ให้ใช้แบบแม่นยำต่ำ
-                            const optionsHighAcc = { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 };
-                            const optionsLowAcc = { enableHighAccuracy: false, timeout: 10000, maximumAge: 0 };
-
-                            const successCallback = pos => {
-                                Swal.close();
-                                const lat = pos.coords.latitude;
-                                const lng = pos.coords.longitude;
-                                
-                                // เลื่อนแผนที่ไปหาตำแหน่ง
-                                map.flyTo([lat, lng], 16, {animate: true});
-                                
-                                // สร้างหรืออัปเดตตำแหน่งหมุด
-                                if (myLocationMarker) {
-                                    myLocationMarker.setLatLng([lat, lng]);
-                                } else {
-                                    // สร้างหมุดแบบจุดกลมสีน้ำเงิน
-                                    const myIcon = L.divIcon({
-                                        className: 'custom-my-location',
-                                        html: "<div style='background-color:#3B82F6; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow: 0 0 6px rgba(0,0,0,0.5);'></div>",
-                                        iconSize: [22, 22],
-                                        iconAnchor: [11, 11]
-                                    });
-                                    myLocationMarker = L.marker([lat, lng], {icon: myIcon}).addTo(map)
-                                        .bindPopup('<div style="font-family:Kanit; font-weight:600; text-align:center;">📍 ตำแหน่งปัจจุบันของคุณ</div>');
-                                }
-                                myLocationMarker.openPopup();
-                            };
-
-                            const errorCallback = err => {
-                                if (err.code === 3) {
-                                    // ถ้าแม่นยำสูง Timeout ให้ลองเปลี่ยนเป็นแม่นยำต่ำ (แก้ปัญหาบน Desktop)
-                                    navigator.geolocation.getCurrentPosition(successCallback, finalErr => {
-                                        Swal.close();
-                                        Swal.fire('ไม่พบพิกัด', 'เบราว์เซอร์ไม่สามารถเข้าถึงพิกัดได้ หรือสัญญาณเครือข่ายไม่อนุญาต', 'warning');
-                                    }, optionsLowAcc);
-                                } else {
-                                    Swal.close();
-                                    let errorMsg = 'กรุณาเปิดการเข้าถึงตำแหน่งที่ตั้ง (GPS)';
-                                    // โค้ด 1 คือ Permission Denied (โดนบล็อก) แนะนำให้กดปลดล็อก
-                                    if (err.code === 1) errorMsg = 'เบราว์เซอร์ถูกบล็อกสิทธิ์เข้าถึง GPS โปรดคลิกที่ "ไอคอนแม่กุญแจ" หน้า URL ข้างบนสุด เพื่อกดยืนยันอนุญาต';
-                                    else if (err.code === 2) errorMsg = 'ไม่สามารถดึงสัญญาณ GPS ได้ในขณะนี้';
-                                    
-                                    Swal.fire('ไม่พบพิกัด', errorMsg, 'warning');
-                                }
-                            };
-
-                            // เริ่มทำงาน
-                            navigator.geolocation.getCurrentPosition(successCallback, errorCallback, optionsHighAcc);
-                        } else {
-                            Swal.fire('ไม่รองรับ', 'เบราว์เซอร์ของคุณไม่รองรับการดึงตำแหน่ง', 'error');
+                            navigator.geolocation.getCurrentPosition(pos => {
+                                map.flyTo([pos.coords.latitude, pos.coords.longitude], 16, {animate: true});
+                            }, err => {
+                                Swal.fire('ไม่พบพิกัด', 'กรุณาเปิดการเข้าถึงตำแหน่งที่ตั้ง (GPS)', 'warning');
+                            }, { enableHighAccuracy: true });
                         }
                     };
                     return btn;
                 };
                 locateControl.addTo(allPlotsMapObj);
             }
-
             allPlotsLayer.clearLayers();
             
             // วาดแปลงที่มีอยู่ลงบนแผนที่
@@ -802,6 +736,7 @@
                 customClass: { popup: 'custom-swal-desktop' },
                 html: `
                     <div style="display:flex; height:600px; text-align:left;">
+                        <!-- Left Panel: Form -->
                         <div style="flex:0.8; padding:35px; background:var(--surface); display:flex; flex-direction:column; overflow-y:auto; border-right:1px solid var(--border);">
                             <div style="font-size: 20px; font-weight: 700; margin-bottom: 25px; color: var(--secondary);"><i class="fa-solid ${plotToEdit?'fa-pen':'fa-plus'}"></i> ${plotToEdit ? 'แก้ไขแปลงอ้อย' : 'เพิ่มแปลงอ้อยใหม่'}</div>
                             
@@ -845,6 +780,7 @@
                             </div>
                         </div>
                         
+                        <!-- Right Panel: Map -->
                         <div style="flex:1.2; position:relative; background:#E2E8F0;">
                             <div id="modal-map" style="height: 100%; width: 100%;"></div>
                         </div>
@@ -941,13 +877,16 @@
             if(index === "") { mapWrap.style.display = 'none'; formWrap.style.display = 'none'; polygonGeoJSON = ""; submitBtn.disabled = true; return; }
             
             const plot = userSavedPlots[index];
-            mapWrap.style.display = 'flex'; formWrap.style.display = 'block';
+            mapWrap.style.display = 'flex'; formWrap.style.display = 'flex';
             polygonGeoJSON = plot.polygon; document.getElementById("quantity").value = plot.area;
             
             if(!previewMapObj) { 
                 previewMapObj = L.map('preview-map', { zoomControl: false, dragging: false, scrollWheelZoom: false }).setView([plot.center[0], plot.center[1]], 16);
                 L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(previewMapObj);
+            } else {
+                previewMapObj.setView([plot.center[0], plot.center[1]], 16);
             }
+            
             previewMapObj.eachLayer(l => { if(l instanceof L.Polygon || l instanceof L.Marker) previewMapObj.removeLayer(l); });
             try {
                 let c = JSON.parse(plot.polygon)[0].map(p=>[p[1],p[0]]);
@@ -1070,6 +1009,58 @@
         }
 
         // ================= WIDE MODAL: SALE ISLAND DETAILS =================
+        async function viewBuyerDetails(phone) {
+            if (!phone || phone === "-") {
+                Swal.fire('ไม่มีข้อมูล', 'ไม่พบข้อมูลเบอร์โทรติดต่อ', 'warning');
+                return;
+            }
+            
+            Swal.fire({ title: 'กำลังค้นหา...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+            
+            try {
+                const res = await fetch(GAS_WEB_APP_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "getAdminData" }) 
+                });
+                const result = await res.json();
+                Swal.close();
+
+                if (result.status === "success" && result.data.buyers) {
+                    // ทำการ Clean เบอร์โทรเพื่อเทียบ
+                    let cleanPhoneSearch = phone.replace(/-/g, '').trim();
+                    if(cleanPhoneSearch.startsWith("'")) cleanPhoneSearch = cleanPhoneSearch.substring(1);
+                    if(cleanPhoneSearch.startsWith("0")) cleanPhoneSearch = cleanPhoneSearch.substring(1);
+
+                    let buyerInfo = result.data.buyers.find(b => {
+                        let bp = (b.phone||"").toString().replace(/-/g, '').trim();
+                        if(bp.startsWith("'")) bp = bp.substring(1);
+                        if(bp.startsWith("0")) bp = bp.substring(1);
+                        return bp === cleanPhoneSearch;
+                    });
+
+                    if (buyerInfo) {
+                        Swal.fire({
+                            title: 'ข้อมูลพาร์ทเนอร์รถม้วน',
+                            html: `
+                                <div style="text-align:left; font-family:'Kanit'; font-size:15px; background:var(--bg-body); padding:20px; border-radius:12px; border:1px solid var(--border);">
+                                    <div style="margin-bottom:10px;"><i class="fa-solid fa-truck-fast" style="color:var(--primary); width:25px;"></i> <b>ชื่อ:</b> คุณ ${buyerInfo.name}</div>
+                                    <div style="margin-bottom:10px;"><i class="fa-solid fa-phone" style="color:var(--info); width:25px;"></i> <b>โทร:</b> <a href="tel:${buyerInfo.phone}" style="color:var(--info); text-decoration:none; font-weight:600;">${buyerInfo.phone}</a></div>
+                                    <div style="margin-bottom:10px;"><i class="fa-solid fa-map-pin" style="color:var(--danger); width:25px;"></i> <b>ที่ตั้งอู่:</b> ${buyerInfo.location}</div>
+                                    <div style="margin-bottom:10px; padding-top:10px; border-top:1px dashed var(--border);"><i class="fa-solid fa-gears" style="color:var(--accent); width:25px;"></i> <b>ข้อมูลเครื่องจักร:</b><br><span style="color:var(--text-muted); font-size:14px; margin-left:25px;">${buyerInfo.vehicle || "ไม่ระบุ"}</span></div>
+                                </div>
+                            `,
+                            confirmButtonColor: THEME_PRIMARY,
+                            confirmButtonText: 'ปิดหน้าต่าง'
+                        });
+                    } else {
+                        Swal.fire('ไม่พบข้อมูล', 'ไม่พบรายละเอียดเชิงลึกของรถม้วนรายนี้', 'info');
+                    }
+                }
+            } catch(e) {
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถดึงข้อมูลได้', 'error');
+            }
+        }
+
         function viewSaleIslandModal(index, role) {
             let item = globalSalesData[index]; if(!item) return; 
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
@@ -1088,9 +1079,10 @@
             if (item.status === 'รอชาวไร่ยืนยัน' && item.offers && item.offers.length > 0) {
                 buyerSectionHTML = `<div style="background:#FFF9E6; border:1px solid var(--accent); padding:15px; border-radius:12px; margin-top:15px;"><b style="color:var(--accent); font-size:16px;">มีผู้เสนอราคา (${item.offers.length} ราย):</b><div style="margin-top:10px; font-size:14px;">โปรดปิดหน้าต่างนี้และกด <b>"ดูข้อเสนอ"</b> ที่การ์ดเพื่อเลือกผู้ซื้อ</div></div>`;
             } else if (item.status !== "รอคิวรถ" && item.status !== "ยกเลิก") {
+                let clickableBuyerName = `<span class="clickable-buyer" onclick="viewBuyerDetails('${item.buyerPhone}')"><i class="fa-solid fa-magnifying-glass"></i> ${item.buyer}</span>`;
                 buyerSectionHTML = `
                     <div style="background:var(--primary-light); border:1px solid rgba(16, 185, 129, 0.2); padding:15px; border-radius:12px; margin-top:15px;">
-                        <div style="margin-bottom:8px; font-size:15px;"><b>พาร์ทเนอร์รถม้วน:</b> <span style="color:var(--text-main); font-weight:600;">${item.buyer||'-'}</span></div>
+                        <div style="margin-bottom:8px; font-size:15px;"><b>พาร์ทเนอร์รถม้วน:</b> <span style="color:var(--text-main); font-weight:600;">${item.buyer === '-' ? '-' : clickableBuyerName}</span></div>
                         <div style="margin-bottom:8px; font-size:15px;"><b>เบอร์ติดต่อ:</b> ${phoneLink}</div>
                         <div style="font-size:15px;"><b>ราคาที่ตกลง:</b> <span style="color:var(--primary-dark); font-weight:700; font-size:18px;">${item.price || "-"}</span></div>
                     </div>`;
@@ -1189,7 +1181,11 @@
                         <div class="hover-lift" style="border:1px solid var(--border); border-radius:16px; padding:24px; background:var(--surface); display:flex; flex-direction:column; justify-content:space-between; box-shadow:var(--shadow-soft);">
                             <div>
                                 <div style="font-weight:600; font-size:18px; margin-bottom:8px; color:var(--primary-dark);"><i class="fa-solid fa-truck-fast"></i> คุณ ${bName}</div>
-                                <div style="margin-bottom:15px; font-size:15px; color:var(--text-muted);"><i class="fa-solid fa-phone"></i> <a href="tel:${offer.phone}" style="color:var(--info); text-decoration:none; font-weight:500;"> ${offer.phone}</a></div>
+                                <div style="margin-bottom:15px; font-size:15px; color:var(--text-muted);">
+                                    <i class="fa-solid fa-phone"></i> 
+                                    <a href="tel:${offer.phone}" style="color:var(--info); text-decoration:none; font-weight:500;"> ${offer.phone}</a>
+                                    <span class="clickable-buyer" onclick="viewBuyerDetails('${offer.phone}')" style="margin-left: 10px; font-size: 13px;"><i class="fa-solid fa-circle-info"></i> ดูประวัติอู่</span>
+                                </div>
                                 <div style="background:#FFF9E6; padding:15px; border-radius:12px; border:1px dashed var(--accent); text-align:center; margin-bottom:20px;">
                                     <div style="font-size:13px; color:var(--text-muted); margin-bottom:5px;">ราคาเสนอซื้อเหมาใบ</div>
                                     <div style="color:var(--accent); font-size:26px; font-weight:700;">${offer.price} <span style="font-size:16px; font-weight:500;">บาท/ไร่</span></div>
@@ -1321,6 +1317,8 @@
                 
                 let borderColor = badge==='completed'?'var(--primary)':(badge==='waiting'?'var(--accent)':(badge==='canceled'?'var(--danger)':'var(--info)'));
 
+                let clickableBuyerName = (item.buyer && item.buyer !== "undefined" && item.buyer !== "-") ? `<span class="clickable-buyer" onclick="viewBuyerDetails('${item.buyerPhone}')"><i class="fa-solid fa-magnifying-glass"></i> ${item.buyer}</span>` : "-";
+
                 let cardHTML = `
                     <div class="sale-card hover-lift" style="border-top: 5px solid ${borderColor};">
                         <div>
@@ -1331,7 +1329,7 @@
                             <div class="sale-detail">
                                 <div style="font-size:15px; color:var(--text-muted); margin-bottom:12px;">พื้นที่ประเมิน: <span style="font-size:22px; color:var(--primary); font-weight:700;">${item.quantity} ไร่</span></div>
                                 ${badge==='waiting'&&item.offers&&item.offers.length>0 ? `<div style="background:#FFF9E6; padding:10px 15px; border-radius:10px; color:var(--accent); font-weight:600; margin-bottom:15px;"><i class="fa-solid fa-bell fa-shake"></i> มีผู้เสนอราคา ${item.offers.length} ราย</div>` : ''}
-                                ${(badge==='processing'||badge==='verify'||badge==='completed') ? `<div style="background:var(--bg-main); padding:12px; border-radius:10px; margin-bottom:10px;"><div style="font-size:14px; color:var(--text-muted); margin-bottom:4px;">ผู้ซื้อ: <b style="color:var(--text-main);">${item.buyer||'-'}</b></div><div style="font-size:14px; color:var(--text-muted);">ตกลงราคา: <span style="color:var(--primary-dark); font-size:16px;">${item.price}</span></div></div>` : ''}
+                                ${(badge==='processing'||badge==='verify'||badge==='completed') ? `<div style="background:var(--bg-main); padding:12px; border-radius:10px; margin-bottom:10px;"><div style="font-size:14px; color:var(--text-muted); margin-bottom:4px;">ผู้ซื้อ: <b style="color:var(--text-main);">${clickableBuyerName}</b></div><div style="font-size:14px; color:var(--text-muted);">ตกลงราคา: <span style="color:var(--primary-dark); font-size:16px;">${item.price}</span></div></div>` : ''}
                                 ${(badge==='verify'||badge==='completed') ? `<div style="margin-top:15px; padding-top:15px; border-top:1px dashed var(--border); font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between;"><span>น้ำหนักสุทธิ:</span> <b style="color:var(--text-main);">${item.actualWeight} ตัน</b></div>` : ''}
                             </div>
                         </div>`;
