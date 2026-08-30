@@ -15,8 +15,6 @@
     <!-- Leaflet & Geoman (Map) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
-    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
     
     <!-- Turf.js สำหรับคำนวณแผนที่ -->
     <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
@@ -56,11 +54,7 @@
             --sidebar-width: 280px;
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body { 
             font-family: 'Kanit', 'Inter', sans-serif; 
@@ -80,63 +74,36 @@
 
         /* ================= App Version Tag ================= */
         .app-version {
-            position: fixed; 
-            bottom: 15px; 
-            right: 20px; 
-            font-size: 11px; 
-            color: var(--text-muted);
-            font-weight: 600; 
-            opacity: 0.8; 
-            z-index: 999999; 
-            pointer-events: none;
-            background: rgba(255, 255, 255, 0.95); 
-            padding: 6px 14px; 
-            border-radius: 20px;
-            box-shadow: var(--shadow-sm); 
-            border: 1px solid var(--border); 
-            letter-spacing: 0.5px;
+            position: fixed; bottom: 15px; right: 20px; font-size: 11px; 
+            color: var(--text-muted); font-weight: 600; opacity: 0.8; 
+            z-index: 999999; pointer-events: none; background: rgba(255, 255, 255, 0.95); 
+            padding: 6px 14px; border-radius: 20px; box-shadow: var(--shadow-sm); 
+            border: 1px solid var(--border); letter-spacing: 0.5px;
         }
 
         /* ================= Sidebar Layout ================= */
         .sidebar { 
-            width: var(--sidebar-width); 
-            background-color: var(--secondary); 
-            color: #F8FAFC; 
-            display: flex; 
-            flex-direction: column; 
-            z-index: 20; 
-            box-shadow: 4px 0 20px rgba(0,0,0,0.05); 
-            transition: 0.3s;
+            width: var(--sidebar-width); background-color: var(--secondary); 
+            color: #F8FAFC; display: flex; flex-direction: column; 
+            z-index: 20; box-shadow: 4px 0 20px rgba(0,0,0,0.05); transition: 0.3s;
         }
 
         .sidebar-header { 
-            padding: 24px 20px; 
-            font-size: 20px; 
-            font-weight: 700; 
-            color: var(--surface); 
-            border-bottom: 1px solid rgba(255,255,255,0.08); 
-            display: flex; 
-            align-items: center; 
-            gap: 14px;
+            padding: 24px 20px; font-size: 20px; font-weight: 700; 
+            color: var(--surface); border-bottom: 1px solid rgba(255,255,255,0.08); 
+            display: flex; align-items: center; gap: 14px;
         }
 
         .sidebar-profile {
-            padding: 20px; 
-            text-align: center; 
-            margin: 15px 16px;
-            background: rgba(255,255,255,0.03); 
-            border-radius: var(--radius-lg); 
+            padding: 20px; text-align: center; margin: 15px 16px;
+            background: rgba(255,255,255,0.03); border-radius: var(--radius-lg); 
             border: 1px solid rgba(255,255,255,0.05);
         }
 
         .sidebar-profile img { 
-            width: 60px; 
-            height: 60px; 
-            border-radius: 50%; 
-            border: 2px solid var(--primary); 
-            object-fit: cover; 
-            margin: 0 auto 10px auto; 
-            display: none; 
+            width: 60px; height: 60px; border-radius: 50%; 
+            border: 2px solid var(--primary); object-fit: cover; 
+            margin: 0 auto 10px auto; display: none; 
         }
 
         .sidebar-profile-name { font-size: 15px; font-weight: 600; color: #F8FAFC; }
@@ -187,15 +154,13 @@
             display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; position: relative; z-index: 100;
         }
 
-        .filter-item { flex: 1; min-width: 150px; }
+        .filter-item { flex: 1; min-width: 180px; }
         .filter-item label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; display: block;}
         
         input[type="text"], input[type="tel"], input[type="number"], input[type="date"], select, textarea { 
             width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); 
             font-size: 14px; font-family: 'Kanit', sans-serif; box-sizing: border-box; background: #F8FAFC; color: var(--secondary); transition: all 0.2s; height: 44px;
         }
-
-        input:focus, select:focus { border-color: var(--primary); outline: none; background: #FFF; box-shadow: 0 0 0 3px var(--primary-light); }
 
         /* ================= Custom Multi-Select Dropdown ================= */
         .multi-select-container { position: relative; width: 100%; }
@@ -213,52 +178,30 @@
         .multi-select-option { padding: 10px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #F1F5F9; }
         .multi-select-option:last-child { border-bottom: none; }
         .multi-select-option:hover { background: var(--bg-body); }
-        .multi-select-option input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var(--primary);}
+        .multi-select-option input[type="checkbox"] { width: 18px; height: 18px; margin: 0; accent-color: var(--primary); cursor: pointer;}
         .group-header { padding: 6px 12px; font-size: 12px; font-weight: 700; color: var(--primary-dark); background: var(--primary-light); position: sticky; top: 0; z-index: 2; }
 
         /* ================= Map Container & Fullscreen ================= */
         .map-container { 
-            height: 600px; 
-            width: 100%; 
-            border-radius: var(--radius-lg); 
-            margin-bottom: 25px; 
-            border: 1px solid var(--border); 
-            box-shadow: var(--shadow-md); 
-            z-index: 1;
+            height: 600px; width: 100%; border-radius: var(--radius-lg); 
+            margin-bottom: 25px; border: 1px solid var(--border); box-shadow: var(--shadow-md); z-index: 1;
         }
 
         .fullscreen-map {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            z-index: 99999 !important;
-            border-radius: 0 !important;
-            margin: 0 !important;
+            position: fixed !important; top: 0 !important; left: 0 !important;
+            width: 100vw !important; height: 100vh !important; z-index: 99999 !important;
+            border-radius: 0 !important; margin: 0 !important;
         }
 
         #fullscreen-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 400;
-            background: white;
-            color: var(--secondary);
-            border: 1px solid var(--border);
-            padding: 8px 12px;
-            font-size: 13px;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: var(--shadow-sm);
-            transition: 0.2s;
+            position: absolute; top: 15px; right: 15px; z-index: 400;
+            background: white; color: var(--secondary); border: 1px solid var(--border);
+            padding: 8px 12px; font-size: 13px; border-radius: 8px; cursor: pointer; box-shadow: var(--shadow-sm); transition: 0.2s;
         }
         #fullscreen-btn:hover { background: #F8FAFC; }
         
-        /* User Location Pulse Animation */
         .pulse-marker { width: 18px; height: 18px; background: #3B82F6; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 rgba(59, 130, 246, 0.7); animation: pulse-blue 2s infinite; }
         @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
-
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
         /* ================= Cards ================= */
@@ -305,7 +248,6 @@
         /* ================= Calendar ================= */
         #calendar { background: white; padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
         .fc-event { cursor: pointer; }
-
     </style>
 </head>
 <body>
@@ -325,7 +267,7 @@
     <!-- Sidebar Layout -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <img src="logo.jpg" alt="Logo" style="width: 35px; height: 35px; border-radius: 8px; object-fit: cover;"> 
+            <img src="logo.jpg" alt="Logo" style="width: 35px; height: 35px; border-radius: 8px; object-fit: cover;" onerror="this.style.display='none'"> 
             <span>CaneConnect</span>
         </div>
         
@@ -363,17 +305,14 @@
             </div>
         </div>
         
-        <!-- เครดิตทีมพัฒนา -->
         <div class="sidebar-footer">
-            <b>ระบบนี้พัฒนาโดย</b><br>
-            ทีม Santi Green Code<br>
-            โรงเรียนสันติวิทยาสรรพ์ อ.ผาขาว จ.เลย
+            <b>ระบบนี้พัฒนาโดย</b><br>ทีม Santi Green Code<br>โรงเรียนสันติวิทยาสรรพ์ อ.ผาขาว จ.เลย
         </div>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- แจ้งเตือนด้านบนพร้อมช่องทางติดต่อ -->
+        <!-- แจ้งเตือนด้านบน -->
         <header class="topbar-alert">
             <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px;"></i> 
             ระบบนี้อยู่ในช่วงพัฒนาระบบ หากมีปัญหา หรือข้อเสนอแนะ ติดต่อแอดมินได้ที่ ไลน์ CaneConnect - รับงาน ไอดีไลน์ @673iaryk หรือ 
@@ -433,9 +372,7 @@
                         </div>
                         <div>
                             <label>จังหวัด:</label>
-                            <select id="buyer-prov" required>
-                                <option value="">กำลังโหลด...</option>
-                            </select>
+                            <select id="buyer-prov" required><option value="">กำลังโหลด...</option></select>
                         </div>
                         <div>
                             <label>อำเภอ:</label>
@@ -468,7 +405,7 @@
                 </div>
             </div>
 
-            <!-- 2. หน้าค้นหางาน และ แผนที่ -->
+            <!-- 2. หน้าค้นหางาน และ แผนที่ (ปรับเป็น Multi-Select กรองตามตำแหน่งจริง) -->
             <div id="buyer-map-page" class="page active">
                 <div class="section-title" style="margin-bottom: 15px; display:flex; justify-content:space-between; align-items:center;">
                     <div><i class="fa-solid fa-map-location-dot" style="color:var(--primary);"></i> ค้นหางาน & แผนที่</div>
@@ -477,49 +414,59 @@
                     </button>
                 </div>
                 
-                <!-- Filters Panel -->
-                <div class="filter-panel">
+                <!-- Filters Panel (Multi-Select) -->
+                <div class="filter-panel" style="z-index: 500;">
                     <div class="filter-item">
-                        <label>จังหวัด:</label>
-                        <select id="filter-map-prov" class="filter-select" onchange="updateFilterDist()">
-                            <option value="all">ทั่วประเทศ</option>
-                        </select>
+                        <label>จังหวัด (เลือกได้หลายจังหวัด):</label>
+                        <div class="multi-select-container">
+                            <div class="multi-select-button" onclick="toggleMultiSelect('map-prov-dropdown')">
+                                <span id="map-prov-label">ทุกจังหวัด</span> <i class="fa-solid fa-chevron-down"></i>
+                            </div>
+                            <div id="map-prov-dropdown" class="multi-select-dropdown"></div>
+                        </div>
                     </div>
                     <div class="filter-item">
-                        <label>อำเภอ:</label>
-                        <select id="filter-map-dist" class="filter-select" onchange="updateFilterSubdist()" disabled>
-                            <option value="all">ทุกอำเภอ</option>
-                        </select>
+                        <label>อำเภอ (เลือกได้หลายอำเภอ):</label>
+                        <div class="multi-select-container">
+                            <div class="multi-select-button" onclick="toggleMultiSelect('map-dist-dropdown')">
+                                <span id="map-dist-label">ทุกอำเภอ</span> <i class="fa-solid fa-chevron-down"></i>
+                            </div>
+                            <div id="map-dist-dropdown" class="multi-select-dropdown">
+                                <div class="multi-select-option"><input type="checkbox" disabled> เลือกจังหวัดก่อน</div>
+                            </div>
+                        </div>
                     </div>
                     <div class="filter-item">
-                        <label>ตำบล:</label>
-                        <select id="filter-map-subdist" class="filter-select" disabled>
-                            <option value="all">ทุกตำบล</option>
-                        </select>
+                        <label>ตำบล (เลือกได้หลายตำบล):</label>
+                        <div class="multi-select-container">
+                            <div class="multi-select-button" onclick="toggleMultiSelect('map-subdist-dropdown')">
+                                <span id="map-subdist-label">ทุกตำบล</span> <i class="fa-solid fa-chevron-down"></i>
+                            </div>
+                            <div id="map-subdist-dropdown" class="multi-select-dropdown">
+                                <div class="multi-select-option"><input type="checkbox" disabled> เลือกอำเภอก่อน</div>
+                            </div>
+                        </div>
                     </div>
                     <div class="filter-item" style="display: flex; align-items: flex-end; min-width:auto;">
                         <button class="btn-main" style="width: auto; padding: 10px 24px; height: 44px;" onclick="triggerSearch()">
-                            <i class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล
+                            <i class="fa-solid fa-magnifying-glass"></i> กรองแผนที่
                         </button>
                     </div>
                 </div>
 
                 <!-- Map Container -->
                 <div style="position: relative;">
-                    <button id="fullscreen-btn" onclick="toggleFullscreen()" class="btn-small btn-small-outline" style="position: absolute; top: 15px; right: 15px; z-index: 400; background: white;">
+                    <button id="fullscreen-btn" onclick="toggleFullscreen()" class="btn-small btn-small-outline">
                         <i class="fa-solid fa-expand"></i> ขยายเต็มจอ
                     </button>
                     <div id="buyer-map" class="map-container"></div>
                 </div>
                 
-                <!-- รายการค้นหาที่ด้านล่างแผนที่ -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom:10px;">
-                    <div class="section-title" style="margin: 0; border: none; padding: 0;" id="title-list-jobs">
-                        รายการแจ้งคิวอ้อยที่เปิดรับ
-                    </div>
+                    <div class="section-title" style="margin: 0; border: none; padding: 0;">รายการแจ้งคิวอ้อยที่เปิดรับ</div>
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <label style="font-size: 14px; font-weight: 600; color: var(--text-muted); margin: 0;">จัดเรียงตาม:</label>
-                        <select id="list-sort-by" class="filter-select" style="width: auto; padding: 8px 12px; height: 40px;" onchange="updateClusterLogic()">
+                        <select id="list-sort-by" class="filter-select" style="width: auto; padding: 8px 12px; height: 40px; border-radius: 8px;" onchange="updateClusterLogic()">
                             <option value="dist-near">ระยะทางที่ใกล้ที่สุด</option>
                             <option value="date-near">วันที่นัดม้วนเร็วสุด</option>
                         </select>
@@ -535,95 +482,57 @@
                     <i class="fa-solid fa-route" style="color:var(--accent);"></i> วางแผนการม้วน (Trip Planner)
                 </div>
                 <div class="trip-layout">
-                    <!-- Left: Available Jobs -->
                     <div class="trip-left">
-                        <div style="font-size:16px; font-weight:600; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">
-                            รายการงานที่เปิดรับ (คลิก + เพื่อเลือก)
-                        </div>
-                        
-                        <!-- ตัวกรองค้นหางานฝั่งซ้ายของทริป -->
+                        <div style="font-size:16px; font-weight:600; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">รายการงานที่เปิดรับ (คลิก + เพื่อเลือก)</div>
                         <div style="margin-bottom:15px; display:flex; gap:10px;">
-                            <input type="text" id="trip-search" class="swal-input" placeholder="ค้นหาชื่อ, ตำบล, อำเภอ..." onkeyup="renderTripPlanner()" style="height: 40px; font-size:13px; flex:1;">
-                            <select id="trip-sort" class="filter-select" onchange="renderTripPlanner()" style="height: 40px; width:auto; padding:0 10px;">
+                            <input type="text" id="trip-search" class="swal-input" placeholder="ค้นหาชื่อ, ตำบล, อำเภอ..." onkeyup="renderTripPlanner()" style="height: 40px; font-size:13px; flex:1; border: 1px solid var(--border); padding:0 10px; border-radius:8px;">
+                            <select id="trip-sort" class="filter-select" onchange="renderTripPlanner()" style="height: 40px; width:auto; padding:0 10px; border-radius:8px; border: 1px solid var(--border);">
                                 <option value="date-near">นัดม้วนเร็วสุด</option>
                                 <option value="dist-near">ระยะทางใกล้สุด</option>
                                 <option value="rai-desc">ปริมาณไร่มากสุด</option>
                             </select>
                         </div>
-
-                        <div id="trip-available-list" style="display:flex; flex-direction:column; gap:10px;">
-                            <div class="empty-state">กำลังโหลดงาน...</div>
-                        </div>
+                        <div id="trip-available-list" style="display:flex; flex-direction:column; gap:10px;"></div>
                     </div>
                     
-                    <!-- Right: Current Trip -->
                     <div class="trip-right">
-                        <div style="font-size:16px; font-weight:600; margin-bottom:15px; color:var(--primary-dark); display:flex; justify-content:space-between; align-items:center;">
-                            <input type="text" id="trip-name" class="swal-input" placeholder="ตั้งชื่อทริป (เช่น ทริปผาขาว 1)" style="font-weight:700; font-size:16px; width: 60%; border-color:var(--primary-light);">
-                        </div>
-                        
-                        <!-- Trip Summary Dashboard -->
+                        <div style="margin-bottom:15px;"><input type="text" id="trip-name" class="swal-input" placeholder="ตั้งชื่อทริป (เช่น ทริปผาขาว 1)" style="font-weight:700; font-size:16px; width: 60%; border: 1px solid var(--primary-light); padding: 10px; border-radius: 8px;"></div>
                         <div style="background:var(--primary-light); padding:15px; border-radius:12px; display:flex; justify-content:space-around; align-items:center; margin-bottom:15px; border:1px solid var(--primary);">
-                            <div style="text-align:center;">
-                                <div style="font-size:12px; color:var(--text-muted); font-weight:600;">พื้นที่รวม</div>
-                                <div id="trip-total-rai" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0.0 ไร่</div>
-                            </div>
+                            <div style="text-align:center;"><div style="font-size:12px; color:var(--text-muted); font-weight:600;">พื้นที่รวม</div><div id="trip-total-rai" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0.0 ไร่</div></div>
                             <div style="width:1px; height:35px; background:var(--primary-dark); opacity:0.3;"></div>
-                            <div style="text-align:center;">
-                                <div style="font-size:12px; color:var(--text-muted); font-weight:600;">ระยะเวลาทริป</div>
-                                <div id="trip-total-days" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0 วัน</div>
-                            </div>
+                            <div style="text-align:center;"><div style="font-size:12px; color:var(--text-muted); font-weight:600;">ระยะเวลาทริป</div><div id="trip-total-days" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0 วัน</div></div>
                             <div style="width:1px; height:35px; background:var(--primary-dark); opacity:0.3;"></div>
-                            <div style="text-align:center;">
-                                <div style="font-size:12px; color:var(--text-muted); font-weight:600;">จำนวนลูกไร่</div>
-                                <div id="trip-total-farmers" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0 ราย</div>
-                            </div>
+                            <div style="text-align:center;"><div style="font-size:12px; color:var(--text-muted); font-weight:600;">จำนวนลูกไร่</div><div id="trip-total-farmers" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0 ราย</div></div>
                         </div>
-
-                        <div id="trip-selected-list" style="display:flex; flex-direction:column; gap:10px; flex:1;">
-                            <div class="empty-state" style="background:transparent; border:none; margin-top:50px;">
-                                <i class="fa-solid fa-box-open" style="font-size:30px; margin-bottom:10px; color:var(--border);"></i><br>
-                                ทริปว่างเปล่า<br>
-                                <span style="font-size:13px;">กดปุ่ม "+" จากรายการด้านซ้ายเพื่อเพิ่มแปลงเข้าทริปนี้</span>
-                            </div>
-                        </div>
-                        
-                        <button class="btn-main" style="margin-top:20px;" onclick="saveTrip()">
-                            <i class="fa-solid fa-save"></i> บันทึกและเสนอราคาทริปนี้
-                        </button>
+                        <div id="trip-selected-list" style="display:flex; flex-direction:column; gap:10px; flex:1;"></div>
+                        <button class="btn-main" style="margin-top:20px;" onclick="saveTrip()"><i class="fa-solid fa-save"></i> บันทึกและเสนอราคาทริปนี้</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. หน้าการซื้อของฉัน (My Purchases - ละเอียดแยกระดับ) -->
+            <!-- 4. หน้าการซื้อของฉัน (My Purchases) -->
             <div id="buyer-purchases-page" class="page">
-                <div class="section-title">
-                    <i class="fa-solid fa-cart-shopping" style="color:var(--danger);"></i> การซื้อของฉัน
-                </div>
-                
+                <div class="section-title"><i class="fa-solid fa-cart-shopping" style="color:var(--danger);"></i> การซื้อของฉัน</div>
                 <div id="purchase-alert-banner" style="display:none; background:#FEF2F2; border:1px solid #FCA5A5; color:#B91C1C; padding:15px; border-radius:12px; margin-bottom:20px; font-weight:600; align-items:center; gap:10px;">
                     <i class="fa-solid fa-bell fa-shake" style="font-size:20px;"></i>
                     <span>มีชาวไร่ตกลงรับข้อเสนอแล้ว กรุณาตรวจสอบและเข้าดำเนินการตามกำหนด!</span>
                 </div>
-
-                <div id="buyer-purchases-container">
-                    <div class="empty-state full-width">กำลังโหลดข้อมูล...</div>
-                </div>
+                <div id="buyer-purchases-container"><div class="empty-state full-width">กำลังโหลดข้อมูล...</div></div>
             </div>
 
-            <!-- 5. หน้าปฏิทิน (Calendar) -->
+            <!-- 5. หน้าปฏิทิน (Calendar) แบบ Multi-select -->
             <div id="buyer-calendar-page" class="page">
-                <div class="section-title">
-                    <i class="fa-solid fa-calendar-alt" style="color:var(--info);"></i> ปฏิทินคิวประกาศขายอ้อย
-                </div>
+                <div class="section-title"><i class="fa-solid fa-calendar-alt" style="color:var(--info);"></i> ปฏิทินคิวประกาศขายอ้อย</div>
                 
-                <!-- ตัวกรองของ Calendar (Multi-Select) -->
                 <div class="filter-panel" style="padding: 15px; margin-bottom: 15px; z-index: 10;">
                     <div class="filter-item">
-                        <label>จังหวัด:</label>
-                        <select id="cal-filter-prov" class="filter-select" onchange="updateCalDistricts()">
-                            <option value="all">ทั่วประเทศ</option>
-                        </select>
+                        <label>จังหวัด (เลือกได้หลายจังหวัด):</label>
+                        <div class="multi-select-container">
+                            <div class="multi-select-button" onclick="toggleMultiSelect('cal-prov-dropdown')">
+                                <span id="cal-prov-label">ทุกจังหวัด</span> <i class="fa-solid fa-chevron-down"></i>
+                            </div>
+                            <div id="cal-prov-dropdown" class="multi-select-dropdown"></div>
+                        </div>
                     </div>
                     <div class="filter-item">
                         <label>อำเภอ (เลือกได้หลายอำเภอ):</label>
@@ -649,7 +558,7 @@
                     </div>
                     <div class="filter-item" style="display:flex; align-items:flex-end; min-width:auto;">
                         <button class="btn-main" style="padding:10px 20px; height:44px; width:auto;" onclick="renderCalendar()">
-                            <i class="fa-solid fa-filter"></i> กรองข้อมูลปฏิทิน
+                            <i class="fa-solid fa-filter"></i> กรองปฏิทิน
                         </button>
                     </div>
                 </div>
@@ -659,17 +568,15 @@
 
             <!-- 6. หน้าประวัติการรับซื้อ -->
             <div id="buyer-history-page" class="page">
-                <div class="section-title">
-                    <i class="fa-solid fa-clock-rotate-left" style="color:var(--text-muted);"></i> สถิติและประวัติการรับซื้อ (เสร็จสิ้น & ยกเลิก)
-                </div>
+                <div class="section-title"><i class="fa-solid fa-clock-rotate-left" style="color:var(--text-muted);"></i> สถิติและประวัติการรับซื้อ (เสร็จสิ้น & ยกเลิก)</div>
                 <div id="buyer-history-container" class="jobs-grid"></div>
             </div>
             
         </div>
     </main>
 
-    <!-- ป้ายบอกเวอร์ชันแอป (ย้ายไปมุมขวาล่างสุด) -->
-    <div class="app-version">v2.9.0 Pro | อัปเดต: 29 ส.ค. 2026</div>
+    <!-- ป้ายบอกเวอร์ชันแอป -->
+    <div class="app-version">v2.9.5 Pro | อัปเดต: ระบบพิกัดแผนที่อัจฉริยะ (Multi-Select)</div>
 
     <!-- LIFF SDK -->
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -678,259 +585,123 @@
         // ==========================================
         // Constants & Global Variables
         // ==========================================
-        const THEME_PRIMARY = '#10B981'; 
-        const THEME_ACCENT = '#F59E0B'; 
-        const THEME_INFO = '#3B82F6'; 
-        const THEME_MUTED = '#64748B';
-        const THEME_DANGER = '#EF4444';
-        
-        // ** ใส่ LIFF ID และ Web App URL ของคุณที่นี่ **
+        const THEME_PRIMARY = '#10B981'; const THEME_ACCENT = '#F59E0B'; const THEME_INFO = '#3B82F6'; const THEME_MUTED = '#64748B'; const THEME_DANGER = '#EF4444';
         const LIFF_ID = "2010423459-prdYAD4u"; 
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwKNL6jqjvtpuBxDzgqBIQiKLjA7_2QupvMAK9tcod5SlBbcs7iIbswlglT76xI5xOwng/exec";
         
         let userProfile = null; 
+        let currentLat = null; let currentLng = null; let currentUserMarker = null;
+        let isBuyerEditMode = false; let buyerNameContext = ""; let buyerPhoneContext = "";
+        let buyerMapObj; let buyerMarkers = {}; let buyerPolygonLayer = L.featureGroup(); 
+        let rawBuyerData = []; let thaiData = []; let currentTripJobs = [];
         
-        // Default Location (ไว้โชว์ถ้าหา GPS ไม่เจอ จะอัปเดตอัตโนมัติเมื่อขอตำแหน่งสำเร็จ)
-        let currentLat = null; 
-        let currentLng = null; 
-        let currentUserMarker = null;
-        
-        let isBuyerEditMode = false;
-        let buyerNameContext = ""; 
-        let buyerPhoneContext = "";
-        
-        let buyerMapObj; 
-        let buyerMarkers = {}; 
-        let buyerPolygonLayer = L.featureGroup(); 
-        
-        let rawBuyerData = []; 
-        let thaiData = [];
-        
-        // ตัวแปรสำหรับ Trip Planner
-        let currentTripJobs = [];
-        
-        // ตัวแปรเก็บ Local State ของงานที่เสนอราคา/ยกเลิก (สำหรับแสดงในประวัติ)
-        // ** ใส่ Try-Catch เพื่อป้องกัน Error ตอน Parse JSON แตก **
-        let myOfferedRows = [];
-        let myCanceledRows = [];
-        try {
-            myOfferedRows = JSON.parse(localStorage.getItem('myOfferedRows'));
-            if (!Array.isArray(myOfferedRows)) myOfferedRows = [];
-        } catch(e) { myOfferedRows = []; }
-        
-        try {
-            myCanceledRows = JSON.parse(localStorage.getItem('myCanceledRows'));
-            if (!Array.isArray(myCanceledRows)) myCanceledRows = [];
-        } catch(e) { myCanceledRows = []; }
+        let myOfferedRows = []; let myCanceledRows = [];
+        try { myOfferedRows = JSON.parse(localStorage.getItem('myOfferedRows')) || []; } catch(e) { myOfferedRows = []; }
+        try { myCanceledRows = JSON.parse(localStorage.getItem('myCanceledRows')) || []; } catch(e) { myCanceledRows = []; }
 
-        // ตัวแปรสำหรับ Calendar Multi-Select
-        let calendarObj = null;
-        let selectedCalDists = [];
-        let selectedCalSubDists = [];
+        // Multi-Select Filters Data
+        let filters = { map: { provs: [], dists: [], subs: [] }, cal: { provs: [], dists: [], subs: [] } };
+        
+        // Caching for Reverse Geocoding
+        let caneGeoCache = JSON.parse(localStorage.getItem('caneGeoCache')) || {};
 
         // ==========================================
         // Utility Functions
         // ==========================================
         function showLoader() { document.getElementById("loading-screen").style.display = "flex"; }
         function hideLoader() { document.getElementById("loading-screen").style.display = "none"; }
-        
-        function openImageViewer(src) { 
-            document.getElementById('image-viewer-img').src = src; 
-            document.getElementById('image-viewer').style.display = 'flex'; 
-        }
-        function closeImageViewer() { 
-            document.getElementById('image-viewer').style.display = 'none'; 
-        }
-        
-        function extractPrice(str) {
-            if(!str) return 0;
-            let match = str.toString().match(/\d+(\.\d+)?/);
-            return match ? parseFloat(match[0]) : 0;
-        }
+        function openImageViewer(src) { document.getElementById('image-viewer-img').src = src; document.getElementById('image-viewer').style.display = 'flex'; }
+        function closeImageViewer() { document.getElementById('image-viewer').style.display = 'none'; }
+        function extractPrice(str) { if(!str) return 0; let match = str.toString().match(/\d+(\.\d+)?/); return match ? parseFloat(match[0]) : 0; }
+        function getDistanceJS(lat1, lon1, lat2, lon2) { var R = 6371; var dLat = (lat2-lat1)*(Math.PI/180); var dLon = (lon2-lon1)*(Math.PI/180); var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*(Math.PI/180))*Math.cos(lat2*(Math.PI/180))*Math.sin(dLon/2)*Math.sin(dLon/2); return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); }
 
         // ==========================================
-        // Core Logic (Switch Page / Logout / Fullscreen)
+        // Navigation & Layout
         // ==========================================
         function switchPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            
             document.querySelectorAll('.menu-item').forEach(nav => nav.classList.remove('active'));
             let navId = pageId.replace('-page', '');
-            if(document.getElementById('nav-' + navId)) {
-                document.getElementById('nav-' + navId).classList.add('active');
-            }
+            if(document.getElementById('nav-' + navId)) document.getElementById('nav-' + navId).classList.add('active');
 
-            if(pageId === 'buyer-map-page' && buyerMapObj) {
-                setTimeout(() => { buyerMapObj.invalidateSize(); }, 200);
-            }
-            if(pageId === 'buyer-trip-page') {
-                renderTripPlanner();
-            }
-            if(pageId === 'buyer-purchases-page') {
-                renderPurchasesPage();
-            }
-            if(pageId === 'buyer-calendar-page') {
-                setTimeout(() => { renderCalendar(); }, 200);
-            }
+            if(pageId === 'buyer-map-page' && buyerMapObj) { setTimeout(() => { buyerMapObj.invalidateSize(); }, 200); }
+            if(pageId === 'buyer-trip-page') { renderTripPlanner(); }
+            if(pageId === 'buyer-purchases-page') { renderPurchasesPage(); }
+            if(pageId === 'buyer-calendar-page') { setTimeout(() => { renderCalendar(); }, 200); }
         }
 
         function toggleFullscreen() {
-            const mapContainer = document.getElementById('buyer-map');
-            const btn = document.getElementById('fullscreen-btn');
-            
+            const mapContainer = document.getElementById('buyer-map'); const btn = document.getElementById('fullscreen-btn');
             mapContainer.classList.toggle('fullscreen-map');
-            
             if (mapContainer.classList.contains('fullscreen-map')) {
                 btn.innerHTML = '<i class="fa-solid fa-compress"></i> ออกจากโหมดเต็มจอ';
-                btn.style.position = 'fixed';
-                btn.style.top = '20px';
-                btn.style.right = '20px';
-                btn.style.zIndex = '999999';
+                btn.style.position = 'fixed'; btn.style.top = '20px'; btn.style.right = '20px'; btn.style.zIndex = '999999';
             } else {
                 btn.innerHTML = '<i class="fa-solid fa-expand"></i> ขยายเต็มจอ';
-                btn.style.position = 'absolute';
-                btn.style.top = '15px';
-                btn.style.right = '15px';
-                btn.style.zIndex = '400';
+                btn.style.position = 'absolute'; btn.style.top = '15px'; btn.style.right = '15px'; btn.style.zIndex = '400';
             }
-            
-            if(buyerMapObj) {
-                setTimeout(() => { buyerMapObj.invalidateSize(); }, 300);
-            }
+            if(buyerMapObj) { setTimeout(() => { buyerMapObj.invalidateSize(); }, 300); }
         }
 
-        function logout() {
-            liff.logout();
-            window.location.reload();
-        }
+        function logout() { liff.logout(); window.location.reload(); }
 
         // ==========================================
-        // Address & Filters Functions
+        // Address Setup (Profile)
         // ==========================================
         async function loadThaiData() {
             try {
                 const res = await fetch('https://raw.githubusercontent.com/kongvut/thai-province-data/master/api/v1/province_with_amphure_tambon.json');
                 thaiData = await res.json();
                 
-                populateProvinces("buyer-prov");
-                setupAddressDropdowns("buyer");
+                // สำหรับหน้าโปรไฟล์ (Single select)
+                let buyerProv = document.getElementById("buyer-prov");
+                if(buyerProv) {
+                    buyerProv.innerHTML = '<option value="" disabled selected>เลือกจังหวัด</option>';
+                    [...thaiData].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(prov => { 
+                        buyerProv.innerHTML += `<option value="${prov.name_th}" data-id="${prov.id}">${prov.name_th}</option>`; 
+                    });
+                    setupAddressDropdowns("buyer");
+                }
                 
-                populateProvinces("filter-map-prov");
-                populateProvinces("cal-filter-prov");
+                // สำหรับหน้า Map และ Calendar (Multi-Select)
+                initMultiSelectFilter('map');
+                initMultiSelectFilter('cal');
             } catch(e) { console.error('Error loading address data'); }
         }
 
-        function populateProvinces(selectId) {
-            const select = document.getElementById(selectId); 
-            if(!select) return;
-            
-            select.innerHTML = selectId.includes('filter') ? '<option value="all">ทั่วประเทศ</option>' : '<option value="" disabled selected>เลือกจังหวัด</option>';
-            
-            let sorted = [...thaiData].sort((a, b) => a.name_th.localeCompare(b.name_th));
-            sorted.forEach(prov => { 
-                select.innerHTML += `<option value="${prov.name_th}" data-id="${prov.id}">${prov.name_th}</option>`; 
-            });
-        }
-
         function setupAddressDropdowns(prefix) {
-            const provSelect = document.getElementById(`${prefix}-prov`); 
-            const distSelect = document.getElementById(`${prefix}-dist`); 
-            const subdistSelect = document.getElementById(`${prefix}-subdist`); 
-            const zipInput = document.getElementById(`${prefix}-zip`);
-            
+            const provSelect = document.getElementById(`${prefix}-prov`); const distSelect = document.getElementById(`${prefix}-dist`); const subdistSelect = document.getElementById(`${prefix}-subdist`); const zipInput = document.getElementById(`${prefix}-zip`);
             provSelect.addEventListener('change', function() {
                 const selectedProvId = this.options[this.selectedIndex] ? this.options[this.selectedIndex].getAttribute('data-id') : null;
-                
-                distSelect.innerHTML = '<option value="" disabled selected>เลือกอำเภอ</option>'; 
-                subdistSelect.innerHTML = '<option value="" disabled selected>เลือกตำบล</option>'; 
-                zipInput.value = '';
+                distSelect.innerHTML = '<option value="" disabled selected>เลือกอำเภอ</option>'; subdistSelect.innerHTML = '<option value="" disabled selected>เลือกตำบล</option>'; zipInput.value = '';
                 distSelect.disabled = !selectedProvId; subdistSelect.disabled = true; 
-                
                 if (selectedProvId) {
                     const provData = thaiData.find(p => p.id == selectedProvId);
                     if (provData && provData.amphure) { 
-                        [...provData.amphure].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(amp => { 
-                            distSelect.innerHTML += `<option value="${amp.name_th}" data-id="${amp.id}">${amp.name_th}</option>`; 
-                        }); 
+                        [...provData.amphure].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(amp => { distSelect.innerHTML += `<option value="${amp.name_th}" data-id="${amp.id}">${amp.name_th}</option>`; }); 
                     }
                 }
             });
-            
             distSelect.addEventListener('change', function() {
                 const selectedProvId = provSelect.options[provSelect.selectedIndex] ? provSelect.options[provSelect.selectedIndex].getAttribute('data-id') : null;
                 const selectedDistId = this.options[this.selectedIndex] ? this.options[this.selectedIndex].getAttribute('data-id') : null;
-                
-                subdistSelect.innerHTML = '<option value="" disabled selected>เลือกตำบล</option>'; 
-                zipInput.value = '';
-                subdistSelect.disabled = !selectedDistId; 
-                
+                subdistSelect.innerHTML = '<option value="" disabled selected>เลือกตำบล</option>'; zipInput.value = ''; subdistSelect.disabled = !selectedDistId; 
                 if (selectedProvId && selectedDistId) {
-                    const provData = thaiData.find(p => p.id == selectedProvId); 
-                    const distData = provData.amphure.find(a => a.id == selectedDistId);
+                    const provData = thaiData.find(p => p.id == selectedProvId); const distData = provData.amphure.find(a => a.id == selectedDistId);
                     if (distData && distData.tambon) { 
-                        [...distData.tambon].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(tam => { 
-                            subdistSelect.innerHTML += `<option value="${tam.name_th}" data-zip="${tam.zip_code}">${tam.name_th}</option>`; 
-                        }); 
+                        [...distData.tambon].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(tam => { subdistSelect.innerHTML += `<option value="${tam.name_th}" data-zip="${tam.zip_code}">${tam.name_th}</option>`; }); 
                     }
                 }
             });
-            
-            subdistSelect.addEventListener('change', function() { 
-                const zip = this.options[this.selectedIndex] ? this.options[this.selectedIndex].getAttribute('data-zip') : ''; 
-                if (zip) zipInput.value = zip; 
-            });
-        }
-
-        // หน้าค้นหางาน
-        function updateFilterDist() {
-            const provSelect = document.getElementById("filter-map-prov");
-            const distSelect = document.getElementById("filter-map-dist");
-            const subdistSelect = document.getElementById("filter-map-subdist");
-            const pId = provSelect.options[provSelect.selectedIndex] ? provSelect.options[provSelect.selectedIndex].getAttribute('data-id') : null;
-            
-            distSelect.innerHTML = '<option value="all">ทุกอำเภอ</option>'; 
-            subdistSelect.innerHTML = '<option value="all">ทุกตำบล</option>';
-            distSelect.disabled = (provSelect.value === 'all'); 
-            subdistSelect.disabled = true;
-
-            if (pId && provSelect.value !== 'all') {
-                const pData = thaiData.find(p => p.id == pId);
-                if (pData && pData.amphure) { 
-                    [...pData.amphure].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(amp => { 
-                        distSelect.innerHTML += `<option value="${amp.name_th}" data-id="${amp.id}">${amp.name_th}</option>`; 
-                    }); 
-                }
-            }
-        }
-        function updateFilterSubdist() {
-            const provSelect = document.getElementById("filter-map-prov");
-            const distSelect = document.getElementById("filter-map-dist");
-            const subdistSelect = document.getElementById("filter-map-subdist");
-            const pId = provSelect.options[provSelect.selectedIndex] ? provSelect.options[provSelect.selectedIndex].getAttribute('data-id') : null;
-            const dId = distSelect.options[distSelect.selectedIndex] ? distSelect.options[distSelect.selectedIndex].getAttribute('data-id') : null;
-            
-            subdistSelect.innerHTML = '<option value="all">ทุกตำบล</option>'; 
-            subdistSelect.disabled = (distSelect.value === 'all');
-
-            if (pId && dId && distSelect.value !== 'all') {
-                const pData = thaiData.find(p => p.id == pId); 
-                const dData = pData.amphure.find(a => a.id == dId);
-                if (dData && dData.tambon) { 
-                    [...dData.tambon].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(tam => { 
-                        subdistSelect.innerHTML += `<option value="${tam.name_th}" data-zip="${tam.zip_code}">${tam.name_th}</option>`; 
-                    }); 
-                }
-            }
+            subdistSelect.addEventListener('change', function() { const zip = this.options[this.selectedIndex] ? this.options[this.selectedIndex].getAttribute('data-zip') : ''; if (zip) zipInput.value = zip; });
         }
 
         // ==========================================
-        // Calendar Multi-Select Logic
+        // Multi-Select System (Map & Calendar)
         // ==========================================
         function toggleMultiSelect(id) {
-            document.querySelectorAll('.multi-select-dropdown').forEach(el => {
-                if(el.id !== id) el.classList.remove('show');
-            });
+            document.querySelectorAll('.multi-select-dropdown').forEach(el => { if(el.id !== id) el.classList.remove('show'); });
             document.getElementById(id).classList.toggle('show');
         }
 
@@ -940,332 +711,262 @@
             }
         });
 
-        function updateCalDistricts() {
-            const provName = document.getElementById("cal-filter-prov").value;
-            const distDropdown = document.getElementById("cal-dist-dropdown");
-            const subdistDropdown = document.getElementById("cal-subdist-dropdown");
-            const distLabel = document.getElementById("cal-dist-label");
-            const subdistLabel = document.getElementById("cal-subdist-label");
+        function initMultiSelectFilter(prefix) {
+            const provDrop = document.getElementById(`${prefix}-prov-dropdown`);
+            if(!provDrop) return;
+            let phtml = '';
+            [...thaiData].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(p => {
+                phtml += `<label class="multi-select-option"><input type="checkbox" value="${p.name_th}" onchange="onFilterChange('${prefix}', 'prov')"> ${p.name_th}</label>`;
+            });
+            provDrop.innerHTML = phtml;
+        }
 
-            selectedCalDists = [];
-            selectedCalSubDists = [];
-            distLabel.innerText = "ทุกอำเภอ";
-            subdistLabel.innerText = "ทุกตำบล";
-            subdistDropdown.innerHTML = '<div class="multi-select-option"><input type="checkbox" disabled> เลือกอำเภอก่อน</div>';
-
-            if(provName === 'all') {
-                distDropdown.innerHTML = '<div class="multi-select-option"><input type="checkbox" disabled> เลือกจังหวัดก่อน</div>';
-                return;
+        function onFilterChange(prefix, level) {
+            if(level === 'prov') {
+                const checked = Array.from(document.querySelectorAll(`#${prefix}-prov-dropdown input:checked`)).map(cb => cb.value);
+                filters[prefix].provs = checked;
+                document.getElementById(`${prefix}-prov-label`).innerText = checked.length ? `เลือก ${checked.length} จังหวัด` : 'ทุกจังหวัด';
+                updateMultiFilterDist(prefix);
             }
-
-            const pData = thaiData.find(p => p.name_th === provName);
-            if(pData && pData.amphure) {
-                let html = '';
-                [...pData.amphure].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(amp => {
-                    html += `
-                    <label class="multi-select-option">
-                        <input type="checkbox" value="${amp.name_th}" onchange="onCalDistChange()"> ${amp.name_th}
-                    </label>`;
-                });
-                distDropdown.innerHTML = html;
+            if(level === 'dist') {
+                const checked = Array.from(document.querySelectorAll(`#${prefix}-dist-dropdown input:checked`)).map(cb => cb.value);
+                filters[prefix].dists = checked;
+                document.getElementById(`${prefix}-dist-label`).innerText = checked.length ? `เลือก ${checked.length} อำเภอ` : 'ทุกอำเภอ';
+                updateMultiFilterSub(prefix);
+            }
+            if(level === 'sub') {
+                const checked = Array.from(document.querySelectorAll(`#${prefix}-subdist-dropdown input:checked`)).map(cb => cb.value);
+                filters[prefix].subs = checked;
+                document.getElementById(`${prefix}-subdist-label`).innerText = checked.length ? `เลือก ${checked.length} ตำบล` : 'ทุกตำบล';
             }
         }
 
-        function onCalDistChange() {
-            const checkboxes = document.querySelectorAll('#cal-dist-dropdown input[type="checkbox"]:checked');
-            selectedCalDists = Array.from(checkboxes).map(cb => cb.value);
+        function updateMultiFilterDist(prefix) {
+            const distDrop = document.getElementById(`${prefix}-dist-dropdown`);
+            filters[prefix].dists = []; filters[prefix].subs = [];
+            document.getElementById(`${prefix}-dist-label`).innerText = 'ทุกอำเภอ';
+            document.getElementById(`${prefix}-subdist-label`).innerText = 'ทุกตำบล';
+            document.getElementById(`${prefix}-subdist-dropdown`).innerHTML = '<div class="multi-select-option"><input type="checkbox" disabled> เลือกอำเภอก่อน</div>';
             
-            const distLabel = document.getElementById("cal-dist-label");
-            if(selectedCalDists.length === 0) distLabel.innerText = "ทุกอำเภอ";
-            else distLabel.innerText = `เลือกแล้ว ${selectedCalDists.length} อำเภอ`;
-
-            updateCalSubdistricts();
-        }
-
-        function updateCalSubdistricts() {
-            const provName = document.getElementById("cal-filter-prov").value;
-            const subdistDropdown = document.getElementById("cal-subdist-dropdown");
-            const subdistLabel = document.getElementById("cal-subdist-label");
-
-            selectedCalSubDists = [];
-            subdistLabel.innerText = "ทุกตำบล";
-
-            if(selectedCalDists.length === 0) {
-                subdistDropdown.innerHTML = '<div class="multi-select-option"><input type="checkbox" disabled> เลือกอำเภอก่อน</div>';
-                return;
+            if(filters[prefix].provs.length === 0) {
+                distDrop.innerHTML = '<div class="multi-select-option"><input type="checkbox" disabled> เลือกจังหวัดก่อน</div>'; return;
             }
-
-            const pData = thaiData.find(p => p.name_th === provName);
-            if(pData && pData.amphure) {
-                let html = '';
-                pData.amphure.forEach(amp => {
-                    if(selectedCalDists.includes(amp.name_th) && amp.tambon) {
-                        html += `<div class="group-header">อ.${amp.name_th}</div>`;
-                        [...amp.tambon].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(tam => {
-                            html += `
-                            <label class="multi-select-option">
-                                <input type="checkbox" value="${tam.name_th}" onchange="onCalSubdistChange()"> ${tam.name_th}
-                            </label>`;
-                        });
-                    }
-                });
-                subdistDropdown.innerHTML = html;
-            }
-        }
-
-        function onCalSubdistChange() {
-            const checkboxes = document.querySelectorAll('#cal-subdist-dropdown input[type="checkbox"]:checked');
-            selectedCalSubDists = Array.from(checkboxes).map(cb => cb.value);
             
-            const subdistLabel = document.getElementById("cal-subdist-label");
-            if(selectedCalSubDists.length === 0) subdistLabel.innerText = "ทุกตำบล";
-            else subdistLabel.innerText = `เลือกแล้ว ${selectedCalSubDists.length} ตำบล`;
+            let dhtml = '';
+            filters[prefix].provs.forEach(provName => {
+                const pData = thaiData.find(p => p.name_th === provName);
+                if(pData && pData.amphure) {
+                    dhtml += `<div class="group-header">จ.${provName}</div>`;
+                    [...pData.amphure].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(amp => {
+                        dhtml += `<label class="multi-select-option"><input type="checkbox" value="${amp.name_th}" onchange="onFilterChange('${prefix}', 'dist')"> ${amp.name_th}</label>`;
+                    });
+                }
+            });
+            distDrop.innerHTML = dhtml;
+        }
+
+        function updateMultiFilterSub(prefix) {
+            const subDrop = document.getElementById(`${prefix}-subdist-dropdown`);
+            filters[prefix].subs = [];
+            document.getElementById(`${prefix}-subdist-label`).innerText = 'ทุกตำบล';
+            
+            if(filters[prefix].dists.length === 0) {
+                subDrop.innerHTML = '<div class="multi-select-option"><input type="checkbox" disabled> เลือกอำเภอก่อน</div>'; return;
+            }
+            
+            let shtml = '';
+            filters[prefix].provs.forEach(provName => {
+                const pData = thaiData.find(p => p.name_th === provName);
+                if(pData && pData.amphure) {
+                    pData.amphure.forEach(amp => {
+                        if(filters[prefix].dists.includes(amp.name_th)) {
+                            shtml += `<div class="group-header">อ.${amp.name_th}</div>`;
+                            [...amp.tambon].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(tam => {
+                                shtml += `<label class="multi-select-option"><input type="checkbox" value="${tam.name_th}" onchange="onFilterChange('${prefix}', 'sub')"> ${tam.name_th}</label>`;
+                            });
+                        }
+                    });
+                }
+            });
+            subDrop.innerHTML = shtml;
         }
 
         // ==========================================
-        // Main Core Initialization & LINE Login
+        // Reverse Geocoding AI (แปลงพิกัด Lat/Lon -> ที่อยู่จริงเงียบๆ)
+        // ==========================================
+        async function processRealPlotLocations(jobsList) {
+            let pendingJobs = jobsList.filter(j => j.lat && j.lon && !caneGeoCache[`${parseFloat(j.lat).toFixed(3)},${parseFloat(j.lon).toFixed(3)}`]);
+            
+            // ประยุกต์ค่าที่มีใน Cache ให้ทำงานทันที
+            jobsList.forEach(j => {
+                if(j.lat && j.lon) {
+                    let key = `${parseFloat(j.lat).toFixed(3)},${parseFloat(j.lon).toFixed(3)}`;
+                    if(caneGeoCache[key]) {
+                        j.plotProv = caneGeoCache[key].prov; j.plotDist = caneGeoCache[key].dist; j.plotSubDist = caneGeoCache[key].sub;
+                    } else {
+                        // Fallback ใช้ที่อยู่ตามทะเบียนของชาวไร่ไปก่อน
+                        j.plotProv = j.prov; j.plotDist = j.dist; j.plotSubDist = j.subDist;
+                    }
+                }
+            });
+
+            // แอบดึงข้อมูลพิกัดที่ยังไม่มีแบบค่อยๆ ดึง (ป้องกัน API Block)
+            for(let i = 0; i < pendingJobs.length; i++) {
+                let j = pendingJobs[i];
+                let key = `${parseFloat(j.lat).toFixed(3)},${parseFloat(j.lon).toFixed(3)}`;
+                
+                try {
+                    let res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${j.lat}&lon=${j.lon}&format=json&accept-language=th`);
+                    let data = await res.json();
+                    
+                    if(data && data.address) {
+                        let p = data.address.state || data.address.province || j.prov || "";
+                        let d = data.address.county || data.address.town || data.address.city || data.address.district || j.dist || "";
+                        let s = data.address.village || data.address.suburb || data.address.hamlet || data.address.municipality || j.subDist || "";
+                        
+                        // Clean text
+                        p = p.replace('จังหวัด', '').replace('จ.', '').trim();
+                        d = d.replace('อำเภอ', '').replace('อ.', '').replace('เขต', '').trim();
+                        s = s.replace('ตำบล', '').replace('ต.', '').replace('แขวง', '').trim();
+
+                        caneGeoCache[key] = { prov: p, dist: d, sub: s };
+                        j.plotProv = p; j.plotDist = d; j.plotSubDist = s;
+                        localStorage.setItem('caneGeoCache', JSON.stringify(caneGeoCache));
+                    }
+                    // หน่วงเวลา 1.5 วินาที เพื่อไม่ให้เซิร์ฟเวอร์ OpenStreetMap บล็อก
+                    await new Promise(r => setTimeout(r, 1500));
+                } catch(e) { console.log("Geocode process error (Silent)"); }
+            }
+        }
+
+        // ==========================================
+        // Main Logic & LINE Login
         // ==========================================
         async function main() {
             await loadThaiData();
-            
             try {
                 await liff.init({ liffId: LIFF_ID });
-                
                 if (liff.isLoggedIn()) {
                     userProfile = await liff.getProfile();
                     document.getElementById("profile-img").src = userProfile.pictureUrl; 
                     document.getElementById("profile-img").style.display = "block";
                     document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName;
 
-                    // ขอพิกัด GPS
                     if (navigator.geolocation) { 
                         navigator.geolocation.watchPosition(
-                            p => { 
-                                currentLat = p.coords.latitude; 
-                                currentLng = p.coords.longitude; 
-                                updateUserLocationOnMap(); 
-                            }, 
-                            e => { console.log("GPS Denied"); }, 
-                            {enableHighAccuracy: true}
+                            p => { currentLat = p.coords.latitude; currentLng = p.coords.longitude; updateUserLocationOnMap(); }, 
+                            e => { console.log("GPS watch failed"); }, {enableHighAccuracy: true}
                         ); 
                     }
-                    
                     await checkBuyerProfile(); 
-                } else { 
-                    liff.login({ redirectUri: "https://nutsukhonmanee-max.github.io/caneconnect/desktop_buyer.html" }); 
-                }
-            } catch (err) { 
-                hideLoader();
-                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อ LINE Web Login ได้', 'error'); 
-            } 
+                } else { liff.login({ redirectUri: "https://nutsukhonmanee-max.github.io/caneconnect/desktop_buyer.html" }); }
+            } catch (err) { hideLoader(); Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อ LINE Web Login ได้', 'error'); } 
         }
 
         async function checkBuyerProfile() {
             try {
-                const res = await fetch(GAS_WEB_APP_URL, { 
-                    method: "POST", 
-                    body: JSON.stringify({ action: "checkBuyer", userId: userProfile.userId }) 
-                }); 
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "checkBuyer", userId: userProfile.userId }) }); 
                 const result = await res.json();
-                
                 if (result.status === "found") {
-                    isBuyerEditMode = true; 
-                    let d = result.data; 
-                    buyerNameContext = d.fullName; 
-                    buyerPhoneContext = d.phone; 
-                    
+                    isBuyerEditMode = true; let d = result.data; buyerNameContext = d.fullName; buyerPhoneContext = d.phone; 
                     document.getElementById("profile-info").innerText = "คุณ " + d.fullName; 
+                    document.getElementById("buyer-prefix").value = d.prefix; document.getElementById("buyer-firstname").value = d.firstName; document.getElementById("buyer-lastname").value = d.lastName;
+                    if(d.dob) { let dobDate = new Date(d.dob); dobDate.setHours(dobDate.getHours() + 7); document.getElementById("buyer-dob").value = dobDate.toISOString().split('T')[0]; }
                     
-                    document.getElementById("buyer-prefix").value = d.prefix; 
-                    document.getElementById("buyer-firstname").value = d.firstName; 
-                    document.getElementById("buyer-lastname").value = d.lastName;
-                    
-                    if(d.dob) { 
-                        let dobDate = new Date(d.dob); 
-                        dobDate.setHours(dobDate.getHours() + 7); 
-                        document.getElementById("buyer-dob").value = dobDate.toISOString().split('T')[0]; 
-                    }
-                    
-                    let fPhone = d.phone ? d.phone.toString() : ""; 
-                    if(fPhone.startsWith("'")) fPhone = fPhone.substring(1); 
+                    let fPhone = d.phone ? d.phone.toString() : ""; if(fPhone.startsWith("'")) fPhone = fPhone.substring(1); 
                     if((fPhone.length === 8 || fPhone.length === 9) && !fPhone.startsWith("0")) fPhone = "0" + fPhone; 
                     document.getElementById("buyer-phone").value = fPhone;
+                    document.getElementById("buyer-no").value = d.addressNo; document.getElementById("buyer-moo").value = d.moo; 
                     
-                    document.getElementById("buyer-no").value = d.addressNo; 
-                    document.getElementById("buyer-moo").value = d.moo; 
-                    
-                    document.getElementById("buyer-prov").value = d.prov; 
-                    document.getElementById("buyer-prov").dispatchEvent(new Event('change'));
-                    
-                    setTimeout(() => {
-                        document.getElementById("buyer-dist").value = d.dist; 
-                        document.getElementById("buyer-dist").dispatchEvent(new Event('change'));
-                        setTimeout(() => {
-                            document.getElementById("buyer-subdist").value = d.subDist;
-                            document.getElementById("buyer-zip").value = d.zip;
-                        }, 200);
+                    document.getElementById("buyer-prov").value = d.prov; document.getElementById("buyer-prov").dispatchEvent(new Event('change'));
+                    setTimeout(() => { document.getElementById("buyer-dist").value = d.dist; document.getElementById("buyer-dist").dispatchEvent(new Event('change'));
+                        setTimeout(() => { document.getElementById("buyer-subdist").value = d.subDist; document.getElementById("buyer-zip").value = d.zip; }, 200);
                     }, 200);
-
                     document.getElementById("buyer-vehicle").value = d.vehicleInfo; 
                     
-                    toggleProfileInputs(true);
-                    document.getElementById('btn-enable-buyer-edit').style.display = 'inline-block'; 
-                    document.getElementById('btn-buyer-register').style.display = 'none'; 
-                    document.getElementById('pdpa-box-buyer').style.display = 'none';
+                    ['buyer-prefix', 'buyer-firstname', 'buyer-lastname', 'buyer-dob', 'buyer-phone', 'buyer-no', 'buyer-moo', 'buyer-prov', 'buyer-dist', 'buyer-subdist', 'buyer-vehicle'].forEach(id => document.getElementById(id).disabled = true);
+                    document.getElementById('btn-enable-buyer-edit').style.display = 'inline-block'; document.getElementById('btn-buyer-register').style.display = 'none'; document.getElementById('pdpa-box-buyer').style.display = 'none';
 
                     switchPage('buyer-map-page');
                     await fetchBuyerRawData(); 
                     hideLoader();
                 } else { 
-                    hideLoader();
-                    switchPage('register-buyer-page');
-                    Swal.fire({ 
-                        icon: 'info', title: 'ยินดีต้อนรับ', 
-                        text: `กรุณาลงทะเบียนข้อมูลพาร์ทเนอร์ก่อนใช้งานครับ`, 
-                        confirmButtonColor: THEME_PRIMARY 
-                    }); 
+                    hideLoader(); switchPage('register-buyer-page');
+                    Swal.fire({ icon: 'info', title: 'ยินดีต้อนรับ', text: `กรุณาลงทะเบียนข้อมูลพาร์ทเนอร์ก่อนใช้งานครับ`, confirmButtonColor: THEME_PRIMARY }); 
                 }
-            } catch (error) { 
-                hideLoader(); 
-                Swal.fire('ข้อผิดพลาด', 'ระบบขัดข้องในการดึงข้อมูลส่วนตัว', 'error'); 
-            }
-        }
-
-        function toggleProfileInputs(disabled) {
-            ['buyer-prefix', 'buyer-firstname', 'buyer-lastname', 'buyer-dob', 'buyer-phone', 'buyer-no', 'buyer-moo', 'buyer-prov', 'buyer-dist', 'buyer-subdist', 'buyer-vehicle'].forEach(id => { 
-                let el = document.getElementById(id); 
-                if(el) el.disabled = disabled; 
-            });
+            } catch (error) { hideLoader(); Swal.fire('ข้อผิดพลาด', 'ระบบขัดข้องในการดึงข้อมูลส่วนตัว', 'error'); }
         }
 
         function enableBuyerProfileEdit() { 
-            toggleProfileInputs(false);
-            document.getElementById('btn-enable-buyer-edit').style.display = 'none'; 
-            document.getElementById('btn-buyer-register').style.display = 'block'; 
+            ['buyer-prefix', 'buyer-firstname', 'buyer-lastname', 'buyer-dob', 'buyer-phone', 'buyer-no', 'buyer-moo', 'buyer-prov', 'buyer-dist', 'buyer-subdist', 'buyer-vehicle'].forEach(id => document.getElementById(id).disabled = false);
+            document.getElementById('btn-enable-buyer-edit').style.display = 'none'; document.getElementById('btn-buyer-register').style.display = 'block'; 
         }
 
         async function submitBuyerRegistration() {
             let reqFields = document.querySelectorAll('#register-buyer-page [required]');
-            for(let i=0; i<reqFields.length; i++) {
-                if(!reqFields[i].value) { 
-                    Swal.fire('แจ้งเตือน', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'warning'); 
-                    return; 
-                }
-            }
-            if (!isBuyerEditMode && !document.getElementById('buyer-pdpa').checked) {
-                Swal.fire('ข้อกำหนด PDPA', 'กรุณากดยอมรับเงื่อนไขนโยบายความเป็นส่วนตัว', 'warning'); 
-                return;
-            }
+            for(let i=0; i<reqFields.length; i++) { if(!reqFields[i].value) { Swal.fire('แจ้งเตือน', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'warning'); return; } }
+            if (!isBuyerEditMode && !document.getElementById('buyer-pdpa').checked) { Swal.fire('ข้อกำหนด PDPA', 'กรุณากดยอมรับเงื่อนไขนโยบายความเป็นส่วนตัว', 'warning'); return; }
             
-            let phoneInput = document.getElementById("buyer-phone").value.trim(); 
-            let formattedPhone = phoneInput.startsWith("'") ? phoneInput : "'" + phoneInput;
-            
+            let phoneInput = document.getElementById("buyer-phone").value.trim(); let formattedPhone = phoneInput.startsWith("'") ? phoneInput : "'" + phoneInput;
             const payload = { 
-                action: isBuyerEditMode ? "updateBuyer" : "registerBuyer", 
-                userId: userProfile.userId, 
-                lineName: userProfile.displayName, 
-                prefix: document.getElementById("buyer-prefix").value, 
-                firstName: document.getElementById("buyer-firstname").value, 
-                lastName: document.getElementById("buyer-lastname").value, 
-                dob: document.getElementById("buyer-dob").value, 
-                addressNo: document.getElementById("buyer-no").value, 
-                moo: document.getElementById("buyer-moo").value, 
-                subDist: document.getElementById("buyer-subdist").value, 
-                dist: document.getElementById("buyer-dist").value, 
-                prov: document.getElementById("buyer-prov").value, 
-                zip: document.getElementById("buyer-zip").value, 
-                phone: formattedPhone, 
-                vehicleInfo: document.getElementById("buyer-vehicle").value, 
+                action: isBuyerEditMode ? "updateBuyer" : "registerBuyer", userId: userProfile.userId, lineName: userProfile.displayName, 
+                prefix: document.getElementById("buyer-prefix").value, firstName: document.getElementById("buyer-firstname").value, lastName: document.getElementById("buyer-lastname").value, 
+                dob: document.getElementById("buyer-dob").value, addressNo: document.getElementById("buyer-no").value, moo: document.getElementById("buyer-moo").value, 
+                subDist: document.getElementById("buyer-subdist").value, dist: document.getElementById("buyer-dist").value, prov: document.getElementById("buyer-prov").value, 
+                zip: document.getElementById("buyer-zip").value, phone: formattedPhone, vehicleInfo: document.getElementById("buyer-vehicle").value, 
                 fullName: document.getElementById("buyer-prefix").value + document.getElementById("buyer-firstname").value + " " + document.getElementById("buyer-lastname").value 
             };
             
             Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } }); 
             try { 
-                const res = await fetch(GAS_WEB_APP_URL, { 
-                    method: "POST", 
-                    body: JSON.stringify(payload) 
-                }); 
-                const result = await res.json(); 
-                if (result.status === "success") { 
-                    Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: 'บันทึกข้อมูลแล้ว', confirmButtonColor: THEME_PRIMARY }).then(()=>{
-                        location.reload();
-                    }); 
-                } 
-            } catch (error) { 
-                Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); 
-            }
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json(); 
+                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: 'บันทึกข้อมูลแล้ว', confirmButtonColor: THEME_PRIMARY }).then(()=>{ location.reload(); }); } 
+            } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); }
         }
 
         // ==========================================
-        // Map & Fetching Data
+        // Map Engine & Fetch Data
         // ==========================================
-        function getDistanceJS(lat1, lon1, lat2, lon2) { 
-            var R = 6371; // รัศมีโลก
-            var dLat = (lat2-lat1)*(Math.PI/180); 
-            var dLon = (lon2-lon1)*(Math.PI/180); 
-            var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*(Math.PI/180))*Math.cos(lat2*(Math.PI/180))*Math.sin(dLon/2)*Math.sin(dLon/2); 
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-        }
-
         function updateUserLocationOnMap() {
-            let userIcon = L.divIcon({ 
-                className: 'user-loc-icon', 
-                html: `<div class="pulse-marker"></div>` 
-            });
+            let userIcon = L.divIcon({ className: 'user-loc-icon', html: `<div class="pulse-marker"></div>` });
             if (buyerMapObj) {
-                if (currentUserMarker) { 
-                    currentUserMarker.setLatLng([currentLat, currentLng]); 
-                } else { 
-                    currentUserMarker = L.marker([currentLat, currentLng], { icon: userIcon, zIndexOffset: 1000 })
-                        .addTo(buyerMapObj)
-                        .bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>"); 
-                    buyerMapObj.setView([currentLat, currentLng], 12);
-                }
+                if (currentUserMarker) { currentUserMarker.setLatLng([currentLat, currentLng]); } 
+                else { currentUserMarker = L.marker([currentLat, currentLng], { icon: userIcon, zIndexOffset: 1000 }).addTo(buyerMapObj).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>"); buyerMapObj.setView([currentLat, currentLng], 12); }
             }
         }
 
         function goToMyLocation() {
-            if (buyerMapObj && currentLat && currentLng) {
-                buyerMapObj.flyTo([currentLat, currentLng], 14, {duration: 1.5});
-            } else {
-                Swal.fire('ไม่พบตำแหน่ง', 'โปรดอนุญาตให้ระบบเข้าถึง GPS ของคุณ', 'warning');
-            }
+            if (buyerMapObj && currentLat && currentLng) { buyerMapObj.flyTo([currentLat, currentLng], 14, {duration: 1.5}); } 
+            else { Swal.fire('ไม่พบตำแหน่ง', 'โปรดอนุญาตให้ระบบเข้าถึง GPS ของคุณ', 'warning'); }
         }
 
         async function fetchBuyerRawData() {
             if(!buyerMapObj) { 
-                // ใช้พิกัดจังหวัดเลย เป็น Default หากยังไม่มี GPS
                 buyerMapObj = L.map('buyer-map', { zoomControl: false }).setView([17.295, 101.782], 10); 
                 L.control.zoom({ position: 'bottomright' }).addTo(buyerMapObj);
                 L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(buyerMapObj);
-                
-                if(currentLat && currentLng) {
-                    updateUserLocationOnMap();
-                }
+                if(currentLat && currentLng) updateUserLocationOnMap();
             }
             try { 
-                const res = await fetch(GAS_WEB_APP_URL, { 
-                    method: "POST", 
-                    body: JSON.stringify({ action: "getBuyerMap", buyerName: buyerNameContext }) 
-                }); 
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "getBuyerMap", buyerName: buyerNameContext }) }); 
                 const result = await res.json(); 
                 if (result.status === "success") { 
                     rawBuyerData = result.data; 
-                    updateClusterLogic(); 
-                    renderPurchasesPage(); 
+                    
+                    // รันระบบแปลงพิกัดดาวเทียมเป็นที่อยู่จริงแบบเงียบๆ
+                    processRealPlotLocations(rawBuyerData).then(() => {
+                        // เมื่อดึงเสร็จ หากผู้ใช้อยู่หน้าปฏิทินหรือทริป ให้ render ซ้ำเบาๆ เพื่อให้ที่อยู่สมบูรณ์ขึ้น
+                    });
+                    
+                    updateClusterLogic(); renderPurchasesPage(); 
                 } 
-            } catch (error) { 
-                console.error("Load map error", error); 
-            }
+            } catch (error) { console.error("Load map error", error); }
         }
 
         async function loadGistdaPolygonOverlay(farmerGeoJsonString, mapObject) {
             if (!farmerGeoJsonString) return;
             try {
-                const response = await fetch(GAS_WEB_APP_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ action: 'verifyGistda', polygon: farmerGeoJsonString }) 
-                });
+                const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'verifyGistda', polygon: farmerGeoJsonString }) });
                 const result = await response.json();
                 if (result.status === "success") {
                     let dataArr = Array.isArray(result.data) ? result.data : (result.data && result.data.features ? result.data.features : [result.data]);
@@ -1273,12 +974,7 @@
                         let geometry = item.geom || item.geometry || item;
                         if (typeof geometry === 'string') try { geometry = JSON.parse(geometry); } catch(e){}
                         if (geometry && geometry.type) {
-                            L.geoJSON(geometry, { style: { color: '#3B82F6', weight: 3, fillOpacity: 0.2, dashArray: '5, 5' } }).bindPopup(`
-                                <div style="font-family:'Kanit'; text-align:center;">
-                                    <b style="color:#2563EB;">ประเมินโดย GISTDA</b><br>
-                                    <b>ขนาดพื้นที่:</b> ${item.area ? parseFloat(item.area).toFixed(2) : '-'} ไร่
-                                </div>
-                            `).addTo(mapObject);
+                            L.geoJSON(geometry, { style: { color: '#3B82F6', weight: 3, fillOpacity: 0.2, dashArray: '5, 5' } }).bindPopup(`<div style="font-family:'Kanit'; text-align:center;"><b style="color:#2563EB;">ประเมินโดย GISTDA</b><br><b>ขนาดพื้นที่:</b> ${item.area ? parseFloat(item.area).toFixed(2) : '-'} ไร่</div>`).addTo(mapObject);
                         }
                     });
                 }
@@ -1286,74 +982,51 @@
         }
 
         // ==========================================
-        // ฟังก์ชันใหม่: เรียกดูข้อมูลแปลงอ้อยจากตารางรถม้วน
+        // View Modal & Close Job Modal
         // ==========================================
         function viewSaleIslandModal(rowId) {
             let item = rawBuyerData.find(j => j.row === rowId); 
-            if(!item) {
-                Swal.fire('ข้อผิดพลาด', 'ไม่พบข้อมูลแปลงนี้', 'error');
-                return; 
-            }
+            if(!item) { Swal.fire('ข้อผิดพลาด', 'ไม่พบข้อมูลแปลงนี้', 'error'); return; }
             
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
             let photoGalleryHTML = "";
             if(item.photos && item.photos.length > 0) { 
                 photoGalleryHTML = `<div class="photo-gallery" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">`; 
-                item.photos.forEach(img => { 
-                    photoGalleryHTML += `<img src="${img}" onclick="openImageViewer('${img}')" style="width:80px; height:80px; object-fit:cover; border-radius:8px; cursor:zoom-in; border:1px solid var(--border);">`; 
-                }); 
+                item.photos.forEach(img => { photoGalleryHTML += `<img src="${img}" onclick="openImageViewer('${img}')" style="width:80px; height:80px; object-fit:cover; border-radius:8px; cursor:zoom-in; border:1px solid var(--border);">`; }); 
                 photoGalleryHTML += `</div>`; 
-            } else { 
-                photoGalleryHTML = `<div style="color:var(--text-muted); font-size:14px; padding:15px; background:var(--bg-body); border-radius:12px; border:1px dashed var(--border); text-align:center; margin-top:10px;">ไม่มีรูปภาพประกอบ</div>`; 
-            }
+            } else { photoGalleryHTML = `<div style="color:var(--text-muted); font-size:14px; padding:15px; background:var(--bg-body); border-radius:12px; border:1px dashed var(--border); text-align:center; margin-top:10px;">ไม่มีรูปภาพประกอบ</div>`; }
             
             let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
             let displayName = item.farmerFullName || item.farmerName;
             
+            // แสดงที่อยู่จริงของแปลง (ถ้าดึงได้จากแผนที่) ถ้าไม่มีให้ใช้ที่อยู่ชาวไร่
+            let plotAddressText = "";
+            if(item.plotProv) { plotAddressText = `จ.${item.plotProv} อ.${item.plotDist} ต.${item.plotSubDist}`; }
+            else { plotAddressText = `จ.${item.prov} อ.${item.dist} ต.${item.subDist} (ที่อยู่ตามทะเบียน)`; }
+
             let actionsHTML = "";
             if (item.status === "รอคิวรถ" || item.status === "รอชาวไร่ยืนยัน") {
-                actionsHTML = `
-                    <div style="display:flex; gap:10px; margin-top:20px;">
-                        <button onclick="acceptJob(${item.row}, ${actualQ})" class="btn-main" style="flex:1;"><i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา</button>
-                        <button onclick="addToTripFromModal(${item.row})" class="btn-main btn-outline" style="flex:1;"><i class="fa-solid fa-route"></i> เพิ่มลงทริป</button>
-                    </div>
-                `;
+                actionsHTML = `<div style="display:flex; gap:10px; margin-top:20px;"><button onclick="acceptJob(${item.row}, ${actualQ})" class="btn-main" style="flex:1;"><i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา</button><button onclick="addToTripFromModal(${item.row})" class="btn-main btn-outline" style="flex:1;"><i class="fa-solid fa-route"></i> เพิ่มลงทริป</button></div>`;
             } else if (item.status === "กำลังดำเนินการ") {
-                 actionsHTML = `
-                    <div style="display:flex; gap:10px; margin-top:20px;">
-                        <button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1; background:var(--info);"><i class="fa-solid fa-flag-checkered"></i> แจ้งปิดงาน</button>
-                    </div>
-                `;
+                 actionsHTML = `<div style="display:flex; gap:10px; margin-top:20px;"><button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1; background:var(--info);"><i class="fa-solid fa-flag-checkered"></i> แจ้งปิดงาน</button></div>`;
             }
 
             Swal.fire({ 
-                width: '1000px', 
-                customClass: { popup: 'swal2-popup' },
+                width: '1000px', customClass: { popup: 'swal2-popup' },
                 html: `
                     <div style="display:flex; height:550px; text-align:left;">
                         <div style="flex:1; padding:30px; background:var(--surface); display:flex; flex-direction:column; overflow-y:auto; border-right:1px solid var(--border);">
                             <div style="font-size: 24px; font-weight: 700; margin-bottom: 20px; color: var(--text-main);">ข้อมูลแปลงอ้อย</div>
-                            
                             <div style="font-size:16px; line-height:1.8;">
-                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
-                                    <span style="color:var(--text-muted);">ชาวไร่:</span> <span style="font-weight:700; font-size:18px; color:var(--primary);">คุณ ${displayName}</span>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
-                                    <span style="color:var(--text-muted);">พื้นที่แจ้งขาย:</span> <span style="font-weight:700; font-size:18px; color:var(--primary);">${actualQ} ไร่</span>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
-                                    <span style="color:var(--text-muted);">วันนัดเข้าม้วน:</span> <span style="font-weight:600;">${hDate}</span>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
-                                    <span style="color:var(--text-muted);">สภาพทางเข้า:</span> <span style="font-weight:600;">${item.access || "ไม่ระบุ"}</span>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
-                                    <span style="color:var(--text-muted);">เบอร์ติดต่อ:</span> <span style="font-weight:600; color:var(--info);"><a href="tel:${item.farmerPhone}" style="text-decoration:none;">${item.farmerPhone || "ไม่ระบุ"}</a></span>
-                                </div>
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;"><span style="color:var(--text-muted);">ชาวไร่:</span> <span style="font-weight:700; font-size:18px; color:var(--primary);">คุณ ${displayName}</span></div>
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;"><span style="color:var(--text-muted);">พื้นที่แจ้งขาย:</span> <span style="font-weight:700; font-size:18px; color:var(--primary);">${actualQ} ไร่</span></div>
+                                <div style="display:flex; flex-direction:column; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;"><span style="color:var(--text-muted);">ตำแหน่งแปลงจริง:</span> <span style="font-weight:600; font-size:15px;">${plotAddressText}</span></div>
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;"><span style="color:var(--text-muted);">วันนัดเข้าม้วน:</span> <span style="font-weight:600;">${hDate}</span></div>
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;"><span style="color:var(--text-muted);">สภาพทางเข้า:</span> <span style="font-weight:600;">${item.access || "ไม่ระบุ"}</span></div>
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;"><span style="color:var(--text-muted);">เบอร์ติดต่อ:</span> <span style="font-weight:600; color:var(--info);"><a href="tel:${item.farmerPhone}" style="text-decoration:none;">${item.farmerPhone || "ไม่ระบุ"}</a></span></div>
                             </div>
                             ${actionsHTML}
                         </div>
-                        
                         <div style="flex:1.2; display:flex; flex-direction:column; background:#F4F7F6;">
                             <div id="swal-map" style="flex:1; width:100%; z-index: 1;"></div>
                             <div style="padding:20px; background:var(--surface); border-top:1px solid var(--border);">
@@ -1367,103 +1040,156 @@
                     </div>`, 
                 showConfirmButton: false, showCloseButton: true, 
                 didOpen: () => { 
-                    let sMap = L.map('swal-map', { zoomControl: false }).setView([item.lat, item.lon], 16); 
-                    L.control.zoom({ position: 'topright' }).addTo(sMap);
-                    L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(sMap); 
+                    let sMap = L.map('swal-map', { zoomControl: false }).setView([item.lat, item.lon], 16); L.control.zoom({ position: 'topright' }).addTo(sMap); L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(sMap); 
                     if (item.polygon && item.polygon !== "") { 
-                        try { 
-                            let c = JSON.parse(item.polygon)[0].map(p=>[p[1],p[0]]); 
-                            let poly = L.polygon(c, {color: THEME_PRIMARY, weight:3, fillOpacity:0.4}).addTo(sMap); 
-                            sMap.fitBounds(poly.getBounds(), {padding:[30,30]}); 
-                            loadGistdaPolygonOverlay(item.polygon, sMap);
-                        } catch(e) {} 
-                    } else { 
-                        L.marker([item.lat, item.lon]).addTo(sMap); 
-                    } 
+                        try { let c = JSON.parse(item.polygon)[0].map(p=>[p[1],p[0]]); let poly = L.polygon(c, {color: THEME_PRIMARY, weight:3, fillOpacity:0.4}).addTo(sMap); sMap.fitBounds(poly.getBounds(), {padding:[30,30]}); loadGistdaPolygonOverlay(item.polygon, sMap); } catch(e) {} 
+                    } else { L.marker([item.lat, item.lon]).addTo(sMap); } 
                     setTimeout(() => { sMap.invalidateSize(); }, 200); 
                 } 
             });
         }
 
-        // ==========================================
-        // ฟังก์ชันใหม่: ฟอร์มแจ้งปิดงานของรถม้วน
-        // ==========================================
         async function buyerCloseJobModal(rowId, defaultQty) {
             const { value: formValues } = await Swal.fire({
                 title: 'แจ้งปิดงาน & ส่งบิลชั่งน้ำหนัก',
-                html: `
-                    <div style="text-align:left; font-family:'Kanit';">
-                        <label style="font-weight:600; font-size:14px; color:var(--text-muted);">พื้นที่เก็บเกี่ยวจริง (ไร่):</label>
-                        <input id="swal-actual-qty" type="number" value="${defaultQty}" style="margin-bottom:15px; width:100%; height:44px; padding:10px 14px; border:1px solid var(--border); border-radius:12px; font-family:'Kanit';">
-                        
-                        <label style="font-weight:600; font-size:14px; color:var(--text-muted);">น้ำหนักรวมสุทธิ (ตัน):</label>
-                        <input id="swal-actual-weight" type="number" placeholder="เช่น 45.5" style="margin-bottom:15px; width:100%; height:44px; padding:10px 14px; border:1px solid var(--border); border-radius:12px; font-family:'Kanit';">
-                        
-                        <label style="font-weight:600; font-size:14px; color:var(--text-muted);">อัปโหลดภาพบิลชั่งน้ำหนัก (ถ้ามี):</label>
-                        <input id="swal-close-proof" type="file" accept="image/*" style="margin-bottom:15px; width:100%; font-family:'Kanit';">
-                    </div>
-                `,
-                focusConfirm: false,
-                showCancelButton: true,
-                confirmButtonText: 'บันทึกและส่งตรวจสอบ',
-                cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: THEME_PRIMARY,
+                html: `<div style="text-align:left; font-family:'Kanit';"><label style="font-weight:600; font-size:14px; color:var(--text-muted);">พื้นที่เก็บเกี่ยวจริง (ไร่):</label><input id="swal-actual-qty" type="number" value="${defaultQty}" style="margin-bottom:15px; width:100%; height:44px; padding:10px 14px; border:1px solid var(--border); border-radius:12px; font-family:'Kanit';"><label style="font-weight:600; font-size:14px; color:var(--text-muted);">น้ำหนักรวมสุทธิ (ตัน):</label><input id="swal-actual-weight" type="number" placeholder="เช่น 45.5" style="margin-bottom:15px; width:100%; height:44px; padding:10px 14px; border:1px solid var(--border); border-radius:12px; font-family:'Kanit';"><label style="font-weight:600; font-size:14px; color:var(--text-muted);">อัปโหลดภาพบิลชั่งน้ำหนัก (ถ้ามี):</label><input id="swal-close-proof" type="file" accept="image/*" style="margin-bottom:15px; width:100%; font-family:'Kanit';"></div>`,
+                focusConfirm: false, showCancelButton: true, confirmButtonText: 'บันทึกและส่งตรวจสอบ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY,
                 preConfirm: () => {
-                    const actQty = document.getElementById('swal-actual-qty').value;
-                    const actWt = document.getElementById('swal-actual-weight').value;
-                    const proofFile = document.getElementById('swal-close-proof').files[0];
-                    
-                    if (!actQty || !actWt) {
-                        Swal.showValidationMessage('กรุณาระบุพื้นที่และน้ำหนักให้ครบถ้วน');
-                        return false;
-                    }
+                    const actQty = document.getElementById('swal-actual-qty').value; const actWt = document.getElementById('swal-actual-weight').value; const proofFile = document.getElementById('swal-close-proof').files[0];
+                    if (!actQty || !actWt) { Swal.showValidationMessage('กรุณาระบุพื้นที่และน้ำหนักให้ครบถ้วน'); return false; }
                     return { actQty: actQty, actWt: actWt, proofFile: proofFile };
                 }
             });
-
             if (formValues) {
                 Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
-                
                 let base64Image = "";
                 if (formValues.proofFile) {
                     base64Image = await new Promise((resolve) => {
-                        let reader = new FileReader();
-                        reader.onload = (e) => {
-                            let img = new Image();
-                            img.onload = () => {
-                                let cvs = document.createElement('canvas');
-                                let scale = 800 / img.width;
-                                cvs.width = 800;
-                                cvs.height = img.height * scale;
-                                let ctx = cvs.getContext('2d');
-                                ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
-                                resolve(cvs.toDataURL('image/jpeg', 0.6));
-                            };
-                            img.src = e.target.result;
-                        };
-                        reader.readAsDataURL(formValues.proofFile);
+                        let reader = new FileReader(); reader.onload = (e) => { let img = new Image(); img.onload = () => { let cvs = document.createElement('canvas'); let scale = 800 / img.width; cvs.width = 800; cvs.height = img.height * scale; let ctx = cvs.getContext('2d'); ctx.drawImage(img, 0, 0, cvs.width, cvs.height); resolve(cvs.toDataURL('image/jpeg', 0.6)); }; img.src = e.target.result; }; reader.readAsDataURL(formValues.proofFile);
                     });
                 }
-
                 try {
-                    const payload = {
-                        action: "buyerCloseJob",
-                        row: rowId,
-                        actualQty: formValues.actQty,
-                        actualWeight: formValues.actWt,
-                        photoProof: base64Image
-                    };
-                    const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
-                    const result = await res.json();
-                    
-                    if (result.status === "success") {
-                        Swal.fire('สำเร็จ', 'ส่งข้อมูลให้ชาวไร่ตรวจสอบเรียบร้อยแล้ว', 'success').then(() => {
-                            fetchBuyerRawData();
-                        });
-                    }
-                } catch (err) {
-                    Swal.fire('ข้อผิดพลาด', 'ไม่สามารถบันทึกข้อมูลได้', 'error');
-                }
+                    const payload = { action: "buyerCloseJob", row: rowId, actualQty: formValues.actQty, actualWeight: formValues.actWt, photoProof: base64Image };
+                    const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
+                    if (result.status === "success") { Swal.fire('สำเร็จ', 'ส่งข้อมูลให้ชาวไร่ตรวจสอบเรียบร้อยแล้ว', 'success').then(() => { fetchBuyerRawData(); }); }
+                } catch (err) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); }
+            }
+        }
+
+        // ==========================================
+        // Update Cluster & Filter Logic
+        // ==========================================
+        function triggerSearch() {
+            Swal.fire({ title: 'กำลังคัดกรองข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+            setTimeout(() => { updateClusterLogic(); Swal.close(); }, 500);
+        }
+
+        function updateClusterLogic() {
+            let sortBy = document.getElementById("list-sort-by").value; 
+            buyerPolygonLayer.clearLayers(); 
+            const listContainer = document.getElementById("buyer-list-container"); 
+            const historyContainer = document.getElementById("buyer-history-container");
+            listContainer.innerHTML = ''; historyContainer.innerHTML = ''; buyerMarkers = {}; 
+            
+            if(!Array.isArray(rawBuyerData) || rawBuyerData.length === 0) { 
+                listContainer.innerHTML = "<div class='empty-state full-width'>ไม่มีรายการประกาศขายในขณะนี้</div>"; 
+                historyContainer.innerHTML = "<div class='empty-state full-width'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>"; return; 
+            }
+            
+            let historyJobs = rawBuyerData.filter(p => p.status === "เสร็จสิ้น" || p.status === "ยกเลิก" || myCanceledRows.includes(p.row));
+            let availableJobs = rawBuyerData.filter(p => p.status === "รอคิวรถ" || p.status === "รอชาวไร่ยืนยัน");
+            
+            // Render History ...
+            if(historyJobs.length > 0) {
+                let sumRai = 0, sumTon = 0, sumExpense = 0, completedCount = 0; let hHTML = "";
+                historyJobs.forEach(item => {
+                    try {
+                        let displayName = item.farmerFullName || item.farmerName; let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-"); let actualW = item.actualWeight || "-"; let pRai = extractPrice(item.price); let totalStr = "-";
+                        let displayStatus = item.status; let badgeClass = item.status === "เสร็จสิ้น" ? "bg-success" : "bg-danger";
+                        if (myCanceledRows.includes(item.row) && item.status !== "เสร็จสิ้น") { displayStatus = "ยกเลิกการรับซื้อ"; badgeClass = "bg-danger"; } else if (item.status === "ยกเลิก") { displayStatus = "ชาวไร่ยกเลิก"; }
+                        if (item.status === "เสร็จสิ้น") { completedCount++; if (actualQ !== "-" && pRai > 0) { let total = parseFloat(actualQ) * pRai; sumTon += parseFloat(actualW) || 0; sumExpense += total; totalStr = total.toLocaleString('th-TH', {minimumFractionDigits: 2}); } }
+                        
+                        hHTML += `<div class="sale-card" style="border-left: 5px solid ${displayStatus==='เสร็จสิ้น'?'var(--primary)':'var(--danger)'}; opacity: 0.9;"><div class="sale-header"><span style="font-weight:600;">คุณ ${displayName}</span><span class="badge ${badgeClass}">${displayStatus}</span></div><div class="sale-detail"><div>พื้นที่: <span style="font-weight:600;">${actualQ} ไร่</span> | น้ำหนัก: <span style="font-weight:600;">${actualW} ตัน</span></div><div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);">ยอดจ่าย: <b style="color:var(--danger);">${totalStr} บาท</b></div></div><button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; margin-top:16px;">ดูบิลชั่ง / ใบเสร็จ</button></div>`;
+                    } catch(e) {}
+                });
+                historyContainer.innerHTML += `<div class="dash-grid full-width"><div class="dash-card"><div class="label">รับงานสำเร็จ</div><div class="value">${completedCount} <span style="font-size:14px; color:var(--text-muted);">งาน</span></div></div><div class="dash-card"><div class="label">ปริมาณรับซื้อรวม</div><div class="value" style="color:var(--primary);">${sumTon.toLocaleString('th-TH')} <span style="font-size:14px; color:var(--text-muted);">ตัน</span></div></div><div class="dash-card" style="grid-column: span 2;"><div class="label">ยอดจ่ายสะสม</div><div class="value" style="color:var(--danger);">${sumExpense.toLocaleString('th-TH')} <span style="font-size:14px; color:var(--text-muted);">บาท</span></div></div></div>` + hHTML;
+            } else { historyContainer.innerHTML = "<div class='empty-state full-width'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>"; }
+
+            // Filter logic using Multi-Select & True Coordinates (Reverse Geocoding)
+            let filteredAvailable = availableJobs.filter(item => { 
+                let pass = true;
+                // ถ้าดึง Plot จริงได้ใช้ Plot จริง ไม่งั้นใช้ Profile ของชาวไร่
+                let iProv = (item.plotProv || item.prov || "").replace('จ.', '').trim();
+                let iDist = (item.plotDist || item.dist || "").replace('อ.', '').trim();
+                let iSub  = (item.plotSubDist || item.subDist || "").replace('ต.', '').trim();
+
+                if (filters.map.provs.length > 0 && !filters.map.provs.some(p => iProv.includes(p) || p.includes(iProv))) pass = false;
+                if (filters.map.dists.length > 0 && !filters.map.dists.some(d => iDist.includes(d) || d.includes(iDist))) pass = false;
+                if (filters.map.subs.length > 0 && !filters.map.subs.some(s => iSub.includes(s) || s.includes(iSub))) pass = false;
+
+                return pass; 
+            }); 
+            
+            if(filteredAvailable.length === 0) { listContainer.innerHTML = "<div class='empty-state full-width'>ไม่พบรายการประกาศขายที่ตรงกับเงื่อนไข</div>"; return; }
+            
+            if (sortBy === "date-near") { filteredAvailable.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate)); } 
+            else if (sortBy === "dist-near") { filteredAvailable.sort((a,b) => { let dA = (currentLat && currentLng && a.lat && a.lon && !isNaN(parseFloat(a.lat))) ? getDistanceJS(currentLat, currentLng, a.lat, a.lon) : 999999; let dB = (currentLat && currentLng && b.lat && b.lon && !isNaN(parseFloat(b.lat))) ? getDistanceJS(currentLat, currentLng, b.lat, b.lon) : 999999; return dA - dB; }); }
+            
+            filteredAvailable.forEach(item => { 
+                let markerColor = '#FF5722'; listContainer.innerHTML += renderSingleCardHTML(item, markerColor); drawMarkerOnMap(item, markerColor, false); 
+            });
+            
+            buyerPolygonLayer.addTo(buyerMapObj); 
+            if(buyerPolygonLayer.getLayers().length > 0) { 
+                if(currentLat && currentLng) { buyerMapObj.setView([currentLat, currentLng], 11); } 
+                else { buyerMapObj.fitBounds(buyerPolygonLayer.getBounds(), { padding: [30, 30], maxZoom: 12 }); }
+            }
+        }
+
+        function renderSingleCardHTML(item, colorHex) {
+            let displayName = item.farmerFullName || item.farmerName; let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:600; margin-top:8px;"><i class="fa-solid fa-fire"></i> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-"); let badgeHtml = item.status === "รอคิวรถ" ? `<span class="badge bg-warning">ว่าง / รอคิวรถ</span>` : `<span class="badge" style="background:#FDE68A; color:#B45309;">รอชาวไร่ตัดสินใจ</span>`;
+            
+            let distText = "";
+            if(currentLat && currentLng && item.lat && item.lon && !isNaN(parseFloat(item.lat))) {
+                let d = getDistanceJS(currentLat, currentLng, item.lat, item.lon);
+                distText = `<div style="font-size:13px; color:var(--info); margin-top:4px; font-weight:600;"><i class="fa-solid fa-location-arrow"></i> ห่างจากคุณ: ${d.toFixed(1)} กม.</div>`;
+            }
+            
+            let plotAddressText = "";
+            if(item.plotProv) { plotAddressText = `จ.${item.plotProv} อ.${item.plotDist}`; }
+            else { plotAddressText = `จ.${item.prov} อ.${item.dist}`; }
+
+            return `<div class="sale-card" style="border-left: 5px solid ${colorHex};"><div class="sale-header"><span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>${badgeHtml}</div><div class="sale-detail"><div>พื้นที่ประเมิน: <span style="font-size:18px; color:${colorHex}; font-weight:700;">${actualQ} ไร่</span></div><div>นัดเข้าม้วน: <span style="font-weight:600;">${hDate}</span></div><div style="font-size:13px; color:var(--secondary); margin-top:4px; font-weight:600;"><i class="fa-solid fa-map-pin"></i> ${plotAddressText}</div>${distText}<div style="font-size:13px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-road"></i> ทางเข้า: ${item.access}</div>${offerStatus}</div><div style="display:flex; gap:10px; margin-top:16px;"><button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:${colorHex}; color:${colorHex};"><i class="fa-solid fa-map-location-dot"></i> ดูแปลง</button><button onclick="acceptJob(${item.row}, ${actualQ})" class="btn-main" style="flex:1; background:${colorHex};"><i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา</button></div></div>`;
+        }
+
+        function drawMarkerOnMap(item, colorHex, isActive) {
+            if (!item.lat || !item.lon || isNaN(parseFloat(item.lat)) || isNaN(parseFloat(item.lon))) return;
+            let markerHtml = isActive ? `<div style='background-color:${colorHex}; width:16px; height:16px; border-radius:50%; border:2px solid white;'></div>` : `<div style='background-color:${colorHex}; width:20px; height:20px; border-radius:50%; border:3px solid white; box-shadow: 0 0 0 rgba(255, 87, 34, 0.7); animation: pulse-red 2s infinite;'></div>`;
+            let customIcon = L.divIcon({ className: 'custom-div-icon', html: markerHtml }); 
+            let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-"); let displayName = item.farmerFullName || item.farmerName;
+            
+            let popupContent = `<div style="font-family:'Kanit'; text-align:center; min-width:180px;"><b style="font-size:16px; color:var(--text-main);">คุณ ${displayName}</b><br><span style="font-size:14px; color:${colorHex}; font-weight:600;">${actualQ} ไร่</span><span style="font-size:12px; color:var(--text-muted);"> | ${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span><hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">`;
+            if(!isActive) { popupContent += `<button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; padding:8px; border-color:${colorHex}; color:${colorHex};">ดูรายละเอียด / เสนอราคา</button>`; } else { popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="width:100%; padding:8px;">แจ้งปิดงาน</button>`; } popupContent += `</div>`; 
+            
+            let marker = L.marker([item.lat, item.lon], { icon: customIcon }).bindPopup(popupContent); buyerMarkers[item.row] = marker; buyerPolygonLayer.addLayer(marker); 
+            if (item.polygon && item.polygon !== "") { try { let coords = JSON.parse(item.polygon); let flippedCoords = coords[0].map(p => [p[1], p[0]]); buyerPolygonLayer.addLayer(L.polygon(flippedCoords, { color: colorHex, fillOpacity: 0.3, weight: 3 })); } catch(e) {} }
+        }
+
+        async function acceptJob(rowId, qty) {
+            const { value: priceInput } = await Swal.fire({ 
+                html: `<div style="font-family:'Kanit';"><div style="font-size:20px; font-weight:700; margin-bottom:8px; color:var(--secondary);">เสนอราคารับซื้อ</div><div style="font-size:15px; font-weight:600; color:var(--warning); margin-bottom:16px;">พื้นที่แจ้งขาย: ${qty} ไร่</div><input id="swal-input2" class="swal-input" type="number" placeholder="ระบุราคาที่ต้องการเสนอ (บาท/ไร่)" style="margin-top:0; height: 44px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-family:'Kanit';"></div>`, 
+                focusConfirm: false, showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY, preConfirm: () => { return document.getElementById('swal-input2').value } 
+            });
+            if (priceInput) { 
+                Swal.fire({ title: 'กำลังส่งคำเสนอซื้อ...', didOpen: () => { Swal.showLoading() } }); 
+                try { 
+                    const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "acceptJob", row: rowId, userId: userProfile.userId, buyerName: buyerNameContext, buyerPhone: buyerPhoneContext, price: priceInput }) }); 
+                    if ((await res.json()).status === "success") { 
+                        myCanceledRows = myCanceledRows.filter(id => id !== rowId); localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
+                        if(!myOfferedRows.includes(rowId)) { myOfferedRows.push(rowId); localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows)); }
+                        Swal.fire({title: 'สำเร็จ!', text: 'ส่งราคาให้ชาวไร่พิจารณาเรียบร้อย งานถูกย้ายไปที่ "การซื้อของฉัน"', icon: 'success', confirmButtonColor: THEME_PRIMARY}).then(() => { switchPage('buyer-purchases-page'); fetchBuyerRawData(); }); 
+                    } 
+                } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคาได้', 'error'); } 
             }
         }
 
@@ -1477,645 +1203,136 @@
             
             container.innerHTML = '';
             
-            // 1. รอชาวไร่พิจารณา (เราเสนอราคาไปแล้ว - อาศัย Local Storage เช็ค)
             let offeredJobs = rawBuyerData.filter(j => j.status === 'รอชาวไร่ยืนยัน' && myOfferedRows.includes(j.row));
-            
-            // 2. งานที่ต้องไปม้วน (รับงานแล้ว)
             let activeJobs = rawBuyerData.filter(j => j.status === 'กำลังดำเนินการ');
-            
-            // 3. รอชาวไร่ตรวจสอบบิล (เราปิดงานแล้ว)
             let verifyingJobs = rawBuyerData.filter(j => j.status === 'รอชาวไร่ตรวจสอบ');
 
             let totalActive = activeJobs.length;
-            if(totalActive > 0) {
-                badge.innerText = totalActive;
-                badge.style.display = 'inline-block';
-                alertBanner.style.display = 'flex';
-            } else {
-                badge.style.display = 'none';
-                alertBanner.style.display = 'none';
-            }
+            if(totalActive > 0) { badge.innerText = totalActive; badge.style.display = 'inline-block'; alertBanner.style.display = 'flex'; } else { badge.style.display = 'none'; alertBanner.style.display = 'none'; }
+            if(offeredJobs.length === 0 && activeJobs.length === 0 && verifyingJobs.length === 0) { container.innerHTML = "<div class='empty-state full-width'>ยังไม่มีรายการสั่งซื้อ หรือรอการพิจารณาครับ</div>"; return; }
 
-            if(offeredJobs.length === 0 && activeJobs.length === 0 && verifyingJobs.length === 0) {
-                container.innerHTML = "<div class='empty-state full-width'>ยังไม่มีรายการสั่งซื้อ หรือรอการพิจารณาครับ</div>";
-                return;
-            }
-
-            // Section: งานที่ต้องไปม้วน (Active)
             if(activeJobs.length > 0) {
-                let html = `
-                <div class="purchase-group full-width">
-                    <div class="purchase-group-title" style="color:var(--primary-dark); font-weight:700; margin-bottom:15px; font-size:18px;">
-                        <i class="fa-solid fa-truck-fast"></i> งานที่ต้องไปดำเนินการ (ชาวไร่ตกลงแล้ว) <span class="badge bg-success">${activeJobs.length} งาน</span>
-                    </div>
-                    <div class="jobs-grid" style="margin-bottom:0;">`;
-                
+                let html = `<div class="purchase-group full-width"><div class="purchase-group-title" style="color:var(--primary-dark); font-weight:700; margin-bottom:15px; font-size:18px;"><i class="fa-solid fa-truck-fast"></i> งานที่ต้องไปดำเนินการ (ชาวไร่ตกลงแล้ว) <span class="badge bg-success">${activeJobs.length} งาน</span></div><div class="jobs-grid" style="margin-bottom:0;">`;
                 activeJobs.forEach(item => {
-                    let displayName = item.farmerFullName || item.farmerName; 
-                    let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
-                    html += `
-                        <div class="sale-card" style="border-left: 5px solid var(--primary); background:#F0FDF4;">
-                            <div class="sale-header">
-                                <span style="font-weight:700; color:var(--primary-dark); font-size:16px;">คุณ ${displayName}</span>
-                                <span class="badge" style="background:#A7F3D0; color:#064E3B;">พร้อมเข้าม้วน!</span>
-                            </div>
-                            <div class="sale-detail">
-                                <div>เป้าหมายวิ่งงาน: <span style="color:var(--primary-dark); font-weight:700; font-size:16px;">${actualQ} ไร่</span></div>
-                                <div>ราคาที่ตกลง: <span style="font-weight:600; color:var(--danger);">${item.price}</span></div>
-                                <div>กำหนดเข้าม้วน: <span style="font-weight:600;">${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span></div>
-                                <div style="font-size:13px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-phone"></i> โทร: <a href="tel:${item.farmerPhone}">${item.farmerPhone || 'ไม่ระบุ'}</a></div>
-                            </div>
-                            <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1;" title="ดูพิกัดแผนที่"><i class="fa-solid fa-map-location-dot"></i></button>
-                                <button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1;"><i class="fa-solid fa-flag-checkered"></i> ปิดงาน</button>
-                                <button onclick="cancelPurchase(${item.row})" class="btn-main btn-outline" style="flex:0.5; border-color:var(--danger); color:var(--danger);" title="ยกเลิกการรับซื้อ"><i class="fa-solid fa-xmark"></i></button>
-                            </div>
-                        </div>`;
-                });
-                html += `</div></div>`;
-                container.innerHTML += html;
+                    let displayName = item.farmerFullName || item.farmerName; let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
+                    html += `<div class="sale-card" style="border-left: 5px solid var(--primary); background:#F0FDF4;"><div class="sale-header"><span style="font-weight:700; color:var(--primary-dark); font-size:16px;">คุณ ${displayName}</span><span class="badge" style="background:#A7F3D0; color:#064E3B;">พร้อมเข้าม้วน!</span></div><div class="sale-detail"><div>เป้าหมายวิ่งงาน: <span style="color:var(--primary-dark); font-weight:700; font-size:16px;">${actualQ} ไร่</span></div><div>ราคาที่ตกลง: <span style="font-weight:600; color:var(--danger);">${item.price}</span></div><div>กำหนดเข้าม้วน: <span style="font-weight:600;">${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span></div><div style="font-size:13px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-phone"></i> โทร: <a href="tel:${item.farmerPhone}">${item.farmerPhone || 'ไม่ระบุ'}</a></div></div><div style="display:flex; gap:10px; margin-top:16px;"><button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1;" title="ดูพิกัดแผนที่"><i class="fa-solid fa-map-location-dot"></i></button><button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1;"><i class="fa-solid fa-flag-checkered"></i> ปิดงาน</button><button onclick="cancelPurchase(${item.row})" class="btn-main btn-outline" style="flex:0.5; border-color:var(--danger); color:var(--danger);" title="ยกเลิกการรับซื้อ"><i class="fa-solid fa-xmark"></i></button></div></div>`;
+                }); html += `</div></div>`; container.innerHTML += html;
             }
 
-            // Section: รอชาวไร่ตรวจสอบบิล
             if(verifyingJobs.length > 0) {
-                let html = `
-                <div class="purchase-group full-width" style="margin-top:20px;">
-                    <div class="purchase-group-title" style="color:var(--purple); font-weight:700; margin-bottom:15px; font-size:18px;">
-                        <i class="fa-solid fa-file-invoice"></i> รอชาวไร่ตรวจสอบบิลชั่งน้ำหนัก <span class="badge bg-purple">${verifyingJobs.length} งาน</span>
-                    </div>
-                    <div class="jobs-grid" style="margin-bottom:0;">`;
-                
+                let html = `<div class="purchase-group full-width" style="margin-top:20px;"><div class="purchase-group-title" style="color:var(--purple); font-weight:700; margin-bottom:15px; font-size:18px;"><i class="fa-solid fa-file-invoice"></i> รอชาวไร่ตรวจสอบบิลชั่งน้ำหนัก <span class="badge bg-purple">${verifyingJobs.length} งาน</span></div><div class="jobs-grid" style="margin-bottom:0;">`;
                 verifyingJobs.forEach(item => {
                     let displayName = item.farmerFullName || item.farmerName; 
-                    html += `
-                        <div class="sale-card" style="border-left: 5px solid var(--purple); background:#F5F3FF;">
-                            <div class="sale-header">
-                                <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>
-                                <span class="badge bg-purple">รอชาวไร่ยืนยันบิล</span>
-                            </div>
-                            <div class="sale-detail">
-                                <div>น้ำหนักที่ชั่งได้: <span style="color:var(--purple); font-weight:700; font-size:16px;">${item.actualWeight} ตัน</span></div>
-                                <div>ราคาที่ตกลง: <span style="font-weight:600; color:var(--danger);">${item.price}</span></div>
-                            </div>
-                            <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; border-color:var(--purple); color:var(--purple);"><i class="fa-solid fa-eye"></i> ดูรายละเอียดบิล</button>
-                            </div>
-                        </div>`;
-                });
-                html += `</div></div>`;
-                container.innerHTML += html;
+                    html += `<div class="sale-card" style="border-left: 5px solid var(--purple); background:#F5F3FF;"><div class="sale-header"><span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span><span class="badge bg-purple">รอชาวไร่ยืนยันบิล</span></div><div class="sale-detail"><div>น้ำหนักที่ชั่งได้: <span style="color:var(--purple); font-weight:700; font-size:16px;">${item.actualWeight} ตัน</span></div><div>ราคาที่ตกลง: <span style="font-weight:600; color:var(--danger);">${item.price}</span></div></div><div style="display:flex; gap:10px; margin-top:16px;"><button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; border-color:var(--purple); color:var(--purple);"><i class="fa-solid fa-eye"></i> ดูรายละเอียดบิล</button></div></div>`;
+                }); html += `</div></div>`; container.innerHTML += html;
             }
 
-            // Section: รอชาวไร่พิจารณาข้อเสนอ
             if(offeredJobs.length > 0) {
-                let html = `
-                <div class="purchase-group full-width" style="margin-top:20px;">
-                    <div class="purchase-group-title" style="color:var(--warning); font-weight:700; margin-bottom:15px; font-size:18px;">
-                        <i class="fa-solid fa-hourglass-half"></i> รอชาวไร่พิจารณาข้อเสนอ <span class="badge bg-warning">${offeredJobs.length} งาน</span>
-                    </div>
-                    <div class="jobs-grid" style="margin-bottom:0;">`;
-                
+                let html = `<div class="purchase-group full-width" style="margin-top:20px;"><div class="purchase-group-title" style="color:var(--warning); font-weight:700; margin-bottom:15px; font-size:18px;"><i class="fa-solid fa-hourglass-half"></i> รอชาวไร่พิจารณาข้อเสนอ <span class="badge bg-warning">${offeredJobs.length} งาน</span></div><div class="jobs-grid" style="margin-bottom:0;">`;
                 offeredJobs.forEach(item => {
-                    let displayName = item.farmerFullName || item.farmerName; 
-                    let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
-                    html += `
-                        <div class="sale-card" style="border-left: 5px solid var(--warning); background:#FFFBEB;">
-                            <div class="sale-header">
-                                <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>
-                                <span class="badge bg-warning">รอพิจารณา</span>
-                            </div>
-                            <div class="sale-detail">
-                                <div>พื้นที่ประเมิน: <span style="font-weight:700; font-size:16px;">${actualQ} ไร่</span></div>
-                                <div>สถานะของคุณ: <span style="color:var(--danger); font-weight:700; font-size:16px;">เสนอราคาแล้ว</span></div>
-                                <div>กำหนดเข้าม้วน: <span style="font-weight:600;">${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span></div>
-                            </div>
-                            <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--warning); color:var(--warning);"><i class="fa-solid fa-eye"></i> ดูแปลง</button>
-                                <button onclick="cancelOffer(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger);"><i class="fa-solid fa-ban"></i> ถอนข้อเสนอ</button>
-                            </div>
-                        </div>`;
-                });
-                html += `</div></div>`;
-                container.innerHTML += html;
+                    let displayName = item.farmerFullName || item.farmerName; let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
+                    html += `<div class="sale-card" style="border-left: 5px solid var(--warning); background:#FFFBEB;"><div class="sale-header"><span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span><span class="badge bg-warning">รอพิจารณา</span></div><div class="sale-detail"><div>พื้นที่ประเมิน: <span style="font-weight:700; font-size:16px;">${actualQ} ไร่</span></div><div>สถานะของคุณ: <span style="color:var(--danger); font-weight:700; font-size:16px;">เสนอราคาแล้ว</span></div><div>กำหนดเข้าม้วน: <span style="font-weight:600;">${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span></div></div><div style="display:flex; gap:10px; margin-top:16px;"><button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--warning); color:var(--warning);"><i class="fa-solid fa-eye"></i> ดูแปลง</button><button onclick="cancelOffer(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger);"><i class="fa-solid fa-ban"></i> ถอนข้อเสนอ</button></div></div>`;
+                }); html += `</div></div>`; container.innerHTML += html;
             }
         }
 
-        // ==========================================
-        // ยกเลิกข้อเสนอ / ยกเลิกการซื้อ
-        // ==========================================
         async function cancelOffer(rowId) {
-            const { value: reason } = await Swal.fire({
-                title: 'ถอนข้อเสนอรับซื้อ?',
-                text: 'โปรดระบุเหตุผลที่ต้องการถอนข้อเสนอนี้ (เพื่อให้ชาวไร่ทราบ)',
-                input: 'text',
-                inputPlaceholder: 'ระบุเหตุผล (เช่น คิวงานเต็ม, รถเสีย...)',
-                showCancelButton: true,
-                confirmButtonColor: THEME_DANGER,
-                confirmButtonText: 'ยืนยันการถอนข้อเสนอ',
-                cancelButtonText: 'กลับ',
-                inputValidator: (value) => {
-                    if (!value) return 'กรุณาระบุเหตุผลด้วยครับ!'
-                }
-            });
-
+            const { value: reason } = await Swal.fire({ title: 'ถอนข้อเสนอรับซื้อ?', text: 'โปรดระบุเหตุผลที่ต้องการถอนข้อเสนอนี้ (เพื่อให้ชาวไร่ทราบ)', input: 'text', inputPlaceholder: 'ระบุเหตุผล (เช่น คิวงานเต็ม, รถเสีย...)', showCancelButton: true, confirmButtonColor: THEME_DANGER, confirmButtonText: 'ยืนยันการถอนข้อเสนอ', cancelButtonText: 'กลับ', inputValidator: (value) => { if (!value) return 'กรุณาระบุเหตุผลด้วยครับ!' } });
             if (reason) {
                 Swal.fire({ title: 'กำลังดำเนินการ...', didOpen: () => { Swal.showLoading() } });
                 try {
-                    const res = await fetch(GAS_WEB_APP_URL, {
-                        method: "POST",
-                        body: JSON.stringify({ action: "buyerCancelOffer", row: rowId, userId: userProfile.userId, reason: reason })
-                    });
+                    const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "buyerCancelOffer", row: rowId, userId: userProfile.userId, reason: reason }) });
                     if ((await res.json()).status === "success") {
-                        // อัปเดต Local Storage
-                        myOfferedRows = myOfferedRows.filter(id => id !== rowId);
-                        localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows));
-                        
-                        if(!myCanceledRows.includes(rowId)) {
-                            myCanceledRows.push(rowId);
-                            localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
-                        }
-                        
-                        Swal.fire('ถอนข้อเสนอสำเร็จ', 'ระบบได้ถอนข้อเสนอของคุณแล้ว', 'success').then(() => { 
-                            fetchBuyerRawData(); 
-                        });
+                        myOfferedRows = myOfferedRows.filter(id => id !== rowId); localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows));
+                        if(!myCanceledRows.includes(rowId)) { myCanceledRows.push(rowId); localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows)); }
+                        Swal.fire('ถอนข้อเสนอสำเร็จ', 'ระบบได้ถอนข้อเสนอของคุณแล้ว', 'success').then(() => { fetchBuyerRawData(); });
                     }
                 } catch(e) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบได้', 'error'); }
             }
         }
 
         async function cancelPurchase(rowId) {
-            const { value: reason } = await Swal.fire({
-                title: 'ยกเลิกการรับซื้อ?',
-                text: 'การยกเลิกงานที่ตกลงกันแล้วอาจส่งผลต่อคะแนนเครดิตของคุณ โปรดระบุเหตุผลที่ชัดเจน',
-                input: 'text',
-                inputPlaceholder: 'ระบุเหตุผล (เช่น เข้าพื้นที่ไม่ได้, เครื่องจักรขัดข้อง...)',
-                showCancelButton: true,
-                confirmButtonColor: THEME_DANGER,
-                confirmButtonText: 'ยืนยันยกเลิกการรับซื้อ',
-                cancelButtonText: 'กลับ',
-                inputValidator: (value) => {
-                    if (!value) return 'กรุณาระบุเหตุผลด้วยครับ!'
-                }
-            });
-
+            const { value: reason } = await Swal.fire({ title: 'ยกเลิกการรับซื้อ?', text: 'การยกเลิกงานที่ตกลงกันแล้วอาจส่งผลต่อคะแนนเครดิตของคุณ โปรดระบุเหตุผลที่ชัดเจน', input: 'text', inputPlaceholder: 'ระบุเหตุผล (เช่น เข้าพื้นที่ไม่ได้, เครื่องจักรขัดข้อง...)', showCancelButton: true, confirmButtonColor: THEME_DANGER, confirmButtonText: 'ยืนยันยกเลิกการรับซื้อ', cancelButtonText: 'กลับ', inputValidator: (value) => { if (!value) return 'กรุณาระบุเหตุผลด้วยครับ!' } });
             if (reason) {
                 Swal.fire({ title: 'กำลังดำเนินการ...', didOpen: () => { Swal.showLoading() } });
                 try {
-                    const res = await fetch(GAS_WEB_APP_URL, {
-                        method: "POST",
-                        body: JSON.stringify({ action: "buyerCancelJob", row: rowId, userId: userProfile.userId, reason: reason })
-                    });
+                    const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "buyerCancelJob", row: rowId, userId: userProfile.userId, reason: reason }) });
                     if ((await res.json()).status === "success") {
-                        if(!myCanceledRows.includes(rowId)) {
-                            myCanceledRows.push(rowId);
-                            localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
-                        }
-
-                        Swal.fire('ยกเลิกสำเร็จ', 'ระบบได้ยกเลิกงานนี้และแจ้งชาวไร่แล้ว', 'success').then(() => { 
-                            fetchBuyerRawData(); 
-                        });
+                        if(!myCanceledRows.includes(rowId)) { myCanceledRows.push(rowId); localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows)); }
+                        Swal.fire('ยกเลิกสำเร็จ', 'ระบบได้ยกเลิกงานนี้และแจ้งชาวไร่แล้ว', 'success').then(() => { fetchBuyerRawData(); });
                     }
                 } catch(e) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบได้', 'error'); }
             }
         }
 
         // ==========================================
-        // Rendering Logic (หน้าค้นหางาน)
-        // ==========================================
-        function triggerSearch() {
-            Swal.fire({ title: 'กำลังประมวลผลข้อมูลแผนที่...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
-            setTimeout(() => {
-                updateClusterLogic();
-                Swal.close();
-            }, 800);
-        }
-
-        function updateClusterLogic() {
-            let sortBy = document.getElementById("list-sort-by").value; 
-            let fProv = document.getElementById("filter-map-prov").value;
-            let fDist = document.getElementById("filter-map-dist").value;
-            let fSub = document.getElementById("filter-map-subdist").value;
-            
-            buyerPolygonLayer.clearLayers(); 
-            const listContainer = document.getElementById("buyer-list-container"); 
-            const historyContainer = document.getElementById("buyer-history-container");
-            
-            listContainer.innerHTML = ''; 
-            historyContainer.innerHTML = '';
-            buyerMarkers = {}; 
-            
-            // ป้องกัน Array Error ถ้าระบบส่งกลับมาผิดปกติ
-            if(!Array.isArray(rawBuyerData) || rawBuyerData.length === 0) { 
-                listContainer.innerHTML = "<div class='empty-state full-width'>ไม่มีรายการประกาศขายในขณะนี้</div>"; 
-                historyContainer.innerHTML = "<div class='empty-state full-width'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>"; 
-                return; 
-            }
-            
-            // ประวัติ (รวมงานที่เราเคยกดยกเลิกเอาไว้ด้วย)
-            let historyJobs = rawBuyerData.filter(p => p.status === "เสร็จสิ้น" || p.status === "ยกเลิก" || myCanceledRows.includes(p.row));
-            let availableJobs = rawBuyerData.filter(p => p.status === "รอคิวรถ" || p.status === "รอชาวไร่ยืนยัน");
-            
-            // --- 1. ประวัติการรับซื้อ (เสร็จสิ้น / ยกเลิก) ---
-            if(historyJobs.length > 0) {
-                let sumRai = 0, sumTon = 0, sumExpense = 0, completedCount = 0;
-                let hHTML = "";
-                
-                historyJobs.forEach(item => {
-                    try {
-                        let displayName = item.farmerFullName || item.farmerName; 
-                        let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
-                        let actualW = item.actualWeight || "-";
-                        let pRai = extractPrice(item.price);
-                        let totalStr = "-";
-                        
-                        let displayStatus = item.status;
-                        let badgeClass = item.status === "เสร็จสิ้น" ? "bg-success" : "bg-danger";
-                        
-                        // หากเป็นงานที่เราเคยกดยกเลิก
-                        if (myCanceledRows.includes(item.row) && item.status !== "เสร็จสิ้น") {
-                            displayStatus = "ยกเลิกการรับซื้อ";
-                            badgeClass = "bg-danger";
-                        } else if (item.status === "ยกเลิก") {
-                            displayStatus = "ชาวไร่ยกเลิก";
-                        }
-
-                        if (item.status === "เสร็จสิ้น") { 
-                            completedCount++; 
-                            if (actualQ !== "-" && pRai > 0) { 
-                                let total = parseFloat(actualQ) * pRai; 
-                                sumTon += parseFloat(actualW) || 0; 
-                                sumExpense += total; 
-                                totalStr = total.toLocaleString('th-TH', {minimumFractionDigits: 2}); 
-                            } 
-                        }
-                        
-                        hHTML += `
-                        <div class="sale-card" style="border-left: 5px solid ${displayStatus==='เสร็จสิ้น'?'var(--primary)':'var(--danger)'}; opacity: 0.9;">
-                            <div class="sale-header">
-                                <span style="font-weight:600;">คุณ ${displayName}</span>
-                                <span class="badge ${badgeClass}">${displayStatus}</span>
-                            </div>
-                            <div class="sale-detail">
-                                <div>พื้นที่: <span style="font-weight:600;">${actualQ} ไร่</span> | น้ำหนัก: <span style="font-weight:600;">${actualW} ตัน</span></div>
-                                <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);">ยอดจ่าย: <b style="color:var(--danger);">${totalStr} บาท</b></div>
-                            </div>
-                            <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; margin-top:16px;">ดูรายละเอียด / บิลชั่ง</button>
-                        </div>`;
-                    } catch(e) { console.error("History Render Error:", e); }
-                });
-                
-                historyContainer.innerHTML += `
-                    <div class="dash-grid full-width">
-                        <div class="dash-card"><div class="label">รับงานสำเร็จ</div><div class="value">${completedCount} <span style="font-size:14px; color:var(--text-muted);">งาน</span></div></div>
-                        <div class="dash-card"><div class="label">ปริมาณรับซื้อรวม</div><div class="value" style="color:var(--primary);">${sumTon.toLocaleString('th-TH')} <span style="font-size:14px; color:var(--text-muted);">ตัน</span></div></div>
-                        <div class="dash-card" style="grid-column: span 2;"><div class="label">ยอดจ่ายสะสม</div><div class="value" style="color:var(--danger);">${sumExpense.toLocaleString('th-TH')} <span style="font-size:14px; color:var(--text-muted);">บาท</span></div></div>
-                    </div>` + hHTML;
-            } else { 
-                historyContainer.innerHTML = "<div class='empty-state full-width'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>"; 
-            }
-
-            // --- 2. งานที่เปิดรับ (ค้นหา และ กรอง) ---
-            let filteredAvailable = availableJobs.filter(item => { 
-                let passTextFilter = true;
-                if(fProv !== 'all') {
-                    if(item.prov && item.prov !== fProv) passTextFilter = false;
-                    if(item.dist && fDist !== 'all' && item.dist !== fDist) passTextFilter = false;
-                    if(item.subDist && fSub !== 'all' && item.subDist !== fSub) passTextFilter = false;
-                }
-                return passTextFilter; 
-            }); 
-            
-            if(filteredAvailable.length === 0) { 
-                listContainer.innerHTML = "<div class='empty-state full-width'>ไม่พบรายการประกาศขายที่ตรงกับเงื่อนไข</div>"; 
-                return; 
-            }
-            
-            // เรียงลำดับคิวงาน
-            if (sortBy === "date-near") { 
-                filteredAvailable.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate)); 
-            } else if (sortBy === "dist-near") { 
-                filteredAvailable.sort((a,b) => {
-                    let dA = (currentLat && currentLng && a.lat && a.lon && !isNaN(parseFloat(a.lat))) ? getDistanceJS(currentLat, currentLng, a.lat, a.lon) : 999999;
-                    let dB = (currentLat && currentLng && b.lat && b.lon && !isNaN(parseFloat(b.lat))) ? getDistanceJS(currentLat, currentLng, b.lat, b.lon) : 999999;
-                    return dA - dB;
-                });
-            }
-            
-            filteredAvailable.forEach(item => { 
-                try {
-                    let markerColor = '#FF5722'; 
-                    listContainer.innerHTML += renderSingleCardHTML(item, markerColor); 
-                    drawMarkerOnMap(item, markerColor, false); 
-                } catch(e) { console.error("Card Render Error:", e); }
-            });
-            
-            buyerPolygonLayer.addTo(buyerMapObj); 
-            
-            // หากมีหมุด ให้ยึดจุดที่ผู้ใช้อยู่เป็นหลัก
-            if(buyerPolygonLayer.getLayers().length > 0) { 
-                if(currentLat && currentLng) {
-                    buyerMapObj.setView([currentLat, currentLng], 11);
-                } else {
-                    buyerMapObj.fitBounds(buyerPolygonLayer.getBounds(), { padding: [30, 30], maxZoom: 12 }); 
-                }
-            }
-        }
-
-        function renderSingleCardHTML(item, colorHex) {
-            let displayName = item.farmerFullName || item.farmerName; 
-            let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
-            let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:600; margin-top:8px;"><i class="fa-solid fa-fire"></i> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
-            let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
-            let badgeHtml = item.status === "รอคิวรถ" ? `<span class="badge bg-warning">ว่าง / รอคิวรถ</span>` : `<span class="badge" style="background:#FDE68A; color:#B45309;">รอชาวไร่ตัดสินใจ</span>`;
-            
-            let distText = "";
-            if(currentLat && currentLng && item.lat && item.lon && !isNaN(parseFloat(item.lat))) {
-                let d = getDistanceJS(currentLat, currentLng, item.lat, item.lon);
-                distText = `<div style="font-size:13px; color:var(--info); margin-top:4px; font-weight:600;"><i class="fa-solid fa-location-arrow"></i> ห่างจากคุณ: ${d.toFixed(1)} กม.</div>`;
-            }
-
-            return `
-                <div class="sale-card" style="border-left: 5px solid ${colorHex};">
-                    <div class="sale-header">
-                        <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>
-                        ${badgeHtml}
-                    </div>
-                    <div class="sale-detail">
-                        <div>พื้นที่ประเมิน: <span style="font-size:18px; color:${colorHex}; font-weight:700;">${actualQ} ไร่</span></div>
-                        <div>นัดเข้าม้วน: <span style="font-weight:600;">${hDate}</span></div>
-                        ${distText}
-                        <div style="font-size:13px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-road"></i> ทางเข้า: ${item.access}</div>
-                        ${offerStatus}
-                    </div>
-                    <div style="display:flex; gap:10px; margin-top:16px;">
-                        <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:${colorHex}; color:${colorHex};"><i class="fa-solid fa-map-location-dot"></i> ดูแปลง</button>
-                        <button onclick="acceptJob(${item.row}, ${actualQ})" class="btn-main" style="flex:1; background:${colorHex};"><i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา</button>
-                    </div>
-                </div>`;
-        }
-
-        function drawMarkerOnMap(item, colorHex, isActive) {
-            // ป้องกันพิกัดผิดปกติ
-            if (!item.lat || !item.lon || isNaN(parseFloat(item.lat)) || isNaN(parseFloat(item.lon))) return;
-
-            let markerHtml = isActive ? 
-                `<div style='background-color:${colorHex}; width:16px; height:16px; border-radius:50%; border:2px solid white;'></div>` : 
-                `<div style='background-color:${colorHex}; width:20px; height:20px; border-radius:50%; border:3px solid white; box-shadow: 0 0 0 rgba(255, 87, 34, 0.7); animation: pulse-red 2s infinite;'></div>`;
-            
-            let customIcon = L.divIcon({ className: 'custom-div-icon', html: markerHtml }); 
-            let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
-            let displayName = item.farmerFullName || item.farmerName;
-            
-            let popupContent = `
-                <div style="font-family:'Kanit'; text-align:center; min-width:180px;">
-                    <b style="font-size:16px; color:var(--text-main);">คุณ ${displayName}</b><br>
-                    <span style="font-size:14px; color:${colorHex}; font-weight:600;">${actualQ} ไร่</span><span style="font-size:12px; color:var(--text-muted);"> | ${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span>
-                    <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">`;
-            
-            if(!isActive) { 
-                popupContent += `<button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; padding:8px; border-color:${colorHex}; color:${colorHex};">ดูรายละเอียด / เสนอราคา</button>`; 
-            } else { 
-                popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="width:100%; padding:8px;">แจ้งปิดงาน</button>`; 
-            } 
-            
-            popupContent += `</div>`; 
-            
-            let marker = L.marker([item.lat, item.lon], { icon: customIcon }).bindPopup(popupContent); 
-            buyerMarkers[item.row] = marker; 
-            buyerPolygonLayer.addLayer(marker); 
-            
-            if (item.polygon && item.polygon !== "") { 
-                try { 
-                    let coords = JSON.parse(item.polygon); 
-                    let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
-                    buyerPolygonLayer.addLayer(L.polygon(flippedCoords, { color: colorHex, fillOpacity: 0.3, weight: 3 })); 
-                } catch(e) {} 
-            }
-        }
-
-        // เสนอราคาเดี่ยว
-        async function acceptJob(rowId, qty) {
-            const { value: priceInput } = await Swal.fire({ 
-                html: `
-                <div style="font-family:'Kanit';">
-                    <div style="font-size:20px; font-weight:700; margin-bottom:8px; color:var(--secondary);">เสนอราคารับซื้อ</div>
-                    <div style="font-size:15px; font-weight:600; color:var(--warning); margin-bottom:16px;">พื้นที่แจ้งขาย: ${qty} ไร่</div>
-                    <input id="swal-input2" class="swal-input" type="number" placeholder="ระบุราคาที่ต้องการเสนอ (บาท/ไร่)" style="margin-top:0; height: 44px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-family:'Kanit';">
-                </div>`, 
-                focusConfirm: false, showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY, 
-                preConfirm: () => { return document.getElementById('swal-input2').value } 
-            });
-
-            if (priceInput) { 
-                Swal.fire({ title: 'กำลังส่งคำเสนอซื้อ...', didOpen: () => { Swal.showLoading() } }); 
-                try { 
-                    const res = await fetch(GAS_WEB_APP_URL, { 
-                        method: "POST", 
-                        body: JSON.stringify({ action: "acceptJob", row: rowId, userId: userProfile.userId, buyerName: buyerNameContext, buyerPhone: buyerPhoneContext, price: priceInput }) 
-                    }); 
-                    if ((await res.json()).status === "success") { 
-                        myCanceledRows = myCanceledRows.filter(id => id !== rowId);
-                        localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
-
-                        if(!myOfferedRows.includes(rowId)) {
-                            myOfferedRows.push(rowId);
-                            localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows));
-                        }
-                        Swal.fire({title: 'สำเร็จ!', text: 'ส่งราคาให้ชาวไร่พิจารณาเรียบร้อย งานถูกย้ายไปที่ "การซื้อของฉัน"', icon: 'success', confirmButtonColor: THEME_PRIMARY}).then(() => { 
-                            switchPage('buyer-purchases-page');
-                            fetchBuyerRawData(); 
-                        }); 
-                    } 
-                } catch (error) { 
-                    Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคาได้', 'error'); 
-                } 
-            }
-        }
-
-        // ==========================================
-        // เมนู Trip Planner (วางแผนการวิ่งรถอัจฉริยะ)
+        // เมนู Trip Planner
         // ==========================================
         function renderTripPlanner() {
-            const availList = document.getElementById("trip-available-list");
-            const selList = document.getElementById("trip-selected-list");
-            const sumRai = document.getElementById("trip-total-rai");
-            
-            availList.innerHTML = ''; 
-            selList.innerHTML = '';
-            
+            const availList = document.getElementById("trip-available-list"); const selList = document.getElementById("trip-selected-list");
+            availList.innerHTML = ''; selList.innerHTML = '';
             let searchQuery = document.getElementById('trip-search') ? document.getElementById('trip-search').value.toLowerCase() : "";
             let sortBy = document.getElementById('trip-sort') ? document.getElementById('trip-sort').value : "date-near";
-
             let availableJobs = rawBuyerData.filter(p => p.status === "รอคิวรถ" || p.status === "รอชาวไร่ยืนยัน");
             
-            if (searchQuery) {
-                availableJobs = availableJobs.filter(j => 
-                    (j.farmerFullName || j.farmerName).toLowerCase().includes(searchQuery) ||
-                    (j.prov && j.prov.toLowerCase().includes(searchQuery)) ||
-                    (j.dist && j.dist.toLowerCase().includes(searchQuery))
-                );
-            }
-
-            if (sortBy === "date-near") {
-                availableJobs.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate));
-            } else if (sortBy === "dist-near") {
-                availableJobs.sort((a,b) => {
-                    let dA = (currentLat && currentLng && a.lat && a.lon && !isNaN(parseFloat(a.lat))) ? getDistanceJS(currentLat, currentLng, a.lat, a.lon) : 999999;
-                    let dB = (currentLat && currentLng && b.lat && b.lon && !isNaN(parseFloat(b.lat))) ? getDistanceJS(currentLat, currentLng, b.lat, b.lon) : 999999;
-                    return dA - dB;
-                });
-            } else if (sortBy === "rai-desc") {
-                availableJobs.sort((a,b) => parseFloat(b.qty||0) - parseFloat(a.qty||0));
-            }
+            if (searchQuery) { availableJobs = availableJobs.filter(j => (j.farmerFullName || j.farmerName).toLowerCase().includes(searchQuery) || (j.plotProv && j.plotProv.toLowerCase().includes(searchQuery)) || (j.prov && j.prov.toLowerCase().includes(searchQuery)) || (j.plotDist && j.plotDist.toLowerCase().includes(searchQuery)) || (j.dist && j.dist.toLowerCase().includes(searchQuery)) ); }
+            if (sortBy === "date-near") { availableJobs.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate)); } 
+            else if (sortBy === "dist-near") { availableJobs.sort((a,b) => { let dA = (currentLat && currentLng && a.lat && a.lon && !isNaN(parseFloat(a.lat))) ? getDistanceJS(currentLat, currentLng, a.lat, a.lon) : 999999; let dB = (currentLat && currentLng && b.lat && b.lon && !isNaN(parseFloat(b.lat))) ? getDistanceJS(currentLat, currentLng, b.lat, b.lon) : 999999; return dA - dB; }); } 
+            else if (sortBy === "rai-desc") { availableJobs.sort((a,b) => parseFloat(b.qty||0) - parseFloat(a.qty||0)); }
             
-            if(availableJobs.length === 0) { 
-                availList.innerHTML = '<div class="empty-state">ไม่พบรายการที่ค้นหา</div>'; 
-            }
+            if(availableJobs.length === 0) { availList.innerHTML = '<div class="empty-state">ไม่พบรายการที่ค้นหา</div>'; }
             
-            // เรนเดอร์ฝั่งซ้าย
             availableJobs.forEach(j => {
                 let isSelected = currentTripJobs.includes(j.row);
                 if(!isSelected) {
-                    let displayName = j.farmerFullName || j.farmerName;
-                    let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0));
-                    let hDate = new Date(j.harvestDate).toLocaleDateString('th-TH');
-                    
-                    availList.innerHTML += `
-                        <div style="background:var(--bg-body); border:1px solid var(--border); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
-                            <div>
-                                <b style="color:var(--secondary);">${displayName}</b> <span style="color:var(--primary-dark); font-weight:700;">${actualQ} ไร่</span><br>
-                                <span style="font-size:12px; color:var(--text-muted);"><i class="fa-regular fa-calendar"></i> ${hDate}</span>
-                            </div>
-                            <div style="display:flex; gap:5px;">
-                                <button onclick="viewSaleIslandModal(${j.row})" class="btn-action btn-view" title="ดูรายละเอียดแปลง"><i class="fa-solid fa-eye"></i></button>
-                                <button onclick="addToTrip(${j.row})" class="btn-action btn-add" title="เพิ่มเข้าทริป"><i class="fa-solid fa-plus"></i></button>
-                            </div>
-                        </div>
-                    `;
+                    let displayName = j.farmerFullName || j.farmerName; let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0)); let hDate = new Date(j.harvestDate).toLocaleDateString('th-TH');
+                    availList.innerHTML += `<div style="background:var(--bg-body); border:1px solid var(--border); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;"><div><b style="color:var(--secondary);">${displayName}</b> <span style="color:var(--primary-dark); font-weight:700;">${actualQ} ไร่</span><br><span style="font-size:12px; color:var(--text-muted);"><i class="fa-regular fa-calendar"></i> ${hDate}</span></div><div style="display:flex; gap:5px;"><button onclick="viewSaleIslandModal(${j.row})" class="btn-action btn-view" title="ดูรายละเอียดแปลง"><i class="fa-solid fa-eye"></i></button><button onclick="addToTrip(${j.row})" class="btn-action btn-add" title="เพิ่มเข้าทริป"><i class="fa-solid fa-plus"></i></button></div></div>`;
                 }
             });
             
-            // เรนเดอร์ฝั่งขวา
             let sortedTripJobs = currentTripJobs.map(id => rawBuyerData.find(j => j.row === id)).filter(j => j);
             sortedTripJobs.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate));
 
-            let totalTripRai = 0;
-            let prevLat = null, prevLon = null;
-            let uniqueFarmers = new Set();
-            let dates = [];
-
+            let totalTripRai = 0; let prevLat = null, prevLon = null; let uniqueFarmers = new Set(); let dates = [];
             if(sortedTripJobs.length > 0) {
                 sortedTripJobs.forEach((j, index) => {
-                    let displayName = j.farmerFullName || j.farmerName;
-                    let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0));
-                    let hDate = new Date(j.harvestDate).toLocaleDateString('th-TH');
-                    
-                    totalTripRai += actualQ;
-                    uniqueFarmers.add(j.farmerLineId || j.farmerName);
-                    dates.push(new Date(j.harvestDate).getTime());
-
+                    let displayName = j.farmerFullName || j.farmerName; let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0)); let hDate = new Date(j.harvestDate).toLocaleDateString('th-TH');
+                    totalTripRai += actualQ; uniqueFarmers.add(j.farmerLineId || j.farmerName); dates.push(new Date(j.harvestDate).getTime());
                     let distHtml = '';
-                    if (index > 0 && prevLat && prevLon && j.lat && j.lon && !isNaN(parseFloat(j.lat))) {
-                        let d = getDistanceJS(prevLat, prevLon, j.lat, j.lon).toFixed(1);
-                        distHtml = `
-                            <div style="text-align:center; padding:6px 0; color:var(--info); font-size:12px; font-weight:600; display:flex; flex-direction:column; align-items:center;">
-                                <div style="width:2px; height:15px; background:var(--info); margin-bottom:2px;"></div>
-                                <span><i class="fa-solid fa-truck"></i> ขับรถไปอีก ${d} กม.</span>
-                                <div style="width:2px; height:15px; background:var(--info); margin-top:2px;"></div>
-                            </div>`;
-                    }
+                    if (index > 0 && prevLat && prevLon && j.lat && j.lon && !isNaN(parseFloat(j.lat))) { let d = getDistanceJS(prevLat, prevLon, j.lat, j.lon).toFixed(1); distHtml = `<div style="text-align:center; padding:6px 0; color:var(--info); font-size:12px; font-weight:600; display:flex; flex-direction:column; align-items:center;"><div style="width:2px; height:15px; background:var(--info); margin-bottom:2px;"></div><span><i class="fa-solid fa-truck"></i> ขับรถไปอีก ${d} กม.</span><div style="width:2px; height:15px; background:var(--info); margin-top:2px;"></div></div>`; }
                     prevLat = j.lat; prevLon = j.lon;
-
-                    selList.innerHTML += distHtml + `
-                        <div style="background:var(--primary-light); border:1px solid var(--primary); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow-sm);">
-                            <div style="flex:1;">
-                                <b style="color:var(--primary-dark);">${index+1}. คุณ ${displayName}</b> <span style="font-weight:700; color:var(--secondary);">${actualQ} ไร่</span><br>
-                                <span style="font-size:12px; color:var(--primary-dark);"><i class="fa-regular fa-calendar"></i> นัด: ${hDate}</span>
-                            </div>
-                            <div style="display:flex; gap:5px;">
-                                <button onclick="viewSaleIslandModal(${j.row})" class="btn-action btn-view" title="ดูรายละเอียดแปลง"><i class="fa-solid fa-eye"></i></button>
-                                <button onclick="removeFromTrip(${j.row})" class="btn-action btn-delete" title="เอาออก"><i class="fa-solid fa-minus"></i></button>
-                            </div>
-                        </div>
-                    `;
+                    selList.innerHTML += distHtml + `<div style="background:var(--primary-light); border:1px solid var(--primary); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow-sm);"><div style="flex:1;"><b style="color:var(--primary-dark);">${index+1}. คุณ ${displayName}</b> <span style="font-weight:700; color:var(--secondary);">${actualQ} ไร่</span><br><span style="font-size:12px; color:var(--primary-dark);"><i class="fa-regular fa-calendar"></i> นัด: ${hDate}</span></div><div style="display:flex; gap:5px;"><button onclick="viewSaleIslandModal(${j.row})" class="btn-action btn-view" title="ดูรายละเอียดแปลง"><i class="fa-solid fa-eye"></i></button><button onclick="removeFromTrip(${j.row})" class="btn-action btn-delete" title="เอาออก"><i class="fa-solid fa-minus"></i></button></div></div>`;
                 });
-            } else {
-                selList.innerHTML = `
-                <div class="empty-state" style="background:transparent; border:none; margin-top:50px;">
-                    <i class="fa-solid fa-truck-moving" style="font-size:40px; margin-bottom:15px; color:var(--border);"></i><br>
-                    ทริปว่างเปล่า<br><span style="font-size:13px;">กดปุ่ม + ด้านซ้าย เพื่อเพิ่มงานเข้ามาในเส้นทางนี้</span>
-                </div>`;
-            }
+            } else { selList.innerHTML = `<div class="empty-state" style="background:transparent; border:none; margin-top:50px;"><i class="fa-solid fa-truck-moving" style="font-size:40px; margin-bottom:15px; color:var(--border);"></i><br>ทริปว่างเปล่า<br><span style="font-size:13px;">กดปุ่ม + ด้านซ้าย เพื่อเพิ่มงานเข้ามาในเส้นทางนี้</span></div>`; }
             
-            // คำนวณวัน
-            let totalDays = 0;
-            if (dates.length > 0) {
-                let minDate = Math.min(...dates);
-                let maxDate = Math.max(...dates);
-                totalDays = Math.ceil((maxDate - minDate) / (1000 * 3600 * 24)) + 1;
-            }
-
-            document.getElementById("trip-total-rai").innerText = totalTripRai.toFixed(1) + " ไร่";
-            document.getElementById("trip-total-days").innerText = totalDays + " วัน";
-            document.getElementById("trip-total-farmers").innerText = uniqueFarmers.size + " ราย";
+            let totalDays = 0; if (dates.length > 0) { let minDate = Math.min(...dates); let maxDate = Math.max(...dates); totalDays = Math.ceil((maxDate - minDate) / (1000 * 3600 * 24)) + 1; }
+            document.getElementById("trip-total-rai").innerText = totalTripRai.toFixed(1) + " ไร่"; document.getElementById("trip-total-days").innerText = totalDays + " วัน"; document.getElementById("trip-total-farmers").innerText = uniqueFarmers.size + " ราย";
         }
 
         function addToTrip(rowId) { currentTripJobs.push(rowId); renderTripPlanner(); }
         function removeFromTrip(rowId) { currentTripJobs = currentTripJobs.filter(id => id !== rowId); renderTripPlanner(); }
-
         function addToTripFromModal(rowId) {
-            if(!currentTripJobs.includes(rowId)) {
-                currentTripJobs.push(rowId);
-                Swal.fire({ title: 'เพิ่มลงทริปแล้ว!', icon: 'success', timer: 1500, showConfirmButton: false });
-                if(document.getElementById('buyer-trip-page').classList.contains('active')) {
-                    renderTripPlanner();
-                } else if(document.getElementById('buyer-calendar-page').classList.contains('active')) {
-                    Swal.close();
-                }
-            } else {
-                Swal.fire('มีในทริปแล้ว', 'งานนี้ถูกเพิ่มลงในทริปปัจจุบันแล้วครับ', 'info');
-            }
+            if(!currentTripJobs.includes(rowId)) { currentTripJobs.push(rowId); Swal.fire({ title: 'เพิ่มลงทริปแล้ว!', icon: 'success', timer: 1500, showConfirmButton: false });
+                if(document.getElementById('buyer-trip-page').classList.contains('active')) { renderTripPlanner(); } else if(document.getElementById('buyer-calendar-page').classList.contains('active')) { Swal.close(); }
+            } else { Swal.fire('มีในทริปแล้ว', 'งานนี้ถูกเพิ่มลงในทริปปัจจุบันแล้วครับ', 'info'); }
         }
 
         async function saveTrip() {
-            if(currentTripJobs.length === 0) {
-                Swal.fire('ไม่มีข้อมูล', 'กรุณาเพิ่มแปลงเข้าทริปก่อนทำการบันทึก', 'warning');
-                return;
-            }
-
-            let htmlForm = `<div style="text-align:left; font-family:'Kanit'; max-height:60vh; overflow-y:auto; padding-right:10px;">
-                <div style="font-size:16px; font-weight:600; margin-bottom:15px; color:var(--secondary);"><i class="fa-solid fa-hand-holding-dollar"></i> ระบุราคารับซื้อ (บาท/ไร่) สำหรับแต่ละแปลง</div>`;
-            
+            if(currentTripJobs.length === 0) { Swal.fire('ไม่มีข้อมูล', 'กรุณาเพิ่มแปลงเข้าทริปก่อนทำการบันทึก', 'warning'); return; }
+            let htmlForm = `<div style="text-align:left; font-family:'Kanit'; max-height:60vh; overflow-y:auto; padding-right:10px;"><div style="font-size:16px; font-weight:600; margin-bottom:15px; color:var(--secondary);"><i class="fa-solid fa-hand-holding-dollar"></i> ระบุราคารับซื้อ (บาท/ไร่) สำหรับแต่ละแปลง</div>`;
             let tripJobsData = currentTripJobs.map(id => rawBuyerData.find(j => j.row === id)).filter(j => j);
-            
             tripJobsData.forEach((j, index) => {
-                let displayName = j.farmerFullName || j.farmerName;
-                let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0));
-                htmlForm += `
-                    <div style="background:var(--bg-body); padding:12px; border-radius:8px; border:1px solid var(--border); margin-bottom:10px;">
-                        <div style="font-weight:600; color:var(--primary-dark);">${index+1}. คุณ ${displayName} <span style="float:right;">${actualQ} ไร่</span></div>
-                        <input type="number" id="trip-price-${j.row}" class="swal-input" placeholder="เสนอราคา (บาท/ไร่)" style="margin-top:8px; height: 38px; width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Kanit';" required>
-                    </div>
-                `;
-            });
-            htmlForm += `</div>`;
+                let displayName = j.farmerFullName || j.farmerName; let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0));
+                htmlForm += `<div style="background:var(--bg-body); padding:12px; border-radius:8px; border:1px solid var(--border); margin-bottom:10px;"><div style="font-weight:600; color:var(--primary-dark);">${index+1}. คุณ ${displayName} <span style="float:right;">${actualQ} ไร่</span></div><input type="number" id="trip-price-${j.row}" class="swal-input" placeholder="เสนอราคา (บาท/ไร่)" style="margin-top:8px; height: 38px; width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Kanit';" required></div>`;
+            }); htmlForm += `</div>`;
 
             const { value: formValues } = await Swal.fire({
-                title: 'ยืนยันส่งข้อเสนอราคาทริป',
-                html: htmlForm,
-                width: '600px',
-                showCancelButton: true,
-                confirmButtonText: '<i class="fa-solid fa-paper-plane"></i> ส่งข้อเสนอทั้งหมด',
-                cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: THEME_PRIMARY,
+                title: 'ยืนยันส่งข้อเสนอราคาทริป', html: htmlForm, width: '600px', showCancelButton: true, confirmButtonText: '<i class="fa-solid fa-paper-plane"></i> ส่งข้อเสนอทั้งหมด', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY,
                 preConfirm: () => {
                     let results = [];
                     for(let j of tripJobsData) {
                         let price = document.getElementById(`trip-price-${j.row}`).value;
-                        if(!price) {
-                            Swal.showValidationMessage('กรุณาระบุราคาให้ครบทุกแปลง');
-                            return false;
-                        }
+                        if(!price) { Swal.showValidationMessage('กรุณาระบุราคาให้ครบทุกแปลง'); return false; }
                         results.push({ row: j.row, price: price });
                     }
                     return results;
@@ -2124,83 +1341,44 @@
 
             if(formValues) {
                 Swal.fire({ title: 'กำลังส่งคำเสนอซื้อแบบกลุ่ม...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } }); 
-                
                 try {
-                    let promises = formValues.map(item => {
-                        return fetch(GAS_WEB_APP_URL, { 
-                            method: "POST", 
-                            body: JSON.stringify({ 
-                                action: "acceptJob", 
-                                row: item.row, 
-                                userId: userProfile.userId, 
-                                buyerName: buyerNameContext, 
-                                buyerPhone: buyerPhoneContext, 
-                                price: item.price 
-                            }) 
-                        }).then(res => res.json()).then(result => {
-                            if (result.status === "success") {
-                                myCanceledRows = myCanceledRows.filter(id => id !== item.row);
-                                if(!myOfferedRows.includes(item.row)) { myOfferedRows.push(item.row); }
-                            }
-                        });
-                    });
-
-                    await Promise.all(promises);
-                    localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows));
-                    localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
-
-                    Swal.fire({
-                        title: 'สำเร็จ!', text: 'ส่งข้อเสนอให้ชาวไร่ทุกแปลงพิจารณาเรียบร้อยแล้ว', icon: 'success', confirmButtonColor: THEME_PRIMARY
-                    }).then(() => { 
-                        currentTripJobs = [];
-                        document.getElementById('trip-name').value = '';
-                        switchPage('buyer-purchases-page');
-                        fetchBuyerRawData(); 
-                    }); 
+                    let promises = formValues.map(item => { return fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "acceptJob", row: item.row, userId: userProfile.userId, buyerName: buyerNameContext, buyerPhone: buyerPhoneContext, price: item.price }) }).then(res => res.json()).then(result => { if (result.status === "success") { myCanceledRows = myCanceledRows.filter(id => id !== item.row); if(!myOfferedRows.includes(item.row)) { myOfferedRows.push(item.row); } } }); });
+                    await Promise.all(promises); localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows)); localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
+                    Swal.fire({ title: 'สำเร็จ!', text: 'ส่งข้อเสนอให้ชาวไร่ทุกแปลงพิจารณาเรียบร้อยแล้ว', icon: 'success', confirmButtonColor: THEME_PRIMARY }).then(() => { currentTripJobs = []; document.getElementById('trip-name').value = ''; switchPage('buyer-purchases-page'); fetchBuyerRawData(); }); 
                 } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคาได้ทั้งหมด', 'error'); }
             }
         }
 
         // ==========================================
-        // เมนูปฏิทินคิวงาน (Calendar)
+        // เมนูปฏิทินคิวงาน (Calendar) Multi-Select
         // ==========================================
         function renderCalendar() {
             var calendarEl = document.getElementById('calendar');
             if(calendarObj) { calendarObj.destroy(); }
-            
-            let fProv = document.getElementById("cal-filter-prov").value;
             let events = [];
             
             rawBuyerData.forEach(j => {
-                let displayName = j.farmerFullName || j.farmerName;
-                if(fProv !== 'all' && j.prov !== fProv) return;
-                if(selectedCalDists.length > 0 && !selectedCalDists.includes(j.dist)) return;
-                if(selectedCalSubDists.length > 0 && !selectedCalSubDists.includes(j.subDist)) return;
+                let pass = true;
+                let iProv = (j.plotProv || j.prov || "").replace('จ.', '').trim();
+                let iDist = (j.plotDist || j.dist || "").replace('อ.', '').trim();
+                let iSub  = (j.plotSubDist || j.subDist || "").replace('ต.', '').trim();
 
+                if (filters.cal.provs.length > 0 && !filters.cal.provs.some(p => iProv.includes(p) || p.includes(iProv))) pass = false;
+                if (filters.cal.dists.length > 0 && !filters.cal.dists.some(d => iDist.includes(d) || d.includes(iDist))) pass = false;
+                if (filters.cal.subs.length > 0 && !filters.cal.subs.some(s => iSub.includes(s) || s.includes(iSub))) pass = false;
+                
+                if(!pass) return;
+
+                let displayName = j.farmerFullName || j.farmerName;
                 if(j.status === "รอคิวรถ" || j.status === "รอชาวไร่ยืนยัน") {
-                    let d = new Date(j.harvestDate);
-                    events.push({
-                        title: `${displayName} (${j.qty} ไร่)`,
-                        start: d.toISOString().split('T')[0],
-                        color: '#F59E0B',
-                        extendedProps: { rowId: j.row }
-                    });
+                    events.push({ title: `${displayName} (${j.qty} ไร่)`, start: new Date(j.harvestDate).toISOString().split('T')[0], color: '#F59E0B', extendedProps: { rowId: j.row } });
                 } else if(j.status === "กำลังดำเนินการ") {
-                    let d = new Date(j.harvestDate);
-                    events.push({
-                        title: `[รับแล้ว] ${displayName}`,
-                        start: d.toISOString().split('T')[0],
-                        color: '#10B981',
-                        extendedProps: { rowId: j.row }
-                    });
+                    events.push({ title: `[รับแล้ว] ${displayName}`, start: new Date(j.harvestDate).toISOString().split('T')[0], color: '#10B981', extendedProps: { rowId: j.row } });
                 }
             });
 
             calendarObj = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: 'th',
-                height: 550,
-                events: events,
+                initialView: 'dayGridMonth', locale: 'th', height: 550, events: events,
                 eventClick: function(info) { viewSaleIslandModal(info.event.extendedProps.rowId); }
             });
             calendarObj.render();
