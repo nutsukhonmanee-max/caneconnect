@@ -102,6 +102,25 @@
         input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; background: #FFF; box-shadow: 0 0 0 3px var(--primary-light); }
         input:disabled, select:disabled, textarea:disabled, input[readonly], select[readonly] { background-color: #F1F5F9 !important; color: var(--text-muted) !important; -webkit-text-fill-color: var(--text-muted) !important; opacity: 1 !important; border: 1px dashed var(--border) !important; cursor: not-allowed; font-weight: 500; }
         
+        /* ================= Custom Multi-Select Dropdown ================= */
+        .multi-select-container { position: relative; width: 100%; margin-top: 5px; }
+        .multi-select-button { 
+            width: 100%; height: 44px; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); 
+            background: #F8FAFC; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; 
+            color: var(--secondary); font-size: 14px; transition: all 0.2s;
+        }
+        .multi-select-button:hover { border-color: var(--primary); }
+        .multi-select-dropdown { 
+            position: absolute; top: 100%; left: 0; width: 100%; background: #fff; border: 1px solid var(--border); 
+            border-radius: var(--radius-md); max-height: 250px; overflow-y: auto; z-index: 1000; display: none; box-shadow: var(--shadow-lg); margin-top: 5px; 
+        }
+        .multi-select-dropdown.show { display: block; }
+        .multi-select-option { padding: 10px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #F1F5F9; }
+        .multi-select-option:last-child { border-bottom: none; }
+        .multi-select-option:hover { background: var(--bg-body); }
+        .multi-select-option input[type="checkbox"] { width: 18px; height: 18px; margin: 0; accent-color: var(--primary); cursor: pointer;}
+        .group-header { padding: 6px 12px; font-size: 12px; font-weight: 700; color: var(--primary-dark); background: var(--primary-light); position: sticky; top: 0; z-index: 2; }
+
         /* ================= Maps & UI Boxes ================= */
         .map-container { height: 300px; width: 100%; border-radius: var(--radius-md); margin-top: 10px; border: 1px solid var(--border); z-index: 1; overflow: hidden; box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);}
         
@@ -116,6 +135,7 @@
         
         .btn-info { background: var(--info); } .btn-info:hover { background: #2563EB; }
         .btn-warning { background: var(--accent); } .btn-warning:hover { background: #D97706; }
+        .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none; } .btn-outline:hover { background: var(--primary-light); transform: none; } 
         .btn-ghost { background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none; margin-top: 5px; margin-bottom: 15px;} .btn-ghost:hover { background: var(--primary-light); transform: none; } 
         
         .btn-small { padding: 8px 12px; border-radius: 8px; font-weight: 500; font-size: 12px; border: none; cursor: pointer; transition: all 0.2s ease; font-family: 'Kanit', sans-serif; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;}
@@ -2162,6 +2182,13 @@
             .then(res => res.json())
             .then(result => {
                 if (result.status === "success") { 
+                    
+                    // บันทึกประวัติฝั่งรถม้วน
+                    myCanceledRows = myCanceledRows.filter(id => id !== rowId); 
+                    if(!myOfferedRows.includes(rowId)) { myOfferedRows.push(rowId); }
+                    localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows));
+                    localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
+                    
                     Swal.fire({title: 'สำเร็จ!', text: 'ส่งราคาให้ชาวไร่พิจารณาแล้วครับ', icon: 'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { location.reload(); }); 
                 } 
             }).catch(e => { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคาได้', 'error'); });
@@ -2272,6 +2299,13 @@
                     
                     isBuyerEditMode = true; 
                     let d = result.data; 
+                    
+                    // ซิงค์ข้อมูลกับฐานข้อมูล
+                    myOfferedRows = result.data.offeredJobs || [];
+                    myCanceledRows = result.data.canceledJobs || [];
+                    localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows));
+                    localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
+                    
                     document.getElementById("profile-info").innerText = "คุณ " + d.fullName; 
                     document.getElementById("buyer-prefix").value = d.prefix; 
                     document.getElementById("buyer-firstname").value = d.firstName; 
@@ -2371,6 +2405,13 @@
                     
                     buyerNameContext = result.data.fullName; 
                     buyerPhoneContext = result.data.phone; 
+                    
+                    // ซิงค์ข้อมูลกับฐานข้อมูล
+                    myOfferedRows = result.data.offeredJobs || [];
+                    myCanceledRows = result.data.canceledJobs || [];
+                    localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows));
+                    localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
+                    
                     document.getElementById("profile-info").innerText = "คุณ " + result.data.fullName; 
                     document.getElementById("buyer-page").classList.add("active"); 
                     await fetchBuyerRawData(); 
@@ -2462,7 +2503,7 @@
             }
             
             let activeJobs = rawBuyerData.filter(p => p.status === "กำลังดำเนินการ" || p.status === "รอชาวไร่ตรวจสอบ");
-            let historyJobs = rawBuyerData.filter(p => p.status === "เสร็จสิ้น" || p.status === "ยกเลิก");
+            let historyJobs = rawBuyerData.filter(p => p.status === "เสร็จสิ้น" || p.status === "ยกเลิก" || myCanceledRows.includes(p.row));
             let availableJobs = rawBuyerData.filter(p => p.status === "รอคิวรถ" || p.status === "รอชาวไร่ยืนยัน");
             
             // --- จัดการงานที่กำลังดำเนินการ (Active Jobs) ---
@@ -2511,11 +2552,20 @@
                         }
                     }
 
+                    let displayStatus = item.status; 
+                    let badgeClass = item.status === "เสร็จสิ้น" ? "bg-success" : "bg-danger";
+                        
+                    if (myCanceledRows.includes(item.row) && item.status !== "เสร็จสิ้น") { 
+                        displayStatus = "ยกเลิกการรับซื้อ"; badgeClass = "bg-danger"; 
+                    } else if (item.status === "ยกเลิก") { 
+                        displayStatus = "ชาวไร่ยกเลิก"; 
+                    }
+
                     historyHTMLList += `
-                    <div class="sale-card" style="border-left: 5px solid var(--primary); opacity: 0.9;">
+                    <div class="sale-card" style="border-left: 5px solid ${displayStatus==='เสร็จสิ้น'?'var(--primary)':'var(--danger)'}; opacity: 0.9;">
                         <div class="sale-header">
                             <span style="font-weight:700; color:var(--text-main); font-size:15px;">คุณ ${item.farmerName}</span>
-                            <span class="badge ${item.status === "เสร็จสิ้น" ? "completed" : "canceled"}">${item.status}</span>
+                            <span class="badge ${badgeClass}">${displayStatus}</span>
                         </div>
                         <div class="sale-detail">
                             <div>พื้นที่: <span style="font-weight:600;">${actualQ} ไร่</span> | น้ำหนัก: <span style="font-weight:600;">${actualW} ตัน</span></div>
@@ -2558,6 +2608,7 @@
             // --- จัดการงานที่เปิดให้ประมูล (Available Jobs) ---
             let filteredAvailable = availableJobs.filter(item => { 
                 if (filterStatus !== "all" && item.status !== filterStatus) return false; 
+                if (myCanceledRows.includes(item.row)) return false; // ซ่อนงานที่เคยกดยกเลิก
                 
                 if (dStart || dEnd) {
                     let hTime = new Date(item.harvestDate);
@@ -2676,7 +2727,7 @@
 
         function renderSingleCardHTML(item, colorHex) {
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
-            let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:500; margin-top:8px;"><i class="fa-solid fa-fire"></i> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
+            let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:600; margin-top:8px;"><i class="fa-solid fa-fire"></i> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
             let priorityBadge = item.qty >= 100 ? `<span class="badge" style="background:#D1FAE5; color:#065F46;"> คุ้มทุน</span>` : "";
             
             let distText = "";
@@ -2766,9 +2817,9 @@
                     <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">`;
                     
             if(!isActive) { 
-                popupContent += `<button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; padding:8px; border-color:${colorHex}; color:${colorHex};">ดูรายละเอียด / เสนอราคา</button>`; 
+                popupContent += `<button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-main btn-outline" style="width:100%; padding:8px; border-color:${colorHex}; color:${colorHex};">ดูรายละเอียด / เสนอราคา</button>`; 
             } else { 
-                popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="width:100%; padding:8px;">แจ้งปิดงาน</button>`; 
+                popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="width:100%; padding:8px; background:var(--info);">แจ้งปิดงาน</button>`; 
             } 
             
             popupContent += `</div>`; 
@@ -2833,7 +2884,7 @@
                         <input type="number" id="close-actual-qty" value="${estQty}" step="0.1" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid var(--border); border-radius:10px;">
                         <label> น้ำหนักสุทธิ (ตัน):</label>
                         <input type="number" id="close-actual-weight" placeholder="ระบุน้ำหนักตามใบชั่ง" step="0.1" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid var(--border); border-radius:10px;">
-                        <label> อัปโหลดใบชั่งน้ำหนัก:</label>
+                        <label> อัปโหลดใบชั่งน้ำหนัก (ถ้ามี):</label>
                         <input type="file" id="close-photo" accept="image/*" style="border:none; padding:10px 0; margin-top:5px;">
                         <img id="close-photo-preview" style="width:100%; display:none; margin-top:10px; border-radius:10px; cursor:zoom-in;">
                     </div>`, 
@@ -3339,6 +3390,35 @@
         // ==========================================
         // เมนูปฏิทินคิวงาน (Calendar) Multi-Select
         // ==========================================
+        function switchCalMode(mode) {
+            currentCalMode = mode;
+            const btnAvail = document.getElementById('cal-mode-available');
+            const btnConf = document.getElementById('cal-mode-confirmed');
+            
+            if (mode === 'available') {
+                btnAvail.className = 'btn-main';
+                btnAvail.style.background = 'var(--primary)';
+                btnAvail.style.color = 'white';
+                btnAvail.style.boxShadow = 'var(--shadow-md)';
+                
+                btnConf.className = 'btn-outline';
+                btnConf.style.background = 'transparent';
+                btnConf.style.color = 'var(--text-muted)';
+                btnConf.style.boxShadow = 'none';
+            } else {
+                btnConf.className = 'btn-main';
+                btnConf.style.background = 'var(--info)';
+                btnConf.style.color = 'white';
+                btnConf.style.boxShadow = 'var(--shadow-md)';
+                
+                btnAvail.className = 'btn-outline';
+                btnAvail.style.background = 'transparent';
+                btnAvail.style.color = 'var(--text-muted)';
+                btnAvail.style.boxShadow = 'none';
+            }
+            renderCalendar();
+        }
+
         function renderCalendar() {
             var calendarEl = document.getElementById('calendar');
             if(calendarObj) { 
@@ -3359,25 +3439,30 @@
                 
                 if(!pass) return;
 
-                // Safe Date parsing to prevent FullCalendar crash
+                let isAvailable = (j.status === "รอคิวรถ" || j.status === "รอชาวไร่ยืนยัน");
+                let isConfirmed = (j.status === "กำลังดำเนินการ");
+
+                if (currentCalMode === 'available' && !isAvailable) return;
+                if (currentCalMode === 'confirmed' && !isConfirmed) return;
+
                 if(j.harvestDate) {
                     let dateObj = new Date(j.harvestDate);
                     if(!isNaN(dateObj.getTime())) {
                         let dateStr = dateObj.toISOString().split('T')[0];
                         let displayName = j.farmerFullName || j.farmerName;
                         
-                        if(j.status === "รอคิวรถ" || j.status === "รอชาวไร่ยืนยัน") {
+                        if(isAvailable) {
                             events.push({ 
                                 title: `${displayName} (${j.qty} ไร่)`, 
                                 start: dateStr, 
                                 color: '#F59E0B', 
                                 extendedProps: { rowId: j.row } 
                             });
-                        } else if(j.status === "กำลังดำเนินการ") {
+                        } else if(isConfirmed) {
                             events.push({ 
                                 title: `[รับแล้ว] ${displayName}`, 
                                 start: dateStr, 
-                                color: '#10B981', 
+                                color: '#3B82F6', 
                                 extendedProps: { rowId: j.row } 
                             });
                         }
