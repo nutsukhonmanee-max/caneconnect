@@ -867,7 +867,7 @@
                     </button>
                 </div>
                 
-                <!-- Filters Panel -->
+                <!-- Filters Panel (Multi-Select) -->
                 <div class="filter-panel" style="z-index: 500;">
                     <div class="filter-item">
                         <label>จังหวัด (เลือกได้หลายจังหวัด):</label>
@@ -936,9 +936,7 @@
                 </div>
                 <div class="trip-layout">
                     <div class="trip-left">
-                        <div style="font-size:16px; font-weight:600; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">
-                            รายการงานที่เปิดรับ (คลิก + เพื่อเลือก)
-                        </div>
+                        <div style="font-size:16px; font-weight:600; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">รายการงานที่เปิดรับ (คลิก + เพื่อเลือก)</div>
                         <div style="margin-bottom:15px; display:flex; gap:10px;">
                             <input type="text" id="trip-search" class="swal-input" placeholder="ค้นหาชื่อ, ตำบล, อำเภอ..." onkeyup="renderTripPlanner()" style="height: 40px; font-size:13px; flex:1; border: 1px solid var(--border); padding:0 10px; border-radius:8px;">
                             <select id="trip-sort" class="filter-select" onchange="renderTripPlanner()" style="height: 40px; width:auto; padding:0 10px; border-radius:8px; border: 1px solid var(--border);">
@@ -955,20 +953,11 @@
                             <input type="text" id="trip-name" class="swal-input" placeholder="ตั้งชื่อทริป (เช่น ทริปผาขาว 1)" style="font-weight:700; font-size:16px; width: 60%; border: 1px solid var(--primary-light); padding: 10px; border-radius: 8px;">
                         </div>
                         <div style="background:var(--primary-light); padding:15px; border-radius:12px; display:flex; justify-content:space-around; align-items:center; margin-bottom:15px; border:1px solid var(--primary);">
-                            <div style="text-align:center;">
-                                <div style="font-size:12px; color:var(--text-muted); font-weight:600;">พื้นที่รวม</div>
-                                <div id="trip-total-rai" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0.0 ไร่</div>
-                            </div>
+                            <div style="text-align:center;"><div style="font-size:12px; color:var(--text-muted); font-weight:600;">พื้นที่รวม</div><div id="trip-total-rai" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0.0 ไร่</div></div>
                             <div style="width:1px; height:35px; background:var(--primary-dark); opacity:0.3;"></div>
-                            <div style="text-align:center;">
-                                <div style="font-size:12px; color:var(--text-muted); font-weight:600;">ระยะเวลาทริป</div>
-                                <div id="trip-total-days" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0 วัน</div>
-                            </div>
+                            <div style="text-align:center;"><div style="font-size:12px; color:var(--text-muted); font-weight:600;">ระยะเวลาทริป</div><div id="trip-total-days" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0 วัน</div></div>
                             <div style="width:1px; height:35px; background:var(--primary-dark); opacity:0.3;"></div>
-                            <div style="text-align:center;">
-                                <div style="font-size:12px; color:var(--text-muted); font-weight:600;">จำนวนลูกไร่</div>
-                                <div id="trip-total-farmers" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0 ราย</div>
-                            </div>
+                            <div style="text-align:center;"><div style="font-size:12px; color:var(--text-muted); font-weight:600;">จำนวนลูกไร่</div><div id="trip-total-farmers" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0 ราย</div></div>
                         </div>
                         <div id="trip-selected-list" style="display:flex; flex-direction:column; gap:10px; flex:1;"></div>
                         <button class="btn-main" style="margin-top:20px;" onclick="saveTrip()">
@@ -992,7 +981,7 @@
                 </div>
             </div>
 
-            <!-- 5. หน้าปฏิทิน (Calendar) -->
+            <!-- 5. หน้าปฏิทิน (Calendar) แบบ Multi-select -->
             <div id="buyer-calendar-page" class="page">
                 <div class="section-title">
                     <i class="fa-solid fa-calendar-alt" style="color:var(--info);"></i> ปฏิทินคิวประกาศขายอ้อย
@@ -1052,7 +1041,7 @@
     </main>
 
     <!-- ป้ายบอกเวอร์ชันแอป -->
-    <div class="app-version">v2.9.6 Pro | อัปเดต: ระบบพิกัดแผนที่อัจฉริยะ (แก้ไขปฏิทิน)</div>
+    <div class="app-version">v2.9.7 Pro | อัปเดต: แก้ไขข้อผิดพลาดปฏิทิน (สมบูรณ์)</div>
 
     <!-- LIFF SDK -->
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -1083,6 +1072,8 @@
         let rawBuyerData = []; 
         let thaiData = []; 
         let currentTripJobs = [];
+        
+        let calendarObj = null; // ตัวแปรสำหรับใช้งานปฏิทิน
         
         let myOfferedRows = []; 
         let myCanceledRows = [];
