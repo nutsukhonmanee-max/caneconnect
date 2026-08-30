@@ -54,7 +54,11 @@
             --sidebar-width: 280px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
 
         body { 
             font-family: 'Kanit', 'Inter', sans-serif; 
@@ -74,141 +78,448 @@
 
         /* ================= App Version Tag ================= */
         .app-version {
-            position: fixed; bottom: 15px; right: 20px; font-size: 11px; 
-            color: var(--text-muted); font-weight: 600; opacity: 0.8; 
-            z-index: 999999; pointer-events: none; background: rgba(255, 255, 255, 0.95); 
-            padding: 6px 14px; border-radius: 20px; box-shadow: var(--shadow-sm); 
-            border: 1px solid var(--border); letter-spacing: 0.5px;
+            position: fixed; 
+            bottom: 15px; 
+            right: 20px; 
+            font-size: 11px; 
+            color: var(--text-muted); 
+            font-weight: 600; 
+            opacity: 0.8; 
+            z-index: 999999; 
+            pointer-events: none; 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 6px 14px; 
+            border-radius: 20px; 
+            box-shadow: var(--shadow-sm); 
+            border: 1px solid var(--border); 
+            letter-spacing: 0.5px;
         }
 
         /* ================= Sidebar Layout ================= */
         .sidebar { 
-            width: var(--sidebar-width); background-color: var(--secondary); 
-            color: #F8FAFC; display: flex; flex-direction: column; 
-            z-index: 20; box-shadow: 4px 0 20px rgba(0,0,0,0.05); transition: 0.3s;
+            width: var(--sidebar-width); 
+            background-color: var(--secondary); 
+            color: #F8FAFC; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 20; 
+            box-shadow: 4px 0 20px rgba(0,0,0,0.05); 
+            transition: 0.3s;
         }
 
         .sidebar-header { 
-            padding: 24px 20px; font-size: 20px; font-weight: 700; 
-            color: var(--surface); border-bottom: 1px solid rgba(255,255,255,0.08); 
-            display: flex; align-items: center; gap: 14px;
+            padding: 24px 20px; 
+            font-size: 20px; 
+            font-weight: 700; 
+            color: var(--surface); 
+            border-bottom: 1px solid rgba(255,255,255,0.08); 
+            display: flex; 
+            align-items: center; 
+            gap: 14px;
         }
 
         .sidebar-profile {
-            padding: 20px; text-align: center; margin: 15px 16px;
-            background: rgba(255,255,255,0.03); border-radius: var(--radius-lg); 
+            padding: 20px; 
+            text-align: center; 
+            margin: 15px 16px;
+            background: rgba(255,255,255,0.03); 
+            border-radius: var(--radius-lg); 
             border: 1px solid rgba(255,255,255,0.05);
         }
 
         .sidebar-profile img { 
-            width: 60px; height: 60px; border-radius: 50%; 
-            border: 2px solid var(--primary); object-fit: cover; 
-            margin: 0 auto 10px auto; display: none; 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            border: 2px solid var(--primary); 
+            object-fit: cover; 
+            margin: 0 auto 10px auto; 
+            display: none; 
         }
 
-        .sidebar-profile-name { font-size: 15px; font-weight: 600; color: #F8FAFC; }
-        .sidebar-profile-role { font-size: 12px; font-weight: 600; background: rgba(16, 185, 129, 0.2); padding: 4px 12px; border-radius: 20px; display: inline-block; margin-top: 6px; color: var(--primary); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .sidebar-profile-name { 
+            font-size: 15px; 
+            font-weight: 600; 
+            color: #F8FAFC; 
+        }
 
-        .sidebar-menu { flex: 1; padding: 10px 16px; overflow-y: auto; }
+        .sidebar-profile-role { 
+            font-size: 12px; 
+            font-weight: 600; 
+            background: rgba(16, 185, 129, 0.2); 
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            display: inline-block; 
+            margin-top: 6px; 
+            color: var(--primary); 
+            border: 1px solid rgba(16, 185, 129, 0.3); 
+        }
+
+        .sidebar-menu { 
+            flex: 1; 
+            padding: 10px 16px; 
+            overflow-y: auto; 
+        }
 
         .menu-item { 
-            padding: 12px 16px; display: flex; align-items: center; gap: 14px; 
-            color: #94A3B8; cursor: pointer; font-weight: 500; font-size: 15px; 
-            border-radius: 12px; transition: all 0.2s ease; margin-bottom: 6px; position: relative;
+            padding: 12px 16px; 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+            color: #94A3B8; 
+            cursor: pointer; 
+            font-weight: 500; 
+            font-size: 15px; 
+            border-radius: 12px; 
+            transition: all 0.2s ease; 
+            margin-bottom: 6px; 
+            position: relative;
         }
 
-        .menu-item:hover { background-color: rgba(255,255,255,0.05); color: #F8FAFC; transform: translateX(4px); }
-        .menu-item.active { background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, transparent 100%); color: var(--primary); font-weight: 600; border-left: 4px solid var(--primary); border-radius: 0 12px 12px 0; }
-        .menu-item i { font-size: 16px; width: 20px; text-align: center; }
+        .menu-item:hover { 
+            background-color: rgba(255,255,255,0.05); 
+            color: #F8FAFC; 
+            transform: translateX(4px); 
+        }
+
+        .menu-item.active { 
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, transparent 100%); 
+            color: var(--primary); 
+            font-weight: 600; 
+            border-left: 4px solid var(--primary); 
+            border-radius: 0 12px 12px 0; 
+        }
+
+        .menu-item i { 
+            font-size: 16px; 
+            width: 20px; 
+            text-align: center; 
+        }
 
         .noti-badge {
-            background: var(--danger); color: white; font-size: 11px; font-weight: 700;
-            padding: 2px 6px; border-radius: 10px; margin-left: auto; display: none;
+            background: var(--danger); 
+            color: white; 
+            font-size: 11px; 
+            font-weight: 700;
+            padding: 2px 6px; 
+            border-radius: 10px; 
+            margin-left: auto; 
+            display: none;
         }
 
-        .sidebar-footer { padding: 15px; font-size: 11px; color: #64748B; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); line-height: 1.6; }
+        .sidebar-footer { 
+            padding: 15px; 
+            font-size: 11px; 
+            color: #64748B; 
+            text-align: center; 
+            border-top: 1px solid rgba(255,255,255,0.05); 
+            line-height: 1.6; 
+        }
 
         /* ================= Main Content Area ================= */
-        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-body); }
+        .main-content { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            background: var(--bg-body); 
+        }
         
         .topbar-alert { 
-            background: var(--danger-light); color: var(--danger); display: flex; align-items: center; justify-content: center; 
-            padding: 10px 40px; box-shadow: var(--shadow-sm); z-index: 10; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 500; text-align: center;
+            background: var(--danger-light); 
+            color: var(--danger); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 10px 40px; 
+            box-shadow: var(--shadow-sm); 
+            z-index: 10; 
+            border-bottom: 1px solid var(--border); 
+            font-size: 14px; 
+            font-weight: 500; 
+            text-align: center;
         }
-        .topbar-alert a { color: var(--danger); font-weight: bold; text-decoration: underline;}
+
+        .topbar-alert a { 
+            color: var(--danger); 
+            font-weight: bold; 
+            text-decoration: underline;
+        }
         
-        .content-body { flex: 1; padding: 30px 40px; overflow-y: auto; position: relative;}
-        .page { display: none; animation: fadeIn 0.4s ease; } .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .content-body { 
+            flex: 1; 
+            padding: 30px 40px; 
+            overflow-y: auto; 
+            position: relative;
+        }
+
+        .page { display: none; animation: fadeIn 0.4s ease; } 
+        .page.active { display: block; }
         
-        .section-title { font-size: 20px; font-weight: 700; color: var(--secondary); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;}
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .section-title { 
+            font-size: 20px; 
+            font-weight: 700; 
+            color: var(--secondary); 
+            margin-bottom: 20px; 
+            padding-bottom: 10px; 
+            border-bottom: 1px solid var(--border); 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+        }
         
         /* ================= Grid Layouts ================= */
-        .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; } .full-width { grid-column: 1 / -1; }
+        .jobs-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+            gap: 20px; 
+            margin-bottom: 30px; 
+        }
+
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 15px; 
+        } 
+        
+        .full-width { grid-column: 1 / -1; }
         
         /* ================= Filters Panel ================= */
         .filter-panel { 
-            background: var(--surface); padding: 20px; border-radius: var(--radius-lg); 
-            box-shadow: var(--shadow-md); margin-bottom: 20px; border: 1px solid var(--border);
-            display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; position: relative; z-index: 100;
+            background: var(--surface); 
+            padding: 20px; 
+            border-radius: var(--radius-lg); 
+            box-shadow: var(--shadow-md); 
+            margin-bottom: 20px; 
+            border: 1px solid var(--border);
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+            align-items: flex-end; 
+            position: relative; 
+            z-index: 100;
         }
 
-        .filter-item { flex: 1; min-width: 180px; }
-        .filter-item label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; display: block;}
+        .filter-item { 
+            flex: 1; 
+            min-width: 180px; 
+        }
+
+        .filter-item label { 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: var(--text-muted); 
+            margin-bottom: 6px; 
+            display: block;
+        }
         
-        input[type="text"], input[type="tel"], input[type="number"], input[type="date"], select, textarea { 
-            width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); 
-            font-size: 14px; font-family: 'Kanit', sans-serif; box-sizing: border-box; background: #F8FAFC; color: var(--secondary); transition: all 0.2s; height: 44px;
+        input[type="text"], 
+        input[type="tel"], 
+        input[type="number"], 
+        input[type="date"], 
+        select, 
+        textarea { 
+            width: 100%; 
+            padding: 10px 14px; 
+            border: 1px solid var(--border); 
+            border-radius: var(--radius-md); 
+            font-size: 14px; 
+            font-family: 'Kanit', sans-serif; 
+            box-sizing: border-box; 
+            background: #F8FAFC; 
+            color: var(--secondary); 
+            transition: all 0.2s; 
+            height: 44px;
         }
 
         /* ================= Custom Multi-Select Dropdown ================= */
-        .multi-select-container { position: relative; width: 100%; }
+        .multi-select-container { 
+            position: relative; 
+            width: 100%; 
+        }
+
         .multi-select-button { 
-            width: 100%; height: 44px; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); 
-            background: #F8FAFC; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; 
-            color: var(--secondary); font-size: 14px; transition: all 0.2s;
+            width: 100%; 
+            height: 44px; 
+            padding: 10px 14px; 
+            border: 1px solid var(--border); 
+            border-radius: var(--radius-md); 
+            background: #F8FAFC; 
+            text-align: left; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            color: var(--secondary); 
+            font-size: 14px; 
+            transition: all 0.2s;
         }
-        .multi-select-button:hover { border-color: var(--primary); }
+
+        .multi-select-button:hover { 
+            border-color: var(--primary); 
+        }
+
         .multi-select-dropdown { 
-            position: absolute; top: 100%; left: 0; width: 100%; background: #fff; border: 1px solid var(--border); 
-            border-radius: var(--radius-md); max-height: 250px; overflow-y: auto; z-index: 1000; display: none; box-shadow: var(--shadow-lg); margin-top: 5px; 
+            position: absolute; 
+            top: 100%; 
+            left: 0; 
+            width: 100%; 
+            background: #fff; 
+            border: 1px solid var(--border); 
+            border-radius: var(--radius-md); 
+            max-height: 250px; 
+            overflow-y: auto; 
+            z-index: 1000; 
+            display: none; 
+            box-shadow: var(--shadow-lg); 
+            margin-top: 5px; 
         }
-        .multi-select-dropdown.show { display: block; }
-        .multi-select-option { padding: 10px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #F1F5F9; }
-        .multi-select-option:last-child { border-bottom: none; }
-        .multi-select-option:hover { background: var(--bg-body); }
-        .multi-select-option input[type="checkbox"] { width: 18px; height: 18px; margin: 0; accent-color: var(--primary); cursor: pointer;}
-        .group-header { padding: 6px 12px; font-size: 12px; font-weight: 700; color: var(--primary-dark); background: var(--primary-light); position: sticky; top: 0; z-index: 2; }
+
+        .multi-select-dropdown.show { 
+            display: block; 
+        }
+
+        .multi-select-option { 
+            padding: 10px 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            border-bottom: 1px solid #F1F5F9; 
+        }
+
+        .multi-select-option:last-child { 
+            border-bottom: none; 
+        }
+
+        .multi-select-option:hover { 
+            background: var(--bg-body); 
+        }
+
+        .multi-select-option input[type="checkbox"] { 
+            width: 18px; 
+            height: 18px; 
+            margin: 0; 
+            accent-color: var(--primary); 
+            cursor: pointer;
+        }
+
+        .group-header { 
+            padding: 6px 12px; 
+            font-size: 12px; 
+            font-weight: 700; 
+            color: var(--primary-dark); 
+            background: var(--primary-light); 
+            position: sticky; 
+            top: 0; 
+            z-index: 2; 
+        }
 
         /* ================= Map Container & Fullscreen ================= */
         .map-container { 
-            height: 600px; width: 100%; border-radius: var(--radius-lg); 
-            margin-bottom: 25px; border: 1px solid var(--border); box-shadow: var(--shadow-md); z-index: 1;
+            height: 600px; 
+            width: 100%; 
+            border-radius: var(--radius-lg); 
+            margin-bottom: 25px; 
+            border: 1px solid var(--border); 
+            box-shadow: var(--shadow-md); 
+            z-index: 1;
         }
 
         .fullscreen-map {
-            position: fixed !important; top: 0 !important; left: 0 !important;
-            width: 100vw !important; height: 100vh !important; z-index: 99999 !important;
-            border-radius: 0 !important; margin: 0 !important;
+            position: fixed !important; 
+            top: 0 !important; 
+            left: 0 !important;
+            width: 100vw !important; 
+            height: 100vh !important; 
+            z-index: 99999 !important;
+            border-radius: 0 !important; 
+            margin: 0 !important;
         }
 
         #fullscreen-btn {
-            position: absolute; top: 15px; right: 15px; z-index: 400;
-            background: white; color: var(--secondary); border: 1px solid var(--border);
-            padding: 8px 12px; font-size: 13px; border-radius: 8px; cursor: pointer; box-shadow: var(--shadow-sm); transition: 0.2s;
+            position: absolute; 
+            top: 15px; 
+            right: 15px; 
+            z-index: 400;
+            background: white; 
+            color: var(--secondary); 
+            border: 1px solid var(--border);
+            padding: 8px 12px; 
+            font-size: 13px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            box-shadow: var(--shadow-sm); 
+            transition: 0.2s;
         }
-        #fullscreen-btn:hover { background: #F8FAFC; }
+
+        #fullscreen-btn:hover { 
+            background: #F8FAFC; 
+        }
         
-        .pulse-marker { width: 18px; height: 18px; background: #3B82F6; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 rgba(59, 130, 246, 0.7); animation: pulse-blue 2s infinite; }
-        @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
-        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        .pulse-marker { 
+            width: 18px; 
+            height: 18px; 
+            background: #3B82F6; 
+            border-radius: 50%; 
+            border: 3px solid white; 
+            box-shadow: 0 0 0 rgba(59, 130, 246, 0.7); 
+            animation: pulse-blue 2s infinite; 
+        }
+
+        @keyframes pulse-blue { 
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 
+            70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } 
+        }
+
+        @keyframes pulse-red { 
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } 
+        }
 
         /* ================= Cards ================= */
-        .sale-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); transition: transform 0.2s; display: flex; flex-direction: column; justify-content: space-between; }
-        .sale-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-        .sale-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px; }
-        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; letter-spacing: 0.3px; }
+        .sale-card { 
+            background: var(--surface); 
+            border: 1px solid var(--border); 
+            border-radius: var(--radius-lg); 
+            padding: 20px; 
+            box-shadow: var(--shadow-sm); 
+            transition: transform 0.2s; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+        }
+
+        .sale-card:hover { 
+            transform: translateY(-3px); 
+            box-shadow: var(--shadow-md); 
+        }
+
+        .sale-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid var(--border); 
+            padding-bottom: 12px; 
+            margin-bottom: 12px; 
+        }
+
+        .badge { 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            font-weight: 600; 
+            display: inline-block; 
+            letter-spacing: 0.3px; 
+        }
 
         .bg-warning { background: var(--warning-light); color: #D97706; } 
         .bg-info { background: var(--info-light); color: #2563EB; } 
@@ -217,37 +528,177 @@
         .bg-purple { background: var(--purple-light); color: var(--purple); }
         
         /* ================= Buttons ================= */
-        .btn-main { padding: 10px 16px; background: var(--primary); color: white; border: none; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Kanit'; width: 100%; box-shadow: var(--shadow-md); display:inline-flex; align-items:center; justify-content:center; gap:8px; }
-        .btn-main:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-        .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow:none; } 
-        .btn-outline:hover { background: var(--primary-light); }
+        .btn-main { 
+            padding: 10px 16px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: var(--radius-md); 
+            font-size: 15px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            font-family: 'Kanit'; 
+            width: 100%; 
+            box-shadow: var(--shadow-md); 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+        }
 
-        .btn-add, .btn-view, .btn-delete { border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: 0.2s; }
-        .btn-add { background: var(--secondary); color: white; } .btn-add:hover { background: black; }
-        .btn-view { background: var(--info-light); color: var(--info); } .btn-view:hover { background: var(--info); color: white; }
-        .btn-delete { background: var(--danger-light); color: var(--danger); } .btn-delete:hover { background: var(--danger); color: white; }
+        .btn-main:hover { 
+            background: var(--primary-dark); 
+            transform: translateY(-2px); 
+            box-shadow: var(--shadow-lg); 
+        }
 
-        .btn-small { padding: 8px 16px; border-radius: 8px; font-weight: 500; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; font-family: 'Kanit'; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
-        .btn-small-outline { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.02); } 
-        .btn-small-outline:hover { background: var(--bg-body); transform: translateY(-2px); }
+        .btn-outline { 
+            background: transparent; 
+            color: var(--primary); 
+            border: 2px solid var(--primary); 
+            box-shadow: none; 
+        } 
+
+        .btn-outline:hover { 
+            background: var(--primary-light); 
+        }
+
+        .btn-add, .btn-view, .btn-delete { 
+            border-radius: 8px; 
+            width: 36px; 
+            height: 36px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border: none; 
+            cursor: pointer; 
+            transition: 0.2s; 
+        }
+
+        .btn-add { background: var(--secondary); color: white; } 
+        .btn-add:hover { background: black; }
+        .btn-view { background: var(--info-light); color: var(--info); } 
+        .btn-view:hover { background: var(--info); color: white; }
+        .btn-delete { background: var(--danger-light); color: var(--danger); } 
+        .btn-delete:hover { background: var(--danger); color: white; }
+
+        .btn-small { 
+            padding: 8px 16px; 
+            border-radius: 8px; 
+            font-weight: 500; 
+            font-size: 13px; 
+            border: none; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            font-family: 'Kanit'; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 6px; 
+        }
+
+        .btn-small-outline { 
+            background: var(--surface); 
+            color: var(--text-main); 
+            border: 1px solid var(--border); 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02); 
+        } 
+
+        .btn-small-outline:hover { 
+            background: var(--bg-body); 
+            transform: translateY(-2px); 
+        }
         
-        .empty-state { text-align: center; color: var(--text-muted); font-size: 15px; padding: 50px 0; background: var(--surface); border-radius: var(--radius-md); border: 1px dashed var(--border); }
+        .empty-state { 
+            text-align: center; 
+            color: var(--text-muted); 
+            font-size: 15px; 
+            padding: 50px 0; 
+            background: var(--surface); 
+            border-radius: var(--radius-md); 
+            border: 1px dashed var(--border); 
+        }
         
         /* ================= Loader ================= */
-        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(248,250,252,0.9); z-index: 9999999; display: flex; align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(5px); }
-        .spinner { width: 60px; height: 60px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s cubic-bezier(0.55, 0.085, 0.68, 0.53) infinite; margin-bottom: 20px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(248,250,252,0.9); 
+            z-index: 9999999; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-direction: column; 
+            backdrop-filter: blur(5px); 
+        }
+
+        .spinner { 
+            width: 60px; 
+            height: 60px; 
+            border: 4px solid var(--border); 
+            border-top-color: var(--primary); 
+            border-radius: 50%; 
+            animation: spin 1s cubic-bezier(0.55, 0.085, 0.68, 0.53) infinite; 
+            margin-bottom: 20px; 
+        }
+
+        @keyframes spin { 
+            to { transform: rotate(360deg); } 
+        }
         
-        .swal2-popup { font-family: 'Kanit', sans-serif !important; border-radius: 20px !important; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important; }
+        .swal2-popup { 
+            font-family: 'Kanit', sans-serif !important; 
+            border-radius: 20px !important; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important; 
+        }
         
         /* ================= Trip Planner Layout ================= */
-        .trip-layout { display: flex; gap: 20px; height: calc(100vh - 180px); }
-        .trip-left { flex: 1.2; background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
-        .trip-right { flex: 1; background: var(--bg-body); border-radius: var(--radius-lg); border: 2px dashed var(--border); padding: 20px; overflow-y: auto; display: flex; flex-direction: column; position: relative; }
+        .trip-layout { 
+            display: flex; 
+            gap: 20px; 
+            height: calc(100vh - 180px); 
+        }
+
+        .trip-left { 
+            flex: 1.2; 
+            background: var(--surface); 
+            border-radius: var(--radius-lg); 
+            border: 1px solid var(--border); 
+            padding: 20px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+        }
+
+        .trip-right { 
+            flex: 1; 
+            background: var(--bg-body); 
+            border-radius: var(--radius-lg); 
+            border: 2px dashed var(--border); 
+            padding: 20px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+        }
         
         /* ================= Calendar ================= */
-        #calendar { background: white; padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
-        .fc-event { cursor: pointer; }
+        #calendar { 
+            background: white; 
+            padding: 20px; 
+            border-radius: var(--radius-lg); 
+            border: 1px solid var(--border); 
+            box-shadow: var(--shadow-sm); 
+        }
+        
+        .fc-event { 
+            cursor: pointer; 
+        }
+
     </style>
 </head>
 <body>
@@ -372,7 +823,9 @@
                         </div>
                         <div>
                             <label>จังหวัด:</label>
-                            <select id="buyer-prov" required><option value="">กำลังโหลด...</option></select>
+                            <select id="buyer-prov" required>
+                                <option value="">กำลังโหลด...</option>
+                            </select>
                         </div>
                         <div>
                             <label>อำเภอ:</label>
@@ -405,7 +858,7 @@
                 </div>
             </div>
 
-            <!-- 2. หน้าค้นหางาน และ แผนที่ (ปรับเป็น Multi-Select กรองตามตำแหน่งจริง) -->
+            <!-- 2. หน้าค้นหางาน และ แผนที่ -->
             <div id="buyer-map-page" class="page active">
                 <div class="section-title" style="margin-bottom: 15px; display:flex; justify-content:space-between; align-items:center;">
                     <div><i class="fa-solid fa-map-location-dot" style="color:var(--primary);"></i> ค้นหางาน & แผนที่</div>
@@ -414,7 +867,7 @@
                     </button>
                 </div>
                 
-                <!-- Filters Panel (Multi-Select) -->
+                <!-- Filters Panel -->
                 <div class="filter-panel" style="z-index: 500;">
                     <div class="filter-item">
                         <label>จังหวัด (เลือกได้หลายจังหวัด):</label>
@@ -483,7 +936,9 @@
                 </div>
                 <div class="trip-layout">
                     <div class="trip-left">
-                        <div style="font-size:16px; font-weight:600; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">รายการงานที่เปิดรับ (คลิก + เพื่อเลือก)</div>
+                        <div style="font-size:16px; font-weight:600; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">
+                            รายการงานที่เปิดรับ (คลิก + เพื่อเลือก)
+                        </div>
                         <div style="margin-bottom:15px; display:flex; gap:10px;">
                             <input type="text" id="trip-search" class="swal-input" placeholder="ค้นหาชื่อ, ตำบล, อำเภอ..." onkeyup="renderTripPlanner()" style="height: 40px; font-size:13px; flex:1; border: 1px solid var(--border); padding:0 10px; border-radius:8px;">
                             <select id="trip-sort" class="filter-select" onchange="renderTripPlanner()" style="height: 40px; width:auto; padding:0 10px; border-radius:8px; border: 1px solid var(--border);">
@@ -496,33 +951,52 @@
                     </div>
                     
                     <div class="trip-right">
-                        <div style="margin-bottom:15px;"><input type="text" id="trip-name" class="swal-input" placeholder="ตั้งชื่อทริป (เช่น ทริปผาขาว 1)" style="font-weight:700; font-size:16px; width: 60%; border: 1px solid var(--primary-light); padding: 10px; border-radius: 8px;"></div>
+                        <div style="margin-bottom:15px;">
+                            <input type="text" id="trip-name" class="swal-input" placeholder="ตั้งชื่อทริป (เช่น ทริปผาขาว 1)" style="font-weight:700; font-size:16px; width: 60%; border: 1px solid var(--primary-light); padding: 10px; border-radius: 8px;">
+                        </div>
                         <div style="background:var(--primary-light); padding:15px; border-radius:12px; display:flex; justify-content:space-around; align-items:center; margin-bottom:15px; border:1px solid var(--primary);">
-                            <div style="text-align:center;"><div style="font-size:12px; color:var(--text-muted); font-weight:600;">พื้นที่รวม</div><div id="trip-total-rai" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0.0 ไร่</div></div>
+                            <div style="text-align:center;">
+                                <div style="font-size:12px; color:var(--text-muted); font-weight:600;">พื้นที่รวม</div>
+                                <div id="trip-total-rai" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0.0 ไร่</div>
+                            </div>
                             <div style="width:1px; height:35px; background:var(--primary-dark); opacity:0.3;"></div>
-                            <div style="text-align:center;"><div style="font-size:12px; color:var(--text-muted); font-weight:600;">ระยะเวลาทริป</div><div id="trip-total-days" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0 วัน</div></div>
+                            <div style="text-align:center;">
+                                <div style="font-size:12px; color:var(--text-muted); font-weight:600;">ระยะเวลาทริป</div>
+                                <div id="trip-total-days" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0 วัน</div>
+                            </div>
                             <div style="width:1px; height:35px; background:var(--primary-dark); opacity:0.3;"></div>
-                            <div style="text-align:center;"><div style="font-size:12px; color:var(--text-muted); font-weight:600;">จำนวนลูกไร่</div><div id="trip-total-farmers" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0 ราย</div></div>
+                            <div style="text-align:center;">
+                                <div style="font-size:12px; color:var(--text-muted); font-weight:600;">จำนวนลูกไร่</div>
+                                <div id="trip-total-farmers" style="font-size:20px; font-weight:700; color:var(--primary-dark);">0 ราย</div>
+                            </div>
                         </div>
                         <div id="trip-selected-list" style="display:flex; flex-direction:column; gap:10px; flex:1;"></div>
-                        <button class="btn-main" style="margin-top:20px;" onclick="saveTrip()"><i class="fa-solid fa-save"></i> บันทึกและเสนอราคาทริปนี้</button>
+                        <button class="btn-main" style="margin-top:20px;" onclick="saveTrip()">
+                            <i class="fa-solid fa-save"></i> บันทึกและเสนอราคาทริปนี้
+                        </button>
                     </div>
                 </div>
             </div>
 
             <!-- 4. หน้าการซื้อของฉัน (My Purchases) -->
             <div id="buyer-purchases-page" class="page">
-                <div class="section-title"><i class="fa-solid fa-cart-shopping" style="color:var(--danger);"></i> การซื้อของฉัน</div>
+                <div class="section-title">
+                    <i class="fa-solid fa-cart-shopping" style="color:var(--danger);"></i> การซื้อของฉัน
+                </div>
                 <div id="purchase-alert-banner" style="display:none; background:#FEF2F2; border:1px solid #FCA5A5; color:#B91C1C; padding:15px; border-radius:12px; margin-bottom:20px; font-weight:600; align-items:center; gap:10px;">
                     <i class="fa-solid fa-bell fa-shake" style="font-size:20px;"></i>
                     <span>มีชาวไร่ตกลงรับข้อเสนอแล้ว กรุณาตรวจสอบและเข้าดำเนินการตามกำหนด!</span>
                 </div>
-                <div id="buyer-purchases-container"><div class="empty-state full-width">กำลังโหลดข้อมูล...</div></div>
+                <div id="buyer-purchases-container">
+                    <div class="empty-state full-width">กำลังโหลดข้อมูล...</div>
+                </div>
             </div>
 
-            <!-- 5. หน้าปฏิทิน (Calendar) แบบ Multi-select -->
+            <!-- 5. หน้าปฏิทิน (Calendar) -->
             <div id="buyer-calendar-page" class="page">
-                <div class="section-title"><i class="fa-solid fa-calendar-alt" style="color:var(--info);"></i> ปฏิทินคิวประกาศขายอ้อย</div>
+                <div class="section-title">
+                    <i class="fa-solid fa-calendar-alt" style="color:var(--info);"></i> ปฏิทินคิวประกาศขายอ้อย
+                </div>
                 
                 <div class="filter-panel" style="padding: 15px; margin-bottom: 15px; z-index: 10;">
                     <div class="filter-item">
@@ -568,7 +1042,9 @@
 
             <!-- 6. หน้าประวัติการรับซื้อ -->
             <div id="buyer-history-page" class="page">
-                <div class="section-title"><i class="fa-solid fa-clock-rotate-left" style="color:var(--text-muted);"></i> สถิติและประวัติการรับซื้อ (เสร็จสิ้น & ยกเลิก)</div>
+                <div class="section-title">
+                    <i class="fa-solid fa-clock-rotate-left" style="color:var(--text-muted);"></i> สถิติและประวัติการรับซื้อ (เสร็จสิ้น & ยกเลิก)
+                </div>
                 <div id="buyer-history-container" class="jobs-grid"></div>
             </div>
             
@@ -576,7 +1052,7 @@
     </main>
 
     <!-- ป้ายบอกเวอร์ชันแอป -->
-    <div class="app-version">v2.9.5 Pro | อัปเดต: ระบบพิกัดแผนที่อัจฉริยะ (Multi-Select)</div>
+    <div class="app-version">v2.9.6 Pro | อัปเดต: ระบบพิกัดแผนที่อัจฉริยะ (แก้ไขปฏิทิน)</div>
 
     <!-- LIFF SDK -->
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -585,22 +1061,49 @@
         // ==========================================
         // Constants & Global Variables
         // ==========================================
-        const THEME_PRIMARY = '#10B981'; const THEME_ACCENT = '#F59E0B'; const THEME_INFO = '#3B82F6'; const THEME_MUTED = '#64748B'; const THEME_DANGER = '#EF4444';
+        const THEME_PRIMARY = '#10B981'; 
+        const THEME_ACCENT = '#F59E0B'; 
+        const THEME_INFO = '#3B82F6'; 
+        const THEME_MUTED = '#64748B'; 
+        const THEME_DANGER = '#EF4444';
+        
         const LIFF_ID = "2010423459-prdYAD4u"; 
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwKNL6jqjvtpuBxDzgqBIQiKLjA7_2QupvMAK9tcod5SlBbcs7iIbswlglT76xI5xOwng/exec";
         
         let userProfile = null; 
-        let currentLat = null; let currentLng = null; let currentUserMarker = null;
-        let isBuyerEditMode = false; let buyerNameContext = ""; let buyerPhoneContext = "";
-        let buyerMapObj; let buyerMarkers = {}; let buyerPolygonLayer = L.featureGroup(); 
-        let rawBuyerData = []; let thaiData = []; let currentTripJobs = [];
+        let currentLat = null; 
+        let currentLng = null; 
+        let currentUserMarker = null;
+        let isBuyerEditMode = false; 
+        let buyerNameContext = ""; 
+        let buyerPhoneContext = "";
+        let buyerMapObj; 
+        let buyerMarkers = {}; 
+        let buyerPolygonLayer = L.featureGroup(); 
+        let rawBuyerData = []; 
+        let thaiData = []; 
+        let currentTripJobs = [];
         
-        let myOfferedRows = []; let myCanceledRows = [];
-        try { myOfferedRows = JSON.parse(localStorage.getItem('myOfferedRows')) || []; } catch(e) { myOfferedRows = []; }
-        try { myCanceledRows = JSON.parse(localStorage.getItem('myCanceledRows')) || []; } catch(e) { myCanceledRows = []; }
+        let myOfferedRows = []; 
+        let myCanceledRows = [];
+        
+        try { 
+            myOfferedRows = JSON.parse(localStorage.getItem('myOfferedRows')) || []; 
+        } catch(e) { 
+            myOfferedRows = []; 
+        }
+        
+        try { 
+            myCanceledRows = JSON.parse(localStorage.getItem('myCanceledRows')) || []; 
+        } catch(e) { 
+            myCanceledRows = []; 
+        }
 
         // Multi-Select Filters Data
-        let filters = { map: { provs: [], dists: [], subs: [] }, cal: { provs: [], dists: [], subs: [] } };
+        let filters = { 
+            map: { provs: [], dists: [], subs: [] }, 
+            cal: { provs: [], dists: [], subs: [] } 
+        };
         
         // Caching for Reverse Geocoding
         let caneGeoCache = JSON.parse(localStorage.getItem('caneGeoCache')) || {};
@@ -608,12 +1111,36 @@
         // ==========================================
         // Utility Functions
         // ==========================================
-        function showLoader() { document.getElementById("loading-screen").style.display = "flex"; }
-        function hideLoader() { document.getElementById("loading-screen").style.display = "none"; }
-        function openImageViewer(src) { document.getElementById('image-viewer-img').src = src; document.getElementById('image-viewer').style.display = 'flex'; }
-        function closeImageViewer() { document.getElementById('image-viewer').style.display = 'none'; }
-        function extractPrice(str) { if(!str) return 0; let match = str.toString().match(/\d+(\.\d+)?/); return match ? parseFloat(match[0]) : 0; }
-        function getDistanceJS(lat1, lon1, lat2, lon2) { var R = 6371; var dLat = (lat2-lat1)*(Math.PI/180); var dLon = (lon2-lon1)*(Math.PI/180); var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*(Math.PI/180))*Math.cos(lat2*(Math.PI/180))*Math.sin(dLon/2)*Math.sin(dLon/2); return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); }
+        function showLoader() { 
+            document.getElementById("loading-screen").style.display = "flex"; 
+        }
+        
+        function hideLoader() { 
+            document.getElementById("loading-screen").style.display = "none"; 
+        }
+        
+        function openImageViewer(src) { 
+            document.getElementById('image-viewer-img').src = src; 
+            document.getElementById('image-viewer').style.display = 'flex'; 
+        }
+        
+        function closeImageViewer() { 
+            document.getElementById('image-viewer').style.display = 'none'; 
+        }
+        
+        function extractPrice(str) { 
+            if(!str) return 0; 
+            let match = str.toString().match(/\d+(\.\d+)?/); 
+            return match ? parseFloat(match[0]) : 0; 
+        }
+        
+        function getDistanceJS(lat1, lon1, lat2, lon2) { 
+            var R = 6371; 
+            var dLat = (lat2-lat1)*(Math.PI/180); 
+            var dLon = (lon2-lon1)*(Math.PI/180); 
+            var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*(Math.PI/180))*Math.cos(lat2*(Math.PI/180))*Math.sin(dLon/2)*Math.sin(dLon/2); 
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        }
 
         // ==========================================
         // Navigation & Layout
@@ -621,30 +1148,56 @@
         function switchPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
+            
             document.querySelectorAll('.menu-item').forEach(nav => nav.classList.remove('active'));
             let navId = pageId.replace('-page', '');
-            if(document.getElementById('nav-' + navId)) document.getElementById('nav-' + navId).classList.add('active');
+            if(document.getElementById('nav-' + navId)) {
+                document.getElementById('nav-' + navId).classList.add('active');
+            }
 
-            if(pageId === 'buyer-map-page' && buyerMapObj) { setTimeout(() => { buyerMapObj.invalidateSize(); }, 200); }
-            if(pageId === 'buyer-trip-page') { renderTripPlanner(); }
-            if(pageId === 'buyer-purchases-page') { renderPurchasesPage(); }
-            if(pageId === 'buyer-calendar-page') { setTimeout(() => { renderCalendar(); }, 200); }
+            if(pageId === 'buyer-map-page' && buyerMapObj) { 
+                setTimeout(() => { buyerMapObj.invalidateSize(); }, 200); 
+            }
+            if(pageId === 'buyer-trip-page') { 
+                renderTripPlanner(); 
+            }
+            if(pageId === 'buyer-purchases-page') { 
+                renderPurchasesPage(); 
+            }
+            if(pageId === 'buyer-calendar-page') { 
+                setTimeout(() => { renderCalendar(); }, 200); 
+            }
         }
 
         function toggleFullscreen() {
-            const mapContainer = document.getElementById('buyer-map'); const btn = document.getElementById('fullscreen-btn');
+            const mapContainer = document.getElementById('buyer-map'); 
+            const btn = document.getElementById('fullscreen-btn');
+            
             mapContainer.classList.toggle('fullscreen-map');
+            
             if (mapContainer.classList.contains('fullscreen-map')) {
                 btn.innerHTML = '<i class="fa-solid fa-compress"></i> ออกจากโหมดเต็มจอ';
-                btn.style.position = 'fixed'; btn.style.top = '20px'; btn.style.right = '20px'; btn.style.zIndex = '999999';
+                btn.style.position = 'fixed'; 
+                btn.style.top = '20px'; 
+                btn.style.right = '20px'; 
+                btn.style.zIndex = '999999';
             } else {
                 btn.innerHTML = '<i class="fa-solid fa-expand"></i> ขยายเต็มจอ';
-                btn.style.position = 'absolute'; btn.style.top = '15px'; btn.style.right = '15px'; btn.style.zIndex = '400';
+                btn.style.position = 'absolute'; 
+                btn.style.top = '15px'; 
+                btn.style.right = '15px'; 
+                btn.style.zIndex = '400';
             }
-            if(buyerMapObj) { setTimeout(() => { buyerMapObj.invalidateSize(); }, 300); }
+            
+            if(buyerMapObj) { 
+                setTimeout(() => { buyerMapObj.invalidateSize(); }, 300); 
+            }
         }
 
-        function logout() { liff.logout(); window.location.reload(); }
+        function logout() { 
+            liff.logout(); 
+            window.location.reload(); 
+        }
 
         // ==========================================
         // Address Setup (Profile)
@@ -667,41 +1220,66 @@
                 // สำหรับหน้า Map และ Calendar (Multi-Select)
                 initMultiSelectFilter('map');
                 initMultiSelectFilter('cal');
-            } catch(e) { console.error('Error loading address data'); }
+            } catch(e) { 
+                console.error('Error loading address data'); 
+            }
         }
 
         function setupAddressDropdowns(prefix) {
-            const provSelect = document.getElementById(`${prefix}-prov`); const distSelect = document.getElementById(`${prefix}-dist`); const subdistSelect = document.getElementById(`${prefix}-subdist`); const zipInput = document.getElementById(`${prefix}-zip`);
+            const provSelect = document.getElementById(`${prefix}-prov`); 
+            const distSelect = document.getElementById(`${prefix}-dist`); 
+            const subdistSelect = document.getElementById(`${prefix}-subdist`); 
+            const zipInput = document.getElementById(`${prefix}-zip`);
+            
             provSelect.addEventListener('change', function() {
                 const selectedProvId = this.options[this.selectedIndex] ? this.options[this.selectedIndex].getAttribute('data-id') : null;
-                distSelect.innerHTML = '<option value="" disabled selected>เลือกอำเภอ</option>'; subdistSelect.innerHTML = '<option value="" disabled selected>เลือกตำบล</option>'; zipInput.value = '';
-                distSelect.disabled = !selectedProvId; subdistSelect.disabled = true; 
+                distSelect.innerHTML = '<option value="" disabled selected>เลือกอำเภอ</option>'; 
+                subdistSelect.innerHTML = '<option value="" disabled selected>เลือกตำบล</option>'; 
+                zipInput.value = '';
+                distSelect.disabled = !selectedProvId; 
+                subdistSelect.disabled = true; 
+                
                 if (selectedProvId) {
                     const provData = thaiData.find(p => p.id == selectedProvId);
                     if (provData && provData.amphure) { 
-                        [...provData.amphure].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(amp => { distSelect.innerHTML += `<option value="${amp.name_th}" data-id="${amp.id}">${amp.name_th}</option>`; }); 
+                        [...provData.amphure].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(amp => { 
+                            distSelect.innerHTML += `<option value="${amp.name_th}" data-id="${amp.id}">${amp.name_th}</option>`; 
+                        }); 
                     }
                 }
             });
+            
             distSelect.addEventListener('change', function() {
                 const selectedProvId = provSelect.options[provSelect.selectedIndex] ? provSelect.options[provSelect.selectedIndex].getAttribute('data-id') : null;
                 const selectedDistId = this.options[this.selectedIndex] ? this.options[this.selectedIndex].getAttribute('data-id') : null;
-                subdistSelect.innerHTML = '<option value="" disabled selected>เลือกตำบล</option>'; zipInput.value = ''; subdistSelect.disabled = !selectedDistId; 
+                subdistSelect.innerHTML = '<option value="" disabled selected>เลือกตำบล</option>'; 
+                zipInput.value = ''; 
+                subdistSelect.disabled = !selectedDistId; 
+                
                 if (selectedProvId && selectedDistId) {
-                    const provData = thaiData.find(p => p.id == selectedProvId); const distData = provData.amphure.find(a => a.id == selectedDistId);
+                    const provData = thaiData.find(p => p.id == selectedProvId); 
+                    const distData = provData.amphure.find(a => a.id == selectedDistId);
                     if (distData && distData.tambon) { 
-                        [...distData.tambon].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(tam => { subdistSelect.innerHTML += `<option value="${tam.name_th}" data-zip="${tam.zip_code}">${tam.name_th}</option>`; }); 
+                        [...distData.tambon].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(tam => { 
+                            subdistSelect.innerHTML += `<option value="${tam.name_th}" data-zip="${tam.zip_code}">${tam.name_th}</option>`; 
+                        }); 
                     }
                 }
             });
-            subdistSelect.addEventListener('change', function() { const zip = this.options[this.selectedIndex] ? this.options[this.selectedIndex].getAttribute('data-zip') : ''; if (zip) zipInput.value = zip; });
+            
+            subdistSelect.addEventListener('change', function() { 
+                const zip = this.options[this.selectedIndex] ? this.options[this.selectedIndex].getAttribute('data-zip') : ''; 
+                if (zip) zipInput.value = zip; 
+            });
         }
 
         // ==========================================
         // Multi-Select System (Map & Calendar)
         // ==========================================
         function toggleMultiSelect(id) {
-            document.querySelectorAll('.multi-select-dropdown').forEach(el => { if(el.id !== id) el.classList.remove('show'); });
+            document.querySelectorAll('.multi-select-dropdown').forEach(el => { 
+                if(el.id !== id) el.classList.remove('show'); 
+            });
             document.getElementById(id).classList.toggle('show');
         }
 
@@ -714,6 +1292,7 @@
         function initMultiSelectFilter(prefix) {
             const provDrop = document.getElementById(`${prefix}-prov-dropdown`);
             if(!provDrop) return;
+            
             let phtml = '';
             [...thaiData].sort((a,b) => a.name_th.localeCompare(b.name_th)).forEach(p => {
                 phtml += `<label class="multi-select-option"><input type="checkbox" value="${p.name_th}" onchange="onFilterChange('${prefix}', 'prov')"> ${p.name_th}</label>`;
@@ -743,13 +1322,16 @@
 
         function updateMultiFilterDist(prefix) {
             const distDrop = document.getElementById(`${prefix}-dist-dropdown`);
-            filters[prefix].dists = []; filters[prefix].subs = [];
+            filters[prefix].dists = []; 
+            filters[prefix].subs = [];
+            
             document.getElementById(`${prefix}-dist-label`).innerText = 'ทุกอำเภอ';
             document.getElementById(`${prefix}-subdist-label`).innerText = 'ทุกตำบล';
             document.getElementById(`${prefix}-subdist-dropdown`).innerHTML = '<div class="multi-select-option"><input type="checkbox" disabled> เลือกอำเภอก่อน</div>';
             
             if(filters[prefix].provs.length === 0) {
-                distDrop.innerHTML = '<div class="multi-select-option"><input type="checkbox" disabled> เลือกจังหวัดก่อน</div>'; return;
+                distDrop.innerHTML = '<div class="multi-select-option"><input type="checkbox" disabled> เลือกจังหวัดก่อน</div>'; 
+                return;
             }
             
             let dhtml = '';
@@ -771,7 +1353,8 @@
             document.getElementById(`${prefix}-subdist-label`).innerText = 'ทุกตำบล';
             
             if(filters[prefix].dists.length === 0) {
-                subDrop.innerHTML = '<div class="multi-select-option"><input type="checkbox" disabled> เลือกอำเภอก่อน</div>'; return;
+                subDrop.innerHTML = '<div class="multi-select-option"><input type="checkbox" disabled> เลือกอำเภอก่อน</div>'; 
+                return;
             }
             
             let shtml = '';
@@ -802,10 +1385,14 @@
                 if(j.lat && j.lon) {
                     let key = `${parseFloat(j.lat).toFixed(3)},${parseFloat(j.lon).toFixed(3)}`;
                     if(caneGeoCache[key]) {
-                        j.plotProv = caneGeoCache[key].prov; j.plotDist = caneGeoCache[key].dist; j.plotSubDist = caneGeoCache[key].sub;
+                        j.plotProv = caneGeoCache[key].prov; 
+                        j.plotDist = caneGeoCache[key].dist; 
+                        j.plotSubDist = caneGeoCache[key].sub;
                     } else {
                         // Fallback ใช้ที่อยู่ตามทะเบียนของชาวไร่ไปก่อน
-                        j.plotProv = j.prov; j.plotDist = j.dist; j.plotSubDist = j.subDist;
+                        j.plotProv = j.prov; 
+                        j.plotDist = j.dist; 
+                        j.plotSubDist = j.subDist;
                     }
                 }
             });
@@ -830,12 +1417,17 @@
                         s = s.replace('ตำบล', '').replace('ต.', '').replace('แขวง', '').trim();
 
                         caneGeoCache[key] = { prov: p, dist: d, sub: s };
-                        j.plotProv = p; j.plotDist = d; j.plotSubDist = s;
+                        j.plotProv = p; 
+                        j.plotDist = d; 
+                        j.plotSubDist = s;
+                        
                         localStorage.setItem('caneGeoCache', JSON.stringify(caneGeoCache));
                     }
                     // หน่วงเวลา 1.5 วินาที เพื่อไม่ให้เซิร์ฟเวอร์ OpenStreetMap บล็อก
                     await new Promise(r => setTimeout(r, 1500));
-                } catch(e) { console.log("Geocode process error (Silent)"); }
+                } catch(e) { 
+                    console.log("Geocode process error (Silent)"); 
+                }
             }
         }
 
@@ -854,90 +1446,185 @@
 
                     if (navigator.geolocation) { 
                         navigator.geolocation.watchPosition(
-                            p => { currentLat = p.coords.latitude; currentLng = p.coords.longitude; updateUserLocationOnMap(); }, 
-                            e => { console.log("GPS watch failed"); }, {enableHighAccuracy: true}
+                            p => { 
+                                currentLat = p.coords.latitude; 
+                                currentLng = p.coords.longitude; 
+                                updateUserLocationOnMap(); 
+                            }, 
+                            e => { console.log("GPS watch failed"); }, 
+                            {enableHighAccuracy: true}
                         ); 
                     }
                     await checkBuyerProfile(); 
-                } else { liff.login({ redirectUri: "https://nutsukhonmanee-max.github.io/caneconnect/desktop_buyer.html" }); }
-            } catch (err) { hideLoader(); Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อ LINE Web Login ได้', 'error'); } 
+                } else { 
+                    liff.login({ redirectUri: "https://nutsukhonmanee-max.github.io/caneconnect/desktop_buyer.html" }); 
+                }
+            } catch (err) { 
+                hideLoader(); 
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อ LINE Web Login ได้', 'error'); 
+            } 
         }
 
         async function checkBuyerProfile() {
             try {
-                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "checkBuyer", userId: userProfile.userId }) }); 
+                const res = await fetch(GAS_WEB_APP_URL, { 
+                    method: "POST", 
+                    body: JSON.stringify({ action: "checkBuyer", userId: userProfile.userId }) 
+                }); 
                 const result = await res.json();
+                
                 if (result.status === "found") {
-                    isBuyerEditMode = true; let d = result.data; buyerNameContext = d.fullName; buyerPhoneContext = d.phone; 
+                    isBuyerEditMode = true; 
+                    let d = result.data; 
+                    buyerNameContext = d.fullName; 
+                    buyerPhoneContext = d.phone; 
+                    
                     document.getElementById("profile-info").innerText = "คุณ " + d.fullName; 
-                    document.getElementById("buyer-prefix").value = d.prefix; document.getElementById("buyer-firstname").value = d.firstName; document.getElementById("buyer-lastname").value = d.lastName;
-                    if(d.dob) { let dobDate = new Date(d.dob); dobDate.setHours(dobDate.getHours() + 7); document.getElementById("buyer-dob").value = dobDate.toISOString().split('T')[0]; }
+                    document.getElementById("buyer-prefix").value = d.prefix; 
+                    document.getElementById("buyer-firstname").value = d.firstName; 
+                    document.getElementById("buyer-lastname").value = d.lastName;
                     
-                    let fPhone = d.phone ? d.phone.toString() : ""; if(fPhone.startsWith("'")) fPhone = fPhone.substring(1); 
+                    if(d.dob) { 
+                        let dobDate = new Date(d.dob); 
+                        dobDate.setHours(dobDate.getHours() + 7); 
+                        document.getElementById("buyer-dob").value = dobDate.toISOString().split('T')[0]; 
+                    }
+                    
+                    let fPhone = d.phone ? d.phone.toString() : ""; 
+                    if(fPhone.startsWith("'")) fPhone = fPhone.substring(1); 
                     if((fPhone.length === 8 || fPhone.length === 9) && !fPhone.startsWith("0")) fPhone = "0" + fPhone; 
-                    document.getElementById("buyer-phone").value = fPhone;
-                    document.getElementById("buyer-no").value = d.addressNo; document.getElementById("buyer-moo").value = d.moo; 
                     
-                    document.getElementById("buyer-prov").value = d.prov; document.getElementById("buyer-prov").dispatchEvent(new Event('change'));
-                    setTimeout(() => { document.getElementById("buyer-dist").value = d.dist; document.getElementById("buyer-dist").dispatchEvent(new Event('change'));
-                        setTimeout(() => { document.getElementById("buyer-subdist").value = d.subDist; document.getElementById("buyer-zip").value = d.zip; }, 200);
+                    document.getElementById("buyer-phone").value = fPhone;
+                    document.getElementById("buyer-no").value = d.addressNo; 
+                    document.getElementById("buyer-moo").value = d.moo; 
+                    
+                    document.getElementById("buyer-prov").value = d.prov; 
+                    document.getElementById("buyer-prov").dispatchEvent(new Event('change'));
+                    
+                    setTimeout(() => { 
+                        document.getElementById("buyer-dist").value = d.dist; 
+                        document.getElementById("buyer-dist").dispatchEvent(new Event('change'));
+                        setTimeout(() => { 
+                            document.getElementById("buyer-subdist").value = d.subDist; 
+                            document.getElementById("buyer-zip").value = d.zip; 
+                        }, 200);
                     }, 200);
+                    
                     document.getElementById("buyer-vehicle").value = d.vehicleInfo; 
                     
                     ['buyer-prefix', 'buyer-firstname', 'buyer-lastname', 'buyer-dob', 'buyer-phone', 'buyer-no', 'buyer-moo', 'buyer-prov', 'buyer-dist', 'buyer-subdist', 'buyer-vehicle'].forEach(id => document.getElementById(id).disabled = true);
-                    document.getElementById('btn-enable-buyer-edit').style.display = 'inline-block'; document.getElementById('btn-buyer-register').style.display = 'none'; document.getElementById('pdpa-box-buyer').style.display = 'none';
+                    
+                    document.getElementById('btn-enable-buyer-edit').style.display = 'inline-block'; 
+                    document.getElementById('btn-buyer-register').style.display = 'none'; 
+                    document.getElementById('pdpa-box-buyer').style.display = 'none';
 
                     switchPage('buyer-map-page');
                     await fetchBuyerRawData(); 
                     hideLoader();
                 } else { 
-                    hideLoader(); switchPage('register-buyer-page');
-                    Swal.fire({ icon: 'info', title: 'ยินดีต้อนรับ', text: `กรุณาลงทะเบียนข้อมูลพาร์ทเนอร์ก่อนใช้งานครับ`, confirmButtonColor: THEME_PRIMARY }); 
+                    hideLoader(); 
+                    switchPage('register-buyer-page');
+                    Swal.fire({ 
+                        icon: 'info', 
+                        title: 'ยินดีต้อนรับ', 
+                        text: `กรุณาลงทะเบียนข้อมูลพาร์ทเนอร์ก่อนใช้งานครับ`, 
+                        confirmButtonColor: THEME_PRIMARY 
+                    }); 
                 }
-            } catch (error) { hideLoader(); Swal.fire('ข้อผิดพลาด', 'ระบบขัดข้องในการดึงข้อมูลส่วนตัว', 'error'); }
+            } catch (error) { 
+                hideLoader(); 
+                Swal.fire('ข้อผิดพลาด', 'ระบบขัดข้องในการดึงข้อมูลส่วนตัว', 'error'); 
+            }
         }
 
         function enableBuyerProfileEdit() { 
             ['buyer-prefix', 'buyer-firstname', 'buyer-lastname', 'buyer-dob', 'buyer-phone', 'buyer-no', 'buyer-moo', 'buyer-prov', 'buyer-dist', 'buyer-subdist', 'buyer-vehicle'].forEach(id => document.getElementById(id).disabled = false);
-            document.getElementById('btn-enable-buyer-edit').style.display = 'none'; document.getElementById('btn-buyer-register').style.display = 'block'; 
+            document.getElementById('btn-enable-buyer-edit').style.display = 'none'; 
+            document.getElementById('btn-buyer-register').style.display = 'block'; 
         }
 
         async function submitBuyerRegistration() {
             let reqFields = document.querySelectorAll('#register-buyer-page [required]');
-            for(let i=0; i<reqFields.length; i++) { if(!reqFields[i].value) { Swal.fire('แจ้งเตือน', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'warning'); return; } }
-            if (!isBuyerEditMode && !document.getElementById('buyer-pdpa').checked) { Swal.fire('ข้อกำหนด PDPA', 'กรุณากดยอมรับเงื่อนไขนโยบายความเป็นส่วนตัว', 'warning'); return; }
+            for(let i=0; i<reqFields.length; i++) { 
+                if(!reqFields[i].value) { 
+                    Swal.fire('แจ้งเตือน', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'warning'); 
+                    return; 
+                } 
+            }
             
-            let phoneInput = document.getElementById("buyer-phone").value.trim(); let formattedPhone = phoneInput.startsWith("'") ? phoneInput : "'" + phoneInput;
+            if (!isBuyerEditMode && !document.getElementById('buyer-pdpa').checked) { 
+                Swal.fire('ข้อกำหนด PDPA', 'กรุณากดยอมรับเงื่อนไขนโยบายความเป็นส่วนตัว', 'warning'); 
+                return; 
+            }
+            
+            let phoneInput = document.getElementById("buyer-phone").value.trim(); 
+            let formattedPhone = phoneInput.startsWith("'") ? phoneInput : "'" + phoneInput;
+            
             const payload = { 
-                action: isBuyerEditMode ? "updateBuyer" : "registerBuyer", userId: userProfile.userId, lineName: userProfile.displayName, 
-                prefix: document.getElementById("buyer-prefix").value, firstName: document.getElementById("buyer-firstname").value, lastName: document.getElementById("buyer-lastname").value, 
-                dob: document.getElementById("buyer-dob").value, addressNo: document.getElementById("buyer-no").value, moo: document.getElementById("buyer-moo").value, 
-                subDist: document.getElementById("buyer-subdist").value, dist: document.getElementById("buyer-dist").value, prov: document.getElementById("buyer-prov").value, 
-                zip: document.getElementById("buyer-zip").value, phone: formattedPhone, vehicleInfo: document.getElementById("buyer-vehicle").value, 
+                action: isBuyerEditMode ? "updateBuyer" : "registerBuyer", 
+                userId: userProfile.userId, 
+                lineName: userProfile.displayName, 
+                prefix: document.getElementById("buyer-prefix").value, 
+                firstName: document.getElementById("buyer-firstname").value, 
+                lastName: document.getElementById("buyer-lastname").value, 
+                dob: document.getElementById("buyer-dob").value, 
+                addressNo: document.getElementById("buyer-no").value, 
+                moo: document.getElementById("buyer-moo").value, 
+                subDist: document.getElementById("buyer-subdist").value, 
+                dist: document.getElementById("buyer-dist").value, 
+                prov: document.getElementById("buyer-prov").value, 
+                zip: document.getElementById("buyer-zip").value, 
+                phone: formattedPhone, 
+                vehicleInfo: document.getElementById("buyer-vehicle").value, 
                 fullName: document.getElementById("buyer-prefix").value + document.getElementById("buyer-firstname").value + " " + document.getElementById("buyer-lastname").value 
             };
             
             Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } }); 
             try { 
-                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json(); 
-                if (result.status === "success") { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: 'บันทึกข้อมูลแล้ว', confirmButtonColor: THEME_PRIMARY }).then(()=>{ location.reload(); }); } 
-            } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); }
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); 
+                const result = await res.json(); 
+                if (result.status === "success") { 
+                    Swal.fire({ 
+                        icon: 'success', 
+                        title: 'สำเร็จ!', 
+                        text: 'บันทึกข้อมูลแล้ว', 
+                        confirmButtonColor: THEME_PRIMARY 
+                    }).then(()=>{ 
+                        location.reload(); 
+                    }); 
+                } 
+            } catch (error) { 
+                Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); 
+            }
         }
 
         // ==========================================
         // Map Engine & Fetch Data
         // ==========================================
         function updateUserLocationOnMap() {
-            let userIcon = L.divIcon({ className: 'user-loc-icon', html: `<div class="pulse-marker"></div>` });
+            let userIcon = L.divIcon({ 
+                className: 'user-loc-icon', 
+                html: `<div class="pulse-marker"></div>` 
+            });
+            
             if (buyerMapObj) {
-                if (currentUserMarker) { currentUserMarker.setLatLng([currentLat, currentLng]); } 
-                else { currentUserMarker = L.marker([currentLat, currentLng], { icon: userIcon, zIndexOffset: 1000 }).addTo(buyerMapObj).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>"); buyerMapObj.setView([currentLat, currentLng], 12); }
+                if (currentUserMarker) { 
+                    currentUserMarker.setLatLng([currentLat, currentLng]); 
+                } else { 
+                    currentUserMarker = L.marker([currentLat, currentLng], { icon: userIcon, zIndexOffset: 1000 })
+                        .addTo(buyerMapObj)
+                        .bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งของคุณ</div>"); 
+                    buyerMapObj.setView([currentLat, currentLng], 12); 
+                }
             }
         }
 
         function goToMyLocation() {
-            if (buyerMapObj && currentLat && currentLng) { buyerMapObj.flyTo([currentLat, currentLng], 14, {duration: 1.5}); } 
-            else { Swal.fire('ไม่พบตำแหน่ง', 'โปรดอนุญาตให้ระบบเข้าถึง GPS ของคุณ', 'warning'); }
+            if (buyerMapObj && currentLat && currentLng) { 
+                buyerMapObj.flyTo([currentLat, currentLng], 14, {duration: 1.5}); 
+            } else { 
+                Swal.fire('ไม่พบตำแหน่ง', 'โปรดอนุญาตให้ระบบเข้าถึง GPS ของคุณ', 'warning'); 
+            }
         }
 
         async function fetchBuyerRawData() {
@@ -945,10 +1632,15 @@
                 buyerMapObj = L.map('buyer-map', { zoomControl: false }).setView([17.295, 101.782], 10); 
                 L.control.zoom({ position: 'bottomright' }).addTo(buyerMapObj);
                 L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(buyerMapObj);
-                if(currentLat && currentLng) updateUserLocationOnMap();
+                if(currentLat && currentLng) {
+                    updateUserLocationOnMap();
+                }
             }
             try { 
-                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "getBuyerMap", buyerName: buyerNameContext }) }); 
+                const res = await fetch(GAS_WEB_APP_URL, { 
+                    method: "POST", 
+                    body: JSON.stringify({ action: "getBuyerMap", buyerName: buyerNameContext }) 
+                }); 
                 const result = await res.json(); 
                 if (result.status === "success") { 
                     rawBuyerData = result.data; 
@@ -958,27 +1650,44 @@
                         // เมื่อดึงเสร็จ หากผู้ใช้อยู่หน้าปฏิทินหรือทริป ให้ render ซ้ำเบาๆ เพื่อให้ที่อยู่สมบูรณ์ขึ้น
                     });
                     
-                    updateClusterLogic(); renderPurchasesPage(); 
+                    updateClusterLogic(); 
+                    renderPurchasesPage(); 
                 } 
-            } catch (error) { console.error("Load map error", error); }
+            } catch (error) { 
+                console.error("Load map error", error); 
+            }
         }
 
         async function loadGistdaPolygonOverlay(farmerGeoJsonString, mapObject) {
             if (!farmerGeoJsonString) return;
             try {
-                const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'verifyGistda', polygon: farmerGeoJsonString }) });
+                const response = await fetch(GAS_WEB_APP_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ action: 'verifyGistda', polygon: farmerGeoJsonString }) 
+                });
                 const result = await response.json();
                 if (result.status === "success") {
                     let dataArr = Array.isArray(result.data) ? result.data : (result.data && result.data.features ? result.data.features : [result.data]);
                     dataArr.forEach(item => {
                         let geometry = item.geom || item.geometry || item;
-                        if (typeof geometry === 'string') try { geometry = JSON.parse(geometry); } catch(e){}
+                        if (typeof geometry === 'string') {
+                            try { geometry = JSON.parse(geometry); } catch(e){}
+                        }
                         if (geometry && geometry.type) {
-                            L.geoJSON(geometry, { style: { color: '#3B82F6', weight: 3, fillOpacity: 0.2, dashArray: '5, 5' } }).bindPopup(`<div style="font-family:'Kanit'; text-align:center;"><b style="color:#2563EB;">ประเมินโดย GISTDA</b><br><b>ขนาดพื้นที่:</b> ${item.area ? parseFloat(item.area).toFixed(2) : '-'} ไร่</div>`).addTo(mapObject);
+                            L.geoJSON(geometry, { 
+                                style: { color: '#3B82F6', weight: 3, fillOpacity: 0.2, dashArray: '5, 5' } 
+                            }).bindPopup(`
+                                <div style="font-family:'Kanit'; text-align:center;">
+                                    <b style="color:#2563EB;">ประเมินโดย GISTDA</b><br>
+                                    <b>ขนาดพื้นที่:</b> ${item.area ? parseFloat(item.area).toFixed(2) : '-'} ไร่
+                                </div>
+                            `).addTo(mapObject);
                         }
                     });
                 }
-            } catch (error) { console.error(error); }
+            } catch (error) { 
+                console.error(error); 
+            }
         }
 
         // ==========================================
@@ -986,44 +1695,83 @@
         // ==========================================
         function viewSaleIslandModal(rowId) {
             let item = rawBuyerData.find(j => j.row === rowId); 
-            if(!item) { Swal.fire('ข้อผิดพลาด', 'ไม่พบข้อมูลแปลงนี้', 'error'); return; }
+            if(!item) { 
+                Swal.fire('ข้อผิดพลาด', 'ไม่พบข้อมูลแปลงนี้', 'error'); 
+                return; 
+            }
             
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
             let photoGalleryHTML = "";
+            
             if(item.photos && item.photos.length > 0) { 
                 photoGalleryHTML = `<div class="photo-gallery" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">`; 
-                item.photos.forEach(img => { photoGalleryHTML += `<img src="${img}" onclick="openImageViewer('${img}')" style="width:80px; height:80px; object-fit:cover; border-radius:8px; cursor:zoom-in; border:1px solid var(--border);">`; }); 
+                item.photos.forEach(img => { 
+                    photoGalleryHTML += `<img src="${img}" onclick="openImageViewer('${img}')" style="width:80px; height:80px; object-fit:cover; border-radius:8px; cursor:zoom-in; border:1px solid var(--border);">`; 
+                }); 
                 photoGalleryHTML += `</div>`; 
-            } else { photoGalleryHTML = `<div style="color:var(--text-muted); font-size:14px; padding:15px; background:var(--bg-body); border-radius:12px; border:1px dashed var(--border); text-align:center; margin-top:10px;">ไม่มีรูปภาพประกอบ</div>`; }
+            } else { 
+                photoGalleryHTML = `<div style="color:var(--text-muted); font-size:14px; padding:15px; background:var(--bg-body); border-radius:12px; border:1px dashed var(--border); text-align:center; margin-top:10px;">ไม่มีรูปภาพประกอบ</div>`; 
+            }
             
             let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
             let displayName = item.farmerFullName || item.farmerName;
             
             // แสดงที่อยู่จริงของแปลง (ถ้าดึงได้จากแผนที่) ถ้าไม่มีให้ใช้ที่อยู่ชาวไร่
             let plotAddressText = "";
-            if(item.plotProv) { plotAddressText = `จ.${item.plotProv} อ.${item.plotDist} ต.${item.plotSubDist}`; }
-            else { plotAddressText = `จ.${item.prov} อ.${item.dist} ต.${item.subDist} (ที่อยู่ตามทะเบียน)`; }
+            if(item.plotProv) { 
+                plotAddressText = `จ.${item.plotProv} อ.${item.plotDist} ต.${item.plotSubDist}`; 
+            } else { 
+                plotAddressText = `จ.${item.prov} อ.${item.dist} ต.${item.subDist} (ที่อยู่ตามทะเบียน)`; 
+            }
 
             let actionsHTML = "";
             if (item.status === "รอคิวรถ" || item.status === "รอชาวไร่ยืนยัน") {
-                actionsHTML = `<div style="display:flex; gap:10px; margin-top:20px;"><button onclick="acceptJob(${item.row}, ${actualQ})" class="btn-main" style="flex:1;"><i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา</button><button onclick="addToTripFromModal(${item.row})" class="btn-main btn-outline" style="flex:1;"><i class="fa-solid fa-route"></i> เพิ่มลงทริป</button></div>`;
+                actionsHTML = `
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <button onclick="acceptJob(${item.row}, ${actualQ})" class="btn-main" style="flex:1;">
+                            <i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา
+                        </button>
+                        <button onclick="addToTripFromModal(${item.row})" class="btn-main btn-outline" style="flex:1;">
+                            <i class="fa-solid fa-route"></i> เพิ่มลงทริป
+                        </button>
+                    </div>
+                `;
             } else if (item.status === "กำลังดำเนินการ") {
-                 actionsHTML = `<div style="display:flex; gap:10px; margin-top:20px;"><button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1; background:var(--info);"><i class="fa-solid fa-flag-checkered"></i> แจ้งปิดงาน</button></div>`;
+                 actionsHTML = `
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1; background:var(--info);">
+                            <i class="fa-solid fa-flag-checkered"></i> แจ้งปิดงาน
+                        </button>
+                    </div>
+                `;
             }
 
             Swal.fire({ 
-                width: '1000px', customClass: { popup: 'swal2-popup' },
+                width: '1000px', 
+                customClass: { popup: 'swal2-popup' },
                 html: `
                     <div style="display:flex; height:550px; text-align:left;">
                         <div style="flex:1; padding:30px; background:var(--surface); display:flex; flex-direction:column; overflow-y:auto; border-right:1px solid var(--border);">
                             <div style="font-size: 24px; font-weight: 700; margin-bottom: 20px; color: var(--text-main);">ข้อมูลแปลงอ้อย</div>
                             <div style="font-size:16px; line-height:1.8;">
-                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;"><span style="color:var(--text-muted);">ชาวไร่:</span> <span style="font-weight:700; font-size:18px; color:var(--primary);">คุณ ${displayName}</span></div>
-                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;"><span style="color:var(--text-muted);">พื้นที่แจ้งขาย:</span> <span style="font-weight:700; font-size:18px; color:var(--primary);">${actualQ} ไร่</span></div>
-                                <div style="display:flex; flex-direction:column; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;"><span style="color:var(--text-muted);">ตำแหน่งแปลงจริง:</span> <span style="font-weight:600; font-size:15px;">${plotAddressText}</span></div>
-                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;"><span style="color:var(--text-muted);">วันนัดเข้าม้วน:</span> <span style="font-weight:600;">${hDate}</span></div>
-                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;"><span style="color:var(--text-muted);">สภาพทางเข้า:</span> <span style="font-weight:600;">${item.access || "ไม่ระบุ"}</span></div>
-                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;"><span style="color:var(--text-muted);">เบอร์ติดต่อ:</span> <span style="font-weight:600; color:var(--info);"><a href="tel:${item.farmerPhone}" style="text-decoration:none;">${item.farmerPhone || "ไม่ระบุ"}</a></span></div>
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
+                                    <span style="color:var(--text-muted);">ชาวไร่:</span> <span style="font-weight:700; font-size:18px; color:var(--primary);">คุณ ${displayName}</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
+                                    <span style="color:var(--text-muted);">พื้นที่แจ้งขาย:</span> <span style="font-weight:700; font-size:18px; color:var(--primary);">${actualQ} ไร่</span>
+                                </div>
+                                <div style="display:flex; flex-direction:column; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
+                                    <span style="color:var(--text-muted);">ตำแหน่งแปลงจริง:</span> <span style="font-weight:600; font-size:15px;">${plotAddressText}</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
+                                    <span style="color:var(--text-muted);">วันนัดเข้าม้วน:</span> <span style="font-weight:600;">${hDate}</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
+                                    <span style="color:var(--text-muted);">สภาพทางเข้า:</span> <span style="font-weight:600;">${item.access || "ไม่ระบุ"}</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
+                                    <span style="color:var(--text-muted);">เบอร์ติดต่อ:</span> <span style="font-weight:600; color:var(--info);"><a href="tel:${item.farmerPhone}" style="text-decoration:none;">${item.farmerPhone || "ไม่ระบุ"}</a></span>
+                                </div>
                             </div>
                             ${actionsHTML}
                         </div>
@@ -1038,12 +1786,22 @@
                             </div>
                         </div>
                     </div>`, 
-                showConfirmButton: false, showCloseButton: true, 
+                showConfirmButton: false, 
+                showCloseButton: true, 
                 didOpen: () => { 
-                    let sMap = L.map('swal-map', { zoomControl: false }).setView([item.lat, item.lon], 16); L.control.zoom({ position: 'topright' }).addTo(sMap); L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(sMap); 
+                    let sMap = L.map('swal-map', { zoomControl: false }).setView([item.lat, item.lon], 16); 
+                    L.control.zoom({ position: 'topright' }).addTo(sMap); 
+                    L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(sMap); 
                     if (item.polygon && item.polygon !== "") { 
-                        try { let c = JSON.parse(item.polygon)[0].map(p=>[p[1],p[0]]); let poly = L.polygon(c, {color: THEME_PRIMARY, weight:3, fillOpacity:0.4}).addTo(sMap); sMap.fitBounds(poly.getBounds(), {padding:[30,30]}); loadGistdaPolygonOverlay(item.polygon, sMap); } catch(e) {} 
-                    } else { L.marker([item.lat, item.lon]).addTo(sMap); } 
+                        try { 
+                            let c = JSON.parse(item.polygon)[0].map(p=>[p[1],p[0]]); 
+                            let poly = L.polygon(c, {color: THEME_PRIMARY, weight:3, fillOpacity:0.4}).addTo(sMap); 
+                            sMap.fitBounds(poly.getBounds(), {padding:[30,30]}); 
+                            loadGistdaPolygonOverlay(item.polygon, sMap); 
+                        } catch(e) {} 
+                    } else { 
+                        L.marker([item.lat, item.lon]).addTo(sMap); 
+                    } 
                     setTimeout(() => { sMap.invalidateSize(); }, 200); 
                 } 
             });
@@ -1052,11 +1810,29 @@
         async function buyerCloseJobModal(rowId, defaultQty) {
             const { value: formValues } = await Swal.fire({
                 title: 'แจ้งปิดงาน & ส่งบิลชั่งน้ำหนัก',
-                html: `<div style="text-align:left; font-family:'Kanit';"><label style="font-weight:600; font-size:14px; color:var(--text-muted);">พื้นที่เก็บเกี่ยวจริง (ไร่):</label><input id="swal-actual-qty" type="number" value="${defaultQty}" style="margin-bottom:15px; width:100%; height:44px; padding:10px 14px; border:1px solid var(--border); border-radius:12px; font-family:'Kanit';"><label style="font-weight:600; font-size:14px; color:var(--text-muted);">น้ำหนักรวมสุทธิ (ตัน):</label><input id="swal-actual-weight" type="number" placeholder="เช่น 45.5" style="margin-bottom:15px; width:100%; height:44px; padding:10px 14px; border:1px solid var(--border); border-radius:12px; font-family:'Kanit';"><label style="font-weight:600; font-size:14px; color:var(--text-muted);">อัปโหลดภาพบิลชั่งน้ำหนัก (ถ้ามี):</label><input id="swal-close-proof" type="file" accept="image/*" style="margin-bottom:15px; width:100%; font-family:'Kanit';"></div>`,
-                focusConfirm: false, showCancelButton: true, confirmButtonText: 'บันทึกและส่งตรวจสอบ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY,
+                html: `
+                    <div style="text-align:left; font-family:'Kanit';">
+                        <label style="font-weight:600; font-size:14px; color:var(--text-muted);">พื้นที่เก็บเกี่ยวจริง (ไร่):</label>
+                        <input id="swal-actual-qty" type="number" value="${defaultQty}" style="margin-bottom:15px; width:100%; height:44px; padding:10px 14px; border:1px solid var(--border); border-radius:12px; font-family:'Kanit';">
+                        <label style="font-weight:600; font-size:14px; color:var(--text-muted);">น้ำหนักรวมสุทธิ (ตัน):</label>
+                        <input id="swal-actual-weight" type="number" placeholder="เช่น 45.5" style="margin-bottom:15px; width:100%; height:44px; padding:10px 14px; border:1px solid var(--border); border-radius:12px; font-family:'Kanit';">
+                        <label style="font-weight:600; font-size:14px; color:var(--text-muted);">อัปโหลดภาพบิลชั่งน้ำหนัก (ถ้ามี):</label>
+                        <input id="swal-close-proof" type="file" accept="image/*" style="margin-bottom:15px; width:100%; font-family:'Kanit';">
+                    </div>
+                `,
+                focusConfirm: false, 
+                showCancelButton: true, 
+                confirmButtonText: 'บันทึกและส่งตรวจสอบ', 
+                cancelButtonText: 'ยกเลิก', 
+                confirmButtonColor: THEME_PRIMARY,
                 preConfirm: () => {
-                    const actQty = document.getElementById('swal-actual-qty').value; const actWt = document.getElementById('swal-actual-weight').value; const proofFile = document.getElementById('swal-close-proof').files[0];
-                    if (!actQty || !actWt) { Swal.showValidationMessage('กรุณาระบุพื้นที่และน้ำหนักให้ครบถ้วน'); return false; }
+                    const actQty = document.getElementById('swal-actual-qty').value; 
+                    const actWt = document.getElementById('swal-actual-weight').value; 
+                    const proofFile = document.getElementById('swal-close-proof').files[0];
+                    if (!actQty || !actWt) { 
+                        Swal.showValidationMessage('กรุณาระบุพื้นที่และน้ำหนักให้ครบถ้วน'); 
+                        return false; 
+                    }
                     return { actQty: actQty, actWt: actWt, proofFile: proofFile };
                 }
             });
@@ -1065,14 +1841,39 @@
                 let base64Image = "";
                 if (formValues.proofFile) {
                     base64Image = await new Promise((resolve) => {
-                        let reader = new FileReader(); reader.onload = (e) => { let img = new Image(); img.onload = () => { let cvs = document.createElement('canvas'); let scale = 800 / img.width; cvs.width = 800; cvs.height = img.height * scale; let ctx = cvs.getContext('2d'); ctx.drawImage(img, 0, 0, cvs.width, cvs.height); resolve(cvs.toDataURL('image/jpeg', 0.6)); }; img.src = e.target.result; }; reader.readAsDataURL(formValues.proofFile);
+                        let reader = new FileReader(); 
+                        reader.onload = (e) => { 
+                            let img = new Image(); 
+                            img.onload = () => { 
+                                let cvs = document.createElement('canvas'); 
+                                let scale = 800 / img.width; 
+                                cvs.width = 800; 
+                                cvs.height = img.height * scale; 
+                                let ctx = cvs.getContext('2d'); 
+                                ctx.drawImage(img, 0, 0, cvs.width, cvs.height); 
+                                resolve(cvs.toDataURL('image/jpeg', 0.6)); 
+                            }; 
+                            img.src = e.target.result; 
+                        }; 
+                        reader.readAsDataURL(formValues.proofFile);
                     });
                 }
                 try {
-                    const payload = { action: "buyerCloseJob", row: rowId, actualQty: formValues.actQty, actualWeight: formValues.actWt, photoProof: base64Image };
-                    const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
-                    if (result.status === "success") { Swal.fire('สำเร็จ', 'ส่งข้อมูลให้ชาวไร่ตรวจสอบเรียบร้อยแล้ว', 'success').then(() => { fetchBuyerRawData(); }); }
-                } catch (err) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); }
+                    const payload = { 
+                        action: "buyerCloseJob", 
+                        row: rowId, 
+                        actualQty: formValues.actQty, 
+                        actualWeight: formValues.actWt, 
+                        photoProof: base64Image 
+                    };
+                    const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); 
+                    const result = await res.json();
+                    if (result.status === "success") { 
+                        Swal.fire('สำเร็จ', 'ส่งข้อมูลให้ชาวไร่ตรวจสอบเรียบร้อยแล้ว', 'success').then(() => { fetchBuyerRawData(); }); 
+                    }
+                } catch (err) { 
+                    Swal.fire('ข้อผิดพลาด', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); 
+                }
             }
         }
 
@@ -1089,11 +1890,15 @@
             buyerPolygonLayer.clearLayers(); 
             const listContainer = document.getElementById("buyer-list-container"); 
             const historyContainer = document.getElementById("buyer-history-container");
-            listContainer.innerHTML = ''; historyContainer.innerHTML = ''; buyerMarkers = {}; 
+            
+            listContainer.innerHTML = ''; 
+            historyContainer.innerHTML = ''; 
+            buyerMarkers = {}; 
             
             if(!Array.isArray(rawBuyerData) || rawBuyerData.length === 0) { 
                 listContainer.innerHTML = "<div class='empty-state full-width'>ไม่มีรายการประกาศขายในขณะนี้</div>"; 
-                historyContainer.innerHTML = "<div class='empty-state full-width'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>"; return; 
+                historyContainer.innerHTML = "<div class='empty-state full-width'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>"; 
+                return; 
             }
             
             let historyJobs = rawBuyerData.filter(p => p.status === "เสร็จสิ้น" || p.status === "ยกเลิก" || myCanceledRows.includes(p.row));
@@ -1101,19 +1906,57 @@
             
             // Render History ...
             if(historyJobs.length > 0) {
-                let sumRai = 0, sumTon = 0, sumExpense = 0, completedCount = 0; let hHTML = "";
+                let sumRai = 0, sumTon = 0, sumExpense = 0, completedCount = 0; 
+                let hHTML = "";
                 historyJobs.forEach(item => {
                     try {
-                        let displayName = item.farmerFullName || item.farmerName; let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-"); let actualW = item.actualWeight || "-"; let pRai = extractPrice(item.price); let totalStr = "-";
-                        let displayStatus = item.status; let badgeClass = item.status === "เสร็จสิ้น" ? "bg-success" : "bg-danger";
-                        if (myCanceledRows.includes(item.row) && item.status !== "เสร็จสิ้น") { displayStatus = "ยกเลิกการรับซื้อ"; badgeClass = "bg-danger"; } else if (item.status === "ยกเลิก") { displayStatus = "ชาวไร่ยกเลิก"; }
-                        if (item.status === "เสร็จสิ้น") { completedCount++; if (actualQ !== "-" && pRai > 0) { let total = parseFloat(actualQ) * pRai; sumTon += parseFloat(actualW) || 0; sumExpense += total; totalStr = total.toLocaleString('th-TH', {minimumFractionDigits: 2}); } }
+                        let displayName = item.farmerFullName || item.farmerName; 
+                        let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-"); 
+                        let actualW = item.actualWeight || "-"; 
+                        let pRai = extractPrice(item.price); 
+                        let totalStr = "-";
+                        let displayStatus = item.status; 
+                        let badgeClass = item.status === "เสร็จสิ้น" ? "bg-success" : "bg-danger";
                         
-                        hHTML += `<div class="sale-card" style="border-left: 5px solid ${displayStatus==='เสร็จสิ้น'?'var(--primary)':'var(--danger)'}; opacity: 0.9;"><div class="sale-header"><span style="font-weight:600;">คุณ ${displayName}</span><span class="badge ${badgeClass}">${displayStatus}</span></div><div class="sale-detail"><div>พื้นที่: <span style="font-weight:600;">${actualQ} ไร่</span> | น้ำหนัก: <span style="font-weight:600;">${actualW} ตัน</span></div><div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);">ยอดจ่าย: <b style="color:var(--danger);">${totalStr} บาท</b></div></div><button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; margin-top:16px;">ดูบิลชั่ง / ใบเสร็จ</button></div>`;
+                        if (myCanceledRows.includes(item.row) && item.status !== "เสร็จสิ้น") { 
+                            displayStatus = "ยกเลิกการรับซื้อ"; badgeClass = "bg-danger"; 
+                        } else if (item.status === "ยกเลิก") { 
+                            displayStatus = "ชาวไร่ยกเลิก"; 
+                        }
+                        if (item.status === "เสร็จสิ้น") { 
+                            completedCount++; 
+                            if (actualQ !== "-" && pRai > 0) { 
+                                let total = parseFloat(actualQ) * pRai; 
+                                sumTon += parseFloat(actualW) || 0; 
+                                sumExpense += total; 
+                                totalStr = total.toLocaleString('th-TH', {minimumFractionDigits: 2}); 
+                            } 
+                        }
+                        
+                        hHTML += `
+                            <div class="sale-card" style="border-left: 5px solid ${displayStatus==='เสร็จสิ้น'?'var(--primary)':'var(--danger)'}; opacity: 0.9;">
+                                <div class="sale-header">
+                                    <span style="font-weight:600;">คุณ ${displayName}</span>
+                                    <span class="badge ${badgeClass}">${displayStatus}</span>
+                                </div>
+                                <div class="sale-detail">
+                                    <div>พื้นที่: <span style="font-weight:600;">${actualQ} ไร่</span> | น้ำหนัก: <span style="font-weight:600;">${actualW} ตัน</span></div>
+                                    <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);">ยอดจ่าย: <b style="color:var(--danger);">${totalStr} บาท</b></div>
+                                </div>
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; margin-top:16px;">ดูบิลชั่ง / ใบเสร็จ</button>
+                            </div>
+                        `;
                     } catch(e) {}
                 });
-                historyContainer.innerHTML += `<div class="dash-grid full-width"><div class="dash-card"><div class="label">รับงานสำเร็จ</div><div class="value">${completedCount} <span style="font-size:14px; color:var(--text-muted);">งาน</span></div></div><div class="dash-card"><div class="label">ปริมาณรับซื้อรวม</div><div class="value" style="color:var(--primary);">${sumTon.toLocaleString('th-TH')} <span style="font-size:14px; color:var(--text-muted);">ตัน</span></div></div><div class="dash-card" style="grid-column: span 2;"><div class="label">ยอดจ่ายสะสม</div><div class="value" style="color:var(--danger);">${sumExpense.toLocaleString('th-TH')} <span style="font-size:14px; color:var(--text-muted);">บาท</span></div></div></div>` + hHTML;
-            } else { historyContainer.innerHTML = "<div class='empty-state full-width'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>"; }
+                historyContainer.innerHTML += `
+                    <div class="dash-grid full-width">
+                        <div class="dash-card"><div class="label">รับงานสำเร็จ</div><div class="value">${completedCount} <span style="font-size:14px; color:var(--text-muted);">งาน</span></div></div>
+                        <div class="dash-card"><div class="label">ปริมาณรับซื้อรวม</div><div class="value" style="color:var(--primary);">${sumTon.toLocaleString('th-TH')} <span style="font-size:14px; color:var(--text-muted);">ตัน</span></div></div>
+                        <div class="dash-card" style="grid-column: span 2;"><div class="label">ยอดจ่ายสะสม</div><div class="value" style="color:var(--danger);">${sumExpense.toLocaleString('th-TH')} <span style="font-size:14px; color:var(--text-muted);">บาท</span></div></div>
+                    </div>` + hHTML;
+            } else { 
+                historyContainer.innerHTML = "<div class='empty-state full-width'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>"; 
+            }
 
             // Filter logic using Multi-Select & True Coordinates (Reverse Geocoding)
             let filteredAvailable = availableJobs.filter(item => { 
@@ -1130,24 +1973,43 @@
                 return pass; 
             }); 
             
-            if(filteredAvailable.length === 0) { listContainer.innerHTML = "<div class='empty-state full-width'>ไม่พบรายการประกาศขายที่ตรงกับเงื่อนไข</div>"; return; }
+            if(filteredAvailable.length === 0) { 
+                listContainer.innerHTML = "<div class='empty-state full-width'>ไม่พบรายการประกาศขายที่ตรงกับเงื่อนไข</div>"; 
+                return; 
+            }
             
-            if (sortBy === "date-near") { filteredAvailable.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate)); } 
-            else if (sortBy === "dist-near") { filteredAvailable.sort((a,b) => { let dA = (currentLat && currentLng && a.lat && a.lon && !isNaN(parseFloat(a.lat))) ? getDistanceJS(currentLat, currentLng, a.lat, a.lon) : 999999; let dB = (currentLat && currentLng && b.lat && b.lon && !isNaN(parseFloat(b.lat))) ? getDistanceJS(currentLat, currentLng, b.lat, b.lon) : 999999; return dA - dB; }); }
+            if (sortBy === "date-near") { 
+                filteredAvailable.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate)); 
+            } else if (sortBy === "dist-near") { 
+                filteredAvailable.sort((a,b) => { 
+                    let dA = (currentLat && currentLng && a.lat && a.lon && !isNaN(parseFloat(a.lat))) ? getDistanceJS(currentLat, currentLng, a.lat, a.lon) : 999999; 
+                    let dB = (currentLat && currentLng && b.lat && b.lon && !isNaN(parseFloat(b.lat))) ? getDistanceJS(currentLat, currentLng, b.lat, b.lon) : 999999; 
+                    return dA - dB; 
+                }); 
+            }
             
             filteredAvailable.forEach(item => { 
-                let markerColor = '#FF5722'; listContainer.innerHTML += renderSingleCardHTML(item, markerColor); drawMarkerOnMap(item, markerColor, false); 
+                let markerColor = '#FF5722'; 
+                listContainer.innerHTML += renderSingleCardHTML(item, markerColor); 
+                drawMarkerOnMap(item, markerColor, false); 
             });
             
             buyerPolygonLayer.addTo(buyerMapObj); 
             if(buyerPolygonLayer.getLayers().length > 0) { 
-                if(currentLat && currentLng) { buyerMapObj.setView([currentLat, currentLng], 11); } 
-                else { buyerMapObj.fitBounds(buyerPolygonLayer.getBounds(), { padding: [30, 30], maxZoom: 12 }); }
+                if(currentLat && currentLng) { 
+                    buyerMapObj.setView([currentLat, currentLng], 11); 
+                } else { 
+                    buyerMapObj.fitBounds(buyerPolygonLayer.getBounds(), { padding: [30, 30], maxZoom: 12 }); 
+                }
             }
         }
 
         function renderSingleCardHTML(item, colorHex) {
-            let displayName = item.farmerFullName || item.farmerName; let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:600; margin-top:8px;"><i class="fa-solid fa-fire"></i> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-"); let badgeHtml = item.status === "รอคิวรถ" ? `<span class="badge bg-warning">ว่าง / รอคิวรถ</span>` : `<span class="badge" style="background:#FDE68A; color:#B45309;">รอชาวไร่ตัดสินใจ</span>`;
+            let displayName = item.farmerFullName || item.farmerName; 
+            let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
+            let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:600; margin-top:8px;"><i class="fa-solid fa-fire"></i> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
+            let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-"); 
+            let badgeHtml = item.status === "รอคิวรถ" ? `<span class="badge bg-warning">ว่าง / รอคิวรถ</span>` : `<span class="badge" style="background:#FDE68A; color:#B45309;">รอชาวไร่ตัดสินใจ</span>`;
             
             let distText = "";
             if(currentLat && currentLng && item.lat && item.lon && !isNaN(parseFloat(item.lat))) {
@@ -1156,40 +2018,126 @@
             }
             
             let plotAddressText = "";
-            if(item.plotProv) { plotAddressText = `จ.${item.plotProv} อ.${item.plotDist}`; }
-            else { plotAddressText = `จ.${item.prov} อ.${item.dist}`; }
+            if(item.plotProv) { 
+                plotAddressText = `จ.${item.plotProv} อ.${item.plotDist}`; 
+            } else { 
+                plotAddressText = `จ.${item.prov} อ.${item.dist}`; 
+            }
 
-            return `<div class="sale-card" style="border-left: 5px solid ${colorHex};"><div class="sale-header"><span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>${badgeHtml}</div><div class="sale-detail"><div>พื้นที่ประเมิน: <span style="font-size:18px; color:${colorHex}; font-weight:700;">${actualQ} ไร่</span></div><div>นัดเข้าม้วน: <span style="font-weight:600;">${hDate}</span></div><div style="font-size:13px; color:var(--secondary); margin-top:4px; font-weight:600;"><i class="fa-solid fa-map-pin"></i> ${plotAddressText}</div>${distText}<div style="font-size:13px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-road"></i> ทางเข้า: ${item.access}</div>${offerStatus}</div><div style="display:flex; gap:10px; margin-top:16px;"><button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:${colorHex}; color:${colorHex};"><i class="fa-solid fa-map-location-dot"></i> ดูแปลง</button><button onclick="acceptJob(${item.row}, ${actualQ})" class="btn-main" style="flex:1; background:${colorHex};"><i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา</button></div></div>`;
+            return `
+                <div class="sale-card" style="border-left: 5px solid ${colorHex};">
+                    <div class="sale-header">
+                        <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>
+                        ${badgeHtml}
+                    </div>
+                    <div class="sale-detail">
+                        <div>พื้นที่ประเมิน: <span style="font-size:18px; color:${colorHex}; font-weight:700;">${actualQ} ไร่</span></div>
+                        <div>นัดเข้าม้วน: <span style="font-weight:600;">${hDate}</span></div>
+                        <div style="font-size:13px; color:var(--secondary); margin-top:4px; font-weight:600;"><i class="fa-solid fa-map-pin"></i> ${plotAddressText}</div>
+                        ${distText}
+                        <div style="font-size:13px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-road"></i> ทางเข้า: ${item.access}</div>
+                        ${offerStatus}
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:16px;">
+                        <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:${colorHex}; color:${colorHex};">
+                            <i class="fa-solid fa-map-location-dot"></i> ดูแปลง
+                        </button>
+                        <button onclick="acceptJob(${item.row}, ${actualQ})" class="btn-main" style="flex:1; background:${colorHex};">
+                            <i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา
+                        </button>
+                    </div>
+                </div>`;
         }
 
         function drawMarkerOnMap(item, colorHex, isActive) {
             if (!item.lat || !item.lon || isNaN(parseFloat(item.lat)) || isNaN(parseFloat(item.lon))) return;
-            let markerHtml = isActive ? `<div style='background-color:${colorHex}; width:16px; height:16px; border-radius:50%; border:2px solid white;'></div>` : `<div style='background-color:${colorHex}; width:20px; height:20px; border-radius:50%; border:3px solid white; box-shadow: 0 0 0 rgba(255, 87, 34, 0.7); animation: pulse-red 2s infinite;'></div>`;
+            
+            let markerHtml = isActive ? 
+                `<div style='background-color:${colorHex}; width:16px; height:16px; border-radius:50%; border:2px solid white;'></div>` : 
+                `<div style='background-color:${colorHex}; width:20px; height:20px; border-radius:50%; border:3px solid white; box-shadow: 0 0 0 rgba(255, 87, 34, 0.7); animation: pulse-red 2s infinite;'></div>`;
+            
             let customIcon = L.divIcon({ className: 'custom-div-icon', html: markerHtml }); 
-            let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-"); let displayName = item.farmerFullName || item.farmerName;
+            let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-"); 
+            let displayName = item.farmerFullName || item.farmerName;
             
-            let popupContent = `<div style="font-family:'Kanit'; text-align:center; min-width:180px;"><b style="font-size:16px; color:var(--text-main);">คุณ ${displayName}</b><br><span style="font-size:14px; color:${colorHex}; font-weight:600;">${actualQ} ไร่</span><span style="font-size:12px; color:var(--text-muted);"> | ${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span><hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">`;
-            if(!isActive) { popupContent += `<button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; padding:8px; border-color:${colorHex}; color:${colorHex};">ดูรายละเอียด / เสนอราคา</button>`; } else { popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="width:100%; padding:8px;">แจ้งปิดงาน</button>`; } popupContent += `</div>`; 
+            let popupContent = `
+                <div style="font-family:'Kanit'; text-align:center; min-width:180px;">
+                    <b style="font-size:16px; color:var(--text-main);">คุณ ${displayName}</b><br>
+                    <span style="font-size:14px; color:${colorHex}; font-weight:600;">${actualQ} ไร่</span>
+                    <span style="font-size:12px; color:var(--text-muted);"> | ${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span>
+                    <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">`;
+                    
+            if(!isActive) { 
+                popupContent += `<button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; padding:8px; border-color:${colorHex}; color:${colorHex};">ดูรายละเอียด / เสนอราคา</button>`; 
+            } else { 
+                popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="width:100%; padding:8px;">แจ้งปิดงาน</button>`; 
+            } 
             
-            let marker = L.marker([item.lat, item.lon], { icon: customIcon }).bindPopup(popupContent); buyerMarkers[item.row] = marker; buyerPolygonLayer.addLayer(marker); 
-            if (item.polygon && item.polygon !== "") { try { let coords = JSON.parse(item.polygon); let flippedCoords = coords[0].map(p => [p[1], p[0]]); buyerPolygonLayer.addLayer(L.polygon(flippedCoords, { color: colorHex, fillOpacity: 0.3, weight: 3 })); } catch(e) {} }
+            popupContent += `</div>`; 
+            
+            let marker = L.marker([item.lat, item.lon], { icon: customIcon }).bindPopup(popupContent); 
+            buyerMarkers[item.row] = marker; 
+            buyerPolygonLayer.addLayer(marker); 
+            
+            if (item.polygon && item.polygon !== "") { 
+                try { 
+                    let coords = JSON.parse(item.polygon); 
+                    let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
+                    buyerPolygonLayer.addLayer(L.polygon(flippedCoords, { color: colorHex, fillOpacity: 0.3, weight: 3 })); 
+                } catch(e) {} 
+            }
         }
 
         async function acceptJob(rowId, qty) {
             const { value: priceInput } = await Swal.fire({ 
-                html: `<div style="font-family:'Kanit';"><div style="font-size:20px; font-weight:700; margin-bottom:8px; color:var(--secondary);">เสนอราคารับซื้อ</div><div style="font-size:15px; font-weight:600; color:var(--warning); margin-bottom:16px;">พื้นที่แจ้งขาย: ${qty} ไร่</div><input id="swal-input2" class="swal-input" type="number" placeholder="ระบุราคาที่ต้องการเสนอ (บาท/ไร่)" style="margin-top:0; height: 44px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-family:'Kanit';"></div>`, 
-                focusConfirm: false, showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY, preConfirm: () => { return document.getElementById('swal-input2').value } 
+                html: `
+                    <div style="font-family:'Kanit';">
+                        <div style="font-size:20px; font-weight:700; margin-bottom:8px; color:var(--secondary);">เสนอราคารับซื้อ</div>
+                        <div style="font-size:15px; font-weight:600; color:var(--warning); margin-bottom:16px;">พื้นที่แจ้งขาย: ${qty} ไร่</div>
+                        <input id="swal-input2" class="swal-input" type="number" placeholder="ระบุราคาที่ต้องการเสนอ (บาท/ไร่)" style="margin-top:0; height: 44px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-family:'Kanit';">
+                    </div>`, 
+                focusConfirm: false, 
+                showCancelButton: true, 
+                confirmButtonText: 'ส่งข้อเสนอ', 
+                cancelButtonText: 'ยกเลิก', 
+                confirmButtonColor: THEME_PRIMARY, 
+                preConfirm: () => { return document.getElementById('swal-input2').value } 
             });
+            
             if (priceInput) { 
                 Swal.fire({ title: 'กำลังส่งคำเสนอซื้อ...', didOpen: () => { Swal.showLoading() } }); 
                 try { 
-                    const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "acceptJob", row: rowId, userId: userProfile.userId, buyerName: buyerNameContext, buyerPhone: buyerPhoneContext, price: priceInput }) }); 
+                    const res = await fetch(GAS_WEB_APP_URL, { 
+                        method: "POST", 
+                        body: JSON.stringify({ 
+                            action: "acceptJob", 
+                            row: rowId, 
+                            userId: userProfile.userId, 
+                            buyerName: buyerNameContext, 
+                            buyerPhone: buyerPhoneContext, 
+                            price: priceInput 
+                        }) 
+                    }); 
                     if ((await res.json()).status === "success") { 
-                        myCanceledRows = myCanceledRows.filter(id => id !== rowId); localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
-                        if(!myOfferedRows.includes(rowId)) { myOfferedRows.push(rowId); localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows)); }
-                        Swal.fire({title: 'สำเร็จ!', text: 'ส่งราคาให้ชาวไร่พิจารณาเรียบร้อย งานถูกย้ายไปที่ "การซื้อของฉัน"', icon: 'success', confirmButtonColor: THEME_PRIMARY}).then(() => { switchPage('buyer-purchases-page'); fetchBuyerRawData(); }); 
+                        myCanceledRows = myCanceledRows.filter(id => id !== rowId); 
+                        localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
+                        if(!myOfferedRows.includes(rowId)) { 
+                            myOfferedRows.push(rowId); 
+                            localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows)); 
+                        }
+                        Swal.fire({
+                            title: 'สำเร็จ!', 
+                            text: 'ส่งราคาให้ชาวไร่พิจารณาเรียบร้อย งานถูกย้ายไปที่ "การซื้อของฉัน"', 
+                            icon: 'success', 
+                            confirmButtonColor: THEME_PRIMARY
+                        }).then(() => { 
+                            switchPage('buyer-purchases-page'); 
+                            fetchBuyerRawData(); 
+                        }); 
                     } 
-                } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคาได้', 'error'); } 
+                } catch (error) { 
+                    Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคาได้', 'error'); 
+                } 
             }
         }
 
@@ -1208,43 +2156,146 @@
             let verifyingJobs = rawBuyerData.filter(j => j.status === 'รอชาวไร่ตรวจสอบ');
 
             let totalActive = activeJobs.length;
-            if(totalActive > 0) { badge.innerText = totalActive; badge.style.display = 'inline-block'; alertBanner.style.display = 'flex'; } else { badge.style.display = 'none'; alertBanner.style.display = 'none'; }
-            if(offeredJobs.length === 0 && activeJobs.length === 0 && verifyingJobs.length === 0) { container.innerHTML = "<div class='empty-state full-width'>ยังไม่มีรายการสั่งซื้อ หรือรอการพิจารณาครับ</div>"; return; }
+            if(totalActive > 0) { 
+                badge.innerText = totalActive; 
+                badge.style.display = 'inline-block'; 
+                alertBanner.style.display = 'flex'; 
+            } else { 
+                badge.style.display = 'none'; 
+                alertBanner.style.display = 'none'; 
+            }
+            
+            if(offeredJobs.length === 0 && activeJobs.length === 0 && verifyingJobs.length === 0) { 
+                container.innerHTML = "<div class='empty-state full-width'>ยังไม่มีรายการสั่งซื้อ หรือรอการพิจารณาครับ</div>"; 
+                return; 
+            }
 
             if(activeJobs.length > 0) {
-                let html = `<div class="purchase-group full-width"><div class="purchase-group-title" style="color:var(--primary-dark); font-weight:700; margin-bottom:15px; font-size:18px;"><i class="fa-solid fa-truck-fast"></i> งานที่ต้องไปดำเนินการ (ชาวไร่ตกลงแล้ว) <span class="badge bg-success">${activeJobs.length} งาน</span></div><div class="jobs-grid" style="margin-bottom:0;">`;
+                let html = `
+                    <div class="purchase-group full-width">
+                        <div class="purchase-group-title" style="color:var(--primary-dark); font-weight:700; margin-bottom:15px; font-size:18px;">
+                            <i class="fa-solid fa-truck-fast"></i> งานที่ต้องไปดำเนินการ (ชาวไร่ตกลงแล้ว) <span class="badge bg-success">${activeJobs.length} งาน</span>
+                        </div>
+                        <div class="jobs-grid" style="margin-bottom:0;">
+                `;
                 activeJobs.forEach(item => {
-                    let displayName = item.farmerFullName || item.farmerName; let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
-                    html += `<div class="sale-card" style="border-left: 5px solid var(--primary); background:#F0FDF4;"><div class="sale-header"><span style="font-weight:700; color:var(--primary-dark); font-size:16px;">คุณ ${displayName}</span><span class="badge" style="background:#A7F3D0; color:#064E3B;">พร้อมเข้าม้วน!</span></div><div class="sale-detail"><div>เป้าหมายวิ่งงาน: <span style="color:var(--primary-dark); font-weight:700; font-size:16px;">${actualQ} ไร่</span></div><div>ราคาที่ตกลง: <span style="font-weight:600; color:var(--danger);">${item.price}</span></div><div>กำหนดเข้าม้วน: <span style="font-weight:600;">${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span></div><div style="font-size:13px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-phone"></i> โทร: <a href="tel:${item.farmerPhone}">${item.farmerPhone || 'ไม่ระบุ'}</a></div></div><div style="display:flex; gap:10px; margin-top:16px;"><button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1;" title="ดูพิกัดแผนที่"><i class="fa-solid fa-map-location-dot"></i></button><button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1;"><i class="fa-solid fa-flag-checkered"></i> ปิดงาน</button><button onclick="cancelPurchase(${item.row})" class="btn-main btn-outline" style="flex:0.5; border-color:var(--danger); color:var(--danger);" title="ยกเลิกการรับซื้อ"><i class="fa-solid fa-xmark"></i></button></div></div>`;
-                }); html += `</div></div>`; container.innerHTML += html;
+                    let displayName = item.farmerFullName || item.farmerName; 
+                    let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
+                    html += `
+                        <div class="sale-card" style="border-left: 5px solid var(--primary); background:#F0FDF4;">
+                            <div class="sale-header">
+                                <span style="font-weight:700; color:var(--primary-dark); font-size:16px;">คุณ ${displayName}</span>
+                                <span class="badge" style="background:#A7F3D0; color:#064E3B;">พร้อมเข้าม้วน!</span>
+                            </div>
+                            <div class="sale-detail">
+                                <div>เป้าหมายวิ่งงาน: <span style="color:var(--primary-dark); font-weight:700; font-size:16px;">${actualQ} ไร่</span></div>
+                                <div>ราคาที่ตกลง: <span style="font-weight:600; color:var(--danger);">${item.price}</span></div>
+                                <div>กำหนดเข้าม้วน: <span style="font-weight:600;">${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span></div>
+                                <div style="font-size:13px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-phone"></i> โทร: <a href="tel:${item.farmerPhone}">${item.farmerPhone || 'ไม่ระบุ'}</a></div>
+                            </div>
+                            <div style="display:flex; gap:10px; margin-top:16px;">
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1;" title="ดูพิกัดแผนที่"><i class="fa-solid fa-map-location-dot"></i></button>
+                                <button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1;"><i class="fa-solid fa-flag-checkered"></i> ปิดงาน</button>
+                                <button onclick="cancelPurchase(${item.row})" class="btn-main btn-outline" style="flex:0.5; border-color:var(--danger); color:var(--danger);" title="ยกเลิกการรับซื้อ"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
+                    `;
+                }); 
+                html += `</div></div>`; 
+                container.innerHTML += html;
             }
 
             if(verifyingJobs.length > 0) {
-                let html = `<div class="purchase-group full-width" style="margin-top:20px;"><div class="purchase-group-title" style="color:var(--purple); font-weight:700; margin-bottom:15px; font-size:18px;"><i class="fa-solid fa-file-invoice"></i> รอชาวไร่ตรวจสอบบิลชั่งน้ำหนัก <span class="badge bg-purple">${verifyingJobs.length} งาน</span></div><div class="jobs-grid" style="margin-bottom:0;">`;
+                let html = `
+                    <div class="purchase-group full-width" style="margin-top:20px;">
+                        <div class="purchase-group-title" style="color:var(--purple); font-weight:700; margin-bottom:15px; font-size:18px;">
+                            <i class="fa-solid fa-file-invoice"></i> รอชาวไร่ตรวจสอบบิลชั่งน้ำหนัก <span class="badge bg-purple">${verifyingJobs.length} งาน</span>
+                        </div>
+                        <div class="jobs-grid" style="margin-bottom:0;">
+                `;
                 verifyingJobs.forEach(item => {
                     let displayName = item.farmerFullName || item.farmerName; 
-                    html += `<div class="sale-card" style="border-left: 5px solid var(--purple); background:#F5F3FF;"><div class="sale-header"><span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span><span class="badge bg-purple">รอชาวไร่ยืนยันบิล</span></div><div class="sale-detail"><div>น้ำหนักที่ชั่งได้: <span style="color:var(--purple); font-weight:700; font-size:16px;">${item.actualWeight} ตัน</span></div><div>ราคาที่ตกลง: <span style="font-weight:600; color:var(--danger);">${item.price}</span></div></div><div style="display:flex; gap:10px; margin-top:16px;"><button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; border-color:var(--purple); color:var(--purple);"><i class="fa-solid fa-eye"></i> ดูรายละเอียดบิล</button></div></div>`;
-                }); html += `</div></div>`; container.innerHTML += html;
+                    html += `
+                        <div class="sale-card" style="border-left: 5px solid var(--purple); background:#F5F3FF;">
+                            <div class="sale-header">
+                                <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>
+                                <span class="badge bg-purple">รอชาวไร่ยืนยันบิล</span>
+                            </div>
+                            <div class="sale-detail">
+                                <div>น้ำหนักที่ชั่งได้: <span style="color:var(--purple); font-weight:700; font-size:16px;">${item.actualWeight} ตัน</span></div>
+                                <div>ราคาที่ตกลง: <span style="font-weight:600; color:var(--danger);">${item.price}</span></div>
+                            </div>
+                            <div style="display:flex; gap:10px; margin-top:16px;">
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="width:100%; border-color:var(--purple); color:var(--purple);"><i class="fa-solid fa-eye"></i> ดูรายละเอียดบิล</button>
+                            </div>
+                        </div>
+                    `;
+                }); 
+                html += `</div></div>`; 
+                container.innerHTML += html;
             }
 
             if(offeredJobs.length > 0) {
-                let html = `<div class="purchase-group full-width" style="margin-top:20px;"><div class="purchase-group-title" style="color:var(--warning); font-weight:700; margin-bottom:15px; font-size:18px;"><i class="fa-solid fa-hourglass-half"></i> รอชาวไร่พิจารณาข้อเสนอ <span class="badge bg-warning">${offeredJobs.length} งาน</span></div><div class="jobs-grid" style="margin-bottom:0;">`;
+                let html = `
+                    <div class="purchase-group full-width" style="margin-top:20px;">
+                        <div class="purchase-group-title" style="color:var(--warning); font-weight:700; margin-bottom:15px; font-size:18px;">
+                            <i class="fa-solid fa-hourglass-half"></i> รอชาวไร่พิจารณาข้อเสนอ <span class="badge bg-warning">${offeredJobs.length} งาน</span>
+                        </div>
+                        <div class="jobs-grid" style="margin-bottom:0;">
+                `;
                 offeredJobs.forEach(item => {
-                    let displayName = item.farmerFullName || item.farmerName; let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
-                    html += `<div class="sale-card" style="border-left: 5px solid var(--warning); background:#FFFBEB;"><div class="sale-header"><span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span><span class="badge bg-warning">รอพิจารณา</span></div><div class="sale-detail"><div>พื้นที่ประเมิน: <span style="font-weight:700; font-size:16px;">${actualQ} ไร่</span></div><div>สถานะของคุณ: <span style="color:var(--danger); font-weight:700; font-size:16px;">เสนอราคาแล้ว</span></div><div>กำหนดเข้าม้วน: <span style="font-weight:600;">${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span></div></div><div style="display:flex; gap:10px; margin-top:16px;"><button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--warning); color:var(--warning);"><i class="fa-solid fa-eye"></i> ดูแปลง</button><button onclick="cancelOffer(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger);"><i class="fa-solid fa-ban"></i> ถอนข้อเสนอ</button></div></div>`;
-                }); html += `</div></div>`; container.innerHTML += html;
+                    let displayName = item.farmerFullName || item.farmerName; 
+                    let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
+                    html += `
+                        <div class="sale-card" style="border-left: 5px solid var(--warning); background:#FFFBEB;">
+                            <div class="sale-header">
+                                <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>
+                                <span class="badge bg-warning">รอพิจารณา</span>
+                            </div>
+                            <div class="sale-detail">
+                                <div>พื้นที่ประเมิน: <span style="font-weight:700; font-size:16px;">${actualQ} ไร่</span></div>
+                                <div>สถานะของคุณ: <span style="color:var(--danger); font-weight:700; font-size:16px;">เสนอราคาแล้ว</span></div>
+                                <div>กำหนดเข้าม้วน: <span style="font-weight:600;">${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span></div>
+                            </div>
+                            <div style="display:flex; gap:10px; margin-top:16px;">
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--warning); color:var(--warning);"><i class="fa-solid fa-eye"></i> ดูแปลง</button>
+                                <button onclick="cancelOffer(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger);"><i class="fa-solid fa-ban"></i> ถอนข้อเสนอ</button>
+                            </div>
+                        </div>
+                    `;
+                }); 
+                html += `</div></div>`; 
+                container.innerHTML += html;
             }
         }
 
         async function cancelOffer(rowId) {
-            const { value: reason } = await Swal.fire({ title: 'ถอนข้อเสนอรับซื้อ?', text: 'โปรดระบุเหตุผลที่ต้องการถอนข้อเสนอนี้ (เพื่อให้ชาวไร่ทราบ)', input: 'text', inputPlaceholder: 'ระบุเหตุผล (เช่น คิวงานเต็ม, รถเสีย...)', showCancelButton: true, confirmButtonColor: THEME_DANGER, confirmButtonText: 'ยืนยันการถอนข้อเสนอ', cancelButtonText: 'กลับ', inputValidator: (value) => { if (!value) return 'กรุณาระบุเหตุผลด้วยครับ!' } });
+            const { value: reason } = await Swal.fire({ 
+                title: 'ถอนข้อเสนอรับซื้อ?', 
+                text: 'โปรดระบุเหตุผลที่ต้องการถอนข้อเสนอนี้ (เพื่อให้ชาวไร่ทราบ)', 
+                input: 'text', 
+                inputPlaceholder: 'ระบุเหตุผล (เช่น คิวงานเต็ม, รถเสีย...)', 
+                showCancelButton: true, 
+                confirmButtonColor: THEME_DANGER, 
+                confirmButtonText: 'ยืนยันการถอนข้อเสนอ', 
+                cancelButtonText: 'กลับ', 
+                inputValidator: (value) => { if (!value) return 'กรุณาระบุเหตุผลด้วยครับ!' } 
+            });
+            
             if (reason) {
                 Swal.fire({ title: 'กำลังดำเนินการ...', didOpen: () => { Swal.showLoading() } });
                 try {
-                    const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "buyerCancelOffer", row: rowId, userId: userProfile.userId, reason: reason }) });
+                    const res = await fetch(GAS_WEB_APP_URL, { 
+                        method: "POST", 
+                        body: JSON.stringify({ action: "buyerCancelOffer", row: rowId, userId: userProfile.userId, reason: reason }) 
+                    });
                     if ((await res.json()).status === "success") {
-                        myOfferedRows = myOfferedRows.filter(id => id !== rowId); localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows));
-                        if(!myCanceledRows.includes(rowId)) { myCanceledRows.push(rowId); localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows)); }
+                        myOfferedRows = myOfferedRows.filter(id => id !== rowId); 
+                        localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows));
+                        if(!myCanceledRows.includes(rowId)) { 
+                            myCanceledRows.push(rowId); 
+                            localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows)); 
+                        }
                         Swal.fire('ถอนข้อเสนอสำเร็จ', 'ระบบได้ถอนข้อเสนอของคุณแล้ว', 'success').then(() => { fetchBuyerRawData(); });
                     }
                 } catch(e) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบได้', 'error'); }
@@ -1252,13 +2303,30 @@
         }
 
         async function cancelPurchase(rowId) {
-            const { value: reason } = await Swal.fire({ title: 'ยกเลิกการรับซื้อ?', text: 'การยกเลิกงานที่ตกลงกันแล้วอาจส่งผลต่อคะแนนเครดิตของคุณ โปรดระบุเหตุผลที่ชัดเจน', input: 'text', inputPlaceholder: 'ระบุเหตุผล (เช่น เข้าพื้นที่ไม่ได้, เครื่องจักรขัดข้อง...)', showCancelButton: true, confirmButtonColor: THEME_DANGER, confirmButtonText: 'ยืนยันยกเลิกการรับซื้อ', cancelButtonText: 'กลับ', inputValidator: (value) => { if (!value) return 'กรุณาระบุเหตุผลด้วยครับ!' } });
+            const { value: reason } = await Swal.fire({ 
+                title: 'ยกเลิกการรับซื้อ?', 
+                text: 'การยกเลิกงานที่ตกลงกันแล้วอาจส่งผลต่อคะแนนเครดิตของคุณ โปรดระบุเหตุผลที่ชัดเจน', 
+                input: 'text', 
+                inputPlaceholder: 'ระบุเหตุผล (เช่น เข้าพื้นที่ไม่ได้, เครื่องจักรขัดข้อง...)', 
+                showCancelButton: true, 
+                confirmButtonColor: THEME_DANGER, 
+                confirmButtonText: 'ยืนยันยกเลิกการรับซื้อ', 
+                cancelButtonText: 'กลับ', 
+                inputValidator: (value) => { if (!value) return 'กรุณาระบุเหตุผลด้วยครับ!' } 
+            });
+            
             if (reason) {
                 Swal.fire({ title: 'กำลังดำเนินการ...', didOpen: () => { Swal.showLoading() } });
                 try {
-                    const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "buyerCancelJob", row: rowId, userId: userProfile.userId, reason: reason }) });
+                    const res = await fetch(GAS_WEB_APP_URL, { 
+                        method: "POST", 
+                        body: JSON.stringify({ action: "buyerCancelJob", row: rowId, userId: userProfile.userId, reason: reason }) 
+                    });
                     if ((await res.json()).status === "success") {
-                        if(!myCanceledRows.includes(rowId)) { myCanceledRows.push(rowId); localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows)); }
+                        if(!myCanceledRows.includes(rowId)) { 
+                            myCanceledRows.push(rowId); 
+                            localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows)); 
+                        }
                         Swal.fire('ยกเลิกสำเร็จ', 'ระบบได้ยกเลิกงานนี้และแจ้งชาวไร่แล้ว', 'success').then(() => { fetchBuyerRawData(); });
                     }
                 } catch(e) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบได้', 'error'); }
@@ -1269,70 +2337,193 @@
         // เมนู Trip Planner
         // ==========================================
         function renderTripPlanner() {
-            const availList = document.getElementById("trip-available-list"); const selList = document.getElementById("trip-selected-list");
-            availList.innerHTML = ''; selList.innerHTML = '';
+            const availList = document.getElementById("trip-available-list"); 
+            const selList = document.getElementById("trip-selected-list");
+            availList.innerHTML = ''; 
+            selList.innerHTML = '';
+            
             let searchQuery = document.getElementById('trip-search') ? document.getElementById('trip-search').value.toLowerCase() : "";
             let sortBy = document.getElementById('trip-sort') ? document.getElementById('trip-sort').value : "date-near";
             let availableJobs = rawBuyerData.filter(p => p.status === "รอคิวรถ" || p.status === "รอชาวไร่ยืนยัน");
             
-            if (searchQuery) { availableJobs = availableJobs.filter(j => (j.farmerFullName || j.farmerName).toLowerCase().includes(searchQuery) || (j.plotProv && j.plotProv.toLowerCase().includes(searchQuery)) || (j.prov && j.prov.toLowerCase().includes(searchQuery)) || (j.plotDist && j.plotDist.toLowerCase().includes(searchQuery)) || (j.dist && j.dist.toLowerCase().includes(searchQuery)) ); }
-            if (sortBy === "date-near") { availableJobs.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate)); } 
-            else if (sortBy === "dist-near") { availableJobs.sort((a,b) => { let dA = (currentLat && currentLng && a.lat && a.lon && !isNaN(parseFloat(a.lat))) ? getDistanceJS(currentLat, currentLng, a.lat, a.lon) : 999999; let dB = (currentLat && currentLng && b.lat && b.lon && !isNaN(parseFloat(b.lat))) ? getDistanceJS(currentLat, currentLng, b.lat, b.lon) : 999999; return dA - dB; }); } 
-            else if (sortBy === "rai-desc") { availableJobs.sort((a,b) => parseFloat(b.qty||0) - parseFloat(a.qty||0)); }
+            if (searchQuery) { 
+                availableJobs = availableJobs.filter(j => 
+                    (j.farmerFullName || j.farmerName).toLowerCase().includes(searchQuery) || 
+                    (j.plotProv && j.plotProv.toLowerCase().includes(searchQuery)) || 
+                    (j.prov && j.prov.toLowerCase().includes(searchQuery)) || 
+                    (j.plotDist && j.plotDist.toLowerCase().includes(searchQuery)) || 
+                    (j.dist && j.dist.toLowerCase().includes(searchQuery)) 
+                ); 
+            }
             
-            if(availableJobs.length === 0) { availList.innerHTML = '<div class="empty-state">ไม่พบรายการที่ค้นหา</div>'; }
+            if (sortBy === "date-near") { 
+                availableJobs.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate)); 
+            } else if (sortBy === "dist-near") { 
+                availableJobs.sort((a,b) => { 
+                    let dA = (currentLat && currentLng && a.lat && a.lon && !isNaN(parseFloat(a.lat))) ? getDistanceJS(currentLat, currentLng, a.lat, a.lon) : 999999; 
+                    let dB = (currentLat && currentLng && b.lat && b.lon && !isNaN(parseFloat(b.lat))) ? getDistanceJS(currentLat, currentLng, b.lat, b.lon) : 999999; 
+                    return dA - dB; 
+                }); 
+            } else if (sortBy === "rai-desc") { 
+                availableJobs.sort((a,b) => parseFloat(b.qty||0) - parseFloat(a.qty||0)); 
+            }
+            
+            if(availableJobs.length === 0) { 
+                availList.innerHTML = '<div class="empty-state">ไม่พบรายการที่ค้นหา</div>'; 
+            }
             
             availableJobs.forEach(j => {
                 let isSelected = currentTripJobs.includes(j.row);
                 if(!isSelected) {
-                    let displayName = j.farmerFullName || j.farmerName; let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0)); let hDate = new Date(j.harvestDate).toLocaleDateString('th-TH');
-                    availList.innerHTML += `<div style="background:var(--bg-body); border:1px solid var(--border); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;"><div><b style="color:var(--secondary);">${displayName}</b> <span style="color:var(--primary-dark); font-weight:700;">${actualQ} ไร่</span><br><span style="font-size:12px; color:var(--text-muted);"><i class="fa-regular fa-calendar"></i> ${hDate}</span></div><div style="display:flex; gap:5px;"><button onclick="viewSaleIslandModal(${j.row})" class="btn-action btn-view" title="ดูรายละเอียดแปลง"><i class="fa-solid fa-eye"></i></button><button onclick="addToTrip(${j.row})" class="btn-action btn-add" title="เพิ่มเข้าทริป"><i class="fa-solid fa-plus"></i></button></div></div>`;
+                    let displayName = j.farmerFullName || j.farmerName; 
+                    let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0)); 
+                    let hDate = new Date(j.harvestDate).toLocaleDateString('th-TH');
+                    availList.innerHTML += `
+                        <div style="background:var(--bg-body); border:1px solid var(--border); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <b style="color:var(--secondary);">${displayName}</b> <span style="color:var(--primary-dark); font-weight:700;">${actualQ} ไร่</span><br>
+                                <span style="font-size:12px; color:var(--text-muted);"><i class="fa-regular fa-calendar"></i> ${hDate}</span>
+                            </div>
+                            <div style="display:flex; gap:5px;">
+                                <button onclick="viewSaleIslandModal(${j.row})" class="btn-action btn-view" title="ดูรายละเอียดแปลง"><i class="fa-solid fa-eye"></i></button>
+                                <button onclick="addToTrip(${j.row})" class="btn-action btn-add" title="เพิ่มเข้าทริป"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+                    `;
                 }
             });
             
             let sortedTripJobs = currentTripJobs.map(id => rawBuyerData.find(j => j.row === id)).filter(j => j);
             sortedTripJobs.sort((a,b) => new Date(a.harvestDate) - new Date(b.harvestDate));
 
-            let totalTripRai = 0; let prevLat = null, prevLon = null; let uniqueFarmers = new Set(); let dates = [];
+            let totalTripRai = 0; 
+            let prevLat = null, prevLon = null; 
+            let uniqueFarmers = new Set(); 
+            let dates = [];
+            
             if(sortedTripJobs.length > 0) {
                 sortedTripJobs.forEach((j, index) => {
-                    let displayName = j.farmerFullName || j.farmerName; let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0)); let hDate = new Date(j.harvestDate).toLocaleDateString('th-TH');
-                    totalTripRai += actualQ; uniqueFarmers.add(j.farmerLineId || j.farmerName); dates.push(new Date(j.harvestDate).getTime());
+                    let displayName = j.farmerFullName || j.farmerName; 
+                    let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0)); 
+                    let hDate = new Date(j.harvestDate).toLocaleDateString('th-TH');
+                    
+                    totalTripRai += actualQ; 
+                    uniqueFarmers.add(j.farmerLineId || j.farmerName); 
+                    dates.push(new Date(j.harvestDate).getTime());
+                    
                     let distHtml = '';
-                    if (index > 0 && prevLat && prevLon && j.lat && j.lon && !isNaN(parseFloat(j.lat))) { let d = getDistanceJS(prevLat, prevLon, j.lat, j.lon).toFixed(1); distHtml = `<div style="text-align:center; padding:6px 0; color:var(--info); font-size:12px; font-weight:600; display:flex; flex-direction:column; align-items:center;"><div style="width:2px; height:15px; background:var(--info); margin-bottom:2px;"></div><span><i class="fa-solid fa-truck"></i> ขับรถไปอีก ${d} กม.</span><div style="width:2px; height:15px; background:var(--info); margin-top:2px;"></div></div>`; }
+                    if (index > 0 && prevLat && prevLon && j.lat && j.lon && !isNaN(parseFloat(j.lat))) { 
+                        let d = getDistanceJS(prevLat, prevLon, j.lat, j.lon).toFixed(1); 
+                        distHtml = `
+                            <div style="text-align:center; padding:6px 0; color:var(--info); font-size:12px; font-weight:600; display:flex; flex-direction:column; align-items:center;">
+                                <div style="width:2px; height:15px; background:var(--info); margin-bottom:2px;"></div>
+                                <span><i class="fa-solid fa-truck"></i> ขับรถไปอีก ${d} กม.</span>
+                                <div style="width:2px; height:15px; background:var(--info); margin-top:2px;"></div>
+                            </div>
+                        `; 
+                    }
                     prevLat = j.lat; prevLon = j.lon;
-                    selList.innerHTML += distHtml + `<div style="background:var(--primary-light); border:1px solid var(--primary); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow-sm);"><div style="flex:1;"><b style="color:var(--primary-dark);">${index+1}. คุณ ${displayName}</b> <span style="font-weight:700; color:var(--secondary);">${actualQ} ไร่</span><br><span style="font-size:12px; color:var(--primary-dark);"><i class="fa-regular fa-calendar"></i> นัด: ${hDate}</span></div><div style="display:flex; gap:5px;"><button onclick="viewSaleIslandModal(${j.row})" class="btn-action btn-view" title="ดูรายละเอียดแปลง"><i class="fa-solid fa-eye"></i></button><button onclick="removeFromTrip(${j.row})" class="btn-action btn-delete" title="เอาออก"><i class="fa-solid fa-minus"></i></button></div></div>`;
+                    
+                    selList.innerHTML += distHtml + `
+                        <div style="background:var(--primary-light); border:1px solid var(--primary); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow-sm);">
+                            <div style="flex:1;">
+                                <b style="color:var(--primary-dark);">${index+1}. คุณ ${displayName}</b> <span style="font-weight:700; color:var(--secondary);">${actualQ} ไร่</span><br>
+                                <span style="font-size:12px; color:var(--primary-dark);"><i class="fa-regular fa-calendar"></i> นัด: ${hDate}</span>
+                            </div>
+                            <div style="display:flex; gap:5px;">
+                                <button onclick="viewSaleIslandModal(${j.row})" class="btn-action btn-view" title="ดูรายละเอียดแปลง"><i class="fa-solid fa-eye"></i></button>
+                                <button onclick="removeFromTrip(${j.row})" class="btn-action btn-delete" title="เอาออก"><i class="fa-solid fa-minus"></i></button>
+                            </div>
+                        </div>
+                    `;
                 });
-            } else { selList.innerHTML = `<div class="empty-state" style="background:transparent; border:none; margin-top:50px;"><i class="fa-solid fa-truck-moving" style="font-size:40px; margin-bottom:15px; color:var(--border);"></i><br>ทริปว่างเปล่า<br><span style="font-size:13px;">กดปุ่ม + ด้านซ้าย เพื่อเพิ่มงานเข้ามาในเส้นทางนี้</span></div>`; }
+            } else { 
+                selList.innerHTML = `
+                    <div class="empty-state" style="background:transparent; border:none; margin-top:50px;">
+                        <i class="fa-solid fa-truck-moving" style="font-size:40px; margin-bottom:15px; color:var(--border);"></i><br>
+                        ทริปว่างเปล่า<br><span style="font-size:13px;">กดปุ่ม + ด้านซ้าย เพื่อเพิ่มงานเข้ามาในเส้นทางนี้</span>
+                    </div>
+                `; 
+            }
             
-            let totalDays = 0; if (dates.length > 0) { let minDate = Math.min(...dates); let maxDate = Math.max(...dates); totalDays = Math.ceil((maxDate - minDate) / (1000 * 3600 * 24)) + 1; }
-            document.getElementById("trip-total-rai").innerText = totalTripRai.toFixed(1) + " ไร่"; document.getElementById("trip-total-days").innerText = totalDays + " วัน"; document.getElementById("trip-total-farmers").innerText = uniqueFarmers.size + " ราย";
+            let totalDays = 0; 
+            if (dates.length > 0) { 
+                let minDate = Math.min(...dates); 
+                let maxDate = Math.max(...dates); 
+                totalDays = Math.ceil((maxDate - minDate) / (1000 * 3600 * 24)) + 1; 
+            }
+            
+            document.getElementById("trip-total-rai").innerText = totalTripRai.toFixed(1) + " ไร่"; 
+            document.getElementById("trip-total-days").innerText = totalDays + " วัน"; 
+            document.getElementById("trip-total-farmers").innerText = uniqueFarmers.size + " ราย";
         }
 
-        function addToTrip(rowId) { currentTripJobs.push(rowId); renderTripPlanner(); }
-        function removeFromTrip(rowId) { currentTripJobs = currentTripJobs.filter(id => id !== rowId); renderTripPlanner(); }
+        function addToTrip(rowId) { 
+            currentTripJobs.push(rowId); 
+            renderTripPlanner(); 
+        }
+        
+        function removeFromTrip(rowId) { 
+            currentTripJobs = currentTripJobs.filter(id => id !== rowId); 
+            renderTripPlanner(); 
+        }
+        
         function addToTripFromModal(rowId) {
-            if(!currentTripJobs.includes(rowId)) { currentTripJobs.push(rowId); Swal.fire({ title: 'เพิ่มลงทริปแล้ว!', icon: 'success', timer: 1500, showConfirmButton: false });
-                if(document.getElementById('buyer-trip-page').classList.contains('active')) { renderTripPlanner(); } else if(document.getElementById('buyer-calendar-page').classList.contains('active')) { Swal.close(); }
-            } else { Swal.fire('มีในทริปแล้ว', 'งานนี้ถูกเพิ่มลงในทริปปัจจุบันแล้วครับ', 'info'); }
+            if(!currentTripJobs.includes(rowId)) { 
+                currentTripJobs.push(rowId); 
+                Swal.fire({ title: 'เพิ่มลงทริปแล้ว!', icon: 'success', timer: 1500, showConfirmButton: false });
+                if(document.getElementById('buyer-trip-page').classList.contains('active')) { 
+                    renderTripPlanner(); 
+                } else if(document.getElementById('buyer-calendar-page').classList.contains('active')) { 
+                    Swal.close(); 
+                }
+            } else { 
+                Swal.fire('มีในทริปแล้ว', 'งานนี้ถูกเพิ่มลงในทริปปัจจุบันแล้วครับ', 'info'); 
+            }
         }
 
         async function saveTrip() {
-            if(currentTripJobs.length === 0) { Swal.fire('ไม่มีข้อมูล', 'กรุณาเพิ่มแปลงเข้าทริปก่อนทำการบันทึก', 'warning'); return; }
-            let htmlForm = `<div style="text-align:left; font-family:'Kanit'; max-height:60vh; overflow-y:auto; padding-right:10px;"><div style="font-size:16px; font-weight:600; margin-bottom:15px; color:var(--secondary);"><i class="fa-solid fa-hand-holding-dollar"></i> ระบุราคารับซื้อ (บาท/ไร่) สำหรับแต่ละแปลง</div>`;
+            if(currentTripJobs.length === 0) { 
+                Swal.fire('ไม่มีข้อมูล', 'กรุณาเพิ่มแปลงเข้าทริปก่อนทำการบันทึก', 'warning'); 
+                return; 
+            }
+            
+            let htmlForm = `
+                <div style="text-align:left; font-family:'Kanit'; max-height:60vh; overflow-y:auto; padding-right:10px;">
+                    <div style="font-size:16px; font-weight:600; margin-bottom:15px; color:var(--secondary);">
+                        <i class="fa-solid fa-hand-holding-dollar"></i> ระบุราคารับซื้อ (บาท/ไร่) สำหรับแต่ละแปลง
+                    </div>
+            `;
+            
             let tripJobsData = currentTripJobs.map(id => rawBuyerData.find(j => j.row === id)).filter(j => j);
             tripJobsData.forEach((j, index) => {
-                let displayName = j.farmerFullName || j.farmerName; let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0));
-                htmlForm += `<div style="background:var(--bg-body); padding:12px; border-radius:8px; border:1px solid var(--border); margin-bottom:10px;"><div style="font-weight:600; color:var(--primary-dark);">${index+1}. คุณ ${displayName} <span style="float:right;">${actualQ} ไร่</span></div><input type="number" id="trip-price-${j.row}" class="swal-input" placeholder="เสนอราคา (บาท/ไร่)" style="margin-top:8px; height: 38px; width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Kanit';" required></div>`;
-            }); htmlForm += `</div>`;
+                let displayName = j.farmerFullName || j.farmerName; 
+                let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0));
+                htmlForm += `
+                    <div style="background:var(--bg-body); padding:12px; border-radius:8px; border:1px solid var(--border); margin-bottom:10px;">
+                        <div style="font-weight:600; color:var(--primary-dark);">${index+1}. คุณ ${displayName} <span style="float:right;">${actualQ} ไร่</span></div>
+                        <input type="number" id="trip-price-${j.row}" class="swal-input" placeholder="เสนอราคา (บาท/ไร่)" style="margin-top:8px; height: 38px; width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Kanit';" required>
+                    </div>
+                `;
+            }); 
+            htmlForm += `</div>`;
 
             const { value: formValues } = await Swal.fire({
-                title: 'ยืนยันส่งข้อเสนอราคาทริป', html: htmlForm, width: '600px', showCancelButton: true, confirmButtonText: '<i class="fa-solid fa-paper-plane"></i> ส่งข้อเสนอทั้งหมด', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY,
+                title: 'ยืนยันส่งข้อเสนอราคาทริป', 
+                html: htmlForm, 
+                width: '600px', 
+                showCancelButton: true, 
+                confirmButtonText: '<i class="fa-solid fa-paper-plane"></i> ส่งข้อเสนอทั้งหมด', 
+                cancelButtonText: 'ยกเลิก', 
+                confirmButtonColor: THEME_PRIMARY,
                 preConfirm: () => {
                     let results = [];
                     for(let j of tripJobsData) {
                         let price = document.getElementById(`trip-price-${j.row}`).value;
-                        if(!price) { Swal.showValidationMessage('กรุณาระบุราคาให้ครบทุกแปลง'); return false; }
+                        if(!price) { 
+                            Swal.showValidationMessage('กรุณาระบุราคาให้ครบทุกแปลง'); 
+                            return false; 
+                        }
                         results.push({ row: j.row, price: price });
                     }
                     return results;
@@ -1342,10 +2533,45 @@
             if(formValues) {
                 Swal.fire({ title: 'กำลังส่งคำเสนอซื้อแบบกลุ่ม...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } }); 
                 try {
-                    let promises = formValues.map(item => { return fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "acceptJob", row: item.row, userId: userProfile.userId, buyerName: buyerNameContext, buyerPhone: buyerPhoneContext, price: item.price }) }).then(res => res.json()).then(result => { if (result.status === "success") { myCanceledRows = myCanceledRows.filter(id => id !== item.row); if(!myOfferedRows.includes(item.row)) { myOfferedRows.push(item.row); } } }); });
-                    await Promise.all(promises); localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows)); localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
-                    Swal.fire({ title: 'สำเร็จ!', text: 'ส่งข้อเสนอให้ชาวไร่ทุกแปลงพิจารณาเรียบร้อยแล้ว', icon: 'success', confirmButtonColor: THEME_PRIMARY }).then(() => { currentTripJobs = []; document.getElementById('trip-name').value = ''; switchPage('buyer-purchases-page'); fetchBuyerRawData(); }); 
-                } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคาได้ทั้งหมด', 'error'); }
+                    let promises = formValues.map(item => { 
+                        return fetch(GAS_WEB_APP_URL, { 
+                            method: "POST", 
+                            body: JSON.stringify({ 
+                                action: "acceptJob", 
+                                row: item.row, 
+                                userId: userProfile.userId, 
+                                buyerName: buyerNameContext, 
+                                buyerPhone: buyerPhoneContext, 
+                                price: item.price 
+                            }) 
+                        }).then(res => res.json()).then(result => { 
+                            if (result.status === "success") { 
+                                myCanceledRows = myCanceledRows.filter(id => id !== item.row); 
+                                if(!myOfferedRows.includes(item.row)) { 
+                                    myOfferedRows.push(item.row); 
+                                } 
+                            } 
+                        }); 
+                    });
+                    
+                    await Promise.all(promises); 
+                    localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows)); 
+                    localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
+                    
+                    Swal.fire({ 
+                        title: 'สำเร็จ!', 
+                        text: 'ส่งข้อเสนอให้ชาวไร่ทุกแปลงพิจารณาเรียบร้อยแล้ว', 
+                        icon: 'success', 
+                        confirmButtonColor: THEME_PRIMARY 
+                    }).then(() => { 
+                        currentTripJobs = []; 
+                        document.getElementById('trip-name').value = ''; 
+                        switchPage('buyer-purchases-page'); 
+                        fetchBuyerRawData(); 
+                    }); 
+                } catch (error) { 
+                    Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคาได้ทั้งหมด', 'error'); 
+                }
             }
         }
 
@@ -1354,7 +2580,10 @@
         // ==========================================
         function renderCalendar() {
             var calendarEl = document.getElementById('calendar');
-            if(calendarObj) { calendarObj.destroy(); }
+            if(calendarObj) { 
+                calendarObj.destroy(); 
+            }
+            
             let events = [];
             
             rawBuyerData.forEach(j => {
@@ -1369,17 +2598,40 @@
                 
                 if(!pass) return;
 
-                let displayName = j.farmerFullName || j.farmerName;
-                if(j.status === "รอคิวรถ" || j.status === "รอชาวไร่ยืนยัน") {
-                    events.push({ title: `${displayName} (${j.qty} ไร่)`, start: new Date(j.harvestDate).toISOString().split('T')[0], color: '#F59E0B', extendedProps: { rowId: j.row } });
-                } else if(j.status === "กำลังดำเนินการ") {
-                    events.push({ title: `[รับแล้ว] ${displayName}`, start: new Date(j.harvestDate).toISOString().split('T')[0], color: '#10B981', extendedProps: { rowId: j.row } });
+                // Safe Date parsing to prevent FullCalendar crash
+                if(j.harvestDate) {
+                    let dateObj = new Date(j.harvestDate);
+                    if(!isNaN(dateObj.getTime())) {
+                        let dateStr = dateObj.toISOString().split('T')[0];
+                        let displayName = j.farmerFullName || j.farmerName;
+                        
+                        if(j.status === "รอคิวรถ" || j.status === "รอชาวไร่ยืนยัน") {
+                            events.push({ 
+                                title: `${displayName} (${j.qty} ไร่)`, 
+                                start: dateStr, 
+                                color: '#F59E0B', 
+                                extendedProps: { rowId: j.row } 
+                            });
+                        } else if(j.status === "กำลังดำเนินการ") {
+                            events.push({ 
+                                title: `[รับแล้ว] ${displayName}`, 
+                                start: dateStr, 
+                                color: '#10B981', 
+                                extendedProps: { rowId: j.row } 
+                            });
+                        }
+                    }
                 }
             });
 
             calendarObj = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth', locale: 'th', height: 550, events: events,
-                eventClick: function(info) { viewSaleIslandModal(info.event.extendedProps.rowId); }
+                initialView: 'dayGridMonth', 
+                locale: 'th', 
+                height: 550, 
+                events: events,
+                eventClick: function(info) { 
+                    viewSaleIslandModal(info.event.extendedProps.rowId); 
+                }
             });
             calendarObj.render();
         }
