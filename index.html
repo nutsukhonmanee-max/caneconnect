@@ -23,26 +23,26 @@
 
     <style>
         :root { 
-            --primary: #6DB33F; 
-            --primary-light: #F0F8EC; 
-            --primary-dark: #4A8C28; 
-            --primary-gradient: linear-gradient(135deg, #6DB33F 0%, #4A8C28 100%); 
-            --bg-main: #F7F9F8; 
+            --primary: #10B981; 
+            --primary-light: #D1FAE5; 
+            --primary-dark: #059669; 
+            --primary-gradient: linear-gradient(135deg, #10B981 0%, #059669 100%); 
+            --bg-main: #F8FAFC; 
             --surface: #FFFFFF; 
-            --text-main: #2C3E50; 
-            --text-muted: #7F8C8D; 
-            --border: #E1E8E3; 
-            --accent: #F39C12; 
-            --danger: #E74C3C; 
-            --info: #2980B9; 
-            --radius-lg: 20px; 
-            --radius-md: 14px; 
-            --shadow-soft: 0 10px 30px rgba(44, 62, 80, 0.05); 
+            --text-main: #334155; 
+            --text-muted: #64748B; 
+            --border: #E2E8F0; 
+            --accent: #F59E0B; 
+            --danger: #EF4444; 
+            --info: #3B82F6; 
+            --radius-lg: 16px; 
+            --radius-md: 12px; 
+            --shadow-soft: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); 
         }
         
         body { 
             font-family: 'Kanit', sans-serif; 
-            background: linear-gradient(135deg, #F0F8EC 0%, #F7F9F8 100%); 
+            background-color: var(--bg-main); 
             color: var(--text-main); 
             padding: 0; margin: 0; 
             scroll-behavior: smooth; 
@@ -54,121 +54,117 @@
             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background-image: url('717234928_1389564293226615_5667077817079555251_n.jpg'); 
             background-size: cover; background-position: center; background-repeat: no-repeat; 
-            opacity: 0.06; z-index: -1; pointer-events: none; 
+            opacity: 0.04; z-index: -1; pointer-events: none; 
         }
         
         .header { 
-            background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); 
+            background-color: var(--surface); backdrop-filter: blur(10px); 
             padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; 
             box-shadow: 0 2px 15px rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 1000; 
+            border-bottom: 1px solid var(--border);
         }
         
-        .header h1 { margin: 0; font-size: 22px; font-weight: 600; color: var(--primary-dark); letter-spacing: 0.5px; }
+        .header h1 { margin: 0; font-size: 20px; font-weight: 700; color: var(--text-main); letter-spacing: 0.5px; }
         
         .speech-bubble { 
             background: var(--primary-light); color: var(--primary-dark); 
-            border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 600; 
-            box-shadow: inset 0 2px 4px rgba(109,179,63,0.1); 
+            border-radius: 12px; padding: 6px 14px; font-size: 13px; font-weight: 600; 
+            border: 1px solid rgba(16, 185, 129, 0.2);
         }
         
         .container { padding: 24px; position: relative; z-index: 10; padding-bottom: 60px; max-width: 600px; margin: 0 auto; }
         
-        .profile-section { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+        .profile-section { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px dashed var(--border); }
         .profile-img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); display: none; box-shadow: var(--shadow-soft); }
         .profile-text { font-size: 18px; font-weight: 600; color: var(--text-main); }
         
-        .tab-nav { display: flex; gap: 8px; margin-bottom: 20px; background: #E9ECEB; padding: 6px; border-radius: 16px; }
-        .tab-btn { flex: 1; padding: 12px; background: transparent; color: var(--text-muted); border: none; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.3s ease; }
-        .tab-btn.active { background: var(--surface); color: var(--primary-dark); box-shadow: 0 4px 12px rgba(0,0,0,0.06); transform: scale(1.02); }
+        .tab-nav { display: flex; gap: 8px; margin-bottom: 20px; background: #F1F5F9; padding: 6px; border-radius: 12px; border: 1px solid var(--border);}
+        .tab-btn { flex: 1; padding: 12px; background: transparent; color: var(--text-muted); border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: var(--surface); color: var(--primary); box-shadow: var(--shadow-soft); }
 
-        label { font-weight: 500; display: block; margin-top: 16px; font-size: 14px; color: var(--text-muted); margin-bottom: 6px;}
+        label { font-weight: 600; display: block; margin-top: 16px; font-size: 13px; color: var(--text-muted); margin-bottom: 6px;}
         input[type="text"], input[type="tel"], input[type="number"], input[type="date"], select, textarea { 
-            width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); 
-            box-sizing: border-box; font-size: 15px; font-family: 'Kanit', sans-serif; transition: all 0.3s ease; 
-            background: var(--surface); color: var(--text-main); box-shadow: inset 0 2px 4px rgba(0,0,0,0.01); 
+            width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); 
+            box-sizing: border-box; font-size: 14px; font-family: 'Kanit', sans-serif; transition: all 0.2s ease; 
+            background: #F8FAFC; color: var(--text-main); 
         }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(109, 179, 63, 0.15); background: #FFF; }
-        input:disabled, select:disabled, textarea:disabled, input[readonly], select[readonly] { background-color: #F8FAF9 !important; color: var(--text-main) !important; -webkit-text-fill-color: var(--text-main) !important; opacity: 1 !important; border: 1px dashed #BDC6C1 !important; cursor: not-allowed; font-weight: 500; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; background: #FFF; box-shadow: 0 0 0 3px var(--primary-light); }
+        input:disabled, select:disabled, textarea:disabled, input[readonly], select[readonly] { background-color: #F1F5F9 !important; color: var(--text-muted) !important; -webkit-text-fill-color: var(--text-muted) !important; opacity: 1 !important; border: 1px dashed var(--border) !important; cursor: not-allowed; font-weight: 500; }
         
-        .map-container { height: 320px; width: 100%; border-radius: var(--radius-md); margin-top: 10px; border: 1px solid var(--border); z-index: 1; overflow: hidden; box-shadow: var(--shadow-soft);}
+        .map-container { height: 320px; width: 100%; border-radius: var(--radius-md); margin-top: 10px; border: 1px solid var(--border); z-index: 1; overflow: hidden; box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);}
         
-        .status-box { margin-top: 10px; padding: 16px; border-radius: var(--radius-md); background-color: var(--primary-light); color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; font-weight: 500; border: 1px dashed var(--primary); box-shadow: 0 4px 10px rgba(109, 179, 63, 0.05);}
-        .status-box i { margin-right: 12px; font-size: 20px;}
+        .status-box { margin-top: 10px; padding: 14px; border-radius: var(--radius-md); background-color: var(--primary-light); color: var(--primary-dark); font-size: 14px; display: flex; align-items: center; font-weight: 500; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .status-box i { margin-right: 12px; font-size: 18px;}
         
-        .btn-main { width: 100%; padding: 16px; margin-top: 24px; margin-bottom: 8px; background: var(--primary-gradient); color: white; border: none; border-radius: var(--radius-md); font-size: 16px; font-family: 'Kanit', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.1s ease; letter-spacing: 0.3px; box-shadow: 0 6px 0 var(--primary-dark), 0 10px 15px rgba(0,0,0,0.15); }
-        .btn-main:hover { transform: translateY(2px); box-shadow: 0 4px 0 var(--primary-dark), 0 6px 10px rgba(0,0,0,0.15); }
-        .btn-main:active { transform: translateY(6px); box-shadow: 0 0 0 var(--primary-dark), 0 2px 5px rgba(0,0,0,0.1); }
-        .btn-main:disabled { background: #D5DCD8; box-shadow: 0 6px 0 #BFC9C5; color: #999; cursor: not-allowed; transform: none; }
+        .btn-main { width: 100%; padding: 14px; margin-top: 24px; margin-bottom: 8px; background: var(--primary); color: white; border: none; border-radius: var(--radius-md); font-size: 15px; font-family: 'Kanit', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.2s ease; box-shadow: var(--shadow-soft); display: inline-flex; align-items: center; justify-content: center; gap: 8px;}
+        .btn-main:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); }
+        .btn-main:active { transform: translateY(0); }
+        .btn-main:disabled { background: #E2E8F0; color: #94A3B8; cursor: not-allowed; box-shadow: none; transform: none; }
         
-        .btn-info { background: #2980B9; box-shadow: 0 6px 0 #1A5276; } .btn-info:hover { box-shadow: 0 4px 0 #1A5276; } .btn-info:active { box-shadow: 0 0 0 #1A5276; }
-        .btn-warning { background: var(--accent); box-shadow: 0 6px 0 #B9770E; } .btn-warning:hover { box-shadow: 0 4px 0 #B9770E; } .btn-warning:active { box-shadow: 0 0 0 #B9770E; }
-        .btn-ghost { background: #FFF9E6; color: var(--accent); border: 2px solid #FDEBD0; box-shadow: 0 4px 0 #FDEBD0; margin-top: 5px; margin-bottom: 15px; border-radius: 12px; } .btn-ghost:hover { transform: translateY(2px); box-shadow: 0 2px 0 #FDEBD0; } .btn-ghost:active { transform: translateY(4px); box-shadow: 0 0 0 #FDEBD0; }
+        .btn-info { background: var(--info); } .btn-info:hover { background: #2563EB; }
+        .btn-warning { background: var(--accent); } .btn-warning:hover { background: #D97706; }
+        .btn-ghost { background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none; margin-top: 5px; margin-bottom: 15px;} .btn-ghost:hover { background: var(--primary-light); transform: none; } 
         
-        .btn-small { padding: 10px; border-radius: 10px; font-weight: 500; font-size: 14px; border: none; cursor: pointer; transition: all 0.1s ease; font-family: 'Kanit', sans-serif; text-align: center; display: inline-block; box-sizing: border-box;}
-        .btn-small-primary { background: var(--primary); color: white; box-shadow: 0 4px 0 var(--primary-dark); margin-bottom: 4px; } .btn-small-primary:active { transform: translateY(4px); box-shadow: 0 0 0 var(--primary-dark); margin-bottom: 0;}
-        .btn-small-outline { background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border); box-shadow: 0 4px 0 var(--border); margin-bottom: 4px; } .btn-small-outline:active { transform: translateY(4px); box-shadow: 0 0 0 var(--border); margin-bottom: 0;}
+        .btn-small { padding: 8px 12px; border-radius: 8px; font-weight: 500; font-size: 13px; border: none; cursor: pointer; transition: all 0.2s ease; font-family: 'Kanit', sans-serif; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;}
+        .btn-small-primary { background: var(--primary-light); color: var(--primary-dark); font-weight: 600; } .btn-small-primary:hover { background: var(--primary); color: white; transform: translateY(-1px); }
+        .btn-small-outline { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.05); } .btn-small-outline:hover { background: var(--bg-main); transform: translateY(-1px); }
         
-        .page { display: none; animation: fadeIn 0.4s ease; } .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .page { display: none; animation: fadeIn 0.3s ease; } .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .form-grid.col-3 { grid-template-columns: 1fr 1fr 1fr; } .full-width { grid-column: 1 / -1; }
-        .section-title { font-size: 17px; font-weight: 600; color: var(--text-main); margin-top: 30px; margin-bottom: 16px; display: flex; align-items: center; } .buyer-section-title { color: var(--primary-dark); }
+        .section-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-top: 25px; margin-bottom: 15px; display: flex; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px;} .buyer-section-title { color: var(--primary-dark); }
         
-        .sale-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; margin-bottom: 18px; box-shadow: var(--shadow-soft); transition: transform 0.2s ease;} .sale-card:hover { transform: translateY(-2px); }
-        .sale-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border); } .sale-date { font-size: 13px; color: var(--text-muted); }
-        .badge { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: 0.3px;} .badge.pending { background: #EAF2F8; color: var(--info); } .badge.waiting { background: #FEF5E7; color: var(--accent); } .badge.processing { background: #EAF2F8; color: var(--info); } .badge.verify { background: #F4ECF7; color: #8E44AD; } .badge.completed { background: var(--primary-light); color: var(--primary-dark); } .badge.canceled { background: #FDEDEC; color: var(--danger); }      
-        .sale-detail { font-size: 14px; color: var(--text-main); line-height: 2; } .sale-detail span { font-weight: 600; color: var(--primary-dark); }
+        .sale-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow-soft); transition: transform 0.2s ease;} .sale-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.03); }
+        .sale-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); } .sale-date { font-size: 12px; color: var(--text-muted); }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px;} .badge.pending { background: #E0F2FE; color: var(--info); } .badge.waiting { background: #FEF3C7; color: var(--accent); } .badge.processing { background: #E0F2FE; color: var(--info); } .badge.verify { background: #F3E8FF; color: #7E22CE; } .badge.completed { background: var(--primary-light); color: var(--primary-dark); } .badge.canceled { background: #FEE2E2; color: var(--danger); }      
+        .sale-detail { font-size: 13px; color: var(--text-main); line-height: 1.8; } .sale-detail span { font-weight: 600; color: var(--primary-dark); }
         
         .empty-state { text-align: center; color: var(--text-muted); font-size: 14px; padding: 40px 0; background: var(--surface); border-radius: var(--radius-md); border: 1px dashed var(--border);}
         
-        .cluster-group { background-color: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 24px; box-shadow: var(--shadow-soft); } .cluster-title { font-weight: 600; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; font-size: 16px; }
-        .control-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; margin-bottom: 20px; box-shadow: var(--shadow-soft); } .control-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: var(--text-main); font-weight: 600; } .slider-input { width: 100%; margin: 8px 0; accent-color: var(--primary); } .val-badge { background: var(--primary-light); color: var(--primary-dark); padding: 4px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; }
+        .cluster-group { background-color: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 20px; box-shadow: var(--shadow-soft); } .cluster-title { font-weight: 600; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; font-size: 15px; }
+        .control-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 20px; box-shadow: var(--shadow-soft); } .control-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: var(--text-main); font-weight: 600; } .slider-input { width: 100%; margin: 8px 0; accent-color: var(--primary); } .val-badge { background: var(--primary-light); color: var(--primary-dark); padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
         
-        .photo-gallery { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 12px; margin-top: 10px; padding-bottom: 10px; scroll-snap-type: x mandatory;} .photo-gallery img { width: 100px; height: 100px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border); flex-shrink: 0; scroll-snap-align: start;}
+        .photo-gallery { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 10px; margin-top: 10px; padding-bottom: 10px; scroll-snap-type: x mandatory;} .photo-gallery img { width: 80px; height: 80px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border); flex-shrink: 0; scroll-snap-align: start;}
         
         .swal2-container { z-index: 1000000 !important; } 
-        .swal2-popup { border-radius: 20px !important; padding: 20px !important; font-family: 'Kanit', sans-serif !important;} 
-        .swal2-close { color: var(--danger) !important; background: #FDEDEC !important; border-radius: 50% !important; width: 38px !important; height: 38px !important; position: absolute !important; top: 12px !important; right: 12px !important; transition: all 0.2s ease !important; } .swal2-close:hover { background: var(--danger) !important; color: white !important; }
+        .swal2-popup { border-radius: 16px !important; padding: 20px !important; font-family: 'Kanit', sans-serif !important;} 
+        .swal2-close { color: var(--text-muted) !important; background: #F1F5F9 !important; border-radius: 50% !important; width: 32px !important; height: 32px !important; position: absolute !important; top: 12px !important; right: 12px !important; transition: all 0.2s ease !important; } .swal2-close:hover { background: var(--danger) !important; color: white !important; }
         
         .island-modal { text-align: left; font-size: 14px; color: var(--text-main); line-height: 1.6; } 
-        .island-info-box { background: var(--bg-main); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 16px; } 
-        .island-gallery { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 12px; padding-bottom: 10px; margin-top: 8px; scroll-snap-type: x mandatory;} 
-        .island-gallery img { width: 140px; height: 140px; object-fit: cover; border-radius: var(--radius-md); flex-shrink: 0; cursor: zoom-in; scroll-snap-align: start; border: 1px solid var(--border);} 
-        .swal-map-container { height: 200px; width: 100%; border-radius: var(--radius-md); margin-top: 12px; margin-bottom: 16px; border: 1px solid var(--border); z-index: 9999; overflow: hidden;}
+        .island-info-box { background: var(--bg-main); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 14px; } 
+        .island-gallery { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-top: 8px; scroll-snap-type: x mandatory;} 
+        .island-gallery img { width: 100px; height: 100px; object-fit: cover; border-radius: var(--radius-md); flex-shrink: 0; cursor: zoom-in; scroll-snap-align: start; border: 1px solid var(--border);} 
+        .swal-map-container { height: 180px; width: 100%; border-radius: var(--radius-md); margin-top: 10px; margin-bottom: 14px; border: 1px solid var(--border); z-index: 9999; overflow: hidden;}
         
-        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(247,249,248,0.95); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px);} 
-        .anim-container { position: relative; width: 120px; height: 50px; border-bottom: 3px solid var(--primary); overflow: hidden; margin-bottom: 20px; } 
-        .anim-truck { position: absolute; bottom: -8px; left: -40px; font-size: 32px; animation: driveTruck 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1); } 
-        .anim-cane { position: absolute; bottom: -8px; right: 5px; font-size: 30px; } 
-        @keyframes driveTruck { 0% { left: -40px; } 70% { left: 80px; } 100% { left: 80px; opacity: 0; } }
+        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(248,250,252,0.9); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px);} 
+        .spinner { width: 50px; height: 50px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s cubic-bezier(0.55, 0.085, 0.68, 0.53) infinite; margin-bottom: 16px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
         
-        #image-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20,25,22,0.95); z-index: 100000; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(5px);} 
-        #image-viewer-img { max-width: 90%; max-height: 80%; border-radius: 16px; object-fit: contain;} 
-        .close-viewer { position: absolute; top: 30px; right: 30px; color: white; font-size: 32px; cursor: pointer; width: 44px; height: 44px; text-align: center; line-height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; border: 1px solid rgba(255,255,255,0.2);} 
+        #image-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.95); z-index: 100000; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(5px);} 
+        #image-viewer-img { max-width: 90%; max-height: 80%; border-radius: 12px; object-fit: contain;} 
+        .close-viewer { position: absolute; top: 20px; right: 20px; color: white; font-size: 28px; cursor: pointer; width: 40px; height: 40px; text-align: center; line-height: 36px; background: rgba(255,255,255,0.1); border-radius: 50%; border: 1px solid rgba(255,255,255,0.2);} 
         .close-viewer:hover { background: var(--danger); border-color: var(--danger); }
         
-        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } 
-        .dash-card { background: var(--surface); padding: 18px; border-radius: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center;}
+        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } 
+        .dash-card { background: var(--surface); padding: 14px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center;}
         
-        .receipt-box { border: 2px dashed var(--primary); padding: 16px; margin-top: 15px; background: #FAFCFB; border-radius: 12px; font-family: 'Kanit'; } 
-        .receipt-box .title { text-align: center; margin-bottom: 12px; border-bottom: 1px dashed #ccc; padding-bottom: 10px; } 
-        .receipt-box .title-main { font-size: 16px; font-weight: 600; color: var(--primary-dark); } 
-        .receipt-box .title-sub { font-size: 12px; color: var(--text-muted); } 
-        .receipt-box .section { font-size: 13px; line-height: 1.8; color: var(--text-main); margin-bottom: 12px; } 
-        .receipt-box .row { display: flex; justify-content: space-between; } 
-        .receipt-box .row span:last-child { font-weight: 500; } 
-        .receipt-box .total-section { border-top: 1px dashed #ccc; padding-top: 10px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 600; }
+        .receipt-box { border: 1px dashed var(--primary); padding: 14px; margin-top: 15px; background: #F0FDF4; border-radius: 12px; font-family: 'Kanit'; } 
+        .receipt-box .title { text-align: center; margin-bottom: 10px; border-bottom: 1px dashed var(--border); padding-bottom: 8px; } 
+        .receipt-box .title-main { font-size: 15px; font-weight: 600; color: var(--primary-dark); } 
+        .receipt-box .title-sub { font-size: 11px; color: var(--text-muted); } 
+        .receipt-box .section { font-size: 13px; line-height: 1.6; color: var(--text-main); margin-bottom: 10px; } 
+        .receipt-box .row { display: flex; justify-content: space-between; margin-bottom: 4px;} 
+        .receipt-box .row span:last-child { font-weight: 600; } 
+        .receipt-box .total-section { border-top: 1px dashed var(--border); padding-top: 8px; display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; color: var(--secondary);}
     </style>
 </head>
 <body>
 
     <!-- Loading Screen -->
     <div id="loading-screen">
-        <div class="anim-container">
-            <div class="anim-truck" id="loader-truck"></div>
-            <div class="anim-cane"></div>
-        </div>
-        <h3 style="color:var(--primary-dark); font-weight:600; font-size:18px; margin:0;" id="loader-text">กำลังโหลดข้อมูล...</h3>
+        <div class="spinner"></div>
+        <h3 style="color:var(--secondary); font-weight:600; font-size:16px; margin:0;" id="loader-text">กำลังซิงค์ข้อมูล...</h3>
     </div>
 
     <!-- Image Viewer Overlay -->
@@ -193,17 +189,17 @@
         <!-- ================= 1. หน้าลงทะเบียนชาวไร่ ================= -->
         <div id="register-page" class="page">
             <div class="tab-nav">
-                <button id="btn-tab-personal" class="tab-btn active" onclick="switchRegTab('personal')"> ข้อมูลส่วนตัว</button>
-                <button id="btn-tab-plots" class="tab-btn" onclick="switchRegTab('plots')"> แปลงของฉัน</button>
+                <button id="btn-tab-personal" class="tab-btn active" onclick="switchRegTab('personal')"><i class="fa-regular fa-id-card"></i> ข้อมูลส่วนตัว</button>
+                <button id="btn-tab-plots" class="tab-btn" onclick="switchRegTab('plots')"><i class="fa-solid fa-draw-polygon"></i> แปลงของฉัน</button>
             </div>
 
             <!-- Tab: Personal Info -->
             <div id="tab-personal">
-                <div class="status-box" id="reg-status-box" style="margin-bottom: 10px;">
-                    <i></i> ยินดีต้อนรับ กรุณากรอกข้อมูลส่วนตัว
+                <div class="status-box" id="reg-status-box" style="margin-bottom: 15px;">
+                    <i class="fa-solid fa-circle-info"></i> ยินดีต้อนรับ กรุณากรอกข้อมูลส่วนตัว
                 </div>
                 <button id="btn-enable-edit" type="button" class="btn-main btn-ghost" onclick="enableProfileEdit()" style="display:none;">
-                     ปลดล็อกเพื่อแก้ไขข้อมูล
+                    <i class="fa-solid fa-pen-to-square"></i> ปลดล็อกเพื่อแก้ไขข้อมูล
                 </button>
                 
                 <div class="form-grid col-3">
@@ -224,7 +220,7 @@
                         <input type="text" id="reg-lastname" required placeholder="ใจดี">
                     </div>
                     <div class="full-width">
-                        <label>วัน/เดือน/ปีเกิด:</label>
+                        <label>วันเกิด:</label>
                         <input type="date" id="reg-dob" required>
                     </div>
                     <div class="full-width">
@@ -266,9 +262,9 @@
                         <input type="text" id="reg-zip" required readonly>
                     </div>
                     <div class="full-width">
-                        <label>ข้อมูลการปลูกอ้อย (ไร่):</label>
+                        <label>ขนาดพื้นที่ปลูกรวม (ไร่):</label>
                         <select id="reg-farminfo" required>
-                            <option value="" disabled selected>เลือกขนาดพื้นที่ปลูกอ้อย</option>
+                            <option value="" disabled selected>เลือกขนาดพื้นที่</option>
                             <option value="1-20 ไร่">1-20 ไร่</option>
                             <option value="21-50 ไร่">21-50 ไร่</option>
                             <option value="50-100 ไร่">50-100 ไร่</option>
@@ -278,66 +274,66 @@
                 </div>
                 
                 <!-- กล่องกดยอมรับ PDPA (ชาวไร่) -->
-                <div id="pdpa-box-farmer" style="margin-top: 25px; margin-bottom: 15px; font-size: 13px; color: var(--text-muted); background: #F8FAF9; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
-                    <label style="display: flex; align-items: flex-start; gap: 8px; margin: 0; cursor: pointer;">
+                <div id="pdpa-box-farmer" style="margin-top: 25px; margin-bottom: 15px; font-size: 13px; color: var(--text-muted); background: var(--bg-main); padding: 15px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+                    <label style="display: flex; align-items: flex-start; gap: 10px; margin: 0; cursor: pointer;">
                         <input type="checkbox" id="reg-pdpa" style="width: 18px; height: 18px; margin-top: 2px;">
                         <span>ข้าพเจ้ายินยอมให้ แพลตฟอร์ม CaneConnect เก็บรวบรวมและเปิดเผยข้อมูลส่วนบุคคล (ชื่อ, เบอร์โทร, พิกัด) เพื่อใช้จับคู่ซื้อขายใบอ้อย ตาม<a href="#" onclick="showPDPA(); return false;" style="color: var(--info); font-weight: 600; text-decoration: underline;">นโยบายความเป็นส่วนตัว (PDPA)</a></span>
                     </label>
                 </div>
                 
-                <button id="btn-register" class="btn-main" onclick="submitRegistration()">บันทึกข้อมูลส่วนตัว</button>
+                <button id="btn-register" class="btn-main" onclick="submitRegistration()"><i class="fa-solid fa-save"></i> บันทึกข้อมูลส่วนตัว</button>
             </div>
 
             <!-- Tab: Saved Plots -->
             <div id="tab-plots" style="display:none;">
-                <div class="status-box" style="background: #FFF9E6; border-color: var(--accent); color: var(--accent); margin-bottom: 15px;">
-                    <i></i> เลื่อนแผนที่ไปยังพื้นที่ของท่าน สามารถกดปักหมุดหรือลากวาดแปลงเองได้เลยครับ
+                <div class="status-box" style="background: #FFFBEB; border-color: #FDE68A; color: #D97706; margin-bottom: 15px;">
+                    <i class="fa-solid fa-lightbulb"></i> เลื่อนแผนที่ไปยังพื้นที่ของท่าน สามารถกดปักหมุดหรือลากวาดแปลงเองได้เลยครับ
                 </div>
                 
                 <button type="button" class="btn-main btn-info" onclick="openAddPlotModal(-1)" style="margin-top: 0;">
-                    + เพิ่มแปลงอ้อย
+                    <i class="fa-solid fa-plus"></i> เพิ่มแปลงอ้อย
                 </button>
                 
                 <div id="all-plots-wrapper" style="display:none; margin-top: 25px;">
-                    <label style="color: var(--primary-dark); font-weight: 600; margin-bottom: 8px;"> แผนที่รวมแปลงทั้งหมดของคุณ:</label>
-                    <div id="all-plots-map" class="map-container" style="height: 280px; margin-top: 0; border: 2px solid var(--primary); border-radius: var(--radius-md);"></div>
+                    <label style="color: var(--secondary); font-weight: 600; margin-bottom: 8px;"><i class="fa-solid fa-map"></i> แผนที่รวมแปลงทั้งหมดของคุณ:</label>
+                    <div id="all-plots-map" class="map-container" style="height: 280px; margin-top: 0;"></div>
                 </div>
                 
                 <div id="saved-plots-container" style="margin-top: 20px; margin-bottom: 15px;">
                     <div class="empty-state" style="padding: 20px 0;">ยังไม่มีแปลงที่บันทึกไว้</div>
                 </div>
                 
-                <button type="button" class="btn-main" onclick="submitRegistration()"> บันทึกการเปลี่ยนแปลง</button>
+                <button type="button" class="btn-main" onclick="submitRegistration()"><i class="fa-solid fa-cloud-arrow-up"></i> บันทึกการเปลี่ยนแปลง</button>
             </div>
         </div>
 
         <!-- ================= 2. หน้าแจ้งพิกัดอ้อย (เลือกแปลงที่วาดไว้แล้ว) ================= -->
         <div id="main-page" class="page">
-            <div style="margin-bottom: 20px; padding: 18px; background: #FFF9E6; border-radius: var(--radius-md); border: 1px solid #FDEBD0; box-shadow: var(--shadow-soft);">
-                <label style="color: var(--accent); font-weight: 600; margin-top: 0; font-size: 16px;"> เลือกแปลงที่ต้องการแจ้งขาย:</label>
-                <select id="select-saved-plot" onchange="loadSavedPlotToPreview()" style="border: 2px solid var(--accent); margin-top: 8px; font-weight: 500; height: 50px;">
+            <div style="margin-bottom: 20px; padding: 20px; background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-soft);">
+                <label style="color: var(--secondary); font-weight: 700; margin-top: 0; font-size: 15px;"> เลือกแปลงที่ต้องการแจ้งขาย:</label>
+                <select id="select-saved-plot" onchange="loadSavedPlotToPreview()" style="margin-top: 8px; font-weight: 500; height: 48px;">
                     <option value="">-- กรุณาเลือกแปลงอ้อย --</option>
                 </select>
-                <div style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 10px;">
                     * หากไม่มีแปลงให้เลือก กรุณาไปเพิ่มที่เมนู "ข้อมูลส่วนตัว > แปลงของฉัน" ก่อนครับ
                 </div>
             </div>
 
             <!-- Preview Map (Read-Only) -->
             <div id="preview-map-wrapper" style="display: none;">
-                <div class="status-box" id="gps-status" style="margin-top:0; margin-bottom: 10px; background:var(--primary-light); border-color:var(--primary); color:var(--primary-dark);">
-                    <i></i> โหลดข้อมูลแปลงสำเร็จ
+                <div class="status-box" id="gps-status" style="margin-top:0; margin-bottom: 15px; background:#EFF6FF; border-color:#BAE6FD; color:#0369A1;">
+                    <i class="fa-solid fa-location-crosshairs"></i> โหลดข้อมูลแปลงสำเร็จ
                 </div>
                 
-                <div id="preview-map" class="map-container" style="height: 200px;"></div>
+                <div id="preview-map" class="map-container" style="height: 220px;"></div>
                 
                 <div class="form-grid" style="margin-top: 15px;">
                     <div>
                         <label> พื้นที่ประเมิน (ไร่):</label>
-                        <input type="number" id="quantity" readonly style="background:#F4F6F5; color:var(--primary-dark); font-weight:600;">
+                        <input type="number" id="quantity" readonly style="background:#F1F5F9; color:var(--primary-dark); font-weight:600;">
                     </div>
                     <div>
-                        <label> วันที่ตัดเสร็จ:</label>
+                        <label> วันที่คาดว่าจะตัดเสร็จ:</label>
                         <input type="date" id="harvest-date" required>
                     </div>
                     <div class="full-width">
@@ -350,19 +346,19 @@
                 </div>
             </div>
 
-            <label style="margin-top:20px;"> ภาพหน้างาน (เลือกได้ 1-4 รูป):</label>
-            <input type="file" id="field-photo-input" accept="image/*" multiple onchange="previewMultiplePhotos(event)" style="padding: 10px;">
+            <label style="margin-top:20px;"> ภาพหน้างาน (สูงสุด 4 รูป):</label>
+            <input type="file" id="field-photo-input" accept="image/*" multiple onchange="previewMultiplePhotos(event)" style="padding: 10px; background: var(--surface);">
             <div id="photo-preview-container" class="photo-gallery"></div>
 
-            <button id="submit-btn" class="btn-main" onclick="submitCaneData()" disabled>ประกาศหาคิวรถม้วน</button>
+            <button id="submit-btn" class="btn-main" onclick="submitCaneData()" disabled><i class="fa-solid fa-paper-plane"></i> ประกาศหาคิวรถม้วน</button>
         </div>
 
         <!-- ================= 3. หน้าการขายของฉัน (ชาวไร่) ================= -->
         <div id="sales-page" class="page">
-            <div class="section-title"> รายการรอรับงาน และ กำลังดำเนินการ</div>
+            <div class="section-title"><i class="fa-solid fa-list-check" style="color:var(--info);"></i> รายการรอรับงาน และ กำลังดำเนินการ</div>
             <div id="current-sales-container"></div>
             
-            <div class="section-title"> ประวัติการขาย (เสร็จสิ้น)</div>
+            <div class="section-title"><i class="fa-solid fa-clock-rotate-left" style="color:var(--text-muted);"></i> ประวัติการขาย (เสร็จสิ้น)</div>
             <div id="history-sales-container"></div>
             
             <div id="farmer-dashboard-container" style="display:none; margin-top: 40px; margin-bottom: 20px;"></div>
@@ -370,12 +366,12 @@
 
         <!-- ================= 4. หน้าลงทะเบียนผู้รับซื้อ ================= -->
         <div id="register-buyer-page" class="page">
-            <div class="status-box" id="buyer-reg-status-box" style="margin-bottom: 10px;">
-                <i></i> ลงทะเบียนพาร์ทเนอร์รถม้วน
+            <div class="status-box" id="buyer-reg-status-box" style="margin-bottom: 15px;">
+                <i class="fa-solid fa-user-gear"></i> ลงทะเบียนพาร์ทเนอร์รถม้วน
             </div>
             
             <button id="btn-enable-buyer-edit" type="button" class="btn-main btn-ghost" onclick="enableBuyerProfileEdit()" style="display:none;">
-                 ปลดล็อกเพื่อแก้ไขข้อมูล
+                 <i class="fa-solid fa-pen-to-square"></i> ปลดล็อกเพื่อแก้ไขข้อมูล
             </button>
             
             <div class="form-grid col-3">
@@ -444,21 +440,21 @@
             </div>
             
             <!-- กล่องกดยอมรับ PDPA (ผู้รับซื้อ) -->
-            <div id="pdpa-box-buyer" style="margin-top: 25px; margin-bottom: 15px; font-size: 13px; color: var(--text-muted); background: #F8FAF9; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
-                <label style="display: flex; align-items: flex-start; gap: 8px; margin: 0; cursor: pointer;">
+            <div id="pdpa-box-buyer" style="margin-top: 25px; margin-bottom: 15px; font-size: 13px; color: var(--text-muted); background: var(--bg-main); padding: 15px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+                <label style="display: flex; align-items: flex-start; gap: 10px; margin: 0; cursor: pointer;">
                     <input type="checkbox" id="buyer-pdpa" style="width: 18px; height: 18px; margin-top: 2px;">
                     <span>ข้าพเจ้ายินยอมให้ แพลตฟอร์ม CaneConnect เก็บรวบรวมและเปิดเผยข้อมูลส่วนบุคคล (ชื่อ, เบอร์โทร, จุดจอดรถ) เพื่อรับงานม้วนใบอ้อย ตาม<a href="#" onclick="showPDPA(); return false;" style="color: var(--info); font-weight: 600; text-decoration: underline;">นโยบายความเป็นส่วนตัว (PDPA)</a></span>
                 </label>
             </div>
             
-            <button id="btn-buyer-register" class="btn-main" onclick="submitBuyerRegistration()">บันทึกข้อมูล</button>
+            <button id="btn-buyer-register" class="btn-main" onclick="submitBuyerRegistration()"><i class="fa-solid fa-save"></i> บันทึกข้อมูล</button>
         </div>
 
         <!-- ================= 5. หน้าค้นหางาน (ผู้รับซื้อ) ================= -->
         <div id="buyer-page" class="page">
             <!-- แผงควบคุม ค้นหางานแบบคลัสเตอร์ -->
             <div class="control-panel">
-                <div style="font-weight:600; font-size:16px; margin-bottom:12px; color:var(--primary-dark);"> ตั้งค่าความคุ้มทุนของรถคุณ</div>
+                <div style="font-weight:700; font-size:15px; margin-bottom:15px; color:var(--primary-dark);"><i class="fa-solid fa-sliders"></i> ตั้งค่าความคุ้มทุนของรถคุณ</div>
                 
                 <div class="control-row">
                     <span>ระยะรัศมีวิ่งงานสูงสุด</span>
@@ -472,22 +468,22 @@
                 </div>
                 <input type="range" class="slider-input" id="slider-days" min="1" max="14" value="5" step="1" oninput="updateClusterLogic()">
                 
-                <div style="font-weight:600; font-size:14px; margin-top:15px; color:var(--text-main); border-top: 1px solid var(--border); padding-top: 12px;"> ค้นหาตามช่วงวันที่พร้อมม้วน</div>
-                <div class="form-grid" style="margin-top: 8px;">
+                <div style="font-weight:600; font-size:13px; margin-top:20px; color:var(--text-muted); border-top: 1px solid var(--border); padding-top: 15px;"> ค้นหาตามช่วงวันที่พร้อมม้วน</div>
+                <div class="form-grid" style="margin-top: 10px;">
                     <div>
                         <label style="margin-top:0; font-size:12px;">ตั้งแต่วันที่:</label>
-                        <input type="date" id="filter-date-start" onchange="updateClusterLogic()" style="padding:10px; font-size:13px;">
+                        <input type="date" id="filter-date-start" onchange="updateClusterLogic()" style="padding:10px 12px; font-size:13px;">
                     </div>
                     <div>
                         <label style="margin-top:0; font-size:12px;">ถึงวันที่:</label>
-                        <input type="date" id="filter-date-end" onchange="updateClusterLogic()" style="padding:10px; font-size:13px;">
+                        <input type="date" id="filter-date-end" onchange="updateClusterLogic()" style="padding:10px 12px; font-size:13px;">
                     </div>
                 </div>
 
                 <div class="form-grid" style="margin-top: 15px;">
                     <div>
                         <label style="margin-top:0; font-size:12px;"> กรองข้อมูล:</label>
-                        <select id="filter-status" onchange="updateClusterLogic()" style="padding:10px; font-size:13px;">
+                        <select id="filter-status" onchange="updateClusterLogic()" style="padding:10px 12px; font-size:13px;">
                             <option value="all">รายการเปิดอยู่ทั้งหมด</option>
                             <option value="รอคิวรถ">เฉพาะงานว่าง (รอคิวรถ)</option>
                             <option value="รอชาวไร่ยืนยัน">รอชาวไร่พิจารณาราคา</option>
@@ -495,7 +491,7 @@
                     </div>
                     <div>
                         <label style="margin-top:0; font-size:12px;"> จัดเรียง:</label>
-                        <select id="sort-by" onchange="updateClusterLogic()" style="padding:10px; font-size:13px;">
+                        <select id="sort-by" onchange="updateClusterLogic()" style="padding:10px 12px; font-size:13px;">
                             <option value="priority"> แนะนำความคุ้มค่า</option>
                             <option value="date-new"> อัปเดตล่าสุด</option>
                             <option value="date-old"> เก่าสุด</option>
@@ -508,19 +504,19 @@
             <!-- แผนที่สำหรับผู้รับซื้อ -->
             <div id="buyer-map" class="map-container" style="height: 350px;"></div>
             
-            <div style="margin-top: 12px; font-size: 13px; color: var(--text-muted); text-align: right;">
+            <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: right; font-weight: 500;">
                 <span style="display:inline-block; width:10px; height:10px; background:var(--primary); border-radius:50%;"></span> แปลงเดี่ยวคุ้ม 
                 <span style="display:inline-block; width:10px; height:10px; background:var(--accent); border-radius:50%; margin-left:10px;"></span> กลุ่มคุ้มทุน 
                 <span style="display:inline-block; width:10px; height:10px; background:var(--text-muted); border-radius:50%; margin-left:10px;"></span> งานย่อย
             </div>
             
-            <div class="section-title buyer-section-title"> กระดานประมูลคิวงาน</div>
+            <div class="section-title buyer-section-title"><i class="fa-solid fa-gavel"></i> กระดานประมูลคิวงาน</div>
             
             <div id="buyer-active-jobs-container"></div>
             <div id="buyer-list-container"></div>
             
             <!-- ส่วนประวัติการรับซื้อสำหรับรถม้วน -->
-            <div class="section-title buyer-section-title" style="margin-top: 40px;"> ประวัติการรับซื้อ (เสร็จสิ้น)</div>
+            <div class="section-title buyer-section-title" style="margin-top: 40px; color:var(--text-muted);"><i class="fa-solid fa-clock-rotate-left"></i> ประวัติการรับซื้อ (เสร็จสิ้น)</div>
             <div id="buyer-history-container"></div>
         </div>
     </div>
@@ -530,10 +526,11 @@
     
     <script>
         // สีประจำแอป
-        const THEME_PRIMARY = '#6DB33F'; 
-        const THEME_ACCENT = '#F39C12'; 
-        const THEME_INFO = '#2980B9'; 
-        const THEME_MUTED = '#7F8C8D';
+        const THEME_PRIMARY = '#10B981'; 
+        const THEME_ACCENT = '#F59E0B'; 
+        const THEME_INFO = '#3B82F6'; 
+        const THEME_MUTED = '#64748B';
+        const THEME_DANGER = '#EF4444';
         
         const LIFF_ID = "2010423459-prdYAD4u"; 
         
@@ -589,7 +586,7 @@
         function updateUserLocationOnMap() {
             let userIcon = L.divIcon({ 
                 className: 'user-loc-icon', 
-                html: `<div style='background-color:#3498DB; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5);'></div>` 
+                html: `<div style='background-color:#3B82F6; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);'></div>` 
             });
             
             if (buyerMapObj) {
@@ -636,16 +633,16 @@
                         if (geometry && geometry.type) {
                             L.geoJSON(geometry, {
                                 style: {
-                                    color: '#3498DB', 
-                                    weight: 3,
-                                    fillOpacity: 0.3,
+                                    color: THEME_INFO, 
+                                    weight: 2,
+                                    fillOpacity: 0.2,
                                     dashArray: '5, 5' 
                                 }
                             }).bindPopup(`
                                 <div style="font-family:'Kanit'; text-align:center;">
-                                    <b style="color:#2980B9;"> ประเมินโดยดาวเทียม GISTDA</b><br>
+                                    <b style="color:var(--info);"> ประเมินโดยดาวเทียม GISTDA</b><br>
                                     <b>ขนาดพื้นที่:</b> ${item.area ? parseFloat(item.area).toFixed(2) : '-'} ไร่<br>
-                                    <span style="font-size:12px; color:gray;">อัปเดต: ${item.update || '-'}</span>
+                                    <span style="font-size:12px; color:var(--text-muted);">อัปเดต: ${item.update || '-'}</span>
                                 </div>
                             `).addTo(mapObject);
                         }
@@ -686,7 +683,7 @@
                 Swal.fire({
                     title: 'ข้อตกลงและเงื่อนไข (PDPA)',
                     html: `
-                        <div style="text-align:left; font-size:13px; line-height:1.6; max-height:200px; overflow-y:auto; padding:12px; background:#F8FAF9; border-radius:8px; border:1px solid var(--border); margin-bottom:15px; font-family:'Kanit';">
+                        <div style="text-align:left; font-size:13px; line-height:1.6; max-height:200px; overflow-y:auto; padding:12px; background:var(--bg-main); border-radius:12px; border:1px solid var(--border); margin-bottom:15px; font-family:'Kanit';">
                             <b>1. วัตถุประสงค์การเก็บข้อมูล:</b><br>
                             แพลตฟอร์ม CaneConnect มีความจำเป็นต้องเก็บรวบรวมข้อมูลส่วนบุคคลของท่าน เพื่อใช้ในการระบุตัวตน และอำนวยความสะดวกในการจับคู่ซื้อขายใบอ้อย<br><br>
                             <b>2. ข้อมูลที่จัดเก็บ:</b><br>
@@ -764,7 +761,7 @@
             toggleProfileInputs(false, 'reg'); 
             document.getElementById('btn-enable-edit').style.display = 'none'; 
             document.getElementById('btn-register').style.display = 'block'; 
-            document.getElementById("reg-status-box").innerHTML = "<i></i> กำลังอยู่ในโหมดแก้ไขข้อมูล"; 
+            document.getElementById("reg-status-box").innerHTML = "<i class='fa-solid fa-pen-to-square'></i> กำลังอยู่ในโหมดแก้ไขข้อมูล"; 
             let pdpaBox = document.getElementById('pdpa-box-farmer');
             if(pdpaBox) pdpaBox.style.display = 'none';
         }
@@ -773,7 +770,7 @@
             toggleProfileInputs(false, 'buyer'); 
             document.getElementById('btn-enable-buyer-edit').style.display = 'none'; 
             document.getElementById('btn-buyer-register').style.display = 'block'; 
-            document.getElementById("buyer-reg-status-box").innerHTML = "<i></i> กำลังอยู่ในโหมดแก้ไขข้อมูล"; 
+            document.getElementById("buyer-reg-status-box").innerHTML = "<i class='fa-solid fa-pen-to-square'></i> กำลังอยู่ในโหมดแก้ไขข้อมูล"; 
             let pdpaBox = document.getElementById('pdpa-box-buyer');
             if(pdpaBox) pdpaBox.style.display = 'none';
         }
@@ -945,7 +942,7 @@
                     
                     polygon.bindPopup(`
                         <div style="font-family:Kanit; min-width: 180px;">
-                            <div style="font-size:16px; font-weight:600; color:var(--primary-dark); margin-bottom:8px; border-bottom:1px solid #eee; padding-bottom:4px;">${plot.name}</div>
+                            <div style="font-size:15px; font-weight:600; color:var(--primary-dark); margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:4px;">${plot.name}</div>
                             <div style="font-size:13px; margin-bottom:4px;"><b>พื้นที่:</b> ${plot.area} ไร่</div>
                             <div style="font-size:13px; margin-bottom:4px; color:var(--text-muted);"> ${pCond}</div>
                             <div style="font-size:13px; margin-bottom:12px; color:var(--text-muted);"> ${pAcc}</div>
@@ -1004,15 +1001,15 @@
                 let pAcc = plot.access || "ไม่ระบุทางเข้า";
                 
                 html += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface); padding:16px; border:1px solid var(--border); border-radius:12px; margin-bottom:10px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface); padding:16px; border:1px solid var(--border); border-radius:12px; margin-bottom:12px; box-shadow: var(--shadow-soft);">
                         <div>
-                            <div style="font-weight:600; color:var(--text-main); font-size:16px;">${plot.name}</div>
-                            <div style="font-size:13px; color:var(--text-muted);">พื้นที่: <span style="color:var(--primary); font-weight:600;">${plot.area} ไร่</span></div>
-                            <div style="font-size:12px; color:var(--text-muted); margin-top:4px;"> ${pCond} <br>  ${pAcc}</div>
+                            <div style="font-weight:700; color:var(--text-main); font-size:15px;">${plot.name}</div>
+                            <div style="font-size:13px; color:var(--text-muted); margin-top:2px;">พื้นที่: <span style="color:var(--primary); font-weight:600;">${plot.area} ไร่</span></div>
+                            <div style="font-size:12px; color:var(--text-muted); margin-top:4px; line-height: 1.5;"> ${pCond} <br>  ${pAcc}</div>
                         </div>
-                        <div style="display:flex; flex-direction: column; gap: 6px;">
-                            <button type="button" onclick="openAddPlotModal(${index})" class="btn-small btn-small-outline" style="background:#EAF2F8; color:var(--info); border:none; border-radius:8px; padding:8px 14px; font-size:13px; width:auto; margin:0; box-shadow:none;">แก้ไข</button>
-                            <button type="button" onclick="removeSavedPlot(${index})" class="btn-small btn-small-outline" style="background:#FDEDEC; color:var(--danger); border:none; border-radius:8px; padding:8px 14px; font-size:13px; width:auto; margin:0; box-shadow:none;">ลบ</button>
+                        <div style="display:flex; flex-direction: column; gap: 8px;">
+                            <button type="button" onclick="openAddPlotModal(${index})" class="btn-small btn-small-outline" style="color:var(--info); border:1px solid #BAE6FD; background:#F0F9FF; border-radius:8px; padding:6px 12px; font-size:12px; width:auto; margin:0; box-shadow:none;"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+                            <button type="button" onclick="removeSavedPlot(${index})" class="btn-small btn-small-outline" style="color:var(--danger); border:1px solid #FECACA; background:#FEF2F2; border-radius:8px; padding:6px 12px; font-size:12px; width:auto; margin:0; box-shadow:none;"><i class="fa-solid fa-trash"></i> ลบ</button>
                         </div>
                     </div>
                 `;
@@ -1029,8 +1026,8 @@
                 text: `คุณต้องการลบแปลง "${userSavedPlots[index].name}" ใช่หรือไม่`, 
                 icon: 'warning', 
                 showCancelButton: true, 
-                confirmButtonColor: '#E74C3C', 
-                cancelButtonColor: '#BFC9C5', 
+                confirmButtonColor: THEME_DANGER, 
+                cancelButtonColor: '#94A3B8', 
                 confirmButtonText: 'ใช่, ลบทิ้ง', 
                 cancelButtonText: 'ยกเลิก' 
             }).then((result) => {
@@ -1086,18 +1083,18 @@
             Swal.fire({
                 html: `
                     <div style="text-align: left; font-family: 'Kanit'; padding: 0;">
-                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--primary-dark);"> ${plotToEdit ? 'แก้ไขแปลงอ้อย' : 'เพิ่มแปลงอ้อย'}</div>
+                        <div style="font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--primary-dark);"> ${plotToEdit ? 'แก้ไขแปลงอ้อย' : 'เพิ่มแปลงอ้อย'}</div>
                         
-                        <input type="text" id="plot-name" class="swal2-input" placeholder="ตั้งชื่อแปลง (เช่น แปลงหน้าบ้าน)" style="width: 100%; box-sizing: border-box; margin: 0 0 10px 0; font-family: 'Kanit'; padding: 10px; font-size: 14px;">
+                        <input type="text" id="plot-name" class="swal2-input" placeholder="ตั้งชื่อแปลง (เช่น แปลงหน้าบ้าน)" style="width: 100%; box-sizing: border-box; margin: 0 0 12px 0; font-family: 'Kanit'; padding: 12px; font-size: 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-main);">
                         
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
-                            <select id="plot-condition" class="swal2-input" style="width: 100%; box-sizing: border-box; margin: 0; font-family: 'Kanit'; padding: 8px; font-size: 13px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                            <select id="plot-condition" class="swal2-input" style="width: 100%; box-sizing: border-box; margin: 0; font-family: 'Kanit'; padding: 10px; font-size: 13px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-main);">
                                 <option value="ไม่มีตอเก่า/หิน (แปลงสะอาด)">แปลงสะอาด (ไม่มีตอ/หิน)</option>
                                 <option value="มีตอเก่า">มีตอเก่า</option>
                                 <option value="มีหินปะปน">มีหินปะปน</option>
                                 <option value="มีทั้งตอเก่าและหิน">มีทั้งตอและหิน</option>
                             </select>
-                            <select id="plot-access" class="swal2-input" style="width: 100%; box-sizing: border-box; margin: 0; font-family: 'Kanit'; padding: 8px; font-size: 13px;">
+                            <select id="plot-access" class="swal2-input" style="width: 100%; box-sizing: border-box; margin: 0; font-family: 'Kanit'; padding: 10px; font-size: 13px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-main);">
                                 <option value="รถพ่วง/เทรลเลอร์ เข้าได้">รถพ่วง/เทรลเลอร์ เข้าได้</option>
                                 <option value="รถบรรทุก 10 ล้อ เข้าได้สะดวก">รถ 10 ล้อ เข้าได้</option>
                                 <option value="รถ 6 ล้อ เข้าได้">รถ 6 ล้อ เข้าได้</option>
@@ -1105,33 +1102,33 @@
                         </div>
                         
                         <!-- Toggle สลับโหมด -->
-                        <div style="display:flex; margin-bottom:10px; background:#F4F6F5; border-radius:12px; padding:4px;">
+                        <div style="display:flex; margin-bottom:12px; background:var(--bg-main); border-radius:12px; padding:4px; border: 1px solid var(--border);">
                             <button type="button" id="mode-pin" class="${currentMapMode==='pin'?'btn-small btn-small-primary':'btn-small btn-small-outline'}" style="flex:1; margin:0; border:none; box-shadow:none; padding:10px; font-size:13px;" onclick="window.switchMapMode('pin')">📍 ปักหมุด (แบบง่าย)</button>
                             <button type="button" id="mode-draw" class="${currentMapMode==='draw'?'btn-small btn-small-primary':'btn-small btn-small-outline'}" style="flex:1; margin:0; border:none; box-shadow:none; padding:10px; font-size:13px;" onclick="window.switchMapMode('draw')">✏️ วาดขอบเขต</button>
                         </div>
                         
-                        <div id="manual-area-input" style="display:${currentMapMode==='pin'?'block':'none'}; margin-bottom:12px; background:var(--primary-light); padding:12px; border-radius:12px; border:1px dashed var(--primary);">
-                            <label style="margin-top:0; color:var(--primary-dark); font-weight:600;">ระบุจำนวนพื้นที่ (ไร่):</label>
-                            <input type="number" id="manual-rai" class="swal2-input" placeholder="เช่น 15" oninput="window.updateCirclePreview()" style="margin:0; width:100%; padding:10px; font-size:15px; text-align:center;">
+                        <div id="manual-area-input" style="display:${currentMapMode==='pin'?'block':'none'}; margin-bottom:12px; background:var(--primary-light); padding:15px; border-radius:12px; border:1px dashed var(--primary);">
+                            <label style="margin-top:0; color:var(--primary-dark); font-weight:600; font-size:14px;">ระบุจำนวนพื้นที่ (ไร่):</label>
+                            <input type="number" id="manual-rai" class="swal2-input" placeholder="เช่น 15" oninput="window.updateCirclePreview()" style="margin:8px 0 0 0; width:100%; padding:12px; font-size:15px; text-align:center; border-radius:10px; border:1px solid rgba(16, 185, 129, 0.3);">
                         </div>
 
-                        <div id="map-tip-text" style="font-size: 13px; font-weight: 500; color: var(--accent); margin-bottom: 6px;">
+                        <div id="map-tip-text" style="font-size: 13px; font-weight: 500; color: var(--accent); margin-bottom: 8px;">
                             ${currentMapMode==='pin' ? '👉 เลื่อนแผนที่แล้วแตะ 1 ครั้ง ตรงจุดกลางแปลงของคุณ' : '👉 ใช้เครื่องมือด้านซ้ายมือ ลากจุดวาดขอบเขตแปลงให้แม่นยำ'}
                         </div>
                         
                         <div style="position:relative;">
                             <div id="modal-map" style="height: 38vh; min-height: 250px; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);"></div>
-                            <div id="gistda-loading-indicator" style="display:none; position:absolute; top:10px; right:10px; z-index:9999; background:rgba(255,255,255,0.95); padding:6px 12px; border-radius:20px; font-size:13px; font-weight:500; color:#2980B9; border:1px solid #3498DB; box-shadow:0 2px 8px rgba(0,0,0,0.15);"></div>
+                            <div id="gistda-loading-indicator" style="display:none; position:absolute; top:10px; right:10px; z-index:9999; background:rgba(255,255,255,0.95); padding:6px 12px; border-radius:20px; font-size:12px; font-weight:600; color:var(--info); border:1px solid #BAE6FD; box-shadow:0 2px 8px rgba(0,0,0,0.1);"></div>
                         </div>
                         
-                        <div id="modal-area-text" style="margin-top:12px; color:var(--primary-dark); font-weight:600; text-align:center; font-size: 18px; background: var(--primary-light); padding: 8px; border-radius: 12px; border: 1px dashed var(--primary);">พื้นที่รวม: <span style="font-size:24px;" id="modal-area-value">${tempArea}</span> ไร่</div>
+                        <div id="modal-area-text" style="margin-top:15px; color:var(--primary-dark); font-weight:600; text-align:center; font-size: 16px; background: var(--primary-light); padding: 12px; border-radius: 12px; border: 1px dashed var(--primary);">พื้นที่รวม: <span style="font-size:24px;" id="modal-area-value">${tempArea}</span> ไร่</div>
                     </div>
                 `,
                 showCancelButton: true, 
                 confirmButtonText: 'บันทึกแปลง', 
                 cancelButtonText: 'ยกเลิก', 
                 confirmButtonColor: THEME_PRIMARY, 
-                cancelButtonColor: '#BFC9C5',
+                cancelButtonColor: '#94A3B8',
                 didOpen: () => {
                     const btnPin = document.getElementById('mode-pin');
                     const btnDraw = document.getElementById('mode-draw');
@@ -1236,7 +1233,7 @@
                     async function loadGistdaInBounds() {
                         let indicator = document.getElementById('gistda-loading-indicator');
                         if (modalMap.getZoom() < 14) {
-                            indicator.innerHTML = '<span style="color:#E67E22;"> ซูมเข้าใกล้ๆ เพื่อดึงแปลง</span>';
+                            indicator.innerHTML = '<span style="color:var(--accent);"> ซูมเข้าใกล้ๆ เพื่อดึงแปลงดาวเทียม</span>';
                             indicator.style.display = 'block';
                             return; 
                         }
@@ -1272,7 +1269,7 @@
                                     
                                     if (geometry && geometry.type) {
                                         let poly = L.geoJSON(geometry, {
-                                            style: { color: '#3498DB', weight: 2, fillOpacity: 0.2, dashArray: '5,5' }
+                                            style: { color: THEME_INFO, weight: 2, fillOpacity: 0.2, dashArray: '5,5' }
                                         });
                                         
                                         let popupContent = document.createElement('div');
@@ -1280,8 +1277,8 @@
                                         let areaStr = item.area ? parseFloat(item.area).toFixed(2) : '-';
                                         
                                         popupContent.innerHTML = `
-                                            <b style="color:#2980B9; font-size:15px;"> ดาวเทียม GISTDA</b><br>
-                                            <div style="margin:8px 0; font-size:14px;">ขนาดประเมิน: <b style="color:#E67E22;">${areaStr}</b> ไร่</div>
+                                            <b style="color:var(--info); font-size:15px;"> ดาวเทียม GISTDA</b><br>
+                                            <div style="margin:8px 0; font-size:14px;">ขนาดประเมิน: <b style="color:var(--accent);">${areaStr}</b> ไร่</div>
                                             <button class="btn-small btn-small-primary" style="width:100%; padding:8px;"> ดึงแปลงนี้มาใช้งาน</button>
                                         `;
                                         
@@ -1294,7 +1291,7 @@
                                             let ring = geometry.type === 'Polygon' ? geometry.coordinates[0] : geometry.coordinates[0][0]; 
                                             if (ring && ring.length > 0) {
                                                 let flippedCoords = ring.map(p => [p[1], p[0]]);
-                                                modalDrawnPolygon = L.polygon(flippedCoords, { color: '#6DB33F' }).addTo(modalMap);
+                                                modalDrawnPolygon = L.polygon(flippedCoords, { color: THEME_PRIMARY }).addTo(modalMap);
                                                 calcModalArea();
                                                 modalDrawnPolygon.on('pm:edit', function() { calcModalArea(); });
                                                 Swal.fire({toast: true, position: 'top-end', icon: 'success', title: 'ดึงข้อมูลสำเร็จ!', showConfirmButton: false, timer: 3000});
@@ -1307,11 +1304,11 @@
                                 });
 
                                 if (drawnCount > 0) {
-                                    indicator.innerHTML = `<span style="color:#27AE60;"> พบอ้อย ${drawnCount} แปลง</span>`;
+                                    indicator.innerHTML = `<span style="color:var(--primary-dark);"> พบอ้อย ${drawnCount} แปลง</span>`;
                                     setTimeout(() => { indicator.style.display = 'none'; }, 4000);
-                                } else { indicator.innerHTML = '<span style="color:#7F8C8D;"> ไม่พบอ้อยบริเวณนี้</span>'; }
+                                } else { indicator.innerHTML = '<span style="color:var(--text-muted);"> ไม่พบอ้อยบริเวณนี้</span>'; }
                             }
-                        } catch(e) { indicator.innerHTML = '<span style="color:#E74C3C;"> โหลดข้อมูลไม่สำเร็จ</span>'; }
+                        } catch(e) { indicator.innerHTML = '<span style="color:var(--danger);"> โหลดข้อมูลไม่สำเร็จ</span>'; }
                     }
 
                     modalMap.on('moveend', function() {
@@ -1331,7 +1328,7 @@
                         try {
                             let coords = JSON.parse(plotToEdit.polygon); 
                             let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
-                            modalDrawnPolygon = L.polygon(flippedCoords, { color: currentMapMode==='pin' ? THEME_ACCENT : '#6DB33F' }).addTo(modalMap); 
+                            modalDrawnPolygon = L.polygon(flippedCoords, { color: currentMapMode==='pin' ? THEME_ACCENT : THEME_PRIMARY }).addTo(modalMap); 
                             modalMap.fitBounds(modalDrawnPolygon.getBounds(), { padding: [15, 15] });
                             
                             if (currentMapMode === 'pin' && tempCenter.length === 2) {
@@ -1594,7 +1591,7 @@
                     toggleProfileInputs(true, 'reg'); 
                     document.getElementById('btn-enable-edit').style.display = 'block'; 
                     document.getElementById('btn-register').style.display = 'none'; 
-                    document.getElementById("reg-status-box").innerHTML = "<i></i> คุณลงทะเบียนแล้ว กดปลดล็อกหากต้องการเปลี่ยนข้อมูลครับ"; 
+                    document.getElementById("reg-status-box").innerHTML = "<i class='fa-solid fa-circle-check'></i> คุณลงทะเบียนแล้ว กดปลดล็อกหากต้องการเปลี่ยนข้อมูลครับ"; 
                     
                     let pdpaBox = document.getElementById('pdpa-box-farmer');
                     if(pdpaBox) pdpaBox.style.display = 'none';
@@ -1651,7 +1648,7 @@
                     toggleProfileInputs(true, 'reg'); 
                     document.getElementById('btn-enable-edit').style.display = 'block'; 
                     document.getElementById('btn-register').style.display = 'none'; 
-                    document.getElementById("reg-status-box").innerHTML = "<i></i> คุณลงทะเบียนแล้ว กดปลดล็อกหากต้องการเปลี่ยนข้อมูลครับ";
+                    document.getElementById("reg-status-box").innerHTML = "<i class='fa-solid fa-circle-check'></i> คุณลงทะเบียนแล้ว กดปลดล็อกหากต้องการเปลี่ยนข้อมูลครับ";
                     let pdpaBox = document.getElementById('pdpa-box-farmer');
                     if(pdpaBox) pdpaBox.style.display = 'none';
                 }
@@ -1770,7 +1767,7 @@
                 hideLoader(); 
                 Swal.fire('ล้มเหลว', 'ไม่สามารถส่งข้อมูลได้', 'error'); 
             } finally {
-                btn.innerText = "ประกาศหาคิวรถม้วน"; 
+                btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> ประกาศหาคิวรถม้วน`; 
                 if(document.getElementById('select-saved-plot').value !== "") btn.disabled = false;
             }
         }
@@ -1868,17 +1865,17 @@
                 if (statusText === "รอชาวไร่ยืนยัน") { 
                     cardHTML += `
                         <div style="display:flex; gap:10px; margin-top:16px;">
-                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1;"> ดูรายละเอียด</button>
-                            <button onclick="viewOffers(${index})" class="btn-small btn-small-primary" style="flex:1.5;"> เลือกผู้ซื้อ</button>
+                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-eye"></i> ดูรายละเอียด</button>
+                            <button onclick="viewOffers(${index})" class="btn-small btn-small-primary" style="flex:1.5;"><i class="fa-solid fa-handshake"></i> เลือกผู้ซื้อ</button>
                         </div>`; 
                 } else if (statusText === "รอชาวไร่ตรวจสอบ") { 
                     cardHTML += `
                         <div style="display:flex; gap:10px; margin-top:16px;">
-                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1; margin-bottom:0;"> ดูบิลจำลอง</button>
-                            <button onclick="farmerVerifyCloseJob(${index})" class="btn-small btn-small-primary" style="flex:1.5; background:#8E44AD; box-shadow:0 4px 0 #5B2C6F; margin-bottom:0;"> ปิดบัญชี</button>
+                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1; margin-bottom:0;"><i class="fa-solid fa-file-invoice"></i> ดูบิลจำลอง</button>
+                            <button onclick="farmerVerifyCloseJob(${index})" class="btn-small btn-small-primary" style="flex:1.5; background:#8E44AD; box-shadow:0 4px 0 #5B2C6F; margin-bottom:0;"><i class="fa-solid fa-check-double"></i> ปิดบัญชี</button>
                         </div>`;
                 } else { 
-                    cardHTML += `<button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="margin-top:16px; width:100%;">${badgeClass === "completed" ? ' ดูใบเสร็จรับเงิน' : ' ดูรายละเอียดแปลง'}</button>`; 
+                    cardHTML += `<button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="margin-top:16px; width:100%;"><i class="fa-solid ${badgeClass === "completed" ? 'fa-receipt' : 'fa-eye'}"></i> ${badgeClass === "completed" ? ' ดูใบเสร็จรับเงิน' : ' ดูรายละเอียดแปลง'}</button>`; 
                 } 
                 cardHTML += `</div>`;
                 
@@ -1891,25 +1888,25 @@
             
             dashboardContainer.innerHTML = `
                 <div style="background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft);">
-                    <div style="font-size: 16px; font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; display: flex; align-items: center; color: var(--primary);">
-                        <i style="margin-right: 8px; font-size: 20px;"></i> สถิติความสำเร็จของคุณ
+                    <div style="font-size: 16px; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; display: flex; align-items: center; color: var(--primary);">
+                        <i class="fa-solid fa-chart-line" style="margin-right: 8px; font-size: 20px;"></i> สถิติความสำเร็จของคุณ
                     </div>
                     <div class="dash-grid">
                         <div class="dash-card">
-                            <div style="font-size: 12px; color: var(--text-muted);">พื้นที่จัดการแล้ว</div>
-                            <div style="font-size: 20px; font-weight: 600; color: var(--text-main);">${sumRai.toLocaleString('th-TH', {maximumFractionDigits: 1})} <span style="font-size:13px; font-weight:400; color:var(--text-muted);">ไร่</span></div>
+                            <div style="font-size: 12px; font-weight: 600; color: var(--text-muted);">พื้นที่จัดการแล้ว</div>
+                            <div style="font-size: 20px; font-weight: 700; color: var(--text-main);">${sumRai.toLocaleString('th-TH', {maximumFractionDigits: 1})} <span style="font-size:13px; font-weight:500; color:var(--text-muted);">ไร่</span></div>
                         </div>
                         <div class="dash-card">
-                            <div style="font-size: 12px; color: var(--text-muted);">ใบอ้อยส่งมอบ</div>
-                            <div style="font-size: 20px; font-weight: 600; color: var(--text-main);">${sumTon.toLocaleString('th-TH', {maximumFractionDigits: 1})} <span style="font-size:13px; font-weight:400; color:var(--text-muted);">ตัน</span></div>
+                            <div style="font-size: 12px; font-weight: 600; color: var(--text-muted);">ใบอ้อยส่งมอบ</div>
+                            <div style="font-size: 20px; font-weight: 700; color: var(--text-main);">${sumTon.toLocaleString('th-TH', {maximumFractionDigits: 1})} <span style="font-size:13px; font-weight:500; color:var(--text-muted);">ตัน</span></div>
                         </div>
                         <div class="dash-card">
-                            <div style="font-size: 12px; color: var(--text-muted);">รายได้รวมสุทธิ</div>
-                            <div style="font-size: 20px; font-weight: 600; color: var(--accent);">${sumIncome.toLocaleString('th-TH', {maximumFractionDigits: 0})} <span style="font-size:13px; font-weight:400; color:var(--text-muted);">บาท</span></div>
+                            <div style="font-size: 12px; font-weight: 600; color: var(--text-muted);">รายได้รวมสุทธิ</div>
+                            <div style="font-size: 20px; font-weight: 700; color: var(--accent);">${sumIncome.toLocaleString('th-TH', {maximumFractionDigits: 0})} <span style="font-size:13px; font-weight:500; color:var(--text-muted);">บาท</span></div>
                         </div>
                         <div class="dash-card">
-                            <div style="font-size: 12px; color: var(--text-muted);">ลดมลพิษ PM2.5</div>
-                            <div style="font-size: 20px; font-weight: 600; color: var(--primary);">${sumPM25.toLocaleString('th-TH', {maximumFractionDigits: 1})} <span style="font-size:13px; font-weight:400; color:var(--text-muted);">กก.</span></div>
+                            <div style="font-size: 12px; font-weight: 600; color: var(--text-muted);">ลดมลพิษ PM2.5</div>
+                            <div style="font-size: 20px; font-weight: 700; color: var(--primary);">${sumPM25.toLocaleString('th-TH', {maximumFractionDigits: 1})} <span style="font-size:13px; font-weight:500; color:var(--text-muted);">กก.</span></div>
                         </div>
                     </div>
                 </div>`; 
@@ -1931,7 +1928,7 @@
                 }); 
                 photoGalleryHTML += `</div>`; 
             } else { 
-                photoGalleryHTML = `<div style="color:var(--text-muted); font-size:13px; margin-bottom:12px; background:var(--bg-main); padding:10px; border-radius:10px;">(ไม่มีรูปภาพประกอบ)</div>`; 
+                photoGalleryHTML = `<div style="color:var(--text-muted); font-size:13px; margin-bottom:12px; background:var(--bg-main); padding:10px; border-radius:10px; text-align:center;">(ไม่มีรูปภาพประกอบ)</div>`; 
             }
             
             let extraInfo = ""; let actionHTML = "";
@@ -1957,7 +1954,7 @@
                 billHTML = `
                 <div class="receipt-box">
                     <div class="title">
-                        <div class="title-main"> สรุปยอดใบเสร็จรับเงิน (บิลจำลอง)</div>
+                        <div class="title-main"><i class="fa-solid fa-receipt"></i> สรุปยอดใบเสร็จรับเงิน (บิลจำลอง)</div>
                         <div class="title-sub">CaneConnect Platform</div>
                     </div>
                     <div class="section">
@@ -1978,44 +1975,44 @@
             }
 
             if (role === 'farmer') { 
-                let phoneLink = item.buyerPhone && item.buyerPhone !== "-" ? `<a href="tel:${item.buyerPhone}" style="color:var(--primary); font-weight:500; text-decoration:none;"> ${item.buyerPhone}</a>` : "-"; 
+                let phoneLink = item.buyerPhone && item.buyerPhone !== "-" ? `<a href="tel:${item.buyerPhone}" style="color:var(--primary); font-weight:600; text-decoration:none;"> ${item.buyerPhone}</a>` : "-"; 
                 
                 let buyerSectionHTML = "";
                 if (item.status === 'รอชาวไร่ยืนยัน' && item.offers && item.offers.length > 0) {
-                    let offersList = `<div style="margin-top:12px; background:var(--surface); padding:12px; border-radius:8px; border:1px solid var(--warning);">
-                        <b style="color:var(--accent);"> รายชื่อผู้เสนอราคา (${item.offers.length} ราย):</b>
-                        <ul style="margin:5px 0 0 0; padding-left:20px; font-size:13px; color:var(--text-main);">`;
+                    let offersList = `<div style="margin-top:12px; background:var(--surface); padding:12px; border-radius:12px; border:1px solid var(--warning);">
+                        <b style="color:var(--accent);"><i class="fa-solid fa-users"></i> รายชื่อผู้เสนอราคา (${item.offers.length} ราย):</b>
+                        <ul style="margin:8px 0 0 0; padding-left:20px; font-size:13px; color:var(--text-main); line-height: 1.6;">`;
                     item.offers.forEach(o => {
                         let name = (o.buyerName && o.buyerName !== "undefined") ? o.buyerName : "พาร์ทเนอร์ไม่ทราบชื่อ";
-                        offersList += `<li style="margin-bottom:4px;">${name} <span style="color:var(--primary); font-weight:600;">(${o.price} บาท/ไร่)</span> <br> <a href="tel:${o.phone}" style="color:var(--info); text-decoration:none;">${o.phone}</a></li>`;
+                        offersList += `<li style="margin-bottom:6px;">${name} <span style="color:var(--primary); font-weight:600;">(${o.price} บาท/ไร่)</span> <br> <a href="tel:${o.phone}" style="color:var(--info); text-decoration:none;"><i class="fa-solid fa-phone"></i> ${o.phone}</a></li>`;
                     });
                     offersList += `</ul></div>`;
                     buyerSectionHTML = offersList;
                 } else {
                     buyerSectionHTML = `
-                        <div style="margin-top:8px;"><b>ผู้รับซื้อ:</b> ${buyerNameModal}</div>
-                        <div style="margin-top:4px;"><b>ติดต่อรถม้วน:</b> ${phoneLink}</div>
-                        <div style="margin-top:4px;"><b>ราคาที่ตกลง:</b> <span style="color:var(--primary);">${item.price || "-"}</span></div>`;
+                        <div style="margin-top:8px;"><b><i class="fa-solid fa-truck-fast"></i> ผู้รับซื้อ:</b> ${buyerNameModal}</div>
+                        <div style="margin-top:4px;"><b><i class="fa-solid fa-phone"></i> ติดต่อรถม้วน:</b> ${phoneLink}</div>
+                        <div style="margin-top:4px;"><b><i class="fa-solid fa-money-bill-wave"></i> ราคาที่ตกลง:</b> <span style="color:var(--primary); font-weight:600;">${item.price || "-"}</span></div>`;
                 }
                 
                 extraInfo = `
                     <div class="island-info-box">
-                        <b>สถานะ:</b> <span style="color:var(--info); font-weight:500;">${item.status === "Pending" ? "รอรถรับงาน" : item.status}</span><br>
+                        <b>สถานะ:</b> <span style="color:var(--info); font-weight:600;">${item.status === "Pending" ? "รอรถรับงาน" : item.status}</span><br>
                         ${buyerSectionHTML}
                     </div>`; 
             } else { 
                 extraInfo = `
                     <div class="island-info-box" style="border-color:var(--border); background:var(--surface);">
-                        <div style="font-size:16px; font-weight:600; color:var(--primary); margin-bottom:8px;"> คุณ ${item.farmerName}</div>
-                        <div><b>เบอร์โทรศัพท์:</b> <a href="tel:${item.farmerPhone}" style="color:var(--primary); text-decoration:none; font-weight:500;"> ${item.farmerPhone}</a></div>
+                        <div style="font-size:16px; font-weight:600; color:var(--primary); margin-bottom:8px;"><i class="fa-solid fa-user"></i> คุณ ${item.farmerName}</div>
+                        <div><b><i class="fa-solid fa-phone"></i> เบอร์โทรศัพท์:</b> <a href="tel:${item.farmerPhone}" style="color:var(--primary); text-decoration:none; font-weight:600;"> ${item.farmerPhone}</a></div>
                     </div>`; 
                 if (item.status === "รอชาวไร่ยืนยัน" || item.status === "รอคิวรถ") { 
                     actionHTML = `
-                        <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border);">
-                            <div style="margin-bottom:8px; font-size: 14px; font-weight: 500; color: var(--info);">พื้นที่: ${actualQ} ไร่</div>
+                        <div style="margin-top:20px; padding-top:16px; border-top:1px dashed var(--border);">
+                            <div style="margin-bottom:8px; font-size: 14px; font-weight: 600; color: var(--info);">พื้นที่เป้าหมาย: ${actualQ} ไร่</div>
                             <label style="margin-top:0;"> เสนอราคารับซื้อ (บาท/ไร่):</label>
-                            <input type="number" id="island-bid-price" placeholder="เช่น 800" style="margin-bottom:12px;">
-                            <button onclick="submitIslandBid(${item.row})" class="btn-main" style="margin-top:0; border-radius:12px; padding:14px;">ส่งข้อเสนอราคา</button>
+                            <input type="number" id="island-bid-price" placeholder="เช่น 800" style="margin-bottom:12px; width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Kanit';">
+                            <button onclick="submitIslandBid(${item.row})" class="btn-main" style="margin-top:0; border-radius:12px; padding:14px;"><i class="fa-solid fa-paper-plane"></i> ส่งข้อเสนอราคา</button>
                         </div>`; 
                 } 
             }
@@ -2023,23 +2020,23 @@
             Swal.fire({ 
                 html: `
                     <div class="island-modal">
-                        <div style="font-size:18px; font-weight:600; margin-bottom:16px;">ข้อมูลแปลงอ้อย</div>
+                        <div style="font-size:18px; font-weight:700; margin-bottom:16px; color: var(--secondary);"><i class="fa-solid fa-circle-info"></i> ข้อมูลแปลงอ้อย</div>
                         ${extraInfo}
                         <div class="island-info-box">
-                            <div style="margin-bottom:4px;"><b>พื้นที่แจ้งขาย:</b> <span style="color:var(--primary); font-weight:500;">${actualQ} ไร่</span></div>
-                            <div style="margin-bottom:4px;"><b>วันพร้อมม้วน:</b> ${hDate}</div>
-                            <div style="margin-bottom:4px;"><b>ข้อมูลแปลง:</b> <span style="color:var(--accent); font-weight:500;">${item.access || "ไม่ระบุ"}</span></div>
+                            <div style="margin-bottom:6px;"><b><i class="fa-solid fa-ruler-combined"></i> พื้นที่แจ้งขาย:</b> <span style="color:var(--primary); font-weight:600;">${actualQ} ไร่</span></div>
+                            <div style="margin-bottom:6px;"><b><i class="fa-regular fa-calendar"></i> วันพร้อมม้วน:</b> ${hDate}</div>
+                            <div style="margin-bottom:6px;"><b><i class="fa-solid fa-road"></i> ข้อมูลแปลง:</b> <span style="color:var(--accent); font-weight:600;">${item.access || "ไม่ระบุ"}</span></div>
                         </div>
-                        <div style="font-weight:500; margin-bottom:8px;"> แผนที่พิกัด:</div>
+                        <div style="font-weight:600; margin-bottom:8px; color: var(--secondary);"><i class="fa-solid fa-map-location-dot"></i> แผนที่พิกัด:</div>
                         <div id="swal-map" class="swal-map-container"></div>
-                        <a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lon}" target="_blank" class="btn-main" style="background:#4285F4; box-shadow:0 4px 0 #2A56C6; text-decoration:none; display:flex; justify-content:center; align-items:center; margin-top:0; margin-bottom:16px; padding:10px;">
-                            <i class="fa-solid fa-map-location-dot" style="margin-right:8px;"></i> เปิด Google Maps นำทาง
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lon}" target="_blank" class="btn-main" style="background:#3B82F6; box-shadow:0 4px 0 #2563EB; text-decoration:none; display:flex; justify-content:center; align-items:center; margin-top:0; margin-bottom:16px; padding:12px; border-radius:12px;">
+                            <i class="fa-solid fa-diamond-turn-right" style="margin-right:8px;"></i> เปิด Google Maps นำทาง
                         </a>
-                        <div style="font-weight:500; margin-bottom:8px;"> สภาพหน้างาน:</div>
+                        <div style="font-weight:600; margin-bottom:8px; color: var(--secondary);"><i class="fa-regular fa-images"></i> สภาพหน้างาน:</div>
                         ${photoGalleryHTML}
                         
-                        ${isComplete ? `<div style="font-weight:500; margin-top:16px; margin-bottom:8px;"> บิลชั่งน้ำหนัก:</div>` + 
-                            (item.closeProof && item.closeProof.length > 10 ? `<img src="${item.closeProof}" onclick="openImageViewer('${item.closeProof}')" style="width:100%; border-radius:12px; border:1px solid var(--border); cursor:zoom-in;">` : `<div style="background:var(--bg-main); padding:12px; text-align:center; border-radius:8px; font-size:13px; color:var(--text-muted);">ไม่มีรูปบิลชั่ง</div>`) 
+                        ${isComplete ? `<div style="font-weight:600; margin-top:16px; margin-bottom:8px; color: var(--secondary);"><i class="fa-solid fa-file-invoice"></i> บิลชั่งน้ำหนัก:</div>` + 
+                            (item.closeProof && item.closeProof.length > 10 ? `<img src="${item.closeProof}" onclick="openImageViewer('${item.closeProof}')" style="width:100%; border-radius:12px; border:1px solid var(--border); cursor:zoom-in;">` : `<div style="background:var(--bg-main); padding:12px; text-align:center; border-radius:12px; font-size:13px; color:var(--text-muted); border: 1px dashed var(--border);">ไม่มีรูปบิลชั่ง</div>`) 
                         : ""}
                         
                         ${billHTML}
@@ -2096,24 +2093,24 @@
             
             let imgHTML = item.closeProof && item.closeProof.length > 10 ? 
                 `<img src="${item.closeProof}" onclick="openImageViewer('${item.closeProof}')" style="width:100%; border-radius:12px; margin-top:10px; border:1px solid var(--border); cursor:zoom-in;">` : 
-                `<div style="padding:20px; background:var(--bg-main); text-align:center; border-radius:12px; margin-top:10px; color:var(--text-muted);">ไม่พบหลักฐาน</div>`;
+                `<div style="padding:20px; background:var(--bg-main); text-align:center; border-radius:12px; margin-top:10px; color:var(--text-muted); border: 1px dashed var(--border);">ไม่พบหลักฐาน</div>`;
             
             Swal.fire({ 
                 html: `
                     <div style="text-align:left; font-family:'Kanit'; font-size:14px;">
-                        <div style="font-size:18px; font-weight:600; margin-bottom:16px;">ตรวจสอบงาน</div>
+                        <div style="font-size:18px; font-weight:700; margin-bottom:16px; color: var(--secondary);"><i class="fa-solid fa-list-check"></i> ตรวจสอบงาน</div>
                         <div style="background:var(--bg-main); padding:16px; border-radius:12px; border:1px solid var(--border); margin-bottom:16px;">
-                            <div style="margin-bottom:6px;"><b>ผู้รับซื้อ:</b> ${item.buyer}</div>
-                            <div style="margin-bottom:6px;"><b>พื้นที่เก็บเกี่ยว:</b> ${item.actualQty} ไร่</div>
-                            <div style="margin-bottom:6px;"><b>น้ำหนักสุทธิ:</b> <span style="color:var(--primary); font-weight:600;">${item.actualWeight} ตัน</span></div>
-                            <div style="font-size:16px; margin-top:10px; padding-top:10px; border-top:1px dashed var(--border);"><b>รายรับ:</b> <span style="color:var(--accent); font-weight:600;">${totalIncome} บาท</span></div>
+                            <div style="margin-bottom:8px;"><b>ผู้รับซื้อ:</b> ${item.buyer}</div>
+                            <div style="margin-bottom:8px;"><b>พื้นที่เก็บเกี่ยว:</b> ${item.actualQty} ไร่</div>
+                            <div style="margin-bottom:8px;"><b>น้ำหนักสุทธิ:</b> <span style="color:var(--primary); font-weight:700;">${item.actualWeight} ตัน</span></div>
+                            <div style="font-size:16px; margin-top:12px; padding-top:12px; border-top:1px dashed var(--border);"><b>รายรับ:</b> <span style="color:var(--danger); font-weight:700;">${totalIncome} บาท</span></div>
                         </div>
-                        <b> ภาพถ่ายใบชั่ง (แตะเพื่อขยาย):</b>
+                        <b style="color: var(--secondary);"><i class="fa-solid fa-image"></i> ภาพถ่ายใบชั่ง (แตะเพื่อขยาย):</b>
                         ${imgHTML}
-                        <div style="margin-top:16px; font-size:13px; color:var(--text-muted);">*การยืนยันจะเป็นการบันทึกเข้าระบบเพื่อสะสมแต้ม</div>
+                        <div style="margin-top:16px; font-size:12px; color:var(--text-muted); text-align:center;">*การยืนยันจะเป็นการบันทึกเข้าระบบเพื่อสะสมแต้ม</div>
                     </div>`, 
                 showCancelButton: true, confirmButtonText: 'รับรองความถูกต้อง', cancelButtonText: 'ยกเลิก', 
-                confirmButtonColor: THEME_PRIMARY, cancelButtonColor: '#BFC9C5' 
+                confirmButtonColor: THEME_PRIMARY, cancelButtonColor: '#94A3B8' 
             }).then(async (result) => { 
                 if(result.isConfirmed) { 
                     Swal.fire({ title: 'กำลังบันทึกบัญชี...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } }); 
@@ -2132,21 +2129,21 @@
         function viewOffers(index) {
             let item = globalSalesData[index]; 
             let offersHTML = `<div style="text-align:left; font-family:'Kanit';">`; 
-            offersHTML += `<div style="font-size:16px; font-weight:600; margin-bottom:12px;">ข้อเสนอจากรถม้วน</div>`;
+            offersHTML += `<div style="font-size:18px; font-weight:700; margin-bottom:16px; color: var(--secondary);"><i class="fa-solid fa-handshake"></i> ข้อเสนอจากรถม้วน</div>`;
             
             if (item.offers && item.offers.length > 0) { 
                 item.offers.forEach((offer) => { 
                     let bName = (offer.buyerName && offer.buyerName !== "undefined") ? offer.buyerName : "พาร์ทเนอร์ไม่ทราบชื่อ";
                     offersHTML += `
-                        <div style="border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:12px; background:var(--bg-main);">
-                            <div style="font-weight:500; font-size:15px; margin-bottom:4px;">คุณ ${bName}</div>
-                            <div style="margin-bottom:8px; font-size:13px;"><a href="tel:${offer.phone}" style="color:var(--primary); text-decoration:none;"> ${offer.phone}</a></div>
-                            <div style="color:var(--accent); font-size:16px; font-weight:600; margin-bottom:12px;">ให้ราคา: ${offer.price} บาท/ไร่</div>
-                            <button onclick="confirmSaleOffer(${item.row}, '${bName}', '${offer.phone}', '${offer.price}')" class="btn-main" style="margin-top:0; padding:10px;">เลือกรายนี้</button>
+                        <div style="border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:12px; background:var(--surface); box-shadow: var(--shadow-soft);">
+                            <div style="font-weight:600; font-size:16px; margin-bottom:6px; color: var(--primary-dark);"><i class="fa-solid fa-truck-fast"></i> คุณ ${bName}</div>
+                            <div style="margin-bottom:12px; font-size:13px;"><a href="tel:${offer.phone}" style="color:var(--info); text-decoration:none; font-weight: 500;"><i class="fa-solid fa-phone"></i> ${offer.phone}</a></div>
+                            <div style="color:var(--accent); font-size:16px; font-weight:700; margin-bottom:16px; background: #FFFBEB; padding: 10px; border-radius: 8px; text-align: center; border: 1px dashed #FDE68A;">ให้ราคา: ${offer.price} บาท/ไร่</div>
+                            <button onclick="confirmSaleOffer(${item.row}, '${bName}', '${offer.phone}', '${offer.price}')" class="btn-main" style="margin-top:0; padding:12px; border-radius: 10px;"><i class="fa-regular fa-circle-check"></i> เลือกรายนี้</button>
                         </div>`; 
                 }); 
             } else { 
-                offersHTML += `<div style="color:var(--text-muted); font-size:14px; text-align:center; padding:20px;">ยังไม่มีข้อเสนอ</div>`; 
+                offersHTML += `<div style="color:var(--text-muted); font-size:14px; text-align:center; padding:30px; background: var(--bg-main); border-radius: 12px; border: 1px dashed var(--border);">ยังไม่มีข้อเสนอ</div>`; 
             } 
             offersHTML += `</div>`;
             Swal.fire({ html: offersHTML, showConfirmButton: false, showCancelButton: false, showCloseButton: true });
@@ -2154,8 +2151,8 @@
 
         async function confirmSaleOffer(rowId, bName, bPhone, bPrice) {
             const confirmAlert = await Swal.fire({ 
-                html: `<div style="font-family:'Kanit';">คุณตกลงขายใบอ้อยให้ <b>${bName}</b><br>ในราคา <b style="color:var(--primary);">${bPrice} บ./ไร่</b> ใช่หรือไม่?</div>`, 
-                showCancelButton: true, confirmButtonColor: THEME_PRIMARY, confirmButtonText: 'ตกลง', cancelButtonText: 'ยกเลิก', cancelButtonColor: '#BFC9C5' 
+                html: `<div style="font-family:'Kanit';">คุณตกลงขายใบอ้อยให้ <b>${bName}</b><br>ในราคา <b style="color:var(--primary); font-size: 18px;">${bPrice} บ./ไร่</b> ใช่หรือไม่?</div>`, 
+                showCancelButton: true, confirmButtonColor: THEME_PRIMARY, confirmButtonText: 'ตกลง', cancelButtonText: 'ยกเลิก', cancelButtonColor: '#94A3B8' 
             });
             
             if (confirmAlert.isConfirmed) { 
@@ -2214,7 +2211,7 @@
                     toggleProfileInputs(true, 'buyer'); 
                     document.getElementById('btn-enable-buyer-edit').style.display = 'block'; 
                     document.getElementById('btn-buyer-register').style.display = 'none'; 
-                    document.getElementById("buyer-reg-status-box").innerHTML = "<i></i> ระบบพบข้อมูลพาร์ทเนอร์แล้ว กดปลดล็อกหากต้องการแก้ข้อมูลครับ"; 
+                    document.getElementById("buyer-reg-status-box").innerHTML = "<i class='fa-solid fa-circle-check'></i> ระบบพบข้อมูลพาร์ทเนอร์แล้ว กดปลดล็อกหากต้องการแก้ข้อมูลครับ"; 
                     
                     let pdpaBox = document.getElementById('pdpa-box-buyer');
                     if(pdpaBox) pdpaBox.style.display = 'none';
@@ -2270,7 +2267,7 @@
                     toggleProfileInputs(true, 'buyer'); 
                     document.getElementById('btn-enable-buyer-edit').style.display = 'block'; 
                     document.getElementById('btn-buyer-register').style.display = 'none'; 
-                    document.getElementById("buyer-reg-status-box").innerHTML = "<i></i> ระบบพบข้อมูลพาร์ทเนอร์แล้ว กดปลดล็อกหากต้องการแก้ข้อมูลครับ"; 
+                    document.getElementById("buyer-reg-status-box").innerHTML = "<i class='fa-solid fa-circle-check'></i> ระบบพบข้อมูลพาร์ทเนอร์แล้ว กดปลดล็อกหากต้องการแก้ข้อมูลครับ"; 
                     let pdpaBox = document.getElementById('pdpa-box-buyer');
                     if(pdpaBox) pdpaBox.style.display = 'none';
                 } 
@@ -2298,7 +2295,7 @@
                     hideLoader();
                     document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; 
                     Swal.fire({ 
-                        icon: 'error', title: 'โปรดลงทะเบียน', 
+                        icon: 'warning', title: 'โปรดลงทะเบียน', 
                         text: `กรุณาลงทะเบียนพาร์ทเนอร์ก่อนใช้งานครับ`, 
                         confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY 
                     }).then(() => { liff.closeWindow(); }); 
@@ -2371,22 +2368,22 @@
             
             // --- จัดการงานที่กำลังดำเนินการ (Active Jobs) ---
             if(activeJobs.length > 0) { 
-                activeContainer.innerHTML = `<div class="section-title buyer-section-title" style="margin-top: 5px; color:var(--info);"> งานที่กำลังดำเนินการ</div>`; 
+                activeContainer.innerHTML = `<div class="section-title buyer-section-title" style="margin-top: 5px; color:var(--info);"><i class="fa-solid fa-truck-fast"></i> งานที่กำลังดำเนินการ</div>`; 
                 activeJobs.forEach(item => { 
                     let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
                     activeContainer.innerHTML += `
-                        <div class="sale-card" style="border-left: 5px solid var(--info); background:#F4F9F9;">
+                        <div class="sale-card" style="border-left: 5px solid var(--info); background:#F0F9FF;">
                             <div class="sale-header">
-                                <span style="font-weight:600; color:var(--text-main);">คุณ ${item.farmerName}</span>
+                                <span style="font-weight:700; color:var(--text-main); font-size:15px;">คุณ ${item.farmerName}</span>
                                 <span class="badge processing">${item.status === 'รอชาวไร่ตรวจสอบ' ? 'รอฝั่งชาวไร่ปิดงาน' : item.status}</span>
                             </div>
                             <div class="sale-detail">
-                                <div>เป้าหมาย: <span style="color:var(--info); font-weight:600;">${item.qty} ไร่</span></div>
+                                <div>เป้าหมาย: <span style="color:var(--info); font-weight:700; font-size:16px;">${item.qty} ไร่</span></div>
                                 <div>วันนัดหมาย: <span>${hDate}</span></div>
                             </div>
                             <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;"> ข้อมูลแปลง</button>
-                                ${item.status === 'กำลังดำเนินการ' ? `<button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="flex:1;"> แจ้งปิดงาน</button>` : ''}
+                                <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-map-location-dot"></i> ข้อมูลแปลง</button>
+                                ${item.status === 'กำลังดำเนินการ' ? `<button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="flex:1; background:var(--info);"><i class="fa-solid fa-flag-checkered"></i> แจ้งปิดงาน</button>` : ''}
                             </div>
                         </div>`; 
                     drawMarkerOnMap(item, THEME_INFO, true); 
@@ -2418,37 +2415,37 @@
                     historyHTMLList += `
                     <div class="sale-card" style="border-left: 5px solid var(--primary); opacity: 0.9;">
                         <div class="sale-header">
-                            <span style="font-weight:600; color:var(--text-main);">คุณ ${item.farmerName}</span>
+                            <span style="font-weight:700; color:var(--text-main); font-size:15px;">คุณ ${item.farmerName}</span>
                             <span class="badge ${item.status === "เสร็จสิ้น" ? "completed" : "canceled"}">${item.status}</span>
                         </div>
                         <div class="sale-detail">
                             <div>พื้นที่: <span style="font-weight:600;">${actualQ} ไร่</span> | น้ำหนัก: <span style="font-weight:600;">${actualW} ตัน</span></div>
-                            <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);">
-                                 ยอดจ่าย: <b style="color:var(--danger); font-size:14px;">${totalStr} บาท</b>
+                            <div style="margin-top:10px; padding-top:10px; border-top:1px dashed var(--border);">
+                                 ยอดจ่าย: <b style="color:var(--danger); font-size:15px;">${totalStr} บาท</b>
                             </div>
                         </div>
-                        <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="width:100%; margin-top:16px;"> ดูใบเสร็จ / บิลชั่ง</button>
+                        <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-main btn-outline" style="width:100%; margin-top:16px;"><i class="fa-solid fa-receipt"></i> ดูใบเสร็จ / บิลชั่ง</button>
                     </div>`;
                 });
 
                 // Dashboard สำหรับรถม้วน
                 historyContainer.innerHTML += `
-                    <div style="background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); margin-bottom: 20px;">
-                        <div style="font-size: 16px; font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; display: flex; align-items: center; color: var(--warning);">
-                            <i style="margin-right: 8px; font-size: 20px;"></i> สถิติการรับงานของคุณ
+                    <div style="background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); margin-bottom: 24px;">
+                        <div style="font-size: 16px; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; display: flex; align-items: center; color: var(--accent);">
+                            <i class="fa-solid fa-chart-pie" style="margin-right: 8px; font-size: 20px;"></i> สถิติการรับงานของคุณ
                         </div>
                         <div class="dash-grid">
                             <div class="dash-card">
-                                <div style="font-size: 12px; color: var(--text-muted);">รับงานสำเร็จ</div>
-                                <div style="font-size: 20px; font-weight: 600; color: var(--text-main);">${completedCount} <span style="font-size:13px; font-weight:400; color:var(--text-muted);">งาน</span></div>
+                                <div style="font-size: 12px; font-weight:600; color: var(--text-muted);">รับงานสำเร็จ</div>
+                                <div style="font-size: 20px; font-weight: 700; color: var(--text-main);">${completedCount} <span style="font-size:13px; font-weight:500; color:var(--text-muted);">งาน</span></div>
                             </div>
                             <div class="dash-card">
-                                <div style="font-size: 12px; color: var(--text-muted);">ปริมาณรับซื้อรวม</div>
-                                <div style="font-size: 20px; font-weight: 600; color: var(--primary);">${sumTon.toLocaleString('th-TH', {maximumFractionDigits: 1})} <span style="font-size:13px; font-weight:400; color:var(--text-muted);">ตัน</span></div>
+                                <div style="font-size: 12px; font-weight:600; color: var(--text-muted);">ปริมาณรับซื้อรวม</div>
+                                <div style="font-size: 20px; font-weight: 700; color: var(--primary);">${sumTon.toLocaleString('th-TH', {maximumFractionDigits: 1})} <span style="font-size:13px; font-weight:500; color:var(--text-muted);">ตัน</span></div>
                             </div>
                             <div class="dash-card" style="grid-column: 1 / -1;">
-                                <div style="font-size: 12px; color: var(--text-muted);">ยอดจ่ายชาวไร่สะสม</div>
-                                <div style="font-size: 20px; font-weight: 600; color: var(--danger);">${sumExpense.toLocaleString('th-TH', {maximumFractionDigits: 0})} <span style="font-size:13px; font-weight:400; color:var(--text-muted);">บาท</span></div>
+                                <div style="font-size: 12px; font-weight:600; color: var(--text-muted);">ยอดจ่ายชาวไร่สะสม</div>
+                                <div style="font-size: 24px; font-weight: 700; color: var(--danger);">${sumExpense.toLocaleString('th-TH', {maximumFractionDigits: 0})} <span style="font-size:14px; font-weight:500; color:var(--text-muted);">บาท</span></div>
                             </div>
                         </div>
                     </div>
@@ -2528,25 +2525,25 @@
             
             if (sortBy === "priority") {
                 if (premiumSingles.length > 0) { 
-                    listContainer.innerHTML += `<div class="section-title buyer-section-title" style="color:var(--primary);"> แปลงเดี่ยวสุดคุ้ม (เกิน 100 ไร่)</div>`; 
+                    listContainer.innerHTML += `<div class="section-title buyer-section-title" style="color:var(--primary);"><i class="fa-solid fa-star"></i> แปลงเดี่ยวสุดคุ้ม (เกิน 100 ไร่)</div>`; 
                     premiumSingles.forEach(item => { 
                         listContainer.innerHTML += renderSingleCardHTML(item, THEME_PRIMARY); 
                         drawMarkerOnMap(item, THEME_PRIMARY, false); 
                     }); 
                 }
                 if (dynamicClusters.length > 0) { 
-                    listContainer.innerHTML += `<div class="section-title buyer-section-title" style="color:var(--accent);"> กลุ่มแปลงคุ้มทุน</div>`; 
+                    listContainer.innerHTML += `<div class="section-title buyer-section-title" style="color:var(--accent);"><i class="fa-solid fa-layer-group"></i> กลุ่มแปลงคุ้มทุน</div>`; 
                     dynamicClusters.forEach(cData => { listContainer.innerHTML += renderClusterGroupHTML(cData, maxDist, maxDays); }); 
                 }
                 if (singles.length > 0) { 
-                    listContainer.innerHTML += `<div class="section-title buyer-section-title" style="color:var(--text-muted);"> แปลงย่อย (ยังไม่เข้าเกณฑ์)</div>`; 
+                    listContainer.innerHTML += `<div class="section-title buyer-section-title" style="color:var(--text-muted);"><i class="fa-solid fa-seedling"></i> แปลงย่อย (ยังไม่เข้าเกณฑ์)</div>`; 
                     singles.forEach(item => { 
                         listContainer.innerHTML += renderSingleCardHTML(item, THEME_MUTED); 
                         drawMarkerOnMap(item, THEME_MUTED, false); 
                     }); 
                 }
             } else { 
-                listContainer.innerHTML += `<div class="section-title buyer-section-title"> รายการเรียงตามเวลา</div>`; 
+                listContainer.innerHTML += `<div class="section-title buyer-section-title"><i class="fa-solid fa-list-ul"></i> รายการเรียงตามเวลา</div>`; 
                 filteredAvailable.forEach(item => { 
                     let markerColor = THEME_MUTED; 
                     if (item.qty >= 100) markerColor = THEME_PRIMARY; 
@@ -2563,24 +2560,31 @@
 
         function renderSingleCardHTML(item, colorHex) {
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
-            let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:500; margin-top:8px;"> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
-            let priorityBadge = item.qty >= 100 ? `<span class="badge" style="background:#E8F5E9; color:#2E7D32;"> คุ้มทุน</span>` : "";
+            let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:600; margin-top:8px;"><i class="fa-solid fa-fire"></i> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
+            let priorityBadge = item.qty >= 100 ? `<span class="badge" style="background:#D1FAE5; color:#065F46;"> คุ้มทุน</span>` : "";
             
+            let distText = "";
+            if(currentLat && currentLng && item.lat && item.lon && !isNaN(parseFloat(item.lat))) {
+                let d = getDistanceJS(currentLat, currentLng, item.lat, item.lon);
+                distText = `<div style="font-size:13px; color:var(--info); margin-top:6px; font-weight:600;"><i class="fa-solid fa-location-arrow"></i> ห่างจากคุณ: ${d.toFixed(1)} กม.</div>`;
+            }
+
             return `
                 <div class="sale-card" style="border-left: 5px solid ${colorHex};">
                     <div class="sale-header">
-                        <span style="font-weight:600; color:var(--text-main);">คุณ ${item.farmerName} ${priorityBadge}</span>
+                        <span style="font-weight:700; color:var(--text-main); font-size:15px;">คุณ ${item.farmerName} ${priorityBadge}</span>
                         <span class="badge ${item.status === "Pending" ? "pending" : "waiting"}">${item.status === "Pending" ? "ว่าง" : item.status}</span>
                     </div>
                     <div class="sale-detail">
-                        <div>ปริมาณพื้นที่: <span style="font-size:16px; color:${colorHex}; font-weight:600;">${item.qty} ไร่</span></div>
-                        <div>พร้อมม้วน: <span>${hDate}</span></div>
-                        <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">เงื่อนไขแปลง: ${item.access}</div>
+                        <div>ปริมาณพื้นที่: <span style="font-size:18px; color:${colorHex}; font-weight:700;">${item.qty} ไร่</span></div>
+                        <div>พร้อมม้วน: <span style="font-weight:600;">${hDate}</span></div>
+                        ${distText}
+                        <div style="font-size:13px; color:var(--text-muted); margin-top:6px;"><i class="fa-solid fa-road"></i> ทางเข้า: ${item.access}</div>
                         ${offerStatus}
                     </div>
                     <div style="display:flex; gap:10px; margin-top:16px;">
-                        <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;"> ข้อมูลแปลง</button>
-                        <button onclick="acceptJob(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="flex:1;"> เสนอราคา</button>
+                        <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-map-location-dot"></i> ข้อมูลแปลง</button>
+                        <button onclick="acceptJob(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="flex:1; background:${colorHex}; box-shadow:0 4px 0 rgba(0,0,0,0.1);"><i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา</button>
                     </div>
                 </div>`;
         }
@@ -2596,30 +2600,30 @@
             
             let clusterHTML = `
                 <div class="cluster-group" style="border-color:var(--accent);">
-                    <div class="cluster-title" style="color:var(--accent);"><i></i> โซนรวบรวม ${cData.id.substring(0,9)}</div>
-                    <div style="font-size:13px; color:var(--text-muted); margin-bottom:14px; background:var(--bg-main); padding:12px; border-radius:12px;">
-                        <div style="margin-bottom:4px;"> รัศมีห่างกัน: <b>ไม่เกิน ${maxDist} กม.</b></div>
-                        <div> กรอบวัน: <b>${d1} - ${d2}</b></div>
-                        <div style="font-size:16px; margin-top:8px; font-weight:600; color:var(--text-main);"> รวมพื้นที่: <b style="color:var(--accent);">${cData.totalRai} ไร่</b></div>
+                    <div class="cluster-title" style="color:var(--accent);"><i class="fa-solid fa-layer-group"></i> โซนรวบรวม ${cData.id.substring(0,9)}</div>
+                    <div style="font-size:13px; color:var(--text-muted); margin-bottom:16px; background:var(--bg-main); padding:15px; border-radius:12px; border:1px solid var(--border);">
+                        <div style="margin-bottom:6px;"><i class="fa-solid fa-route"></i> รัศมีห่างกัน: <b>ไม่เกิน ${maxDist} กม.</b></div>
+                        <div><i class="fa-regular fa-calendar"></i> กรอบวัน: <b>${d1} - ${d2}</b></div>
+                        <div style="font-size:16px; margin-top:10px; font-weight:700; color:var(--text-main); border-top:1px dashed var(--border); padding-top:10px;"> รวมพื้นที่: <span style="color:var(--accent); font-size:20px;">${cData.totalRai} ไร่</span></div>
                     </div>
-                    <button onclick="acceptClusterJob('${cData.id}', ${cData.totalRai})" class="btn-main btn-warning" style="margin-bottom:16px;"> เสนอซื้อเหมากลุ่ม</button>`;
+                    <button onclick="acceptClusterJob('${cData.id}', ${cData.totalRai})" class="btn-main btn-warning" style="margin-bottom:20px; font-size:16px;"><i class="fa-solid fa-boxes-packing"></i> เสนอซื้อเหมากลุ่ม</button>`;
             
             cData.items.forEach(item => { 
                 drawMarkerOnMap(item, THEME_ACCENT, false); 
                 let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
-                let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:11px; font-weight:500; margin-top:4px;"> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
+                let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:600; margin-top:6px;"><i class="fa-solid fa-fire"></i> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
                 clusterHTML += `
-                    <div class="sale-card" style="border-left: 3px solid var(--accent); margin-bottom:12px; box-shadow:none; background:var(--surface); border-radius:10px; padding:15px;">
-                        <div class="sale-header" style="margin-bottom:8px; padding-bottom:8px;">
-                            <span style="font-weight:600; font-size:14px;">คุณ ${item.farmerName}</span>
-                            <span style="color:var(--accent); font-weight:600; font-size:14px;">${item.qty} ไร่</span>
+                    <div class="sale-card" style="border-left: 3px solid var(--accent); margin-bottom:12px; box-shadow:none; background:var(--bg-main); border-radius:12px; padding:16px;">
+                        <div class="sale-header" style="margin-bottom:10px; padding-bottom:10px;">
+                            <span style="font-weight:600; font-size:15px; color:var(--text-main);">คุณ ${item.farmerName}</span>
+                            <span style="color:var(--accent); font-weight:700; font-size:15px;">${item.qty} ไร่</span>
                         </div>
                         <div class="sale-detail" style="font-size:13px;">
-                            พร้อมม้วน: <span>${hDate}</span>${offerStatus}
+                            พร้อมม้วน: <span style="font-weight:600;">${hDate}</span>${offerStatus}
                         </div>
-                        <div style="display:flex; gap:8px; margin-top:12px;">
-                            <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;"> ข้อมูลแปลง</button>
-                            <button onclick="acceptJob(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="flex:1;"> เสนอราคา</button>
+                        <div style="display:flex; gap:10px; margin-top:16px;">
+                            <button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-map-location-dot"></i> ดูแปลง</button>
+                            <button onclick="acceptJob(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="flex:1;"><i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา</button>
                         </div>
                     </div>`; 
             });
@@ -2636,14 +2640,14 @@
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
             let popupContent = `
                 <div style="font-family:'Kanit'; text-align:center;">
-                    <b style="font-size:15px; color:var(--text-main);">คุณ ${item.farmerName}</b><br>
-                    <span style="font-size:13px; color:${colorHex}; font-weight:500;">${item.qty} ไร่</span><span style="font-size:12px; color:var(--text-muted);"> | ${hDate}</span>
-                    <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">`;
+                    <b style="font-size:16px; color:var(--text-main);">คุณ ${item.farmerName}</b><br>
+                    <span style="font-size:14px; color:${colorHex}; font-weight:700;">${item.qty} ไร่</span><span style="font-size:12px; color:var(--text-muted);"> | ${hDate}</span>
+                    <hr style="border:0; border-top:1px dashed var(--border); margin:10px 0;">`;
             
             if(!isActive) { 
-                popupContent += `<button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="width:100%;">ดูรายละเอียด</button>`; 
+                popupContent += `<button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="width:100%; border-color:${colorHex}; color:${colorHex};">ดูรายละเอียด / เสนอราคา</button>`; 
             } else { 
-                popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="width:100%;">แจ้งปิดงาน</button>`; 
+                popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="width:100%; background:var(--info);">แจ้งปิดงาน</button>`; 
             } 
             popupContent += `</div>`; 
             
@@ -2674,11 +2678,11 @@
             const { value: priceInput } = await Swal.fire({ 
                 html: `
                     <div style="font-family:'Kanit';">
-                        <div style="font-size:18px; font-weight:600; margin-bottom:8px;">เสนอราคายกคลัสเตอร์</div>
-                        <div style="font-size:14px; font-weight:500; color:var(--info); margin-bottom:16px;">รวมพื้นที่: ${totalRai} ไร่</div>
-                        <input id="swal-input1" class="swal2-input" type="number" placeholder="ระบุราคาเหมา (บาท/ไร่)" style="font-family:'Kanit'; margin-top:0;">
+                        <div style="font-size:20px; font-weight:700; margin-bottom:8px;">เสนอราคายกคลัสเตอร์</div>
+                        <div style="font-size:15px; font-weight:600; color:var(--info); margin-bottom:16px;">รวมพื้นที่: ${totalRai} ไร่</div>
+                        <input id="swal-input1" class="swal2-input" type="number" placeholder="ระบุราคาเหมา (บาท/ไร่)" style="font-family:'Kanit'; margin-top:0; height: 44px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
                     </div>`, 
-                focusConfirm: false, showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY, cancelButtonColor: '#BFC9C5', 
+                focusConfirm: false, showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY, cancelButtonColor: '#94A3B8', 
                 preConfirm: () => { return document.getElementById('swal-input1').value } 
             });
             
@@ -2697,86 +2701,7 @@
             }
         }
 
-        async function buyerCloseJobModal(rowId, estQty) {
-            let compProofPhoto = ""; 
-            const { value: formValues } = await Swal.fire({ 
-                html: `
-                    <div style="text-align:left; font-family:'Kanit'; font-size:14px; color:var(--text-main);">
-                        <div style="font-size:18px; font-weight:600; margin-bottom:16px;"> แจ้งส่งงานชั่งน้ำหนัก</div>
-                        <label style="margin-top:0;"> พื้นที่เสร็จสิ้น (ไร่):</label>
-                        <input type="number" id="close-actual-qty" value="${estQty}" step="0.1" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid var(--border); border-radius:10px;">
-                        <label> น้ำหนักสุทธิ (ตัน):</label>
-                        <input type="number" id="close-actual-weight" placeholder="ระบุน้ำหนักตามใบชั่ง" step="0.1" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid var(--border); border-radius:10px;">
-                        <label> อัปโหลดใบชั่งน้ำหนัก:</label>
-                        <input type="file" id="close-photo" accept="image/*" style="border:none; padding:10px 0; margin-top:5px;">
-                        <img id="close-photo-preview" style="width:100%; display:none; margin-top:10px; border-radius:10px; cursor:zoom-in;">
-                    </div>`, 
-                showCancelButton: true, confirmButtonText: 'ส่งหลักฐานปิดงาน', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_INFO, cancelButtonColor: '#BFC9C5', 
-                didOpen: () => { 
-                    document.getElementById('close-photo').addEventListener('change', (e) => { 
-                        const file = e.target.files[0]; 
-                        if(file) { 
-                            compressImageAsync(file).then(base64 => { 
-                                compProofPhoto = base64; 
-                                document.getElementById('close-photo-preview').src = base64; 
-                                document.getElementById('close-photo-preview').style.display = 'block'; 
-                                document.getElementById('close-photo-preview').onclick = function(){ openImageViewer(base64); }; 
-                            }); 
-                        } 
-                    }); 
-                }, 
-                preConfirm: () => { 
-                    const actualQty = document.getElementById('close-actual-qty').value; 
-                    const actualWeight = document.getElementById('close-actual-weight').value; 
-                    if (!actualQty || !actualWeight) { Swal.showValidationMessage('กรุณากรอกข้อมูลให้ครบถ้วน'); return false; } 
-                    if (!compProofPhoto) { Swal.showValidationMessage('กรุณาอัปโหลดบิลชั่งน้ำหนัก'); return false; } 
-                    return { actualQty, actualWeight }; 
-                } 
-            });
-            
-            if (formValues) { 
-                Swal.fire({ title: 'กำลังอัปโหลด...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } }); 
-                try { 
-                    const res = await fetch(GAS_WEB_APP_URL, { 
-                        method: "POST", 
-                        body: JSON.stringify({ action: "buyerCloseJob", row: rowId, actualQty: Number(formValues.actualQty), actualWeight: Number(formValues.actualWeight), photoProof: compProofPhoto }) 
-                    }); 
-                    const data = await res.json(); 
-                    if (data.status === "success") { 
-                        Swal.fire({title:'ส่งงานสำเร็จ!', text:'รอชาวไร่ตรวจสอบเพื่อปิดบัญชีครับ', icon:'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { location.reload(); }); 
-                    } 
-                } catch(e) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อได้', 'error'); } 
-            }
-        }
-
-        async function acceptJob(rowId, qty) {
-            const { value: priceInput } = await Swal.fire({ 
-                html: `
-                    <div style="font-family:'Kanit';">
-                        <div style="font-size:18px; font-weight:600; margin-bottom:8px;">เสนอราคารับซื้อ</div>
-                        <div style="font-size:14px; font-weight:500; color:var(--info); margin-bottom:16px;">พื้นที่แปลง: ${qty} ไร่</div>
-                        <input id="swal-input2" class="swal2-input" type="number" placeholder="ระบุราคา (บาท/ไร่)" style="font-family:'Kanit'; margin-top:0;">
-                    </div>`, 
-                focusConfirm: false, showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY, cancelButtonColor: '#BFC9C5', 
-                preConfirm: () => { return document.getElementById('swal-input2').value } 
-            });
-            
-            if (priceInput) { 
-                Swal.fire({ title: 'กำลังส่งคำเสนอซื้อ...', didOpen: () => { Swal.showLoading() } }); 
-                try { 
-                    const res = await fetch(GAS_WEB_APP_URL, { 
-                        method: "POST", 
-                        body: JSON.stringify({ action: "acceptJob", row: rowId, userId: userProfile.userId, buyerName: buyerNameContext, buyerPhone: buyerPhoneContext, price: priceInput }) 
-                    }); 
-                    const result = await res.json(); 
-                    if (result.status === "success") { 
-                        Swal.fire({title: 'สำเร็จ!', text: 'ส่งราคาให้ชาวไร่พิจารณาแล้วครับ', icon: 'success', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY}).then(() => { location.reload(); }); 
-                    } 
-                } catch (error) { Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งราคาได้', 'error'); } 
-            }
-        }
-
-        // ================= เริ่มการทำงานเมื่อโหลดเว็บ =================
+        // เริ่มการทำงานเมื่อโหลดเว็บเสร็จ
         window.onload = main;
     </script>
 </body>
