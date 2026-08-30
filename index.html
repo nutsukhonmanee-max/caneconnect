@@ -304,11 +304,11 @@
                     </div>
                 </div>
                 
-                <!-- กล่องกดยอมรับ PDPA (ชาวไร่) -->
+                <!-- กล่องกดยอมรับ Terms & PDPA (ชาวไร่) -->
                 <div id="pdpa-box-farmer" style="margin-top: 25px; margin-bottom: 15px; font-size: 13px; color: var(--text-muted); background: var(--bg-main); padding: 15px; border-radius: var(--radius-md); border: 1px solid var(--border);">
                     <label style="display: flex; align-items: flex-start; gap: 10px; margin: 0; cursor: pointer;">
                         <input type="checkbox" id="reg-pdpa" style="width: 18px; height: 18px; margin-top: 2px;">
-                        <span>ข้าพเจ้ายินยอมให้ แพลตฟอร์ม CaneConnect เก็บรวบรวมและเปิดเผยข้อมูลส่วนบุคคล (ชื่อ, เบอร์โทร, พิกัด) เพื่อใช้จับคู่ซื้อขายใบอ้อย ตาม<a href="#" onclick="showPDPA(); return false;" style="color: var(--info); font-weight: 600; text-decoration: underline;">นโยบายความเป็นส่วนตัว (PDPA)</a></span>
+                        <span>ข้าพเจ้ายินยอมให้ แพลตฟอร์ม CaneConnect เก็บรวบรวมข้อมูลส่วนบุคคล และยอมรับ <a href="#" onclick="showTerms(); return false;" style="color: var(--info); font-weight: 600; text-decoration: underline;">ข้อตกลงและเงื่อนไขการใช้งาน</a></span>
                     </label>
                 </div>
                 
@@ -333,8 +333,6 @@
                 <div id="saved-plots-container" style="margin-top: 20px; margin-bottom: 15px;">
                     <div class="empty-state" style="padding: 20px 0;">ยังไม่มีแปลงที่บันทึกไว้</div>
                 </div>
-                
-                <!-- เอาปุ่ม บันทึกการเปลี่ยนแปลง ออกตาม Request เนื่องจากมีระบบ Auto Save แล้ว -->
             </div>
         </div>
 
@@ -470,11 +468,11 @@
                 </div>
             </div>
             
-            <!-- กล่องกดยอมรับ PDPA (ผู้รับซื้อ) -->
+            <!-- กล่องกดยอมรับ Terms & PDPA (ผู้รับซื้อ) -->
             <div id="pdpa-box-buyer" style="margin-top: 25px; margin-bottom: 15px; font-size: 13px; color: var(--text-muted); background: var(--bg-main); padding: 15px; border-radius: var(--radius-md); border: 1px solid var(--border);">
                 <label style="display: flex; align-items: flex-start; gap: 10px; margin: 0; cursor: pointer;">
                     <input type="checkbox" id="buyer-pdpa" style="width: 18px; height: 18px; margin-top: 2px;">
-                    <span>ข้าพเจ้ายินยอมให้ แพลตฟอร์ม CaneConnect เก็บรวบรวมและเปิดเผยข้อมูลส่วนบุคคล (ชื่อ, เบอร์โทร, จุดจอดรถ) เพื่อรับงานม้วนใบอ้อย ตาม<a href="#" onclick="showPDPA(); return false;" style="color: var(--info); font-weight: 600; text-decoration: underline;">นโยบายความเป็นส่วนตัว (PDPA)</a></span>
+                    <span>ข้าพเจ้ายินยอมให้ แพลตฟอร์ม CaneConnect เก็บรวบรวมข้อมูลส่วนบุคคล และยอมรับ <a href="#" onclick="showTerms(); return false;" style="color: var(--info); font-weight: 600; text-decoration: underline;">ข้อตกลงและเงื่อนไขการใช้งาน</a></span>
                 </label>
             </div>
             
@@ -706,23 +704,23 @@
             }
         }
 
-        // ================= นโยบาย PDPA =================
-        function showPDPA() {
+        // ================= หน้าต่างแสดงข้อตกลงและเงื่อนไข (Terms of Use) =================
+        function showTerms() {
             Swal.fire({
-                title: 'นโยบายคุ้มครองข้อมูลส่วนบุคคล',
+                title: 'ข้อตกลงและเงื่อนไขการใช้งาน',
                 html: `
                     <div style="text-align:left; font-size:13px; line-height:1.6; max-height:300px; overflow-y:auto; padding-right:10px; font-family:'Kanit';">
-                        <b>1. วัตถุประสงค์การเก็บข้อมูล:</b><br>
-                        แพลตฟอร์ม CaneConnect มีความจำเป็นต้องเก็บรวบรวมข้อมูลส่วนบุคคลของท่าน เพื่อใช้ในการระบุตัวตน และอำนวยความสะดวกในการจับคู่ซื้อขายใบอ้อย<br><br>
+                        <b>1. สถานะและบทบาทของแพลตฟอร์ม:</b><br>
+                        CaneConnect เป็นเพียงแพลตฟอร์ม "สื่อกลาง" ในการเชื่อมโยงชาวไร่อ้อยและรถม้วน ผู้พัฒนาและทีมงานไม่มีส่วนเกี่ยวข้องกับข้อตกลง การจ้างงาน หรือการชำระเงินระหว่างผู้ใช้งาน<br><br>
                         
-                        <b>2. ข้อมูลที่จัดเก็บ:</b><br>
-                        ชื่อ-นามสกุล, เบอร์โทรศัพท์, ที่อยู่, พิกัดแปลงเกษตร, และพิกัดจุดจอดรถ<br><br>
+                        <b>2. ข้อจำกัดความรับผิดชอบ (สำคัญ):</b><br>
+                        ผู้พัฒนาขอสงวนสิทธิ์ปฏิเสธความรับผิดชอบทางกฎหมายในทุกกรณี ซึ่งรวมถึงข้อพิพาทระหว่างผู้ใช้งาน การทิ้งงาน ความเสียหายในพื้นที่ และความขัดข้องของระบบ เนื่องจากเป็นโครงการเพื่อการศึกษาและอยู่ในช่วงทดสอบ (Beta)<br><br>
                         
-                        <b>3. การเปิดเผยข้อมูล (สำคัญ):</b><br>
-                        ระบบจะแสดง "ชื่อและพิกัด" ของท่านบนกระดานคิวงาน และจะเปิดเผย "เบอร์โทรศัพท์ติดต่อ" ก็ต่อเมื่อท่านมีการกดยืนยันเสนอราคาหรือตกลงรับงานกันแล้วเท่านั้น เพื่อความปลอดภัยของข้อมูล<br><br>
+                        <b>3. หน้าที่และความรับผิดชอบ:</b><br>
+                        ผู้ใช้ต้องให้ข้อมูลที่เป็นจริง เสนอราคาอย่างเป็นธรรม และพาร์ทเนอร์ต้องใช้ความระมัดระวังในการปฏิบัติงานเพื่อไม่ให้เกิดความเสียหายแก่ทรัพย์สินของชาวไร่<br><br>
                         
-                        <b>4. สิทธิของท่าน:</b><br>
-                        ท่านมีสิทธิในการขอเข้าถึง ขอแก้ไข หรือขอลบข้อมูลของท่านออกจากระบบได้ตลอดเวลา โดยแจ้งผ่านผู้ดูแลระบบ (Admin)
+                        <b>4. การจัดการข้อมูลส่วนบุคคล (PDPA):</b><br>
+                        ระบบจำเป็นต้องเก็บชื่อ พิกัด และเบอร์โทรศัพท์ โดยจะเปิดเผย "เบอร์โทรศัพท์" ของท่านให้อีกฝ่ายเห็น ก็ต่อเมื่อมีการยืนยันตกลงรับงานกันบนระบบแล้วเท่านั้น ข้อมูลผลการดำเนินงานจะถูกนำไปใช้ประมวลผลเป็นสถิติลด PM2.5 ของโครงการ
                     </div>
                 `,
                 confirmButtonText: 'รับทราบ',
@@ -730,23 +728,21 @@
             });
         }
 
-        async function requirePDPA(role) {
+        // ================= ฟังก์ชันบังคับให้กดยอมรับข้อตกลงและเงื่อนไข =================
+        async function requireTermsOfUse(role) {
             hideLoader(); 
             return new Promise((resolve) => {
                 Swal.fire({
-                    title: 'ข้อตกลงและเงื่อนไข (PDPA)',
+                    title: 'ข้อตกลงและเงื่อนไข (อัปเดตใหม่)',
                     html: `
                         <div style="text-align:left; font-size:13px; line-height:1.6; max-height:200px; overflow-y:auto; padding:12px; background:var(--bg-main); border-radius:12px; border:1px solid var(--border); margin-bottom:15px; font-family:'Kanit';">
-                            <b>1. วัตถุประสงค์การเก็บข้อมูล:</b><br>
-                            แพลตฟอร์ม CaneConnect มีความจำเป็นต้องเก็บรวบรวมข้อมูลส่วนบุคคลของท่าน เพื่อใช้ในการระบุตัวตน และอำนวยความสะดวกในการจับคู่ซื้อขายใบอ้อย<br><br>
-                            <b>2. ข้อมูลที่จัดเก็บ:</b><br>
-                            ชื่อ-นามสกุล, เบอร์โทรศัพท์, ที่อยู่, พิกัดแปลงเกษตร, และพิกัดจุดจอดรถ<br><br>
-                            <b>3. การเปิดเผยข้อมูล (สำคัญ):</b><br>
-                            ระบบจะแสดง "ชื่อและพิกัด" ของท่านบนกระดานคิวงาน และจะเปิดเผย "เบอร์โทรศัพท์ติดต่อ" ก็ต่อเมื่อท่านมีการกดยืนยันเสนอราคาหรือตกลงรับงานกันแล้วเท่านั้น
+                            <b>1. สื่อกลางเท่านั้น:</b> แพลตฟอร์มไม่รับผิดชอบต่อข้อตกลง สัญญา หรือการชำระเงินใดๆ ระหว่างผู้ใช้งาน<br>
+                            <b>2. ปฏิเสธความรับผิดชอบ:</b> ไม่รับผิดชอบต่อข้อพิพาท การเทงาน อุบัติเหตุ หรือความขัดข้องของระบบ<br>
+                            <b>3. ความเป็นส่วนตัว (PDPA):</b> เบอร์โทรศัพท์จะถูกเปิดเผยเมื่อตกลงรับงานแล้วเท่านั้น
                         </div>
                         <label style="display: flex; align-items: flex-start; gap: 10px; margin: 0; cursor: pointer; text-align:left;">
-                            <input type="checkbox" id="popup-pdpa-check" style="width: 20px; height: 20px; flex-shrink: 0; margin-top:2px;">
-                            <span style="font-size:14px; font-weight:500; color:var(--text-main);">ข้าพเจ้าได้อ่านและยินยอมให้ แพลตฟอร์มเก็บรวบรวมและเปิดเผยข้อมูลส่วนบุคคล ตามนโยบายความเป็นส่วนตัวข้างต้น</span>
+                            <input type="checkbox" id="popup-terms-check" style="width: 20px; height: 20px; flex-shrink: 0; margin-top:2px;">
+                            <span style="font-size:14px; font-weight:500; color:var(--text-main);">ข้าพเจ้าได้อ่านและยอมรับ ข้อตกลงและเงื่อนไขการใช้งาน (Terms of Use) รวมถึงนโยบาย PDPA อย่างครบถ้วน</span>
                         </label>
                     `,
                     allowOutsideClick: false,
@@ -754,7 +750,7 @@
                     confirmButtonText: 'ยืนยันการยอมรับ',
                     confirmButtonColor: THEME_PRIMARY,
                     preConfirm: () => {
-                        const isChecked = document.getElementById('popup-pdpa-check').checked;
+                        const isChecked = document.getElementById('popup-terms-check').checked;
                         if (!isChecked) {
                             Swal.showValidationMessage('กรุณากดยอมรับเงื่อนไข เพื่อใช้งานระบบต่อครับ');
                         }
@@ -763,7 +759,10 @@
                 }).then(async (result) => {
                     if (result.isConfirmed) {
                         showLoader(); 
+                        // บันทึกลงในเครื่องว่าเคยกดยอมรับเวอร์ชันนี้แล้ว
+                        localStorage.setItem('caneconnect_terms_v1', 'accepted');
                         try {
+                            // อัปเดตในฐานข้อมูล (ใช้ฟังก์ชัน acceptPDPA เดิมเพื่อบันทึกสถานะ)
                             await fetch(GAS_WEB_APP_URL, {
                                 method: 'POST',
                                 body: JSON.stringify({
@@ -1613,7 +1612,10 @@
                 const result = await res.json();
                 
                 if (result.status === "found") {
-                    if (!result.data.pdpa) { await requirePDPA('farmer'); } 
+                    // ================= บังคับยอมรับ Terms of Use =================
+                    if (!result.data.pdpa || localStorage.getItem('caneconnect_terms_v1') !== 'accepted') { 
+                        await requireTermsOfUse('farmer'); 
+                    } 
                     
                     isEditMode = true; 
                     let d = result.data; 
@@ -1664,7 +1666,7 @@
 
         async function submitRegistration(isAutoSave = false) {
             if (!isEditMode && !document.getElementById('reg-pdpa').checked) {
-                Swal.fire('ข้อกำหนด PDPA', 'กรุณากดยอมรับเงื่อนไขการให้ข้อมูลส่วนบุคคลก่อนกดบันทึกครับ', 'warning');
+                Swal.fire('ข้อตกลงและเงื่อนไข', 'กรุณากดยอมรับข้อตกลงและเงื่อนไขการใช้งานก่อนกดบันทึกครับ', 'warning');
                 return;
             }
             if(!isAutoSave && document.getElementById('tab-personal').style.display !== 'none' && !validateForm('tab-personal')) return;
@@ -1702,6 +1704,10 @@
                 const result = await res.json();
                 
                 if (result.status === "success") { 
+                    if (!isEditMode) {
+                        localStorage.setItem('caneconnect_terms_v1', 'accepted');
+                    }
+                    
                     isEditMode = true; 
                     toggleProfileInputs(true, 'reg'); 
                     document.getElementById('btn-enable-edit').style.display = 'block'; 
@@ -1732,7 +1738,10 @@
                 const result = await res.json();
                 
                 if (result.status === "found") {
-                    if (!result.data.pdpa) { await requirePDPA('farmer'); } 
+                    // ================= บังคับยอมรับ Terms of Use =================
+                    if (!result.data.pdpa || localStorage.getItem('caneconnect_terms_v1') !== 'accepted') { 
+                        await requireTermsOfUse('farmer'); 
+                    } 
                     
                     document.getElementById("profile-info").innerText = "คุณ " + result.data.firstName + " " + result.data.lastName;
                     
@@ -1938,7 +1947,7 @@
                     cardHTML += `
                         <div style="display:flex; gap:10px; margin-top:16px;">
                             <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1; margin-bottom:0;"><i class="fa-solid fa-file-invoice"></i> ดูบิลจำลอง</button>
-                            <button onclick="farmerVerifyCloseJob(${index})" class="btn-small btn-small-primary" style="flex:1.5; background:var(--info); box-shadow:0 4px 0 #2563EB; margin-bottom:0;"><i class="fa-solid fa-check-double"></i> ปิดบัญชี</button>
+                            <button onclick="farmerVerifyCloseJob(${index})" class="btn-small btn-small-primary" style="flex:1.5; background:#8E44AD; box-shadow:0 4px 0 #5B2C6F; margin-bottom:0;"><i class="fa-solid fa-check-double"></i> ปิดบัญชี</button>
                         </div>`;
                 } else { 
                     cardHTML += `<button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="margin-top:16px; width:100%;"><i class="fa-solid ${badgeClass === "completed" ? 'fa-receipt' : 'fa-eye'}"></i> ${badgeClass === "completed" ? ' ดูใบเสร็จรับเงิน' : ' ดูรายละเอียดแปลง'}</button>`; 
@@ -2249,7 +2258,10 @@
                 const result = await res.json();
                 
                 if (result.status === "found") {
-                    if (!result.data.pdpa) { await requirePDPA('buyer'); } 
+                    // ================= บังคับยอมรับ Terms of Use =================
+                    if (!result.data.pdpa || localStorage.getItem('caneconnect_terms_v1') !== 'accepted') { 
+                        await requireTermsOfUse('buyer'); 
+                    } 
                     
                     isBuyerEditMode = true; 
                     let d = result.data; 
@@ -2295,7 +2307,7 @@
 
         async function submitBuyerRegistration() {
             if (!isBuyerEditMode && !document.getElementById('buyer-pdpa').checked) {
-                Swal.fire('ข้อกำหนด PDPA', 'กรุณากดยอมรับเงื่อนไขการให้ข้อมูลส่วนบุคคลก่อนกดบันทึกครับ', 'warning');
+                Swal.fire('ข้อตกลงและเงื่อนไข', 'กรุณากดยอมรับข้อตกลงและเงื่อนไขการใช้งานก่อนกดบันทึกครับ', 'warning');
                 return;
             }
             if(!validateForm('register-buyer-page')) return; 
@@ -2328,6 +2340,9 @@
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); 
                 const result = await res.json(); 
                 if (result.status === "success") { 
+                    if (!isBuyerEditMode) {
+                        localStorage.setItem('caneconnect_terms_v1', 'accepted');
+                    }
                     Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: 'บันทึกข้อมูลแล้ว', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }).then(()=>{ location.reload(); }); 
                 } 
             } catch (error) { Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); }
@@ -2342,7 +2357,10 @@
                 const result = await res.json(); 
                 
                 if (result.status === "found") { 
-                    if (!result.data.pdpa) { await requirePDPA('buyer'); } 
+                    // ================= บังคับยอมรับ Terms of Use =================
+                    if (!result.data.pdpa || localStorage.getItem('caneconnect_terms_v1') !== 'accepted') { 
+                        await requireTermsOfUse('buyer'); 
+                    } 
                     
                     buyerNameContext = result.data.fullName; 
                     buyerPhoneContext = result.data.phone; 
@@ -2379,17 +2397,24 @@
                 const result = await res.json(); 
                 if (result.status === "success") { 
                     rawBuyerData = result.data; 
+                    
+                    // อัปเดต Filter ด้วยที่อยู่ปัจจุบันก่อน
+                    buildJobLocations();
+                    initMultiSelectFilter('map');
+                    initMultiSelectFilter('cal');
+                    
+                    // รันระบบแปลงพิกัดดาวเทียมเป็นที่อยู่จริงแบบเงียบๆ
+                    processRealPlotLocations(rawBuyerData).then(() => {
+                        // เมื่อดึงเสร็จ รีบิลด์ Filter อีกรอบเพื่อให้ข้อมูลสมบูรณ์ที่สุด
+                        buildJobLocations();
+                        initMultiSelectFilter('map');
+                        initMultiSelectFilter('cal');
+                    });
+                    
                     updateClusterLogic(); 
+                    renderPurchasesPage(); 
                 } 
             } catch (error) { console.error("Load map error", error); }
-        }
-
-        function getDistanceJS(lat1, lon1, lat2, lon2) { 
-            var R = 6371; 
-            var dLat = (lat2 - lat1) * (Math.PI / 180); 
-            var dLon = (lon2 - lon1) * (Math.PI / 180); 
-            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * Math.sin(dLon / 2) * Math.sin(dLon / 2); 
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
         }
 
         function updateClusterLogic() {
@@ -2534,6 +2559,19 @@
                         if (hTime > eTime) return false;
                     }
                 }
+                
+                // กรองตามที่อยู่ (Multi-select)
+                let pass = true;
+                let iProv = (item.plotProv || item.prov || "").replace('จ.', '').trim();
+                let iDist = (item.plotDist || item.dist || "").replace('อ.', '').trim();
+                let iSub  = (item.plotSubDist || item.subDist || "").replace('ต.', '').trim();
+
+                if (filters.map.provs.length > 0 && !filters.map.provs.some(p => iProv.includes(p) || p.includes(iProv))) pass = false;
+                if (filters.map.dists.length > 0 && !filters.map.dists.some(d => iDist.includes(d) || d.includes(iDist))) pass = false;
+                if (filters.map.subs.length > 0 && !filters.map.subs.some(s => iSub.includes(s) || s.includes(iSub))) pass = false;
+
+                if (!pass) return false;
+                
                 return true; 
             }); 
             
@@ -2614,12 +2652,16 @@
             }
             
             buyerPolygonLayer.addTo(buyerMapObj); 
-            if(buyerPolygonLayer.getLayers().length > 0) { buyerMapObj.fitBounds(buyerPolygonLayer.getBounds(), { padding: [30, 30] }); }
+            if(buyerPolygonLayer.getLayers().length > 0) { 
+                buyerMapObj.fitBounds(buyerPolygonLayer.getBounds(), { padding: [30, 30] }); 
+            } else if (currentLat && currentLng) {
+                buyerMapObj.setView([currentLat, currentLng], 11);
+            }
         }
 
         function renderSingleCardHTML(item, colorHex) {
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
-            let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:600; margin-top:8px;"><i class="fa-solid fa-fire"></i> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
+            let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:12px; font-weight:500; margin-top:8px;"><i class="fa-solid fa-fire"></i> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
             let priorityBadge = item.qty >= 100 ? `<span class="badge" style="background:#D1FAE5; color:#065F46;"> คุ้มทุน</span>` : "";
             
             let distText = "";
@@ -2660,10 +2702,10 @@
             let clusterHTML = `
                 <div class="cluster-group" style="border-color:var(--accent);">
                     <div class="cluster-title" style="color:var(--accent);"><i class="fa-solid fa-layer-group"></i> โซนรวบรวม ${cData.id.substring(0,9)}</div>
-                    <div style="font-size:13px; color:var(--text-muted); margin-bottom:14px; background:var(--bg-main); padding:12px; border-radius:12px;">
-                        <div style="margin-bottom:4px;"> รัศมีห่างกัน: <b>ไม่เกิน ${maxDist} กม.</b></div>
-                        <div> กรอบวัน: <b>${d1} - ${d2}</b></div>
-                        <div style="font-size:16px; margin-top:8px; font-weight:600; color:var(--text-main);"> รวมพื้นที่: <b style="color:var(--accent);">${cData.totalRai} ไร่</b></div>
+                    <div style="font-size:13px; color:var(--text-muted); margin-bottom:14px; background:var(--bg-main); padding:12px; border-radius:12px; border:1px solid var(--border);">
+                        <div style="margin-bottom:4px;"><i class="fa-solid fa-route"></i> รัศมีห่างกัน: <b>ไม่เกิน ${maxDist} กม.</b></div>
+                        <div><i class="fa-regular fa-calendar"></i> กรอบวัน: <b>${d1} - ${d2}</b></div>
+                        <div style="font-size:16px; margin-top:10px; font-weight:700; color:var(--text-main); border-top:1px dashed var(--border); padding-top:10px;"> รวมพื้นที่: <span style="color:var(--accent); font-size:20px;">${cData.totalRai} ไร่</span></div>
                     </div>
                     <button onclick="acceptClusterJob('${cData.id}', ${cData.totalRai})" class="btn-main btn-warning" style="margin-bottom:16px;"> เสนอซื้อเหมากลุ่ม</button>`;
             
@@ -2691,23 +2733,29 @@
         }
 
         function drawMarkerOnMap(item, colorHex, isActive) {
-            let customIcon = L.divIcon({ 
-                className: 'custom-div-icon', 
-                html: `<div style='background-color:${colorHex}; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);'></div>` 
-            }); 
+            if (!item.lat || !item.lon || isNaN(parseFloat(item.lat)) || isNaN(parseFloat(item.lon))) return;
             
-            let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
+            let markerHtml = isActive ? 
+                `<div style='background-color:${colorHex}; width:16px; height:16px; border-radius:50%; border:2px solid white;'></div>` : 
+                `<div style='background-color:${colorHex}; width:20px; height:20px; border-radius:50%; border:3px solid white; box-shadow: 0 0 0 rgba(255, 87, 34, 0.7); animation: pulse-red 2s infinite;'></div>`;
+            
+            let customIcon = L.divIcon({ className: 'custom-div-icon', html: markerHtml }); 
+            let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-"); 
+            let displayName = item.farmerFullName || item.farmerName;
+            
             let popupContent = `
-                <div style="font-family:'Kanit'; text-align:center;">
-                    <b style="font-size:15px; color:var(--text-main);">คุณ ${item.farmerName}</b><br>
-                    <span style="font-size:13px; color:${colorHex}; font-weight:500;">${item.qty} ไร่</span><span style="font-size:12px; color:var(--text-muted);"> | ${hDate}</span>
+                <div style="font-family:'Kanit'; text-align:center; min-width:180px;">
+                    <b style="font-size:16px; color:var(--text-main);">คุณ ${displayName}</b><br>
+                    <span style="font-size:14px; color:${colorHex}; font-weight:600;">${actualQ} ไร่</span>
+                    <span style="font-size:12px; color:var(--text-muted);"> | ${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span>
                     <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">`;
-            
+                    
             if(!isActive) { 
-                popupContent += `<button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="width:100%;">ดูรายละเอียด</button>`; 
+                popupContent += `<button onclick="viewSaleIslandModal(${item.row}, 'buyer')" class="btn-small btn-small-outline" style="width:100%; padding:8px; border-color:${colorHex}; color:${colorHex};">ดูรายละเอียด / เสนอราคา</button>`; 
             } else { 
-                popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${item.qty})" class="btn-small btn-small-primary" style="width:100%;">แจ้งปิดงาน</button>`; 
+                popupContent += `<button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="width:100%; padding:8px;">แจ้งปิดงาน</button>`; 
             } 
+            
             popupContent += `</div>`; 
             
             let marker = L.marker([item.lat, item.lon], { icon: customIcon }).bindPopup(popupContent); 
@@ -2718,8 +2766,7 @@
                 try { 
                     let coords = JSON.parse(item.polygon); 
                     let flippedCoords = coords[0].map(p => [p[1], p[0]]); 
-                    let polygon = L.polygon(flippedCoords, { color: colorHex, fillOpacity: 0.2, weight: 2 }); 
-                    buyerPolygonLayer.addLayer(polygon); 
+                    buyerPolygonLayer.addLayer(L.polygon(flippedCoords, { color: colorHex, fillOpacity: 0.3, weight: 3 })); 
                 } catch(e) {} 
             }
         }
@@ -2739,9 +2786,9 @@
                     <div style="font-family:'Kanit';">
                         <div style="font-size:18px; font-weight:600; margin-bottom:8px;">เสนอราคายกคลัสเตอร์</div>
                         <div style="font-size:14px; font-weight:500; color:var(--info); margin-bottom:16px;">รวมพื้นที่: ${totalRai} ไร่</div>
-                        <input id="swal-input1" class="swal2-input" type="number" placeholder="ระบุราคาเหมา (บาท/ไร่)" style="font-family:'Kanit'; margin-top:0;">
+                        <input id="swal-input1" class="swal2-input" type="number" placeholder="ระบุราคาเหมา (บาท/ไร่)" style="font-family:'Kanit'; margin-top:0; height: 44px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
                     </div>`, 
-                focusConfirm: false, showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY, cancelButtonColor: '#BFC9C5', 
+                focusConfirm: false, showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY, cancelButtonColor: '#94A3B8', 
                 preConfirm: () => { return document.getElementById('swal-input1').value } 
             });
             
