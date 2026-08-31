@@ -414,7 +414,7 @@
             <div class="section-title"><i class="fa-solid fa-clock-rotate-left" style="color:var(--text-muted);"></i> ประวัติการขาย (เสร็จสิ้น)</div>
             <div id="history-sales-container"></div>
             
-            <div id="farmer-dashboard-container" style="display:none; margin-top: 40px; margin-bottom: 20px;"></div>
+            <div id="farmer-dashboard-container" style="display:none; margin-top: 20px; margin-bottom: 20px;"></div>
         </div>
 
         <!-- =========================================================
@@ -849,6 +849,30 @@
             }
         }
 
+        // ================= อัปเดตตำแหน่งปัจจุบัน =================
+        function updateUserLocationOnMap() {
+            let userIcon = L.divIcon({ 
+                className: 'user-loc-icon', 
+                html: `<div class="pulse-marker"></div>` 
+            });
+            
+            if (buyerMapObj) {
+                if (currentUserMarker) {
+                    currentUserMarker.setLatLng([currentLat, currentLng]);
+                } else {
+                    currentUserMarker = L.marker([currentLat, currentLng], { icon: userIcon, zIndexOffset: 1000 }).addTo(buyerMapObj).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งปัจจุบันของคุณ</div>");
+                }
+            }
+        }
+
+        function goToMyLocation() {
+            if (buyerMapObj && currentLat && currentLng) { 
+                buyerMapObj.flyTo([currentLat, currentLng], 14, {duration: 1.5}); 
+            } else { 
+                Swal.fire('ไม่พบตำแหน่ง', 'โปรดอนุญาตให้ระบบเข้าถึง GPS ของคุณ', 'warning'); 
+            }
+        }
+
         // ================= Core Logic LIFF & Router =================
         async function main() {
             showLoader(); 
@@ -938,23 +962,26 @@
             if (!isEditMode && !document.getElementById('reg-pdpa').checked) { Swal.fire('ข้อตกลงและเงื่อนไข', 'กรุณากดยอมรับข้อตกลงและเงื่อนไขการใช้งานก่อนกดบันทึกครับ', 'warning'); return; }
             if(!isAutoSave && document.getElementById('tab-personal').style.display !== 'none' && !validateForm('tab-personal')) return;
             let phoneInput = document.getElementById("reg-phone").value.trim(); let formattedPhone = phoneInput.startsWith("'") ? phoneInput : "'" + phoneInput;
-            const payload = { action: isEditMode ? "updateUser" : "register", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("reg-prefix").value, firstName: document.getElementById("reg-firstname").value, lastName: document.getElementById("reg-lastname").value, dob: document.getElementById("reg-dob").value, addressNo: document.getElementById("reg-no").value, moo: document.getElementById("reg-moo").value, subDist: document.getElementById("reg-subdist").value, dist: document.getElementById("reg-dist").value, prov: document.getElementById("reg-prov").value, zip: document.getElementById("reg-zip").value, phone: formattedPhone, farmInfo: document.getElementById("reg-farminfo").value, savedPlots: JSON.stringify(userSavedPlots) };
-            if (!isAutoSave) { Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } }); } else { showLoader(); }
+            const payload = { action: isEditMode?"updateUser":"register", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("reg-prefix").value, firstName: document.getElementById("reg-firstname").value, lastName: document.getElementById("reg-lastname").value, dob: document.getElementById("reg-dob").value, addressNo: document.getElementById("reg-no").value, moo: document.getElementById("reg-moo").value, subDist: document.getElementById("reg-subdist").value, dist: document.getElementById("reg-dist").value, prov: document.getElementById("reg-prov").value, zip: document.getElementById("reg-zip").value, phone: "'"+ph, farmInfo: document.getElementById("reg-farminfo").value, savedPlots: JSON.stringify(userSavedPlots) };
+            
+            if (!isAutoSave) { Swal.fire({ title:'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen:()=>{Swal.showLoading()} }); } else { showLoader(); }
+
             try {
                 const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
-                if (result.status === "success") { 
-                    isEditMode = true; toggleProfileInputs(true, 'reg'); document.getElementById('btn-enable-edit').style.display = 'block'; document.getElementById('btn-register').style.display = 'none'; 
+                if(result.status==="success") { 
+                    isEditMode=true; toggleProfileInputs(true, 'reg'); document.getElementById('btn-enable-edit').style.display='block'; document.getElementById('btn-register').style.display='none'; 
                     document.getElementById("reg-status-box").innerHTML = "<i class='fa-solid fa-circle-check'></i> คุณลงทะเบียนแล้ว กดปลดล็อกหากต้องการเปลี่ยนข้อมูลครับ";
                     let pdpaBox = document.getElementById('pdpa-box-farmer'); if(pdpaBox) pdpaBox.style.display = 'none';
-                    if (!isAutoSave) { Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: 'บันทึกข้อมูลเข้าสู่ระบบแล้ว', confirmButtonText: 'ตกลง', confirmButtonColor: THEME_PRIMARY }); } 
+                    if (!isAutoSave) { Swal.fire('สำเร็จ!','ข้อมูลบันทึกเข้าระบบเรียบร้อยแล้ว','success'); } 
                     else { hideLoader(); Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 1500, icon: 'success', title: 'อัปเดตแปลงสำเร็จ' }); }
                 }
-            } catch (error) { hideLoader(); Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); }
+            } catch(e) { hideLoader(); Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); }
         }
 
         async function checkUserForAction(targetAction) {
             try {
-                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "checkUser", userId: userProfile.userId }) }); const result = await res.json();
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "checkUser", userId: userProfile.userId }) }); 
+                const result = await res.json();
                 if (result.status === "found") {
                     if (!result.data.pdpa) { await requireTermsOfUse('farmer'); } 
                     document.getElementById("profile-info").innerText = "คุณ " + result.data.firstName + " " + result.data.lastName;
@@ -1013,11 +1040,8 @@
             }
             
             salesData.forEach((item, index) => {
-                let reqDate = "-";
-                if(item.timestamp) { reqDate = new Date(item.timestamp).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) + " น."; }
-                
-                let hDate = "-";
-                if(item.harvestDate) { hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); }
+                const reqDate = new Date(item.timestamp).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) + " น."; 
+                const hDate = new Date(item.harvestDate).toLocaleDateString('th-TH');
                 
                 let badgeClass = "pending"; let statusText = item.status === "Pending" ? "รอรถม้วน" : item.status;
                 if (statusText === "รอชาวไร่ยืนยัน") badgeClass = "waiting"; 
@@ -1067,7 +1091,7 @@
                 if (statusText === "รอชาวไร่ยืนยัน") { 
                     cardHTML += `
                         <div style="display:flex; gap:10px; margin-top:16px;">
-                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-eye"></i> ดูรายละเอียด</button>
+                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-eye"></i> ข้อมูลแปลง</button>
                             <button onclick="viewOffers(${index})" class="btn-small btn-small-primary" style="flex:1.5;"><i class="fa-solid fa-handshake"></i> เลือกผู้ซื้อ</button>
                         </div>`; 
                 } else if (statusText === "รอชาวไร่ตรวจสอบ") { 
@@ -1182,7 +1206,7 @@
                     myOfferedRows = result.data.offeredJobs || []; myCanceledRows = result.data.canceledJobs || []; localStorage.setItem('myOfferedRows', JSON.stringify(myOfferedRows)); localStorage.setItem('myCanceledRows', JSON.stringify(myCanceledRows));
                     document.getElementById("profile-info").innerText = "คุณ " + result.data.fullName; 
                     
-                    document.getElementById('buyer-map-page').classList.add('active'); // บังคับให้หน้าแผนที่ active เพื่อให้แผนที่โหลด
+                    document.getElementById('buyer-map-page').classList.add('active'); // บังคับให้หน้าแผนที่ active
                     await fetchBuyerRawData(); hideLoader();
                 } else { 
                     hideLoader(); document.getElementById("profile-info").innerText = "คุณ " + userProfile.displayName; 
@@ -1246,7 +1270,7 @@
                                 <div>วันนัดหมาย: <span>${hDate}</span></div>
                             </div>
                             <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-map-location-dot"></i> ดูแปลง</button>
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-map-location-dot"></i> ข้อมูลแปลง</button>
                                 ${item.status === 'กำลังดำเนินการ' ? `<button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-small btn-small-primary" style="flex:1; background:var(--info);"><i class="fa-solid fa-flag-checkered"></i> แจ้งปิดงาน</button>` : ''}
                             </div>
                         </div>`; 
@@ -1409,7 +1433,7 @@
         }
 
         function viewOnMap(row, lat, lon) { 
-            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            document.querySelector('.content-body').scrollTo({ top: 0, behavior: 'smooth' }); 
             buyerMapObj.flyTo([lat, lon], 16, { duration: 1.5 }); 
             setTimeout(() => { if(buyerMarkers[row]) { buyerMarkers[row].openPopup(); } }, 1500); 
         }
