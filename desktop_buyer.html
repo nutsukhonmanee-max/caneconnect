@@ -253,6 +253,7 @@
             padding: 30px 40px; 
             overflow-y: auto; 
             position: relative;
+            scroll-behavior: smooth;
         }
 
         .page { display: none; animation: fadeIn 0.4s ease; } 
@@ -291,6 +292,12 @@
         
         .full-width { grid-column: 1 / -1; }
         
+        /* Dashboard Stats */
+        .dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; } 
+        .dash-card { background: var(--surface); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: center;}
+        .dash-value { font-size: 30px; font-weight: 700; margin-top: 10px; display: flex; align-items: baseline; gap: 8px; color: var(--secondary);}
+        .dash-unit { font-size: 14px; font-weight: 500; color: var(--text-muted); }
+
         /* ================= Filters Panel ================= */
         .filter-panel { 
             background: var(--surface); 
@@ -500,8 +507,12 @@
             justify-content: space-between; 
         }
 
-        .sale-card:hover { 
-            transform: translateY(-3px); 
+        .sale-card.hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .sale-card.hover-lift:hover { 
+            transform: translateY(-4px); 
             box-shadow: var(--shadow-md); 
         }
 
@@ -902,9 +913,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="filter-item" style="display: flex; align-items: flex-end; min-width:auto;">
-                        <button class="btn-main" style="width: auto; padding: 10px 24px; height: 44px;" onclick="triggerSearch()">
+                    <div class="filter-item" style="display: flex; align-items: flex-end; min-width:auto; gap: 10px;">
+                        <button class="btn-main" style="width: auto; padding: 10px 20px; height: 44px;" onclick="triggerSearch()">
                             <i class="fa-solid fa-magnifying-glass"></i> กรองแผนที่
+                        </button>
+                        <button class="btn-main btn-outline" style="width: auto; padding: 10px 20px; height: 44px; color: var(--text-muted); border-color: var(--border);" onclick="clearFilters('map')">
+                            <i class="fa-solid fa-eraser"></i> ล้าง
                         </button>
                     </div>
                 </div>
@@ -1027,9 +1041,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="filter-item" style="display:flex; align-items:flex-end; min-width:auto;">
+                    <div class="filter-item" style="display:flex; align-items:flex-end; min-width:auto; gap: 10px;">
                         <button class="btn-main" style="padding:10px 20px; height:44px; width:auto;" onclick="renderCalendar()">
                             <i class="fa-solid fa-filter"></i> กรองปฏิทิน
+                        </button>
+                        <button class="btn-main btn-outline" style="width: auto; padding: 10px 20px; height: 44px; color: var(--text-muted); border-color: var(--border);" onclick="clearFilters('cal')">
+                            <i class="fa-solid fa-eraser"></i> ล้าง
                         </button>
                     </div>
                 </div>
@@ -1042,14 +1059,14 @@
                 <div class="section-title">
                     <i class="fa-solid fa-clock-rotate-left" style="color:var(--text-muted);"></i> สถิติและประวัติการรับซื้อ (เสร็จสิ้น & ยกเลิก)
                 </div>
-                <div id="buyer-history-container" class="jobs-grid"></div>
+                <div id="buyer-history-container"></div>
             </div>
             
         </div>
     </main>
 
     <!-- ป้ายบอกเวอร์ชันแอป -->
-    <div class="app-version">v3.0.0 Pro | อัปเดต: ระบบกรองพื้นที่อัจฉริยะ & ปฏิทินคู่</div>
+    <div class="app-version">v3.1.0 Pro | อัปเดต: ระบบกรองพื้นที่, ปฏิทินคู่ & Dashboard ประวัติ</div>
 
     <!-- LIFF SDK -->
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -1409,6 +1426,31 @@
             subDrop.innerHTML = shtml || '<div class="multi-select-option">ไม่มีข้อมูล</div>';
         }
 
+        // ================= ล้างตัวกรอง (Clear Filters) =================
+        function clearFilters(prefix) {
+            // Reset state
+            filters[prefix] = { provs: [], dists: [], subs: [] };
+            
+            // Uncheck all checkboxes
+            document.querySelectorAll(`#${prefix}-prov-dropdown input[type="checkbox"]`).forEach(cb => cb.checked = false);
+            
+            // Reset labels
+            document.getElementById(`${prefix}-prov-label`).innerText = 'ทุกจังหวัด';
+            
+            // Re-render cascading dropdowns
+            updateMultiFilterDist(prefix);
+            
+            // Trigger refresh based on page
+            if (prefix === 'map') {
+                if(document.getElementById('filter-date-start')) document.getElementById('filter-date-start').value = '';
+                if(document.getElementById('filter-date-end')) document.getElementById('filter-date-end').value = '';
+                if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all';
+                triggerSearch();
+            } else if (prefix === 'cal') {
+                renderCalendar();
+            }
+        }
+
         // ==========================================
         // Reverse Geocoding AI (แปลงพิกัด Lat/Lon -> ที่อยู่จริงเงียบๆ)
         // ==========================================
@@ -1659,12 +1701,9 @@
 
         async function fetchBuyerRawData() {
             if(!buyerMapObj) { 
-                buyerMapObj = L.map('buyer-map', { zoomControl: false }).setView([17.295, 101.782], 10); 
-                L.control.zoom({ position: 'bottomright' }).addTo(buyerMapObj);
-                L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(buyerMapObj);
-                if(currentLat && currentLng) {
-                    updateUserLocationOnMap();
-                }
+                var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }); 
+                buyerMapObj = L.map('buyer-map', { center: [currentLat, currentLng], zoom: 10, layers: [googleHybrid] }); 
+                updateUserLocationOnMap();
             }
             try { 
                 const res = await fetch(GAS_WEB_APP_URL, { 
@@ -1949,9 +1988,9 @@
                 historyJobs.forEach(item => {
                     try {
                         let displayName = item.farmerFullName || item.farmerName; 
-                        let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-"); 
-                        let actualW = item.actualWeight || "-"; 
-                        let pRai = extractPrice(item.price); 
+                        let actualQ = parseFloat((item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || 0)); 
+                        let actualW = parseFloat(item.actualWeight) || 0; 
+                        let pRai = extractPrice(item.price) || 0; 
                         let totalStr = "-";
                         let displayStatus = item.status; 
                         let badgeClass = item.status === "เสร็จสิ้น" ? "bg-success" : "bg-danger";
@@ -1961,18 +2000,19 @@
                         } else if (item.status === "ยกเลิก") { 
                             displayStatus = "ชาวไร่ยกเลิก"; 
                         }
+                        
                         if (item.status === "เสร็จสิ้น") { 
                             completedCount++; 
-                            if (actualQ !== "-" && pRai > 0) { 
-                                let total = parseFloat(actualQ) * pRai; 
-                                sumTon += parseFloat(actualW) || 0; 
+                            sumTon += actualW;
+                            let total = actualQ * pRai;
+                            if (total > 0) {
                                 sumExpense += total; 
-                                totalStr = total.toLocaleString('th-TH', {minimumFractionDigits: 2}); 
-                            } 
+                                totalStr = total.toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2}); 
+                            }
                         }
                         
                         hHTML += `
-                            <div class="sale-card" style="border-left: 5px solid ${displayStatus==='เสร็จสิ้น'?'var(--primary)':'var(--danger)'}; opacity: 0.9;">
+                            <div class="sale-card hover-lift" style="border-left: 5px solid ${displayStatus==='เสร็จสิ้น'?'var(--primary)':'var(--danger)'}; opacity: 0.9;">
                                 <div class="sale-header">
                                     <span style="font-weight:600;">คุณ ${displayName}</span>
                                     <span class="badge ${badgeClass}">${displayStatus}</span>
@@ -1986,12 +2026,28 @@
                         `;
                     } catch(e) {}
                 });
+                
                 historyContainer.innerHTML += `
-                    <div class="dash-grid full-width">
-                        <div class="dash-card"><div class="label">รับงานสำเร็จ</div><div class="value">${completedCount} <span style="font-size:14px; color:var(--text-muted);">งาน</span></div></div>
-                        <div class="dash-card"><div class="label">ปริมาณรับซื้อรวม</div><div class="value" style="color:var(--primary);">${sumTon.toLocaleString('th-TH')} <span style="font-size:14px; color:var(--text-muted);">ตัน</span></div></div>
-                        <div class="dash-card" style="grid-column: span 2;"><div class="label">ยอดจ่ายสะสม</div><div class="value" style="color:var(--danger);">${sumExpense.toLocaleString('th-TH')} <span style="font-size:14px; color:var(--text-muted);">บาท</span></div></div>
-                    </div>` + hHTML;
+                    <div class="card full-width" style="padding: 25px; margin-bottom: 30px;">
+                        <div style="font-size: 18px; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; display: flex; align-items: center; color: var(--primary);">
+                            <i class="fa-solid fa-chart-pie" style="margin-right: 10px; font-size: 22px;"></i> สรุปสถิติการรับซื้อของคุณ
+                        </div>
+                        <div class="dash-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 0;">
+                            <div class="dash-card" style="background:#F8FAFC; border:none; box-shadow:none;">
+                                <div style="font-size: 13px; font-weight:600; color: var(--text-muted);">รับงานสำเร็จ</div>
+                                <div class="dash-value" style="color: var(--text-main);">${completedCount} <span class="dash-unit">งาน</span></div>
+                            </div>
+                            <div class="dash-card" style="background:#F0FDF4; border:none; box-shadow:none;">
+                                <div style="font-size: 13px; font-weight:600; color: var(--text-muted);">ปริมาณรับซื้อรวม</div>
+                                <div class="dash-value" style="color: var(--primary);">${sumTon.toLocaleString('th-TH', {maximumFractionDigits: 1})} <span class="dash-unit">ตัน</span></div>
+                            </div>
+                            <div class="dash-card" style="background:#FEF2F2; border:none; box-shadow:none;">
+                                <div style="font-size: 13px; font-weight:600; color: var(--text-muted);">ยอดจ่ายชาวไร่สะสม</div>
+                                <div class="dash-value" style="color: var(--danger);">${sumExpense.toLocaleString('th-TH', {maximumFractionDigits: 0})} <span class="dash-unit">บาท</span></div>
+                            </div>
+                        </div>
+                    </div>
+                ` + `<div class="jobs-grid full-width">` + hHTML + `</div>`;
             } else { 
                 historyContainer.innerHTML = "<div class='empty-state full-width'>ยังไม่มีประวัติการรับซื้อเสร็จสิ้น</div>"; 
             }
@@ -2062,7 +2118,7 @@
             }
 
             return `
-                <div class="sale-card" style="border-left: 5px solid ${colorHex};">
+                <div class="sale-card hover-lift" style="border-left: 5px solid ${colorHex}; cursor: pointer;" onclick="viewOnMap('${item.row}', ${item.lat}, ${item.lon})">
                     <div class="sale-header">
                         <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>
                         ${badgeHtml}
@@ -2076,10 +2132,10 @@
                         ${offerStatus}
                     </div>
                     <div style="display:flex; gap:10px; margin-top:16px;">
-                        <button onclick="viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:${colorHex}; color:${colorHex};">
+                        <button onclick="event.stopPropagation(); viewSaleIslandModal(${item.row})" class="btn-main btn-outline" style="flex:1; border-color:${colorHex}; color:${colorHex};">
                             <i class="fa-solid fa-map-location-dot"></i> ดูแปลง
                         </button>
-                        <button onclick="acceptJob(${item.row}, ${actualQ})" class="btn-main" style="flex:1; background:${colorHex};">
+                        <button onclick="event.stopPropagation(); acceptJob(${item.row}, ${actualQ})" class="btn-main" style="flex:1; background:${colorHex};">
                             <i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา
                         </button>
                     </div>
@@ -2123,6 +2179,13 @@
                     buyerPolygonLayer.addLayer(L.polygon(flippedCoords, { color: colorHex, fillOpacity: 0.3, weight: 3 })); 
                 } catch(e) {} 
             }
+        }
+
+        function viewOnMap(row, lat, lon) { 
+            // เลื่อนหน้าจอไปด้านบนสุดเพื่อให้แผนที่แสดงชัดเจน
+            document.querySelector('.content-body').scrollTo({ top: 0, behavior: 'smooth' }); 
+            buyerMapObj.flyTo([lat, lon], 16, { duration: 1.5 }); 
+            setTimeout(() => { if(buyerMarkers[row]) { buyerMarkers[row].openPopup(); } }, 1500); 
         }
 
         async function acceptJob(rowId, qty) {
@@ -2219,7 +2282,7 @@
                     let displayName = item.farmerFullName || item.farmerName; 
                     let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
                     html += `
-                        <div class="sale-card" style="border-left: 5px solid var(--primary); background:#F0FDF4;">
+                        <div class="sale-card hover-lift" style="border-left: 5px solid var(--primary); background:#F0FDF4;">
                             <div class="sale-header">
                                 <span style="font-weight:700; color:var(--primary-dark); font-size:16px;">คุณ ${displayName}</span>
                                 <span class="badge" style="background:#A7F3D0; color:#064E3B;">พร้อมเข้าม้วน!</span>
@@ -2253,7 +2316,7 @@
                 verifyingJobs.forEach(item => {
                     let displayName = item.farmerFullName || item.farmerName; 
                     html += `
-                        <div class="sale-card" style="border-left: 5px solid var(--purple); background:#F5F3FF;">
+                        <div class="sale-card hover-lift" style="border-left: 5px solid var(--purple); background:#F5F3FF;">
                             <div class="sale-header">
                                 <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>
                                 <span class="badge bg-purple">รอชาวไร่ยืนยันบิล</span>
@@ -2284,7 +2347,7 @@
                     let displayName = item.farmerFullName || item.farmerName; 
                     let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
                     html += `
-                        <div class="sale-card" style="border-left: 5px solid var(--warning); background:#FFFBEB;">
+                        <div class="sale-card hover-lift" style="border-left: 5px solid var(--warning); background:#FFFBEB;">
                             <div class="sale-header">
                                 <span style="font-weight:700; color:var(--secondary); font-size:16px;">คุณ ${displayName}</span>
                                 <span class="badge bg-warning">รอพิจารณา</span>
@@ -2416,7 +2479,7 @@
                     let actualQ = parseFloat((j.actualQty && j.actualQty !== "-") ? j.actualQty : (j.quantity || j.qty || 0)); 
                     let hDate = new Date(j.harvestDate).toLocaleDateString('th-TH');
                     availList.innerHTML += `
-                        <div style="background:var(--bg-body); border:1px solid var(--border); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+                        <div class="hover-lift" style="background:var(--bg-body); border:1px solid var(--border); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
                             <div>
                                 <b style="color:var(--secondary);">${displayName}</b> <span style="color:var(--primary-dark); font-weight:700;">${actualQ} ไร่</span><br>
                                 <span style="font-size:12px; color:var(--text-muted);"><i class="fa-regular fa-calendar"></i> ${hDate}</span>
@@ -2462,7 +2525,7 @@
                     prevLat = j.lat; prevLon = j.lon;
                     
                     selList.innerHTML += distHtml + `
-                        <div style="background:var(--primary-light); border:1px solid var(--primary); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow-sm);">
+                        <div class="hover-lift" style="background:var(--primary-light); border:1px solid var(--primary); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow-sm);">
                             <div style="flex:1;">
                                 <b style="color:var(--primary-dark);">${index+1}. คุณ ${displayName}</b> <span style="font-weight:700; color:var(--secondary);">${actualQ} ไร่</span><br>
                                 <span style="font-size:12px; color:var(--primary-dark);"><i class="fa-regular fa-calendar"></i> นัด: ${hDate}</span>
@@ -2687,7 +2750,7 @@
                             events.push({ 
                                 title: `[รับแล้ว] ${displayName}`, 
                                 start: dateStr, 
-                                color: '#3B82F6', 
+                                color: '#10B981', 
                                 extendedProps: { rowId: j.row } 
                             });
                         }
@@ -2701,7 +2764,7 @@
                 height: 550, 
                 events: events,
                 eventClick: function(info) { 
-                    viewSaleIslandModal(info.event.extendedProps.rowId, 'buyer'); 
+                    viewSaleIslandModal(info.event.extendedProps.rowId); 
                 }
             });
             calendarObj.render();
