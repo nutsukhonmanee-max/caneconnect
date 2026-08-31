@@ -36,6 +36,8 @@
             --text-muted: #64748B; 
             --border: #E2E8F0; 
             --accent: #F59E0B; 
+            --accent-light: #FEF3C7;
+            --accent-dark: #D97706;
             --danger: #EF4444; 
             --info: #3B82F6; 
             --radius-lg: 16px; 
@@ -75,9 +77,9 @@
         .topbar-alert { background: #FEF2F2; color: #EF4444; padding: 10px 15px; font-size: 12px; text-align: center; font-weight: 500; border-bottom: 1px solid #FCA5A5; line-height: 1.5; }
         .topbar-alert a { color: #EF4444; font-weight: 700; text-decoration: underline; }
         
-        .container { padding: 20px; position: relative; z-index: 10; padding-bottom: 40px; max-width: 600px; margin: 0 auto; }
+        .container { padding: 20px; position: relative; z-index: 10; padding-bottom: 80px; max-width: 600px; margin: 0 auto; }
         
-        /* ================= Bottom Navigation (Mobile Buyer) ================= */
+        /* ================= Bottom Navigation ================= */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; background: var(--surface); 
             box-shadow: 0 -2px 15px rgba(0,0,0,0.05); display: flex; z-index: 2000; 
@@ -114,7 +116,13 @@
         input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; background: #FFF; box-shadow: 0 0 0 3px var(--primary-light); }
         input:disabled, select:disabled, textarea:disabled, input[readonly], select[readonly] { background-color: #F1F5F9 !important; color: var(--text-muted) !important; -webkit-text-fill-color: var(--text-muted) !important; opacity: 1 !important; border: 1px dashed var(--border) !important; cursor: not-allowed; font-weight: 500; }
         
-        /* ================= Custom Multi-Select Dropdown (Mobile) ================= */
+        /* แก้ไขปัญหาช่องวันที่ล้นจอ */
+        input[type="date"] {
+            padding: 10px;
+            font-size: 13px;
+        }
+
+        /* ================= Custom Multi-Select Dropdown ================= */
         .multi-select-container { position: relative; width: 100%; margin-top: 5px; }
         .multi-select-button { 
             width: 100%; height: 44px; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); 
@@ -146,7 +154,12 @@
         .btn-main:disabled { background: #E2E8F0; color: #94A3B8; cursor: not-allowed; box-shadow: none; transform: none; }
         
         .btn-info { background: var(--info); } .btn-info:hover { background: #2563EB; }
-        .btn-warning { background: var(--accent); } .btn-warning:hover { background: #D97706; }
+        
+        /* ปรับสีปุ่มส้มทอง */
+        .btn-warning { background: var(--accent); color: white; } 
+        .btn-warning:hover { background: var(--accent-dark); }
+        .btn-warning-outline { background: #FFFBEB; color: var(--accent-dark); border: 1px solid var(--accent); box-shadow: none; }
+        
         .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none; } .btn-outline:hover { background: var(--primary-light); transform: none; } 
         .btn-ghost { background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none; margin-top: 5px; margin-bottom: 15px;} .btn-ghost:hover { background: var(--primary-light); transform: none; } 
         
@@ -167,14 +180,11 @@
         /* ================= Cards ================= */
         .sale-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow-soft); transition: transform 0.2s ease;} .sale-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.03); }
         .sale-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); } .sale-date { font-size: 12px; color: var(--text-muted); }
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px;} .badge.pending { background: #E0F2FE; color: var(--info); } .badge.waiting { background: #FEF3C7; color: var(--accent); } .badge.processing { background: #E0F2FE; color: var(--info); } .badge.verify { background: #F3E8FF; color: #7E22CE; } .badge.completed { background: var(--primary-light); color: var(--primary-dark); } .badge.canceled { background: #FEE2E2; color: var(--danger); }      
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px;} .badge.pending { background: #E0F2FE; color: var(--info); } .badge.waiting { background: #FEF3C7; color: var(--accent-dark); } .badge.processing { background: #E0F2FE; color: var(--info); } .badge.verify { background: #F3E8FF; color: #7E22CE; } .badge.completed { background: var(--primary-light); color: var(--primary-dark); } .badge.canceled { background: #FEE2E2; color: var(--danger); }      
         .sale-detail { font-size: 13px; color: var(--text-main); line-height: 1.8; } .sale-detail span { font-weight: 600; color: var(--primary-dark); }
         
         .empty-state { text-align: center; color: var(--text-muted); font-size: 14px; padding: 40px 0; background: var(--surface); border-radius: var(--radius-md); border: 1px dashed var(--border);}
         .clickable-buyer { cursor: pointer; color: var(--info); text-decoration: underline; transition: 0.2s; font-weight:600;} .clickable-buyer:hover { color: #1E3A8A; }
-        
-        /* ================= Buyer Specific ================= */
-        .control-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 20px; box-shadow: var(--shadow-soft); } 
         
         /* ================= Photos & Modals ================= */
         .photo-gallery { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 10px; margin-top: 10px; padding-bottom: 10px; scroll-snap-type: x mandatory;} .photo-gallery img { width: 80px; height: 80px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border); flex-shrink: 0; scroll-snap-align: start;}
@@ -414,7 +424,7 @@
             <div class="section-title"><i class="fa-solid fa-clock-rotate-left" style="color:var(--text-muted);"></i> ประวัติการขาย (เสร็จสิ้น)</div>
             <div id="history-sales-container"></div>
             
-            <div id="farmer-dashboard-container" style="display:none; margin-top: 20px; margin-bottom: 20px;"></div>
+            <div id="farmer-dashboard-container" style="display:none; margin-top: 40px; margin-bottom: 20px;"></div>
         </div>
 
         <!-- =========================================================
@@ -531,18 +541,18 @@
                 <div class="form-grid" style="margin-top: 10px;">
                     <div>
                         <label style="margin-top:0; font-size:12px;">ตั้งแต่วันที่:</label>
-                        <input type="date" id="filter-date-start" onchange="updateClusterLogic()" style="padding:10px 12px; font-size:13px;">
+                        <input type="date" id="filter-date-start" onchange="updateClusterLogic()" style="padding:10px; font-size:13px;">
                     </div>
                     <div>
                         <label style="margin-top:0; font-size:12px;">ถึงวันที่:</label>
-                        <input type="date" id="filter-date-end" onchange="updateClusterLogic()" style="padding:10px 12px; font-size:13px;">
+                        <input type="date" id="filter-date-end" onchange="updateClusterLogic()" style="padding:10px; font-size:13px;">
                     </div>
                 </div>
 
                 <div class="form-grid" style="margin-top: 15px;">
                     <div>
                         <label style="margin-top:0; font-size:12px;"> กรองข้อมูล:</label>
-                        <select id="filter-status" onchange="updateClusterLogic()" style="padding:10px 12px; font-size:13px;">
+                        <select id="filter-status" onchange="updateClusterLogic()" style="padding:10px; font-size:13px;">
                             <option value="all">รายการเปิดอยู่ทั้งหมด</option>
                             <option value="รอคิวรถ">เฉพาะงานว่าง (รอคิวรถ)</option>
                             <option value="รอชาวไร่ยืนยัน">รอชาวไร่พิจารณาราคา</option>
@@ -550,7 +560,7 @@
                     </div>
                     <div>
                         <label style="margin-top:0; font-size:12px;"> จัดเรียง:</label>
-                        <select id="sort-by" onchange="updateClusterLogic()" style="padding:10px 12px; font-size:13px;">
+                        <select id="sort-by" onchange="updateClusterLogic()" style="padding:10px; font-size:13px;">
                             <option value="dist-near"> เรียงตามระยะทาง</option>
                             <option value="date-new"> อัปเดตล่าสุด</option>
                             <option value="date-old"> เก่าสุด</option>
@@ -590,8 +600,8 @@
 
             <div class="section-title" style="font-size:15px;"><i class="fa-solid fa-plus-circle"></i> เพิ่มงานเข้าทริป</div>
             <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <input type="text" id="trip-search" placeholder="ค้นหาชื่อ, ตำบล..." onkeyup="renderTripPlanner()" style="flex:1; height:40px;">
-                <select id="trip-sort" onchange="renderTripPlanner()" style="width:auto; height:40px;">
+                <input type="text" id="trip-search" placeholder="ค้นหาชื่อ, ตำบล..." onkeyup="renderTripPlanner()" style="flex:1; height:40px; font-size:14px; padding:10px;">
+                <select id="trip-sort" onchange="renderTripPlanner()" style="width:auto; height:40px; font-size:13px; padding:10px;">
                     <option value="dist-near">ใกล้สุด</option>
                     <option value="date-near">ม้วนเร็วสุด</option>
                     <option value="rai-desc">ไร่มากสุด</option>
@@ -853,7 +863,7 @@
         function updateUserLocationOnMap() {
             let userIcon = L.divIcon({ 
                 className: 'user-loc-icon', 
-                html: `<div class="pulse-marker"></div>` 
+                html: `<div style='background-color:#3B82F6; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);'></div>` 
             });
             
             if (buyerMapObj) {
@@ -1058,7 +1068,7 @@
                 let buyerNameDisplay = (item.buyer && item.buyer !== "undefined" && item.buyer !== "-") ? `<span class="clickable-buyer" onclick="viewBuyerDetails('${item.buyerPhone}')"><i class="fa-solid fa-magnifying-glass"></i> ${item.buyer}</span>` : "<span style='color:var(--text-muted);'>รอการยืนยัน/ยังไม่มี</span>";
 
                 let cardHTML = `
-                    <div class="sale-card">
+                    <div class="sale-card hover-lift">
                         <div class="sale-header">
                             <span class="sale-date">นัดม้วน: <b style="color:var(--text-main); font-size:14px;">${hDate}</b></span>
                             <span class="badge ${badgeClass}">${statusText === "รอชาวไร่ตรวจสอบ" ? "รอคุณยืนยันปิดงาน" : statusText}</span>
@@ -1069,7 +1079,7 @@
                             
                 if (badgeClass === "waiting" && item.offers && item.offers.length > 0) { 
                     let offerNames = item.offers.map(o => (o.buyerName && o.buyerName !== "undefined") ? o.buyerName : "พาร์ทเนอร์ไม่ทราบชื่อ").join(', ');
-                    cardHTML += `<div style="color:var(--accent); font-weight:600; margin-top:6px; font-size:13px; line-height:1.6;"> มีผู้เสนอราคา: ${offerNames}</div>`; 
+                    cardHTML += `<div style="color:var(--accent-dark); font-weight:600; margin-top:6px; font-size:13px; line-height:1.6;"> <i class="fa-solid fa-bell fa-shake"></i> มีผู้เสนอราคา: ${offerNames}</div>`; 
                 } else if (badgeClass === "processing" || badgeClass === "verify" || badgeClass === "completed") { 
                     cardHTML += `
                             <div style="margin-top:5px; background:var(--bg-main); padding:10px; border-radius:10px;">
@@ -1091,14 +1101,14 @@
                 if (statusText === "รอชาวไร่ยืนยัน") { 
                     cardHTML += `
                         <div style="display:flex; gap:10px; margin-top:16px;">
-                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-eye"></i> ข้อมูลแปลง</button>
-                            <button onclick="viewOffers(${index})" class="btn-small btn-small-primary" style="flex:1.5;"><i class="fa-solid fa-handshake"></i> เลือกผู้ซื้อ</button>
+                            <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-eye"></i> ดูรายละเอียด</button>
+                            <button onclick="viewOffers(${index})" class="btn-small btn-warning" style="flex:1.5;"><i class="fa-solid fa-handshake"></i> เลือกผู้ซื้อ</button>
                         </div>`; 
                 } else if (statusText === "รอชาวไร่ตรวจสอบ") { 
                     cardHTML += `
                         <div style="display:flex; gap:10px; margin-top:16px;">
                             <button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="flex:1; margin-bottom:0;"><i class="fa-solid fa-file-invoice"></i> ดูบิลจำลอง</button>
-                            <button onclick="farmerVerifyCloseJob(${index})" class="btn-small btn-small-primary" style="flex:1.5; background:var(--purple); box-shadow:0 4px 0 #6B21A8; margin-bottom:0;"><i class="fa-solid fa-check-double"></i> ปิดบัญชี</button>
+                            <button onclick="farmerVerifyCloseJob(${index})" class="btn-small btn-small-primary" style="flex:1.5; background:var(--purple); color:white; box-shadow:0 4px 0 #6B21A8; margin-bottom:0;"><i class="fa-solid fa-check-double"></i> ปิดบัญชี</button>
                         </div>`;
                 } else { 
                     cardHTML += `<button onclick="viewSaleIslandModal(${index}, 'farmer')" class="btn-small btn-small-outline" style="margin-top:16px; width:100%;"><i class="fa-solid ${badgeClass === "completed" ? 'fa-receipt' : 'fa-eye'}"></i> ${badgeClass === "completed" ? ' ดูใบเสร็จรับเงิน' : ' ดูรายละเอียดแปลง'}</button>`; 
@@ -1124,7 +1134,7 @@
                         </div>
                         <div class="dash-card">
                             <div style="font-size: 11px; font-weight: 600; color: var(--text-muted);">รายได้รวมสุทธิ</div>
-                            <div style="font-size: 20px; font-weight: 700; color: var(--accent); margin-top:5px;">${sumIncome.toLocaleString('th-TH', {maximumFractionDigits: 0})} <span style="font-size:12px; font-weight:500; color:var(--text-muted);">บาท</span></div>
+                            <div style="font-size: 20px; font-weight: 700; color: var(--accent-dark); margin-top:5px;">${sumIncome.toLocaleString('th-TH', {maximumFractionDigits: 0})} <span style="font-size:12px; font-weight:500; color:var(--text-muted);">บาท</span></div>
                         </div>
                         <div class="dash-card">
                             <div style="font-size: 11px; font-weight: 600; color: var(--text-muted);">ลดมลพิษ PM2.5</div>
@@ -1151,7 +1161,7 @@
                                     <div style="margin-bottom:8px;"><i class="fa-solid fa-truck-fast" style="color:var(--primary); width:20px;"></i> <b>ชื่อ:</b> คุณ ${buyerInfo.name}</div>
                                     <div style="margin-bottom:8px;"><i class="fa-solid fa-phone" style="color:var(--info); width:20px;"></i> <b>โทร:</b> <a href="tel:${buyerInfo.phone}" style="color:var(--info); text-decoration:none; font-weight:600;">${buyerInfo.phone}</a></div>
                                     <div style="margin-bottom:8px;"><i class="fa-solid fa-map-pin" style="color:var(--danger); width:20px;"></i> <b>ที่ตั้งอู่:</b> ${buyerInfo.location}</div>
-                                    <div style="margin-bottom:8px; padding-top:8px; border-top:1px dashed var(--border);"><i class="fa-solid fa-gears" style="color:var(--accent); width:20px;"></i> <b>ข้อมูลเครื่องจักร:</b><br><span style="color:var(--text-muted); font-size:13px; margin-left:20px;">${buyerInfo.vehicle || "ไม่ระบุ"}</span></div>
+                                    <div style="margin-bottom:8px; padding-top:8px; border-top:1px dashed var(--border);"><i class="fa-solid fa-gears" style="color:var(--accent-dark); width:20px;"></i> <b>ข้อมูลเครื่องจักร:</b><br><span style="color:var(--text-muted); font-size:13px; margin-left:20px;">${buyerInfo.vehicle || "ไม่ระบุ"}</span></div>
                                 </div>
                             `,
                             confirmButtonColor: THEME_PRIMARY, confirmButtonText: 'ปิดหน้าต่าง'
@@ -1270,7 +1280,7 @@
                                 <div>วันนัดหมาย: <span>${hDate}</span></div>
                             </div>
                             <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-map-location-dot"></i> ข้อมูลแปลง</button>
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-map-location-dot"></i> ดูแปลง</button>
                                 ${item.status === 'กำลังดำเนินการ' ? `<button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-small btn-small-primary" style="flex:1; background:var(--info);"><i class="fa-solid fa-flag-checkered"></i> แจ้งปิดงาน</button>` : ''}
                             </div>
                         </div>`; 
@@ -1313,7 +1323,7 @@
                 
                 historyContainer.innerHTML += `
                     <div style="background: var(--surface); border: 1px solid var(--border); padding: 15px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); margin-bottom: 20px;">
-                        <div style="font-size: 15px; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; color: var(--accent);">
+                        <div style="font-size: 15px; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; color: var(--accent-dark);">
                             <i class="fa-solid fa-chart-pie" style="margin-right: 8px;"></i> สถิติการรับงานของคุณ
                         </div>
                         <div class="dash-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 0; gap: 10px;">
@@ -1376,7 +1386,7 @@
             let displayName = item.farmerFullName || item.farmerName; 
             let hDate = new Date(item.harvestDate).toLocaleDateString('th-TH'); 
             let reqDateStr = item.timestamp ? new Date(item.timestamp).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) + " น." : "-";
-            let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent); font-size:11px; font-weight:600; margin-top:8px;"><i class="fa-solid fa-fire"></i> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
+            let offerStatus = item.offerCount > 0 ? `<div style="color:var(--accent-dark); font-size:12px; font-weight:600; margin-top:8px;"><i class="fa-solid fa-fire"></i> มีผู้เสนอแล้ว ${item.offerCount} ราย</div>` : ""; 
             let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-"); 
             let priorityBadge = actualQ >= 100 ? `<span class="badge" style="background:#D1FAE5; color:#065F46;"> คุ้มทุน</span>` : "";
             
@@ -1405,7 +1415,7 @@
                     </div>
                     <div style="display:flex; gap:10px; margin-top:16px;">
                         <button onclick="event.stopPropagation(); viewSaleIslandModal(${item.row})" class="btn-small btn-small-outline" style="flex:1; border-color:${colorHex}; color:${colorHex};"><i class="fa-solid fa-map-location-dot"></i> ดูแปลง</button>
-                        <button onclick="event.stopPropagation(); acceptJob(${item.row}, ${actualQ})" class="btn-small btn-small-primary" style="flex:1; background:${colorHex};"><i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา</button>
+                        <button onclick="event.stopPropagation(); acceptJob(${item.row}, ${item.qty})" class="btn-small btn-warning" style="flex:1;"><i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา</button>
                     </div>
                 </div>`;
         }
@@ -1433,7 +1443,7 @@
         }
 
         function viewOnMap(row, lat, lon) { 
-            document.querySelector('.content-body').scrollTo({ top: 0, behavior: 'smooth' }); 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
             buyerMapObj.flyTo([lat, lon], 16, { duration: 1.5 }); 
             setTimeout(() => { if(buyerMarkers[row]) { buyerMarkers[row].openPopup(); } }, 1500); 
         }
@@ -1463,7 +1473,7 @@
                 let phoneLink = item.buyerPhone && item.buyerPhone !== "-" ? `<a href="tel:${item.buyerPhone}" style="color:var(--info); font-weight:600; text-decoration:none;">${item.buyerPhone}</a>` : "-"; 
                 let buyerSectionHTML = "";
                 if (item.status === 'รอชาวไร่ยืนยัน' && item.offers && item.offers.length > 0) {
-                    buyerSectionHTML = `<div style="background:#FFF9E6; border:1px solid var(--accent); padding:12px; border-radius:12px; margin-top:10px;"><b style="color:var(--accent); font-size:14px;"><i class="fa-solid fa-users"></i> มีผู้เสนอราคา (${item.offers.length} ราย):</b><div style="margin-top:6px; font-size:12px;">โปรดปิดหน้าต่างนี้และกด <b>"ดูข้อเสนอ"</b> ที่หน้าคิวงานเพื่อเลือกผู้ซื้อ</div></div>`;
+                    buyerSectionHTML = `<div style="background:#FFF9E6; border:1px solid var(--accent); padding:12px; border-radius:12px; margin-top:10px;"><b style="color:var(--accent-dark); font-size:14px;"><i class="fa-solid fa-users"></i> มีผู้เสนอราคา (${item.offers.length} ราย):</b><div style="margin-top:6px; font-size:12px;">โปรดปิดหน้าต่างนี้และกด <b>"ดูข้อเสนอ"</b> ที่หน้าคิวงานเพื่อเลือกผู้ซื้อ</div></div>`;
                 } else if (item.status !== "รอคิวรถ" && item.status !== "ยกเลิก") {
                     buyerSectionHTML = `
                         <div class="island-info-box" style="border-color:var(--primary); background:var(--primary-light); margin-top:10px;">
@@ -1479,7 +1489,7 @@
                         <div style="margin-bottom:4px;"><b><i class="fa-solid fa-ruler-combined"></i> พื้นที่แจ้งขาย:</b> <span style="color:var(--primary); font-weight:700; font-size:15px;">${actualQ} ไร่</span></div>
                         <div style="margin-bottom:4px;"><b><i class="fa-regular fa-calendar"></i> วันพร้อมม้วน:</b> ${hDate}</div>
                         <div style="margin-bottom:4px;"><b><i class="fa-solid fa-map-pin"></i> ตำแหน่ง:</b> ${plotAddressText}</div>
-                        <div style="margin-bottom:4px;"><b><i class="fa-solid fa-road"></i> ทางเข้า:</b> <span style="color:var(--accent); font-weight:600;">${item.access || "ไม่ระบุ"}</span></div>
+                        <div style="margin-bottom:4px;"><b><i class="fa-solid fa-road"></i> ทางเข้า:</b> <span style="color:var(--accent-dark); font-weight:600;">${item.access || "ไม่ระบุ"}</span></div>
                     </div>
                     ${buyerSectionHTML}`;
             } else {
@@ -1493,10 +1503,10 @@
                         <div style="margin-bottom:4px;"><b><i class="fa-solid fa-ruler-combined"></i> พื้นที่แจ้งขาย:</b> <span style="color:var(--primary); font-weight:700; font-size:15px;">${actualQ} ไร่</span></div>
                         <div style="margin-bottom:4px;"><b><i class="fa-regular fa-calendar"></i> วันพร้อมม้วน:</b> ${hDate}</div>
                         <div style="margin-bottom:4px;"><b><i class="fa-solid fa-map-pin"></i> ตำแหน่ง:</b> ${plotAddressText}</div>
-                        <div style="margin-bottom:4px;"><b><i class="fa-solid fa-road"></i> ทางเข้า:</b> <span style="color:var(--accent); font-weight:600;">${item.access || "ไม่ระบุ"}</span></div>
+                        <div style="margin-bottom:4px;"><b><i class="fa-solid fa-road"></i> ทางเข้า:</b> <span style="color:var(--accent-dark); font-weight:600;">${item.access || "ไม่ระบุ"}</span></div>
                     </div>`;
                 if (item.status === "รอคิวรถ" || item.status === "รอชาวไร่ยืนยัน") {
-                    actionsHTML = `<div style="display:flex; gap:10px; margin-top:20px;"><button onclick="acceptJob(${item.row}, ${actualQ})" class="btn-main" style="flex:1; margin-top:0;"><i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา</button><button onclick="addToTripFromModal(${item.row})" class="btn-main btn-outline" style="flex:1; margin-top:0;"><i class="fa-solid fa-route"></i> เพิ่มลงทริป</button></div>`;
+                    actionsHTML = `<div style="display:flex; gap:10px; margin-top:20px;"><button onclick="acceptJob(${item.row}, ${actualQ})" class="btn-main btn-warning" style="flex:1; margin-top:0; color:white;"><i class="fa-solid fa-hand-holding-dollar"></i> เสนอราคา</button><button onclick="addToTripFromModal(${item.row})" class="btn-main btn-outline" style="flex:1; margin-top:0;"><i class="fa-solid fa-route"></i> เพิ่มลงทริป</button></div>`;
                 } else if (item.status === "กำลังดำเนินการ") {
                      actionsHTML = `<div style="display:flex; gap:10px; margin-top:20px;"><button onclick="buyerCloseJobModal(${item.row}, ${actualQ})" class="btn-main" style="flex:1; margin-top:0; background:var(--info);"><i class="fa-solid fa-flag-checkered"></i> แจ้งปิดงาน</button></div>`;
                 }
@@ -1596,7 +1606,7 @@
                 html: `
                     <div style="font-family:'Kanit';">
                         <div style="font-size:16px; font-weight:700; margin-bottom:8px; color:var(--secondary);">เสนอราคารับซื้อ</div>
-                        <div style="font-size:13px; font-weight:600; color:var(--warning); margin-bottom:16px;">พื้นที่แปลง: ${qty} ไร่</div>
+                        <div style="font-size:13px; font-weight:600; color:var(--accent-dark); margin-bottom:16px;">พื้นที่แปลง: ${qty} ไร่</div>
                         <input id="swal-input2" class="swal-input" type="number" placeholder="ระบุราคา (บาท/ไร่)" style="margin-top:0; height:44px; width:100%; border:1px solid var(--border); border-radius:8px; padding:10px; font-family:'Kanit';">
                     </div>`, 
                 focusConfirm: false, showCancelButton: true, confirmButtonText: 'ส่งข้อเสนอ', cancelButtonText: 'ยกเลิก', confirmButtonColor: THEME_PRIMARY, cancelButtonColor: '#BFC9C5', 
@@ -1680,11 +1690,11 @@
             }
 
             if(offeredJobs.length > 0) {
-                let html = `<div style="color:var(--warning); font-weight:700; margin-bottom:10px; font-size:14px;"><i class="fa-solid fa-hourglass-half"></i> รอชาวไร่พิจารณา <span class="badge bg-warning">${offeredJobs.length} งาน</span></div>`;
+                let html = `<div style="color:var(--accent-dark); font-weight:700; margin-bottom:10px; font-size:14px;"><i class="fa-solid fa-hourglass-half"></i> รอชาวไร่พิจารณา <span class="badge bg-warning">${offeredJobs.length} งาน</span></div>`;
                 offeredJobs.forEach(item => {
                     let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
                     html += `
-                        <div class="sale-card" style="border-left: 5px solid var(--warning); background:#FFFBEB; margin-bottom:10px;">
+                        <div class="sale-card" style="border-left: 5px solid var(--accent); background:#FFFBEB; margin-bottom:10px;">
                             <div class="sale-header">
                                 <span style="font-weight:700; color:var(--secondary); font-size:14px;">คุณ ${item.farmerFullName || item.farmerName}</span>
                                 <span class="badge bg-warning">รอพิจารณา</span>
@@ -1695,7 +1705,7 @@
                                 <div>กำหนดเข้าม้วน: <span style="font-weight:600;">${new Date(item.harvestDate).toLocaleDateString('th-TH')}</span></div>
                             </div>
                             <div style="display:flex; gap:10px; margin-top:12px;">
-                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-small btn-small-outline" style="flex:1; border-color:var(--warning); color:var(--warning);"><i class="fa-solid fa-eye"></i> ดูแปลง</button>
+                                <button onclick="viewSaleIslandModal(${item.row})" class="btn-small btn-small-outline" style="flex:1; border-color:var(--accent-dark); color:var(--accent-dark);"><i class="fa-solid fa-eye"></i> ดูแปลง</button>
                                 <button onclick="cancelOffer(${item.row})" class="btn-small btn-small-outline" style="flex:1; border-color:var(--danger); color:var(--danger); background:#FEF2F2;"><i class="fa-solid fa-ban"></i> ถอนข้อเสนอ</button>
                             </div>
                         </div>`;
@@ -1775,6 +1785,7 @@
                     let distHtml = '';
                     if (index > 0 && prevLat && prevLon && j.lat && j.lon && !isNaN(parseFloat(j.lat))) { let d = getDistanceJS(prevLat, prevLon, j.lat, j.lon).toFixed(1); distHtml = `<div style="text-align:center; padding:4px 0; color:var(--info); font-size:10px; font-weight:600;"><div style="width:2px; height:10px; background:var(--info); margin:0 auto 2px;"></div><span>ขับไป ${d} กม.</span><div style="width:2px; height:10px; background:var(--info); margin:2px auto 0;"></div></div>`; }
                     prevLat = j.lat; prevLon = j.lon;
+                    
                     selList.innerHTML += distHtml + `
                         <div style="background:var(--primary-light); border:1px solid var(--primary); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
                             <div style="flex:1;"><b style="color:var(--primary-dark); font-size:13px;">${index+1}. ${j.farmerFullName || j.farmerName}</b> <span style="font-weight:700; color:var(--secondary);">${actualQ} ไร่</span><br><span style="font-size:11px; color:var(--primary-dark);"><i class="fa-regular fa-calendar"></i> นัด: ${new Date(j.harvestDate).toLocaleDateString('th-TH')}</span></div>
