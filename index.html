@@ -1025,24 +1025,70 @@
             } return true;
         }
 
+        // ==========================================
+        // ฟังก์ชันบันทึกข้อมูลและส่งข้อมูลแปลงอ้อยไปที่ Google Sheets
+        // ==========================================
         async function submitRegistration(isAutoSave = false) {
-            if (!isEditMode && !document.getElementById('reg-pdpa').checked) { Swal.fire('ข้อตกลงและเงื่อนไข', 'กรุณากดยอมรับข้อตกลงและเงื่อนไขการใช้งานก่อนกดบันทึกครับ', 'warning'); return; }
+            let pdpaCheckbox = document.getElementById('reg-pdpa');
+            if (!isEditMode && pdpaCheckbox && !pdpaCheckbox.checked) { 
+                Swal.fire('ข้อตกลงและเงื่อนไข', 'กรุณากดยอมรับข้อตกลงและเงื่อนไขการใช้งานก่อนกดบันทึกครับ', 'warning'); 
+                return; 
+            }
             if(!isAutoSave && document.getElementById('tab-personal').style.display !== 'none' && !validateForm('tab-personal')) return;
-            let phoneInput = document.getElementById("reg-phone").value.trim(); let formattedPhone = phoneInput.startsWith("'") ? phoneInput : "'" + phoneInput;
-            const payload = { action: isEditMode?"updateUser":"register", userId: userProfile.userId, lineName: userProfile.displayName, prefix: document.getElementById("reg-prefix").value, firstName: document.getElementById("reg-firstname").value, lastName: document.getElementById("reg-lastname").value, dob: document.getElementById("reg-dob").value, addressNo: document.getElementById("reg-no").value, moo: document.getElementById("reg-moo").value, subDist: document.getElementById("reg-subdist").value, dist: document.getElementById("reg-dist").value, prov: document.getElementById("reg-prov").value, zip: document.getElementById("reg-zip").value, phone: "'"+ph, farmInfo: document.getElementById("reg-farminfo").value, savedPlots: JSON.stringify(userSavedPlots) };
             
-            if (!isAutoSave) { Swal.fire({ title:'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen:()=>{Swal.showLoading()} }); } else { showLoader(); }
+            let ph = document.getElementById("reg-phone").value.trim(); 
+            let formattedPhone = ph.startsWith("'") ? ph : "'" + ph;
+
+            const payload = { 
+                action: isEditMode ? "updateUser" : "register", 
+                userId: userProfile.userId, 
+                lineName: userProfile.displayName, 
+                prefix: document.getElementById("reg-prefix").value, 
+                firstName: document.getElementById("reg-firstname").value, 
+                lastName: document.getElementById("reg-lastname").value, 
+                dob: document.getElementById("reg-dob").value, 
+                addressNo: document.getElementById("reg-no").value, 
+                moo: document.getElementById("reg-moo").value, 
+                subDist: document.getElementById("reg-subdist").value, 
+                dist: document.getElementById("reg-dist").value, 
+                prov: document.getElementById("reg-prov").value, 
+                zip: document.getElementById("reg-zip").value, 
+                phone: formattedPhone, // แก้ไขตัวแปรให้ถูกต้อง
+                farmInfo: document.getElementById("reg-farminfo").value, 
+                savedPlots: JSON.stringify(userSavedPlots) 
+            };
+            
+            if (!isAutoSave) { 
+                Swal.fire({ title:'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen:()=>{Swal.showLoading()} }); 
+            } else { 
+                showLoader(); 
+            }
 
             try {
-                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); const result = await res.json();
-                if(result.status==="success") { 
-                    isEditMode=true; toggleProfileInputs(true, 'reg'); document.getElementById('btn-enable-edit').style.display='block'; document.getElementById('btn-register').style.display='none'; 
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }); 
+                const result = await res.json();
+                if(result.status === "success") { 
+                    isEditMode = true; 
+                    toggleProfileInputs(true, 'reg'); 
+                    document.getElementById('btn-enable-edit').style.display = 'block'; 
+                    document.getElementById('btn-register').style.display = 'none'; 
                     document.getElementById("reg-status-box").innerHTML = "<i class='fa-solid fa-circle-check'></i> คุณลงทะเบียนแล้ว กดปลดล็อกหากต้องการเปลี่ยนข้อมูลครับ";
                     let pdpaBox = document.getElementById('pdpa-box-farmer'); if(pdpaBox) pdpaBox.style.display = 'none';
-                    if (!isAutoSave) { Swal.fire('สำเร็จ!','ข้อมูลบันทึกเข้าระบบเรียบร้อยแล้ว','success'); } 
-                    else { hideLoader(); Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 1500, icon: 'success', title: 'อัปเดตแปลงสำเร็จ' }); }
+                    
+                    if (!isAutoSave) { 
+                        Swal.fire('สำเร็จ!','ข้อมูลบันทึกเข้าระบบเรียบร้อยแล้ว','success'); 
+                    } else { 
+                        hideLoader(); 
+                        Swal.fire({ 
+                            toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, 
+                            icon: 'success', title: 'บันทึกข้อมูลแปลงลงฐานข้อมูลสำเร็จ!' 
+                        }); 
+                    }
                 }
-            } catch(e) { hideLoader(); Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้', 'error'); }
+            } catch(e) { 
+                hideLoader(); 
+                Swal.fire('ล้มเหลว', 'ไม่สามารถบันทึกข้อมูลได้ กรุณาตรวจสอบอินเทอร์เน็ต', 'error'); 
+            }
         }
 
         async function checkUserForAction(targetAction) {
@@ -2187,8 +2233,32 @@
         let allPlotsMapObj = null;
 
         // ==========================================
-        // 1. ฟังก์ชันวาดแผนที่รวมหน้า "แปลงของฉัน" (เพิ่มหมุดปัจจุบัน + อ่านแผนที่ได้ทั้ง 2 เวอร์ชัน)
+        // ฟังก์ชันวาดแผนที่รวมหน้า "แปลงของฉัน" (เพิ่มฟังก์ชันกดเพื่อซูม)
         // ==========================================
+        function focusPlotOnMap(index) {
+            if(!allPlotsMapObj) return;
+            const plot = userSavedPlots[index];
+            if(!plot) return;
+
+            let coordsData = null;
+            if (plot.polygon && plot.polygon !== "") {
+                try { coordsData = JSON.parse(plot.polygon); } catch(e){}
+            } else if (plot.coordinates && plot.coordinates.length > 0) {
+                coordsData = plot.coordinates;
+            }
+
+            if(coordsData && coordsData.length > 0) {
+                let coords = coordsData[0].map(p => [p[1], p[0]]);
+                let poly = L.polygon(coords);
+                allPlotsMapObj.fitBounds(poly.getBounds(), { padding: [40, 40], maxZoom: 17, animate: true });
+            } else if (plot.center && plot.center.length === 2) {
+                allPlotsMapObj.flyTo(plot.center, 17, {animate: true});
+            }
+            
+            // เลื่อนหน้าจอขึ้นไปแสดงแผนที่ด้านบนแบบสมูท
+            document.getElementById('all-plots-wrapper').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
         function renderSavedPlotsUI() {
             const container = document.getElementById('saved-plots-container');
             const wrapper = document.getElementById('all-plots-wrapper');
@@ -2206,7 +2276,6 @@
                 allPlotsMapObj = L.map('all-plots-map').setView([currentLat, currentLng], 13);
                 L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(allPlotsMapObj);
                 
-                // สร้างหมุดตำแหน่งปัจจุบันสีน้ำเงิน
                 let userIcon = L.divIcon({ 
                     className: 'user-loc-icon', 
                     html: `<div style='background-color:#3B82F6; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);'></div>` 
@@ -2223,11 +2292,14 @@
             });
 
             let bounds = L.latLngBounds();
-            bounds.extend([currentLat, currentLng]); // ให้ครอบคลุมตำแหน่งปัจจุบันด้วย
+            bounds.extend([currentLat, currentLng]); 
             
             userSavedPlots.forEach((plot, index) => {
                 let card = document.createElement('div');
                 card.className = 'sale-card';
+                // *** เพิ่ม onClick เพื่อให้กดการ์ดแล้วซูมแผนที่ ***
+                card.setAttribute('onclick', `focusPlotOnMap(${index})`);
+                card.style.cursor = 'pointer'; 
                 card.innerHTML = `
                     <div class="sale-header">
                         <span style="font-weight:700; color:var(--primary-dark); font-size:15px;"><i class="fa-solid fa-leaf"></i> ${plot.name || 'แปลงที่ ' + (index+1)}</span>
@@ -2238,13 +2310,12 @@
                         <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">ทางเข้า: ${plot.access || '-'}</div>
                     </div>
                     <div style="display:flex; gap:10px; margin-top:12px;">
-                        <button onclick="openAddPlotModal(${index})" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-pen"></i> แก้ไข</button>
-                        <button onclick="deletePlot(${index})" class="btn-small btn-small-outline" style="flex:1; border-color:var(--danger); color:var(--danger);"><i class="fa-solid fa-trash"></i> ลบ</button>
+                        <button onclick="event.stopPropagation(); openAddPlotModal(${index})" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+                        <button onclick="event.stopPropagation(); deletePlot(${index})" class="btn-small btn-small-outline" style="flex:1; border-color:var(--danger); color:var(--danger);"><i class="fa-solid fa-trash"></i> ลบ</button>
                     </div>
                 `;
                 container.appendChild(card);
 
-                // ดึงพิกัด (รองรับข้อมูลที่มาจากทั้ง Desktop และ มือถือ)
                 let coordsData = null;
                 if (plot.polygon && plot.polygon !== "") {
                     try { coordsData = JSON.parse(plot.polygon); } catch(e){}
