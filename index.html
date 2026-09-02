@@ -2265,30 +2265,53 @@
             });
         }
 
-        // ฟังก์ชันเปิดหน้าต่าง (Popup) สำหรับวาดแปลงใหม่
+        // ==========================================
+        // ฟังก์ชันเปิดหน้าต่าง (Popup) สำหรับเพิ่ม/แก้ไขแปลงอ้อย (รองรับ ปักหมุด+วาดขอบเขต)
+        // ==========================================
         async function openAddPlotModal(index = -1) {
             let isEdit = index >= 0;
             let plot = isEdit ? userSavedPlots[index] : { name: '', area: '', access: 'รถบรรทุกเข้าได้ปกติ', condition: 'ปกติ', coordinates: [] };
             
-            let tempCoords = isEdit ? JSON.parse(JSON.stringify(plot.coordinates)) : [];
-            let tempArea = plot.area;
+            let tempCoords = isEdit && plot.coordinates ? JSON.parse(JSON.stringify(plot.coordinates)) : [];
+            let tempArea = plot.area || 0;
             let tempCenter = plot.center || [currentLat, currentLng];
+            
+            // เช็คว่าแปลงเก่าเป็นแบบไหน (วาด หรือ ปักหมุด)
+            let currentMapMode = (isEdit && tempCoords.length > 0 && tempCoords[0].length > 30) ? 'pin' : 'draw';
+            if (!isEdit) currentMapMode = 'draw'; // ค่าเริ่มต้นเมื่อสร้างใหม่
 
             const { value: formValues } = await Swal.fire({
                 title: isEdit ? 'ข้อมูลแปลงอ้อย' : 'เพิ่มแปลงอ้อยใหม่',
                 html: `
                     <div style="text-align:left; font-family:'Kanit'; font-size:13px;">
                         <label style="margin-top:0;">ชื่อแปลง (เช่น แปลงหลังบ้าน):</label>
-                        <input id="swal-plot-name" class="swal-input" value="${plot.name}" placeholder="ระบุชื่อแปลง" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; font-family:'Kanit';">
+                        <input id="swal-plot-name" class="swal-input" value="${plot.name}" placeholder="ระบุชื่อแปลง" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; font-family:'Kanit'; box-sizing: border-box;">
                         
-                        <label>วาดกรอบพื้นที่บนแผนที่ (ใช้เครื่องมือ <i class="fa-solid fa-draw-polygon"></i> ซ้ายมือ):</label>
+                        <div style="background:#F8FAFC; padding:12px; border-radius:12px; border:1px solid var(--border); margin-bottom:10px;">
+                            <label style="margin-top:0; color:var(--secondary); font-weight:700;">เครื่องมือระบุพื้นที่:</label>
+                            <div style="display:flex; gap:8px; margin-bottom:10px;">
+                                <button id="mode-draw" class="btn-small ${currentMapMode==='draw'?'btn-small-primary':'btn-small-outline'}" style="flex:1; padding:8px 5px;" onclick="window.switchMapMode('draw')"><i class="fa-solid fa-draw-polygon"></i> วาดกรอบบนแผนที่</button>
+                                <button id="mode-pin" class="btn-small ${currentMapMode==='pin'?'btn-small-primary':'btn-small-outline'}" style="flex:1; padding:8px 5px;" onclick="window.switchMapMode('pin')"><i class="fa-solid fa-location-dot"></i> ปักหมุด+ระบุไร่เอง</button>
+                            </div>
+                            
+                            <div id="manual-area-input" style="display:${currentMapMode==='pin'?'block':'none'};">
+                                <label style="font-size:13px; margin-top:0;">ระบุพื้นที่ประเมิน (ไร่):</label>
+                                <input type="number" id="manual-rai" placeholder="ระบุจำนวนไร่..." value="${currentMapMode==='pin' ? tempArea : ''}" oninput="window.updateCirclePreview()" style="width:100%; height:40px; border:1px solid var(--border); border-radius:8px; padding:10px; font-family:'Kanit'; box-sizing: border-box;">
+                            </div>
+                            <div id="map-tip-text" style="font-size:12px; margin-top:10px; color:var(--info);">
+                                ${currentMapMode==='pin' ? '👉 <b>คลิกบนแผนที่ 1 ครั้ง</b> เพื่อวางจุดศูนย์กลางแปลงอ้อย' : '👉 ใช้เครื่องมือด้านซ้ายมือบนแผนที่ ลากจุดวาดขอบเขตให้แม่นยำ'}
+                            </div>
+                        </div>
+
                         <div id="swal-draw-map" style="height:250px; width:100%; border-radius:8px; border:1px solid var(--border); margin-bottom:10px; z-index:9999;"></div>
                         
-                        <label>พื้นที่คำนวณได้โดยประมาณ (ไร่):</label>
-                        <input id="swal-plot-area" type="number" class="swal-input" value="${plot.area}" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; background:#F1F5F9; font-family:'Kanit';" readonly>
+                        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--primary-light); padding:10px 15px; border-radius:8px; margin-bottom:10px; border:1px dashed var(--primary);">
+                            <span style="font-weight:600; color:var(--primary-dark);">พื้นที่รวม:</span>
+                            <span style="font-size:18px; font-weight:700; color:var(--primary-dark);"><span id="modal-area-value">${tempArea}</span> ไร่</span>
+                        </div>
                         
                         <label>สภาพทางเข้าหน้างาน:</label>
-                        <select id="swal-plot-access" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; font-family:'Kanit';">
+                        <select id="swal-plot-access" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; font-family:'Kanit'; box-sizing: border-box;">
                             <option value="รถบรรทุกเข้าได้ปกติ" ${plot.access === 'รถบรรทุกเข้าได้ปกติ' ? 'selected' : ''}>รถบรรทุกเข้าได้ปกติ</option>
                             <option value="ทางแคบ ต้องใช้รถเล็ก" ${plot.access === 'ทางแคบ ต้องใช้รถเล็ก' ? 'selected' : ''}>ทางแคบ ต้องใช้รถเล็ก</option>
                             <option value="ทางลูกรัง/ดินแดง" ${plot.access === 'ทางลูกรัง/ดินแดง' ? 'selected' : ''}>ทางลูกรัง/ดินแดง</option>
@@ -2304,50 +2327,123 @@
                     let drawMap = L.map('swal-draw-map').setView(tempCenter, 15);
                     L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(drawMap);
                     
-                    // เพิ่มแถบเครื่องมือวาดรูป (Geoman)
-                    drawMap.pm.addControls({
-                        position: 'topleft', drawMarker: false, drawCircleMarker: false,
-                        drawPolyline: false, drawRectangle: false, drawCircle: false, drawText: false,
-                        editMode: true, dragMode: false, cutPolygon: false, removalMode: true
-                    });
+                    let modalDrawnPolygon = null; 
+                    let manualMarker = null;
 
-                    if (isEdit && tempCoords.length > 0) {
-                        let coords = tempCoords[0].map(p => [p[1], p[0]]);
-                        let layer = L.polygon(coords, {color: THEME_PRIMARY}).addTo(drawMap);
-                        drawMap.fitBounds(layer.getBounds(), {padding: [20,20]});
-                    } else {
-                        L.marker(tempCenter).addTo(drawMap).bindPopup("ตำแหน่งเริ่มต้น").openPopup();
+                    // ฟังก์ชันสลับโหมดแผนที่
+                    window.switchMapMode = function(mode) { 
+                        currentMapMode = mode; 
+                        document.getElementById('mode-pin').className = mode==='pin'?'btn-small btn-small-primary':'btn-small btn-small-outline';
+                        document.getElementById('mode-draw').className = mode==='draw'?'btn-small btn-small-primary':'btn-small btn-small-outline';
+                        document.getElementById('manual-area-input').style.display = mode==='pin'?'block':'none';
+                        document.getElementById('map-tip-text').innerHTML = mode==='pin' ? '👉 <b>คลิกบนแผนที่ 1 ครั้ง</b> เพื่อวางจุดศูนย์กลางแปลง' : '👉 ใช้เครื่องมือด้านซ้ายมือบนแผนที่ ลากจุดวาดขอบเขตให้แม่นยำ';
+                        
+                        if(mode === 'pin') {
+                            drawMap.pm.removeControls();
+                            if(modalDrawnPolygon) { modalDrawnPolygon.remove(); modalDrawnPolygon=null; }
+                            tempCoords=[]; tempArea=0; document.getElementById('modal-area-value').innerText='0.00'; document.getElementById('manual-rai').value='';
+                        } else {
+                            drawMap.pm.addControls({ position: 'topleft', drawMarker:false, drawPolygon:true, drawCircle:false, drawPolyline:false, drawRectangle:false, editMode:true, removalMode:true});
+                            if(manualMarker) { manualMarker.remove(); manualMarker=null; }
+                            if(modalDrawnPolygon) { modalDrawnPolygon.remove(); modalDrawnPolygon=null; }
+                            tempCoords=[]; tempArea=0; document.getElementById('modal-area-value').innerText='0.00';
+                        }
                     }
 
-                    // คำนวณพื้นที่อัตโนมัติเมื่อวาดเสร็จ
-                    drawMap.on('pm:create', (e) => {
-                        let layer = e.layer;
-                        let geojson = layer.toGeoJSON();
-                        tempCoords = geojson.geometry.coordinates;
-                        if (typeof turf !== 'undefined') {
-                            let areaSqMeters = turf.area(geojson);
-                            tempArea = (areaSqMeters / 1600).toFixed(2); // แปลง ตารางเมตร เป็น ไร่
-                            document.getElementById('swal-plot-area').value = tempArea;
+                    // อัปเดตรูปวงกลมเมื่อพิมพ์ตัวเลข
+                    window.updateCirclePreview = function() {
+                        if(currentMapMode!=='pin') return;
+                        let rai = parseFloat(document.getElementById('manual-rai').value) || 0;
+                        if(modalDrawnPolygon) { modalDrawnPolygon.remove(); }
+                        if(rai > 0 && tempCenter.length === 2) {
+                            let r = Math.sqrt((rai * 1600)/Math.PI);
+                            let geo = turf.circle([tempCenter[1], tempCenter[0]], r, {units: 'meters'});
+                            modalDrawnPolygon = L.geoJSON(geo, {style:{color:THEME_ACCENT, fillOpacity:0.4, weight:2}}).addTo(drawMap);
+                            tempCoords = geo.geometry.coordinates; 
+                            tempArea = rai.toFixed(2); 
+                            document.getElementById('modal-area-value').innerText = tempArea;
                         }
+                    }
+                    
+                    // ปักหมุดเมื่อคลิกแผนที่
+                    drawMap.on('click', e => { 
+                        if(currentMapMode==='pin') { 
+                            if(manualMarker) manualMarker.remove(); 
+                            manualMarker=L.marker(e.latlng).addTo(drawMap); 
+                            tempCenter=[e.latlng.lat, e.latlng.lng]; 
+                            window.updateCirclePreview(); 
+                        } 
                     });
 
-                    // เคลียร์พื้นที่เมื่อลบรูป
-                    drawMap.on('pm:remove', () => { tempCoords = []; document.getElementById('swal-plot-area').value = ''; });
+                    // โหมดวาดโพลีกอน
+                    if(currentMapMode === 'draw') { 
+                        drawMap.pm.addControls({ position: 'topleft', drawMarker:false, drawPolygon:true, editMode:true, removalMode:true }); 
+                    }
+
+                    drawMap.on('pm:create', e => { 
+                        modalDrawnPolygon = e.layer; 
+                        let geo = modalDrawnPolygon.toGeoJSON(); 
+                        tempCoords = geo.geometry.coordinates; 
+                        tempArea = (turf.area(geo)/1600).toFixed(2); 
+                        document.getElementById('modal-area-value').innerText=tempArea; 
+                        let c = turf.centerOfMass(geo); 
+                        tempCenter=[c.geometry.coordinates[1],c.geometry.coordinates[0]]; 
+                        
+                        modalDrawnPolygon.on('pm:edit', updateAreaDraw);
+                    });
+                    
+                    drawMap.on('pm:remove', e => { 
+                        modalDrawnPolygon=null; tempCoords=[]; tempArea=0; tempCenter=[]; document.getElementById('modal-area-value').innerText='0.00'; 
+                    });
+                    
+                    function updateAreaDraw() { 
+                        if(!modalDrawnPolygon) return; 
+                        let geo = modalDrawnPolygon.toGeoJSON(); 
+                        tempCoords = geo.geometry.coordinates; 
+                        tempArea = (turf.area(geo)/1600).toFixed(2); 
+                        document.getElementById('modal-area-value').innerText=tempArea; 
+                        let c = turf.centerOfMass(geo); 
+                        tempCenter=[c.geometry.coordinates[1],c.geometry.coordinates[0]]; 
+                    }
+
+                    // โหลดข้อมูลเก่ามาแสดง (กรณี Edit)
+                    if (isEdit) {
+                        if (currentMapMode === 'draw' && tempCoords.length > 0) {
+                            let coords = tempCoords[0].map(p => [p[1], p[0]]);
+                            modalDrawnPolygon = L.polygon(coords, {color: THEME_PRIMARY}).addTo(drawMap);
+                            drawMap.fitBounds(modalDrawnPolygon.getBounds(), {padding: [20,20]});
+                            modalDrawnPolygon.on('pm:edit', updateAreaDraw);
+                        } else if (currentMapMode === 'pin' && tempCenter.length === 2) {
+                            manualMarker = L.marker(tempCenter).addTo(drawMap);
+                            window.updateCirclePreview();
+                            drawMap.setView(tempCenter, 15);
+                        }
+                    } else if (currentMapMode === 'pin' && tempCenter.length === 2) {
+                        manualMarker = L.marker(tempCenter).addTo(drawMap);
+                    }
+
                     setTimeout(() => { drawMap.invalidateSize(); }, 200);
                 },
                 preConfirm: () => {
                     let name = document.getElementById('swal-plot-name').value;
-                    let area = document.getElementById('swal-plot-area').value;
                     let access = document.getElementById('swal-plot-access').value;
-                    if (!name || tempCoords.length === 0) {
-                        Swal.showValidationMessage('กรุณาตั้งชื่อแปลง และวาดกรอบแปลงบนแผนที่ให้ครบถ้วนครับ');
+                    
+                    if (!name || tempArea == 0 || tempCenter.length === 0 || tempCoords.length === 0) {
+                        Swal.showValidationMessage('กรุณาตั้งชื่อแปลง ระบุพื้นที่ และปักหมุด/วาดกรอบบนแผนที่ให้ครบถ้วนครับ');
                         return false;
                     }
-                    return { name, area, access, condition: 'ปกติ', coordinates: tempCoords, center: tempCenter };
+                    
+                    return { 
+                        name: name, 
+                        area: tempArea, 
+                        access: access, 
+                        condition: 'ปกติ', 
+                        coordinates: tempCoords,
+                        center: tempCenter 
+                    };
                 }
             });
 
-            // เซฟข้อมูล
             if (formValues) {
                 if (isEdit) {
                     userSavedPlots[index] = formValues;
