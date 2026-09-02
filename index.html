@@ -2062,6 +2062,81 @@
                 }
             });
         }
+        // ==========================================
+        // ฟังก์ชันจัดการแปลงอ้อย (หน้าแจ้งพิกัดอ้อย)
+        // ==========================================
+        let selectedPlotAccess = "รถบรรทุกเข้าได้ปกติ";
+        let selectedPlotCondition = "ปกติ";
+
+        function renderSavedPlotsList() {
+            const selectPlot = document.getElementById('select-saved-plot');
+            if (!selectPlot) return;
+            
+            // ล้างค่าเดิมและใส่ตัวเลือกเริ่มต้น
+            selectPlot.innerHTML = '<option value="">-- กรุณาเลือกแปลงอ้อย --</option>';
+            
+            // ดึงข้อมูลแปลงของชาวไร่มาแสดงใน Dropdown
+            if (userSavedPlots && userSavedPlots.length > 0) {
+                userSavedPlots.forEach((plot, index) => {
+                    let name = plot.name || `แปลงที่ ${index + 1}`;
+                    let area = plot.area ? ` (${plot.area} ไร่)` : '';
+                    selectPlot.innerHTML += `<option value="${index}">${name}${area}</option>`;
+                });
+            }
+        }
+
+        function loadSavedPlotToPreview() {
+            const index = document.getElementById('select-saved-plot').value;
+            const wrapper = document.getElementById('preview-map-wrapper');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            // ถ้าไม่ได้เลือกแปลง ให้ซ่อนแผนที่และปิดปุ่ม
+            if (index === "") {
+                wrapper.style.display = 'none';
+                polygonGeoJSON = "";
+                if(submitBtn) submitBtn.disabled = true;
+                return;
+            }
+
+            const plot = userSavedPlots[index];
+            if (!plot) return;
+
+            // แสดงส่วนของแผนที่และข้อมูลแปลง
+            wrapper.style.display = 'block';
+            document.getElementById('quantity').value = plot.area || 0;
+            
+            polygonGeoJSON = JSON.stringify(plot.coordinates || []);
+            selectedPlotAccess = plot.access || "รถบรรทุกเข้าได้ปกติ";
+            selectedPlotCondition = plot.condition || "ปกติ";
+            if(submitBtn) submitBtn.disabled = false;
+
+            // สร้างแผนที่ถ้ายังไม่มี
+            if (!previewMapObj) {
+                previewMapObj = L.map('preview-map').setView(plot.center || [currentLat, currentLng], 15);
+                L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(previewMapObj);
+            }
+
+            // ล้างหมุดหรือรูปวาดเดิมบนแผนที่
+            previewMapObj.eachLayer(layer => {
+                if (layer instanceof L.Polygon || layer instanceof L.Marker) {
+                    previewMapObj.removeLayer(layer);
+                }
+            });
+
+            // วาดรูปแปลงอ้อยบนแผนที่
+            if (plot.coordinates && plot.coordinates.length > 0) {
+                // แปลงพิกัด (lng, lat) เป็น (lat, lng) สำหรับ Leaflet
+                let coords = plot.coordinates[0].map(p => [p[1], p[0]]); 
+                let poly = L.polygon(coords, {color: THEME_PRIMARY, weight: 2, fillOpacity: 0.4}).addTo(previewMapObj);
+                previewMapObj.fitBounds(poly.getBounds(), {padding: [20,20]});
+            } else if (plot.center) {
+                L.marker(plot.center).addTo(previewMapObj);
+                previewMapObj.setView(plot.center, 15);
+            }
+            
+            // แก้ไขปัญหากล่องแผนที่โหลดไม่เต็ม
+            setTimeout(() => { previewMapObj.invalidateSize(); }, 300);
+        }
         window.onload = main;
     </script>
 </body>
