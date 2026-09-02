@@ -44,6 +44,7 @@
             --radius-md: 12px; 
             --shadow-soft: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); 
             --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.03);
+            --purple: #9333EA;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -2002,6 +2003,52 @@
                         
                         if (data.status === "success") {
                             Swal.fire('สำเร็จ!', 'ยืนยันผู้รับซื้อเรียบร้อยแล้ว', 'success')
+                            .then(() => {
+                                showLoader();
+                                fetchSalesData().then(() => hideLoader()); 
+                            });
+                        } else {
+                            Swal.fire('ผิดพลาด', 'ไม่สามารถบันทึกข้อมูลได้: ' + (data.message || ''), 'error');
+                        }
+                    } catch (error) {
+                        Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'error');
+                    }
+                }
+            });
+        }
+        // ==========================================
+        // ฟังก์ชันสำหรับหน้าชาวไร่: ยืนยันปิดงาน
+        // ==========================================
+        async function farmerVerifyCloseJob(index) {
+            let item = globalSalesData[index];
+            if (!item) return;
+
+            Swal.fire({
+                title: 'ยืนยันปิดบัญชีและรับเงิน?',
+                html: `คุณได้ตรวจสอบบิลชั่งน้ำหนักและยอดเงินสุทธิเรียบร้อยแล้วใช่หรือไม่?<br><br><span style="font-size:12px; color:var(--danger);">* หากกดยืนยัน สถานะงานจะถูกเปลี่ยนเป็น "เสร็จสิ้น"</span>`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยันปิดงาน',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: '#9333EA' // สีม่วง
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({ title: 'กำลังดำเนินการ...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+                    
+                    try {
+                        const payload = {
+                            action: "farmerCloseJob", // *** หมายเหตุ: อย่าลืมเช็คใน Google Apps Script ว่าใช้ action ชื่อนี้หรือไม่
+                            row: item.row
+                        };
+                        
+                        const res = await fetch(GAS_WEB_APP_URL, { 
+                            method: "POST", 
+                            body: JSON.stringify(payload) 
+                        });
+                        const data = await res.json();
+                        
+                        if (data.status === "success") {
+                            Swal.fire('สำเร็จ!', 'ปิดงานเรียบร้อยแล้ว', 'success')
                             .then(() => {
                                 showLoader();
                                 fetchSalesData().then(() => hideLoader()); 
