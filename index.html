@@ -568,62 +568,69 @@
             </div>
             
             <div class="control-panel">
-                <div style="font-weight:700; font-size:14px; margin-bottom:12px; color:var(--primary-dark); display:flex; justify-content:space-between; align-items:center;">
+                <!-- ส่วนหัวที่กดแล้วพับเก็บได้ -->
+                <div style="font-weight:700; font-size:14px; color:var(--primary-dark); display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:4px 0;" onclick="toggleFilterPanel()">
                     <span><i class="fa-solid fa-filter"></i> ตัวกรองพื้นที่อัจฉริยะ</span>
-                    <button class="btn-small btn-small-outline" style="padding:4px 12px; font-size:11px;" onclick="clearFilters('map')">ล้าง</button>
-                </div>
-                
-                <div class="multi-select-container">
-                    <label style="font-size:12px; margin-top:0; margin-bottom:4px; color:var(--text-muted);">จังหวัดที่มีคิวงาน:</label>
-                    <div class="multi-select-button" onclick="toggleMultiSelect('map-prov-dropdown')">
-                        <span id="map-prov-label">ทุกจังหวัด</span> <i class="fa-solid fa-chevron-down" style="color:var(--text-muted); font-size:12px;"></i>
-                    </div>
-                    <div id="map-prov-dropdown" class="multi-select-dropdown"></div>
-                </div>
-                
-                <div class="multi-select-container" style="margin-top:12px;">
-                    <label style="font-size:12px; margin-top:0; margin-bottom:4px; color:var(--text-muted);">อำเภอที่มีคิวงาน:</label>
-                    <div class="multi-select-button" onclick="toggleMultiSelect('map-dist-dropdown')">
-                        <span id="map-dist-label">ทุกอำเภอ</span> <i class="fa-solid fa-chevron-down" style="color:var(--text-muted); font-size:12px;"></i>
-                    </div>
-                    <div id="map-dist-dropdown" class="multi-select-dropdown"><div class="multi-select-option"><input type="checkbox" disabled> เลือกจังหวัดก่อน</div></div>
-                </div>
-                
-                <div style="font-weight:600; font-size:13px; margin-top:20px; color:var(--text-muted); border-top: 1px dashed var(--border); padding-top: 15px;">
-                     ค้นหาตามช่วงวันที่พร้อมม้วน
-                </div>
-                
-                <div class="form-grid" style="margin-top: 10px;">
                     <div>
-                        <label style="margin-top:0; font-size:12px;">ตั้งแต่วันที่:</label>
-                        <input type="date" id="filter-date-start" onchange="updateClusterLogic()">
-                    </div>
-                    <div>
-                        <label style="margin-top:0; font-size:12px;">ถึงวันที่:</label>
-                        <input type="date" id="filter-date-end" onchange="updateClusterLogic()">
+                        <button class="btn-small btn-small-outline" style="padding:4px 12px; font-size:11px; margin-right: 8px;" onclick="event.stopPropagation(); clearFilters('map')">ล้าง</button>
+                        <i id="filter-toggle-icon" class="fa-solid fa-chevron-down" style="color:var(--text-muted);"></i>
                     </div>
                 </div>
+                
+                <!-- ส่วนเนื้อหาตัวกรอง (ซ่อนไว้ตอนแรก) -->
+                <div id="filter-panel-content" style="display: none; margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 15px;">
+                    <div class="multi-select-container">
+                        <label style="font-size:12px; margin-top:0; margin-bottom:4px; color:var(--text-muted);">จังหวัดที่มีคิวงาน:</label>
+                        <div class="multi-select-button" onclick="toggleMultiSelect('map-prov-dropdown')">
+                            <span id="map-prov-label">ทุกจังหวัด</span> <i class="fa-solid fa-chevron-down" style="color:var(--text-muted); font-size:12px;"></i>
+                        </div>
+                        <div id="map-prov-dropdown" class="multi-select-dropdown"></div>
+                    </div>
+                    
+                    <div class="multi-select-container" style="margin-top:12px;">
+                        <label style="font-size:12px; margin-top:0; margin-bottom:4px; color:var(--text-muted);">อำเภอที่มีคิวงาน:</label>
+                        <div class="multi-select-button" onclick="toggleMultiSelect('map-dist-dropdown')">
+                            <span id="map-dist-label">ทุกอำเภอ</span> <i class="fa-solid fa-chevron-down" style="color:var(--text-muted); font-size:12px;"></i>
+                        </div>
+                        <div id="map-dist-dropdown" class="multi-select-dropdown"><div class="multi-select-option"><input type="checkbox" disabled> เลือกจังหวัดก่อน</div></div>
+                    </div>
+                    
+                    <div style="font-weight:600; font-size:13px; margin-top:20px; color:var(--text-muted); border-top: 1px dashed var(--border); padding-top: 15px;">
+                         ค้นหาตามช่วงวันที่พร้อมม้วน
+                    </div>
+                    
+                    <div class="form-grid" style="margin-top: 10px;">
+                        <div>
+                            <label style="margin-top:0; font-size:12px;">ตั้งแต่วันที่:</label>
+                            <input type="date" id="filter-date-start" onchange="updateClusterLogic()">
+                        </div>
+                        <div>
+                            <label style="margin-top:0; font-size:12px;">ถึงวันที่:</label>
+                            <input type="date" id="filter-date-end" onchange="updateClusterLogic()">
+                        </div>
+                    </div>
 
-                <div class="form-grid" style="margin-top: 15px;">
-                    <div>
-                        <label style="margin-top:0; font-size:12px;"> กรองข้อมูล:</label>
-                        <select id="filter-status" onchange="updateClusterLogic()">
-                            <option value="all">เปิดอยู่ทั้งหมด</option>
-                            <option value="รอคิวรถ">เฉพาะงานว่าง</option>
-                            <option value="รอชาวไร่ยืนยัน">รอพิจารณา</option>
-                        </select>
+                    <div class="form-grid" style="margin-top: 15px;">
+                        <div>
+                            <label style="margin-top:0; font-size:12px;"> กรองข้อมูล:</label>
+                            <select id="filter-status" onchange="updateClusterLogic()">
+                                <option value="all">เปิดอยู่ทั้งหมด</option>
+                                <option value="รอคิวรถ">เฉพาะงานว่าง</option>
+                                <option value="รอชาวไร่ยืนยัน">รอพิจารณา</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="margin-top:0; font-size:12px;"> จัดเรียง:</label>
+                            <select id="sort-by" onchange="updateClusterLogic()">
+                                <option value="dist-near">ระยะทางใกล้สุด</option>
+                                <option value="harvest-near">พร้อมม้วนเร็วสุด</option>
+                                <option value="date-new">อัปเดตล่าสุด</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label style="margin-top:0; font-size:12px;"> จัดเรียง:</label>
-                        <select id="sort-by" onchange="updateClusterLogic()">
-                            <option value="dist-near">ระยะทางใกล้สุด</option>
-                            <option value="harvest-near">พร้อมม้วนเร็วสุด</option>
-                            <option value="date-new">อัปเดตล่าสุด</option>
-                        </select>
-                    </div>
+                    
+                    <button class="btn-main" style="margin-top:20px; margin-bottom:0;" onclick="triggerSearch()"><i class="fa-solid fa-magnifying-glass"></i> ค้นหางาน</button>
                 </div>
-                
-                <button class="btn-main" style="margin-top:20px; margin-bottom:0;" onclick="triggerSearch()"><i class="fa-solid fa-magnifying-glass"></i> ค้นหางาน</button>
             </div>
 
             <!-- แผนที่สำหรับผู้รับซื้อ -->
@@ -1477,8 +1484,11 @@
             
             buyerPolygonLayer.addTo(buyerMapObj); 
             if(buyerPolygonLayer.getLayers().length > 0) { 
-                if(currentLat && currentLng) { buyerMapObj.setView([currentLat, currentLng], 11); } 
-                else { buyerMapObj.fitBounds(buyerPolygonLayer.getBounds(), { padding: [30, 30] }); }
+                // ให้ซูมไปครอบคลุมพื้นที่ของหมุดที่กรองมาได้พอดี
+                buyerMapObj.fitBounds(buyerPolygonLayer.getBounds(), { padding: [40, 40], maxZoom: 16 });
+            } else if (currentLat && currentLng) {
+                // ถ้าค้นหาแล้วไม่เจอแปลงเลย ให้กลับมาที่ตำแหน่งปัจจุบันของผู้ใช้
+                buyerMapObj.setView([currentLat, currentLng], 11);
             }
         }
 
@@ -2640,6 +2650,58 @@
             }
             
             setTimeout(() => { previewMapObj.invalidateSize(); }, 300);
+        }
+        // ==========================================
+        // ฟังก์ชันระบบค้นหางาน และแผนที่ (อัปเดต)
+        // ==========================================
+        
+        // 1. ฟังก์ชันเปิด-ปิด แถบตัวกรอง
+        function toggleFilterPanel() {
+            let content = document.getElementById('filter-panel-content');
+            let icon = document.getElementById('filter-toggle-icon');
+            if (!content) return;
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                if(icon) icon.className = 'fa-solid fa-chevron-up';
+            } else {
+                content.style.display = 'none';
+                if(icon) icon.className = 'fa-solid fa-chevron-down';
+            }
+        }
+
+        // 2. ฟังก์ชันกดปุ่มค้นหา (ซ่อนแถบอัตโนมัติ และเลื่อนไปที่แผนที่)
+        function triggerSearch() {
+            Swal.fire({ title: 'กำลังค้นหา...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+            setTimeout(() => { 
+                updateClusterLogic(); 
+                
+                // พับเก็บตัวกรองอัตโนมัติเมื่อค้นหาเสร็จ
+                let content = document.getElementById('filter-panel-content');
+                let icon = document.getElementById('filter-toggle-icon');
+                if (content && content.style.display !== 'none') {
+                    content.style.display = 'none';
+                    if(icon) icon.className = 'fa-solid fa-chevron-down';
+                }
+                
+                // เลื่อนหน้าจอไปพอดีกับแผนที่
+                let mapWrap = document.getElementById('buyer-map-wrapper');
+                if(mapWrap) mapWrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                Swal.close(); 
+            }, 500);
+        }
+
+        // 3. ฟังก์ชันกดการ์ดแปลง (เลื่อนไปที่แผนที่ แทนที่จะขึ้นไปสุดหน้าจอ)
+        function viewOnMap(row, lat, lon) { 
+            // เลื่อนหน้าจอให้แผนที่อยู่ตรงกลางจอ
+            let mapWrap = document.getElementById('buyer-map-wrapper');
+            if(mapWrap) mapWrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // สั่งแผนที่ซูมไปหาแปลงอ้อย
+            if (buyerMapObj) {
+                buyerMapObj.flyTo([lat, lon], 16, { duration: 1.5 }); 
+                setTimeout(() => { if(buyerMarkers[row]) { buyerMarkers[row].openPopup(); } }, 1500); 
+            }
         }
         window.onload = main;
     </script>
