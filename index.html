@@ -2137,6 +2137,227 @@
             // แก้ไขปัญหากล่องแผนที่โหลดไม่เต็ม
             setTimeout(() => { previewMapObj.invalidateSize(); }, 300);
         }
+        // ==========================================
+        // ฟังก์ชัน UI และจัดการหน้าลงทะเบียนแปลงอ้อย
+        // ==========================================
+
+        // ฟังก์ชันเปิด-ปิด ช่องกรอกข้อมูล
+        function toggleProfileInputs(disable, prefix) {
+            let containerId = prefix === 'reg' ? 'tab-personal' : 'register-buyer-page';
+            let container = document.getElementById(containerId);
+            if(!container) return;
+            // ล็อก input ทุกตัวยกเว้นรหัสไปรษณีย์
+            let inputs = container.querySelectorAll('input:not(#reg-zip):not(#buyer-zip), select, textarea');
+            inputs.forEach(el => el.disabled = disable);
+        }
+
+        function enableProfileEdit() {
+            isEditMode = true;
+            toggleProfileInputs(false, 'reg');
+            document.getElementById('btn-enable-edit').style.display = 'none';
+            document.getElementById('btn-register').style.display = 'block';
+            document.getElementById('btn-register').innerHTML = '<i class="fa-solid fa-save"></i> บันทึกการแก้ไขข้อมูล';
+        }
+
+        function enableBuyerProfileEdit() {
+            isBuyerEditMode = true;
+            toggleProfileInputs(false, 'buyer');
+            document.getElementById('btn-enable-buyer-edit').style.display = 'none';
+            document.getElementById('btn-buyer-register').style.display = 'block';
+            document.getElementById('btn-buyer-register').innerHTML = '<i class="fa-solid fa-save"></i> บันทึกการแก้ไขข้อมูล';
+        }
+
+        // ฟังก์ชันสลับแท็บ (ข้อมูลส่วนตัว <-> แปลงของฉัน)
+        function switchRegTab(tab) {
+            document.getElementById('btn-tab-personal').classList.remove('active');
+            document.getElementById('btn-tab-plots').classList.remove('active');
+            document.getElementById('tab-personal').style.display = 'none';
+            document.getElementById('tab-plots').style.display = 'none';
+            
+            if (tab === 'personal') {
+                document.getElementById('btn-tab-personal').classList.add('active');
+                document.getElementById('tab-personal').style.display = 'block';
+            } else if (tab === 'plots') {
+                document.getElementById('btn-tab-plots').classList.add('active');
+                document.getElementById('tab-plots').style.display = 'block';
+                renderSavedPlotsUI(); // เรียกแสดงผลแผนที่แปลงอ้อย
+            }
+        }
+
+        let allPlotsMapObj = null;
+
+        // ฟังก์ชันวาดแผนที่รวมหน้า "แปลงของฉัน"
+        function renderSavedPlotsUI() {
+            const container = document.getElementById('saved-plots-container');
+            const wrapper = document.getElementById('all-plots-wrapper');
+            container.innerHTML = '';
+
+            if (!userSavedPlots || userSavedPlots.length === 0) {
+                wrapper.style.display = 'none';
+                container.innerHTML = '<div class="empty-state" style="padding: 30px 0;">ยังไม่มีแปลงอ้อยที่บันทึกไว้<br>กดปุ่ม <b>+ เพิ่มแปลงอ้อย</b> ด้านบนเพื่อวาดแปลง</div>';
+                return;
+            }
+
+            wrapper.style.display = 'block';
+            
+            if (!allPlotsMapObj) {
+                allPlotsMapObj = L.map('all-plots-map').setView([currentLat, currentLng], 13);
+                L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(allPlotsMapObj);
+            }
+            
+            // เคลียร์ภาพวาดเก่าออกก่อน
+            allPlotsMapObj.eachLayer(layer => {
+                if (layer instanceof L.Polygon || layer instanceof L.Marker) allPlotsMapObj.removeLayer(layer);
+            });
+
+            let bounds = L.latLngBounds();
+            
+            userSavedPlots.forEach((plot, index) => {
+                // สร้างการ์ดรายชื่อแปลง
+                let card = document.createElement('div');
+                card.className = 'sale-card';
+                card.innerHTML = `
+                    <div class="sale-header">
+                        <span style="font-weight:700; color:var(--primary-dark); font-size:15px;"><i class="fa-solid fa-leaf"></i> ${plot.name || 'แปลงที่ ' + (index+1)}</span>
+                    </div>
+                    <div class="sale-detail">
+                        <div>พื้นที่คำนวณ: <span style="font-weight:700; color:var(--primary);">${plot.area || 0} ไร่</span></div>
+                        <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">ทางเข้า: ${plot.access || '-'}</div>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:12px;">
+                        <button onclick="openAddPlotModal(${index})" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-pen"></i> ดู/แก้ไข</button>
+                        <button onclick="deletePlot(${index})" class="btn-small btn-small-outline" style="flex:1; border-color:var(--danger); color:var(--danger);"><i class="fa-solid fa-trash"></i> ลบ</button>
+                    </div>
+                `;
+                container.appendChild(card);
+
+                // วาดแปลงลงแผนที่รวม
+                if (plot.coordinates && plot.coordinates.length > 0) {
+                    let coords = plot.coordinates[0].map(p => [p[1], p[0]]);
+                    let poly = L.polygon(coords, {color: THEME_PRIMARY, weight: 2}).addTo(allPlotsMapObj);
+                    poly.bindPopup(`<b>${plot.name}</b><br>${plot.area} ไร่`);
+                    bounds.extend(poly.getBounds());
+                }
+            });
+
+            setTimeout(() => { 
+                allPlotsMapObj.invalidateSize(); 
+                if (bounds.isValid()) allPlotsMapObj.fitBounds(bounds, {padding: [20,20]});
+            }, 300);
+        }
+
+        // ฟังก์ชันลบแปลง
+        function deletePlot(index) {
+            Swal.fire({
+                title: 'ลบแปลงนี้?',
+                text: "ข้อมูลแปลงอ้อยจะหายไป คุณต้องวาดใหม่หากต้องการใช้งาน",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#EF4444',
+                confirmButtonText: 'ลบเลย',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    userSavedPlots.splice(index, 1);
+                    renderSavedPlotsUI();
+                    submitRegistration(true); // เซฟขึ้น Google Sheets อัตโนมัติ
+                }
+            });
+        }
+
+        // ฟังก์ชันเปิดหน้าต่าง (Popup) สำหรับวาดแปลงใหม่
+        async function openAddPlotModal(index = -1) {
+            let isEdit = index >= 0;
+            let plot = isEdit ? userSavedPlots[index] : { name: '', area: '', access: 'รถบรรทุกเข้าได้ปกติ', condition: 'ปกติ', coordinates: [] };
+            
+            let tempCoords = isEdit ? JSON.parse(JSON.stringify(plot.coordinates)) : [];
+            let tempArea = plot.area;
+            let tempCenter = plot.center || [currentLat, currentLng];
+
+            const { value: formValues } = await Swal.fire({
+                title: isEdit ? 'ข้อมูลแปลงอ้อย' : 'เพิ่มแปลงอ้อยใหม่',
+                html: `
+                    <div style="text-align:left; font-family:'Kanit'; font-size:13px;">
+                        <label style="margin-top:0;">ชื่อแปลง (เช่น แปลงหลังบ้าน):</label>
+                        <input id="swal-plot-name" class="swal-input" value="${plot.name}" placeholder="ระบุชื่อแปลง" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; font-family:'Kanit';">
+                        
+                        <label>วาดกรอบพื้นที่บนแผนที่ (ใช้เครื่องมือ <i class="fa-solid fa-draw-polygon"></i> ซ้ายมือ):</label>
+                        <div id="swal-draw-map" style="height:250px; width:100%; border-radius:8px; border:1px solid var(--border); margin-bottom:10px; z-index:9999;"></div>
+                        
+                        <label>พื้นที่คำนวณได้โดยประมาณ (ไร่):</label>
+                        <input id="swal-plot-area" type="number" class="swal-input" value="${plot.area}" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; background:#F1F5F9; font-family:'Kanit';" readonly>
+                        
+                        <label>สภาพทางเข้าหน้างาน:</label>
+                        <select id="swal-plot-access" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; font-family:'Kanit';">
+                            <option value="รถบรรทุกเข้าได้ปกติ" ${plot.access === 'รถบรรทุกเข้าได้ปกติ' ? 'selected' : ''}>รถบรรทุกเข้าได้ปกติ</option>
+                            <option value="ทางแคบ ต้องใช้รถเล็ก" ${plot.access === 'ทางแคบ ต้องใช้รถเล็ก' ? 'selected' : ''}>ทางแคบ ต้องใช้รถเล็ก</option>
+                            <option value="ทางลูกรัง/ดินแดง" ${plot.access === 'ทางลูกรัง/ดินแดง' ? 'selected' : ''}>ทางลูกรัง/ดินแดง</option>
+                        </select>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fa-solid fa-save"></i> บันทึกข้อมูลแปลง',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: THEME_PRIMARY,
+                customClass: { popup: 'swal2-popup' },
+                didOpen: () => {
+                    let drawMap = L.map('swal-draw-map').setView(tempCenter, 15);
+                    L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(drawMap);
+                    
+                    // เพิ่มแถบเครื่องมือวาดรูป (Geoman)
+                    drawMap.pm.addControls({
+                        position: 'topleft', drawMarker: false, drawCircleMarker: false,
+                        drawPolyline: false, drawRectangle: false, drawCircle: false, drawText: false,
+                        editMode: true, dragMode: false, cutPolygon: false, removalMode: true
+                    });
+
+                    if (isEdit && tempCoords.length > 0) {
+                        let coords = tempCoords[0].map(p => [p[1], p[0]]);
+                        let layer = L.polygon(coords, {color: THEME_PRIMARY}).addTo(drawMap);
+                        drawMap.fitBounds(layer.getBounds(), {padding: [20,20]});
+                    } else {
+                        L.marker(tempCenter).addTo(drawMap).bindPopup("ตำแหน่งเริ่มต้น").openPopup();
+                    }
+
+                    // คำนวณพื้นที่อัตโนมัติเมื่อวาดเสร็จ
+                    drawMap.on('pm:create', (e) => {
+                        let layer = e.layer;
+                        let geojson = layer.toGeoJSON();
+                        tempCoords = geojson.geometry.coordinates;
+                        if (typeof turf !== 'undefined') {
+                            let areaSqMeters = turf.area(geojson);
+                            tempArea = (areaSqMeters / 1600).toFixed(2); // แปลง ตารางเมตร เป็น ไร่
+                            document.getElementById('swal-plot-area').value = tempArea;
+                        }
+                    });
+
+                    // เคลียร์พื้นที่เมื่อลบรูป
+                    drawMap.on('pm:remove', () => { tempCoords = []; document.getElementById('swal-plot-area').value = ''; });
+                    setTimeout(() => { drawMap.invalidateSize(); }, 200);
+                },
+                preConfirm: () => {
+                    let name = document.getElementById('swal-plot-name').value;
+                    let area = document.getElementById('swal-plot-area').value;
+                    let access = document.getElementById('swal-plot-access').value;
+                    if (!name || tempCoords.length === 0) {
+                        Swal.showValidationMessage('กรุณาตั้งชื่อแปลง และวาดกรอบแปลงบนแผนที่ให้ครบถ้วนครับ');
+                        return false;
+                    }
+                    return { name, area, access, condition: 'ปกติ', coordinates: tempCoords, center: tempCenter };
+                }
+            });
+
+            // เซฟข้อมูล
+            if (formValues) {
+                if (isEdit) {
+                    userSavedPlots[index] = formValues;
+                } else {
+                    userSavedPlots.push(formValues);
+                }
+                renderSavedPlotsUI();
+                submitRegistration(true); // เซฟขึ้น Google Sheets อัตโนมัติ
+            }
+        }
         window.onload = main;
     </script>
 </body>
