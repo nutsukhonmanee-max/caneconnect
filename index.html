@@ -2186,7 +2186,9 @@
 
         let allPlotsMapObj = null;
 
-        // ฟังก์ชันวาดแผนที่รวมหน้า "แปลงของฉัน"
+        // ==========================================
+        // 1. ฟังก์ชันวาดแผนที่รวมหน้า "แปลงของฉัน" (เพิ่มหมุดปัจจุบัน + อ่านแผนที่ได้ทั้ง 2 เวอร์ชัน)
+        // ==========================================
         function renderSavedPlotsUI() {
             const container = document.getElementById('saved-plots-container');
             const wrapper = document.getElementById('all-plots-wrapper');
@@ -2203,17 +2205,27 @@
             if (!allPlotsMapObj) {
                 allPlotsMapObj = L.map('all-plots-map').setView([currentLat, currentLng], 13);
                 L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(allPlotsMapObj);
+                
+                // สร้างหมุดตำแหน่งปัจจุบันสีน้ำเงิน
+                let userIcon = L.divIcon({ 
+                    className: 'user-loc-icon', 
+                    html: `<div style='background-color:#3B82F6; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);'></div>` 
+                });
+                L.marker([currentLat, currentLng], {icon: userIcon, zIndexOffset: 1000}).addTo(allPlotsMapObj).bindPopup("<div style='font-family:Kanit;'>📍 ตำแหน่งปัจจุบันของคุณ</div>");
             }
             
-            // เคลียร์ภาพวาดเก่าออกก่อน
+            // เคลียร์ภาพวาดเก่าออก (ยกเว้นหมุดตำแหน่งปัจจุบัน)
             allPlotsMapObj.eachLayer(layer => {
-                if (layer instanceof L.Polygon || layer instanceof L.Marker) allPlotsMapObj.removeLayer(layer);
+                if (layer instanceof L.Polygon || (layer instanceof L.Marker && layer.getPopup() && layer.getPopup().getContent().includes('ตำแหน่งปัจจุบัน'))) {
+                    if (layer instanceof L.Polygon) allPlotsMapObj.removeLayer(layer);
+                    else if (layer instanceof L.Marker && !layer.getPopup().getContent().includes('ตำแหน่งปัจจุบัน')) allPlotsMapObj.removeLayer(layer);
+                }
             });
 
             let bounds = L.latLngBounds();
+            bounds.extend([currentLat, currentLng]); // ให้ครอบคลุมตำแหน่งปัจจุบันด้วย
             
             userSavedPlots.forEach((plot, index) => {
-                // สร้างการ์ดรายชื่อแปลง
                 let card = document.createElement('div');
                 card.className = 'sale-card';
                 card.innerHTML = `
@@ -2222,27 +2234,38 @@
                     </div>
                     <div class="sale-detail">
                         <div>พื้นที่คำนวณ: <span style="font-weight:700; color:var(--primary);">${plot.area || 0} ไร่</span></div>
+                        <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">สภาพแปลง: ${plot.condition || 'ปกติ'}</div>
                         <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">ทางเข้า: ${plot.access || '-'}</div>
                     </div>
                     <div style="display:flex; gap:10px; margin-top:12px;">
-                        <button onclick="openAddPlotModal(${index})" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-pen"></i> ดู/แก้ไข</button>
+                        <button onclick="openAddPlotModal(${index})" class="btn-small btn-small-outline" style="flex:1;"><i class="fa-solid fa-pen"></i> แก้ไข</button>
                         <button onclick="deletePlot(${index})" class="btn-small btn-small-outline" style="flex:1; border-color:var(--danger); color:var(--danger);"><i class="fa-solid fa-trash"></i> ลบ</button>
                     </div>
                 `;
                 container.appendChild(card);
 
-                // วาดแปลงลงแผนที่รวม
-                if (plot.coordinates && plot.coordinates.length > 0) {
-                    let coords = plot.coordinates[0].map(p => [p[1], p[0]]);
+                // ดึงพิกัด (รองรับข้อมูลที่มาจากทั้ง Desktop และ มือถือ)
+                let coordsData = null;
+                if (plot.polygon && plot.polygon !== "") {
+                    try { coordsData = JSON.parse(plot.polygon); } catch(e){}
+                } else if (plot.coordinates && plot.coordinates.length > 0) {
+                    coordsData = plot.coordinates;
+                }
+
+                if (coordsData && coordsData.length > 0) {
+                    let coords = coordsData[0].map(p => [p[1], p[0]]);
                     let poly = L.polygon(coords, {color: THEME_PRIMARY, weight: 2}).addTo(allPlotsMapObj);
                     poly.bindPopup(`<b>${plot.name}</b><br>${plot.area} ไร่`);
                     bounds.extend(poly.getBounds());
+                } else if (plot.center && plot.center.length === 2) {
+                    L.marker(plot.center).addTo(allPlotsMapObj).bindPopup(`<b>${plot.name}</b><br>${plot.area} ไร่`);
+                    bounds.extend([plot.center]);
                 }
             });
 
             setTimeout(() => { 
                 allPlotsMapObj.invalidateSize(); 
-                if (bounds.isValid()) allPlotsMapObj.fitBounds(bounds, {padding: [20,20]});
+                if (bounds.isValid()) allPlotsMapObj.fitBounds(bounds, {padding: [20,20], maxZoom: 16});
             }, 300);
         }
 
@@ -2266,19 +2289,25 @@
         }
 
         // ==========================================
-        // ฟังก์ชันเปิดหน้าต่าง (Popup) สำหรับเพิ่ม/แก้ไขแปลงอ้อย (รองรับ ปักหมุด+วาดขอบเขต)
+        // 2. ฟังก์ชันเปิดหน้าต่างเพิ่มแปลงอ้อย (คืนค่าช่อง "สภาพแปลง")
         // ==========================================
         async function openAddPlotModal(index = -1) {
             let isEdit = index >= 0;
-            let plot = isEdit ? userSavedPlots[index] : { name: '', area: '', access: 'รถบรรทุกเข้าได้ปกติ', condition: 'ปกติ', coordinates: [] };
+            let plot = isEdit ? userSavedPlots[index] : { name: '', area: '', access: 'รถบรรทุกเข้าได้ปกติ', condition: 'ไม่มีตอเก่า/หิน (แปลงสะอาด)', polygon: "", coordinates: [] };
             
-            let tempCoords = isEdit && plot.coordinates ? JSON.parse(JSON.stringify(plot.coordinates)) : [];
+            // ใช้ข้อมูล polygon แบบเดียวกับ Desktop เป็นหลัก
+            let tempPolygonGeoJSON = isEdit && plot.polygon ? plot.polygon : (plot.coordinates && plot.coordinates.length > 0 ? JSON.stringify(plot.coordinates) : "");
             let tempArea = plot.area || 0;
             let tempCenter = plot.center || [currentLat, currentLng];
             
-            // เช็คว่าแปลงเก่าเป็นแบบไหน (วาด หรือ ปักหมุด)
-            let currentMapMode = (isEdit && tempCoords.length > 0 && tempCoords[0].length > 30) ? 'pin' : 'draw';
-            if (!isEdit) currentMapMode = 'draw'; // ค่าเริ่มต้นเมื่อสร้างใหม่
+            // คาดเดาโหมดแผนที่ (ถ้ารายละเอียดจุดมีเยอะมาก มักจะเป็นวงกลมที่เกิดจากการปักหมุด)
+            let currentMapMode = 'draw';
+            if (isEdit && tempPolygonGeoJSON) {
+                 try {
+                     let parsed = JSON.parse(tempPolygonGeoJSON);
+                     if (parsed[0] && parsed[0].length > 20) currentMapMode = 'pin';
+                 } catch(e) {}
+            }
 
             const { value: formValues } = await Swal.fire({
                 title: isEdit ? 'ข้อมูลแปลงอ้อย' : 'เพิ่มแปลงอ้อยใหม่',
@@ -2309,6 +2338,14 @@
                             <span style="font-weight:600; color:var(--primary-dark);">พื้นที่รวม:</span>
                             <span style="font-size:18px; font-weight:700; color:var(--primary-dark);"><span id="modal-area-value">${tempArea}</span> ไร่</span>
                         </div>
+
+                        <label>สภาพแปลง:</label>
+                        <select id="swal-plot-condition" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; font-family:'Kanit'; box-sizing: border-box;">
+                            <option value="ไม่มีตอเก่า/หิน (แปลงสะอาด)" ${plot.condition === 'ไม่มีตอเก่า/หิน (แปลงสะอาด)' ? 'selected' : ''}>ไม่มีตอเก่า/หิน (แปลงสะอาด)</option>
+                            <option value="มีตอเก่า" ${plot.condition === 'มีตอเก่า' ? 'selected' : ''}>มีตอเก่า</option>
+                            <option value="มีหินปะปน" ${plot.condition === 'มีหินปะปน' ? 'selected' : ''}>มีหินปะปน</option>
+                            <option value="มีทั้งตอเก่าและหิน" ${plot.condition === 'มีทั้งตอเก่าและหิน' ? 'selected' : ''}>มีทั้งตอและหิน</option>
+                        </select>
                         
                         <label>สภาพทางเข้าหน้างาน:</label>
                         <select id="swal-plot-access" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; font-family:'Kanit'; box-sizing: border-box;">
@@ -2330,7 +2367,6 @@
                     let modalDrawnPolygon = null; 
                     let manualMarker = null;
 
-                    // ฟังก์ชันสลับโหมดแผนที่
                     window.switchMapMode = function(mode) { 
                         currentMapMode = mode; 
                         document.getElementById('mode-pin').className = mode==='pin'?'btn-small btn-small-primary':'btn-small btn-small-outline';
@@ -2341,16 +2377,15 @@
                         if(mode === 'pin') {
                             drawMap.pm.removeControls();
                             if(modalDrawnPolygon) { modalDrawnPolygon.remove(); modalDrawnPolygon=null; }
-                            tempCoords=[]; tempArea=0; document.getElementById('modal-area-value').innerText='0.00'; document.getElementById('manual-rai').value='';
+                            tempPolygonGeoJSON=""; tempArea=0; document.getElementById('modal-area-value').innerText='0.00'; document.getElementById('manual-rai').value='';
                         } else {
                             drawMap.pm.addControls({ position: 'topleft', drawMarker:false, drawPolygon:true, drawCircle:false, drawPolyline:false, drawRectangle:false, editMode:true, removalMode:true});
                             if(manualMarker) { manualMarker.remove(); manualMarker=null; }
                             if(modalDrawnPolygon) { modalDrawnPolygon.remove(); modalDrawnPolygon=null; }
-                            tempCoords=[]; tempArea=0; document.getElementById('modal-area-value').innerText='0.00';
+                            tempPolygonGeoJSON=""; tempArea=0; document.getElementById('modal-area-value').innerText='0.00';
                         }
                     }
 
-                    // อัปเดตรูปวงกลมเมื่อพิมพ์ตัวเลข
                     window.updateCirclePreview = function() {
                         if(currentMapMode!=='pin') return;
                         let rai = parseFloat(document.getElementById('manual-rai').value) || 0;
@@ -2359,13 +2394,12 @@
                             let r = Math.sqrt((rai * 1600)/Math.PI);
                             let geo = turf.circle([tempCenter[1], tempCenter[0]], r, {units: 'meters'});
                             modalDrawnPolygon = L.geoJSON(geo, {style:{color:THEME_ACCENT, fillOpacity:0.4, weight:2}}).addTo(drawMap);
-                            tempCoords = geo.geometry.coordinates; 
+                            tempPolygonGeoJSON = JSON.stringify(geo.geometry.coordinates); 
                             tempArea = rai.toFixed(2); 
                             document.getElementById('modal-area-value').innerText = tempArea;
                         }
                     }
                     
-                    // ปักหมุดเมื่อคลิกแผนที่
                     drawMap.on('click', e => { 
                         if(currentMapMode==='pin') { 
                             if(manualMarker) manualMarker.remove(); 
@@ -2375,7 +2409,6 @@
                         } 
                     });
 
-                    // โหมดวาดโพลีกอน
                     if(currentMapMode === 'draw') { 
                         drawMap.pm.addControls({ position: 'topleft', drawMarker:false, drawPolygon:true, editMode:true, removalMode:true }); 
                     }
@@ -2383,36 +2416,37 @@
                     drawMap.on('pm:create', e => { 
                         modalDrawnPolygon = e.layer; 
                         let geo = modalDrawnPolygon.toGeoJSON(); 
-                        tempCoords = geo.geometry.coordinates; 
+                        tempPolygonGeoJSON = JSON.stringify(geo.geometry.coordinates); 
                         tempArea = (turf.area(geo)/1600).toFixed(2); 
                         document.getElementById('modal-area-value').innerText=tempArea; 
                         let c = turf.centerOfMass(geo); 
                         tempCenter=[c.geometry.coordinates[1],c.geometry.coordinates[0]]; 
-                        
                         modalDrawnPolygon.on('pm:edit', updateAreaDraw);
                     });
                     
                     drawMap.on('pm:remove', e => { 
-                        modalDrawnPolygon=null; tempCoords=[]; tempArea=0; tempCenter=[]; document.getElementById('modal-area-value').innerText='0.00'; 
+                        modalDrawnPolygon=null; tempPolygonGeoJSON=""; tempArea=0; tempCenter=[]; document.getElementById('modal-area-value').innerText='0.00'; 
                     });
                     
                     function updateAreaDraw() { 
                         if(!modalDrawnPolygon) return; 
                         let geo = modalDrawnPolygon.toGeoJSON(); 
-                        tempCoords = geo.geometry.coordinates; 
+                        tempPolygonGeoJSON = JSON.stringify(geo.geometry.coordinates); 
                         tempArea = (turf.area(geo)/1600).toFixed(2); 
                         document.getElementById('modal-area-value').innerText=tempArea; 
                         let c = turf.centerOfMass(geo); 
                         tempCenter=[c.geometry.coordinates[1],c.geometry.coordinates[0]]; 
                     }
 
-                    // โหลดข้อมูลเก่ามาแสดง (กรณี Edit)
+                    // ตอนเปิดหน้าต่างขึ้นมา ให้เอาแผนที่เดิมวาดทับลงไป
                     if (isEdit) {
-                        if (currentMapMode === 'draw' && tempCoords.length > 0) {
-                            let coords = tempCoords[0].map(p => [p[1], p[0]]);
-                            modalDrawnPolygon = L.polygon(coords, {color: THEME_PRIMARY}).addTo(drawMap);
-                            drawMap.fitBounds(modalDrawnPolygon.getBounds(), {padding: [20,20]});
-                            modalDrawnPolygon.on('pm:edit', updateAreaDraw);
+                        if (currentMapMode === 'draw' && tempPolygonGeoJSON) {
+                            try {
+                                let coords = JSON.parse(tempPolygonGeoJSON)[0].map(p => [p[1], p[0]]);
+                                modalDrawnPolygon = L.polygon(coords, {color: THEME_PRIMARY}).addTo(drawMap);
+                                drawMap.fitBounds(modalDrawnPolygon.getBounds(), {padding: [20,20]});
+                                modalDrawnPolygon.on('pm:edit', updateAreaDraw);
+                            } catch(e) {}
                         } else if (currentMapMode === 'pin' && tempCenter.length === 2) {
                             manualMarker = L.marker(tempCenter).addTo(drawMap);
                             window.updateCirclePreview();
@@ -2426,9 +2460,10 @@
                 },
                 preConfirm: () => {
                     let name = document.getElementById('swal-plot-name').value;
+                    let condition = document.getElementById('swal-plot-condition').value;
                     let access = document.getElementById('swal-plot-access').value;
                     
-                    if (!name || tempArea == 0 || tempCenter.length === 0 || tempCoords.length === 0) {
+                    if (!name || tempArea == 0 || tempCenter.length === 0 || !tempPolygonGeoJSON) {
                         Swal.showValidationMessage('กรุณาตั้งชื่อแปลง ระบุพื้นที่ และปักหมุด/วาดกรอบบนแผนที่ให้ครบถ้วนครับ');
                         return false;
                     }
@@ -2437,8 +2472,8 @@
                         name: name, 
                         area: tempArea, 
                         access: access, 
-                        condition: 'ปกติ', 
-                        coordinates: tempCoords,
+                        condition: condition, 
+                        polygon: tempPolygonGeoJSON, 
                         center: tempCenter 
                     };
                 }
@@ -2451,8 +2486,60 @@
                     userSavedPlots.push(formValues);
                 }
                 renderSavedPlotsUI();
-                submitRegistration(true); // เซฟขึ้น Google Sheets อัตโนมัติ
+                submitRegistration(true); // เซฟขึ้น Google Sheets
             }
+        }
+        // ==========================================
+        // 3. ฟังก์ชันโหลดแปลงไปที่แผนที่หน้าแจ้งงาน (รองรับข้อมูลทั้ง 2 เวอร์ชัน)
+        // ==========================================
+        function loadSavedPlotToPreview() {
+            const index = document.getElementById('select-saved-plot').value;
+            const wrapper = document.getElementById('preview-map-wrapper');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            if (index === "") {
+                wrapper.style.display = 'none';
+                polygonGeoJSON = "";
+                if(submitBtn) submitBtn.disabled = true;
+                return;
+            }
+
+            const plot = userSavedPlots[index];
+            if (!plot) return;
+
+            wrapper.style.display = 'block';
+            document.getElementById('quantity').value = plot.area || 0;
+            
+            // อ่านค่า polygon หรือ coordinate มาเก็บเพื่อใช้ส่งเข้าคิว
+            polygonGeoJSON = plot.polygon ? plot.polygon : (plot.coordinates ? JSON.stringify(plot.coordinates) : "");
+            selectedPlotAccess = plot.access || "รถบรรทุกเข้าได้ปกติ";
+            selectedPlotCondition = plot.condition || "ปกติ";
+            if(submitBtn) submitBtn.disabled = false;
+
+            if (!previewMapObj) {
+                previewMapObj = L.map('preview-map').setView(plot.center || [currentLat, currentLng], 15);
+                L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(previewMapObj);
+            }
+
+            previewMapObj.eachLayer(layer => {
+                if (layer instanceof L.Polygon || layer instanceof L.Marker) {
+                    previewMapObj.removeLayer(layer);
+                }
+            });
+
+            // วาดรูปลงบนแผนที่ในหน้าแจ้งขาย
+            if (polygonGeoJSON && polygonGeoJSON !== "") {
+                try {
+                    let coords = JSON.parse(polygonGeoJSON)[0].map(p => [p[1], p[0]]); 
+                    let poly = L.polygon(coords, {color: THEME_PRIMARY, weight: 2, fillOpacity: 0.4}).addTo(previewMapObj);
+                    previewMapObj.fitBounds(poly.getBounds(), {padding: [20,20]});
+                } catch(e) {}
+            } else if (plot.center) {
+                L.marker(plot.center).addTo(previewMapObj);
+                previewMapObj.setView(plot.center, 15);
+            }
+            
+            setTimeout(() => { previewMapObj.invalidateSize(); }, 300);
         }
         window.onload = main;
     </script>
