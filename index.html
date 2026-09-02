@@ -1548,9 +1548,12 @@
         }
 
         function viewOnMap(row, lat, lon) { 
-            document.querySelector('.content-body').scrollTo({ top: 0, behavior: 'smooth' }); 
-            buyerMapObj.flyTo([lat, lon], 16, { duration: 1.5 }); 
-            setTimeout(() => { if(buyerMarkers[row]) { buyerMarkers[row].openPopup(); } }, 1500); 
+            // เปลี่ยนมาใช้ window.scrollTo เพื่อให้รองรับบนมือถือ
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            if (buyerMapObj) {
+                buyerMapObj.flyTo([lat, lon], 16, { duration: 1.5 }); 
+                setTimeout(() => { if(buyerMarkers[row]) { buyerMarkers[row].openPopup(); } }, 1500); 
+            }
         }
 
         function viewSaleIslandModal(indexOrRow, role = 'buyer') {
@@ -1565,7 +1568,27 @@
             
             let actualQ = (item.actualQty && item.actualQty !== "-") ? item.actualQty : (item.quantity || item.qty || "-");
             let actualW = item.actualWeight || "-";
-            let plotAddressText = item.plotProv ? `จ.${item.plotProv} อ.${item.plotDist} ต.${item.plotSubDist}` : `จ.${item.prov} อ.${item.dist} ต.${item.subDist}`; 
+            // เริ่มต้นโค้ดส่วนตรวจสอบที่อยู่
+            let plotAddressText = "";
+            let provStr = item.plotProv || item.prov || "";
+            let distStr = item.plotDist || item.dist || "";
+            let subStr = item.plotSubDist || item.subDist || "";
+
+            if (provStr) {
+                plotAddressText = `จ.${provStr} อ.${distStr} ต.${subStr}`;
+                plotAddressText = plotAddressText.replace(/ต.undefined|อ.undefined|จ.undefined/g, '').trim();
+            } 
+            
+            // ถ้ายังไม่มีข้อมูล ให้ดึงจาก Cache หรือโชว์เป็นพิกัดแทน
+            if (!plotAddressText || plotAddressText === "จ. อ. ต.") {
+                let key = `${parseFloat(item.lat).toFixed(3)},${parseFloat(item.lon).toFixed(3)}`;
+                if(caneGeoCache[key]) {
+                    plotAddressText = `จ.${caneGeoCache[key].prov} อ.${caneGeoCache[key].dist}`;
+                } else {
+                    plotAddressText = `พิกัด: ${parseFloat(item.lat).toFixed(5)}, ${parseFloat(item.lon).toFixed(5)}`;
+                }
+            }
+            // จบโค้ดส่วนตรวจสอบที่อยู่ 
             
             let pricePerRai = extractPrice(item.price); let totalAmountStr = "-";
             if (actualQ !== "-" && pricePerRai > 0) { totalAmountStr = (parseFloat(actualQ) * pricePerRai).toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
@@ -2435,8 +2458,14 @@
                     let drawMap = L.map('swal-draw-map').setView(tempCenter, 15);
                     L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(drawMap);
                     
+                    // --- เพิ่มโค้ด 2 บรรทัดนี้ เพื่อแสดงหมุดปัจจุบันสีน้ำเงิน ---
+                    let userIcon = L.divIcon({ className: 'user-loc-icon', html: `<div style='background-color:#3B82F6; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);'></div>` });
+                    L.marker([currentLat, currentLng], {icon: userIcon, zIndexOffset: 1000}).addTo(drawMap).bindPopup("📍 ตำแหน่งปัจจุบัน");
+                    // --------------------------------------------------
+
                     let modalDrawnPolygon = null; 
                     let manualMarker = null;
+                    // ... (โค้ดส่วนอื่นๆ คงเดิม)
 
                     window.switchMapMode = function(mode) { 
                         currentMapMode = mode; 
